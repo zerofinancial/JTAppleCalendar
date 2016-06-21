@@ -15,7 +15,7 @@ extension JTAppleCalendarView {
     ///     - CellState: The start date of the current section
     public func cellStatusForDateAtRow(row: Int, column: Int) -> CellState? {
         if // the row or column falls within an invalid range
-            row < 0 || row >= numberOfRowsPerMonth ||
+            row < 0 || row >= cachedConfiguration.numberOfRows ||
                 column < 0 || column >= MAX_NUMBER_OF_DAYS_IN_WEEK {
             return nil
         }
@@ -29,8 +29,8 @@ extension JTAppleCalendarView {
             convertedSection = (Offset + column) / MAX_NUMBER_OF_DAYS_IN_WEEK
         } else {
             Offset = Int(round(calendarView.contentOffset.y / (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).itemSize.height))
-            convertedRow = ((row * MAX_NUMBER_OF_DAYS_IN_WEEK) +  column + (Offset * MAX_NUMBER_OF_DAYS_IN_WEEK)) % (MAX_NUMBER_OF_DAYS_IN_WEEK * numberOfRowsPerMonth)
-            convertedSection = (Offset + row) / numberOfRowsPerMonth
+            convertedRow = ((row * MAX_NUMBER_OF_DAYS_IN_WEEK) +  column + (Offset * MAX_NUMBER_OF_DAYS_IN_WEEK)) % (MAX_NUMBER_OF_DAYS_IN_WEEK * cachedConfiguration.numberOfRows)
+            convertedSection = (Offset + row) / cachedConfiguration.numberOfRows
         }
         
         let indexPathToFind = NSIndexPath(forItem: convertedRow, inSection: convertedSection)

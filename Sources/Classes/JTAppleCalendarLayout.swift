@@ -130,6 +130,19 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         return attributes
     }
     
+    /// Returns the layout attributes for the item at the specified index path. A layout attributes object containing the information to apply to the item’s cell.
+    override  public func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        let attr = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+        
+        // If this index is already cached, then return it else, apply a new layout attribut to it
+        if let alreadyCachedCellAttrib = cellCache[indexPath.section] where indexPath.item < alreadyCachedCellAttrib.count {
+            return alreadyCachedCellAttrib[indexPath.item]
+        }
+        
+        applyLayoutAttributes(attr)
+        return attr
+    }
+    
     /// Returns the layout attributes for the specified supplementary view.
     public override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, withIndexPath: indexPath)
@@ -156,19 +169,6 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
             currentHeader = (section, headerSize)
         }
         return headerSize
-    }
-    
-    /// Returns the layout attributes for the item at the specified index path. A layout attributes object containing the information to apply to the item’s cell.
-    override  public func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        let attr = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
-        
-        // If this index is already cached, then return it else, apply a new layout attribut to it
-        if let alreadyCachedCellAttrib = cellCache[indexPath.section] where indexPath.item < alreadyCachedCellAttrib.count {
-            return alreadyCachedCellAttrib[indexPath.item]
-        }
-        
-        applyLayoutAttributes(attr)
-        return attr
     }
     
     func applyLayoutAttributes(attributes : UICollectionViewLayoutAttributes) {

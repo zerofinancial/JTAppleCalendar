@@ -170,10 +170,6 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(kind,
                                                                                withReuseIdentifier: reuseIdentifier,
                                                                                forIndexPath: indexPath) as! JTAppleCollectionReusableView
-
-//        print("\n")
-//        print(headerView.frame.size)
-//        print(headerView.frame.origin)
         
         delegate?.calendar(self, isAboutToDisplaySectionHeader: headerView.view, date: date, identifier: reuseIdentifier)
         return headerView
@@ -191,14 +187,6 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         dayCell.bounds.origin = CGPoint(x: 0, y: 0)
         
         delegate?.calendar(self, isAboutToDisplayCell: dayCell.cellView, date: date, cellState: cellState)
-        
-        
-        
-//        print(dayCell.frame.size)
-//        print(dayCell.cellView.frame)
-//        print(dayCell.bounds)
-//        print(dayCell.cellView.bounds)
-//        print("\n")
 
         return dayCell
     }
@@ -213,7 +201,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
 
     /// Asks your data source object for the number of items in the specified section. The number of rows in section.
     public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  MAX_NUMBER_OF_DAYS_IN_WEEK * numberOfRowsPerMonth
+        return  MAX_NUMBER_OF_DAYS_IN_WEEK * cachedConfiguration.numberOfRows
     }
     /// Asks the delegate if the specified item should be selected. true if the item should be selected or false if it should not.
     public func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -260,10 +248,10 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         if let
             delegate = self.delegate,
             dateDeSelectedByUser = dateFromPath(indexPath),
-            cell = collectionView.cellForItemAtIndexPath(indexPath) as? JTAppleDayCell {
+            cell = collectionView.cellForItemAtIndexPath(indexPath) as? JTAppleDayCell
+        where cellWasNotDisabledOrHiddenByTheUser(cell) {
             let cellState = cellStateFromIndexPath(indexPath, withDate: dateDeSelectedByUser)
-            delegate.calendar(self, canDeselectDate: dateDeSelectedByUser, cell: cell.cellView, cellState:  cellState)
-            return true
+            return delegate.calendar(self, canDeselectDate: dateDeSelectedByUser, cell: cell.cellView, cellState:  cellState)
         }
         return false
     }
