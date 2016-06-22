@@ -199,7 +199,7 @@ public class JTAppleCalendarView: UIView {
 
     var dateComponents = NSDateComponents()
     var delayedExecutionClosure: [(()->Void)] = []
-    var lastOrientation: UIDeviceOrientation?
+    var lastOrientation: UIInterfaceOrientation?
     
     var currentSectionPage: Int {
         let cvbounds = self.calendarView.bounds
@@ -333,7 +333,7 @@ public class JTAppleCalendarView: UIView {
     override public var frame: CGRect {
         didSet {
             calendarView.frame = CGRect(x:0.0, y:/*bufferTop*/0.0, width: self.frame.size.width, height:self.frame.size.height/* - bufferBottom*/)
-            let orientation = UIDevice.currentDevice().orientation
+            let orientation = UIApplication.sharedApplication().statusBarOrientation
             if orientation == .Unknown { return }
             if lastOrientation != orientation {
                 lastOrientation = orientation
