@@ -260,7 +260,8 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         if let
             delegate = self.delegate,
             dateDeSelectedByUser = dateFromPath(indexPath),
-            cell = collectionView.cellForItemAtIndexPath(indexPath) as? JTAppleDayCell {
+            cell = collectionView.cellForItemAtIndexPath(indexPath) as? JTAppleDayCell
+        where cellWasNotDisabledOrHiddenByTheUser(cell) {
             let cellState = cellStateFromIndexPath(indexPath, withDate: dateDeSelectedByUser)
             return delegate.calendar(self, canDeselectDate: dateDeSelectedByUser, cell: cell.cellView, cellState:  cellState)
         }
