@@ -187,6 +187,10 @@ public class JTAppleCalendarView: UIView {
     // Keeps track of item size for a section. This is an optimization
     var scrollInProgress = false
     private var layoutNeedsUpdating = false
+    
+    @available(*, deprecated, message="This has been deprecated in 4.0.3. Please consider removing it from your code")
+    public var numberOfRowsPerMonth: Int = 0
+    
     /// The object that acts as the data source of the calendar view.
     public var dataSource : JTAppleCalendarViewDataSource? {
         didSet {
