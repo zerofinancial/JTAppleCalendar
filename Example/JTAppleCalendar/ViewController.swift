@@ -48,11 +48,11 @@ class ViewController: UIViewController {
         
         
         // Enable the following code line to show headers. There are other lines of code to uncomment as well
-         calendarView.registerHeaderViewXibs(fileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"]) // headers are Optional. You can register multiple if you want.
+//         calendarView.registerHeaderViewXibs(fileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"]) // headers are Optional. You can register multiple if you want.
         
         // The following default code can be removed since they are already the default.
         // They are only included here so that you can know what properties can be configured
-        calendarView.direction = .Horizontal                       // default is horizontal
+        calendarView.direction = .Vertical                       // default is horizontal
         calendarView.cellInset = CGPoint(x: 0, y: 0)               // default is (3,3)
         calendarView.allowsMultipleSelection = false               // default is false
         calendarView.bufferTop = 0                                 // default is 0. - still work in progress on this
@@ -61,13 +61,14 @@ class ViewController: UIViewController {
         calendarView.scrollEnabled = true                          // default is true
         calendarView.pagingEnabled = true                          // default is true
         calendarView.scrollResistance = 0.75                       // default is 0.75 - this is only applicable when paging is not enabled.
+        calendarView.itemSize = nil
         calendarView.reloadData()
         
         // After reloading. Scroll to your selected date, and setup your calendar
-        calendarView.scrollToDate(NSDate(), triggerScrollToDateDelegate: false, animateScroll: false) {
-            let currentDate = self.calendarView.currentCalendarDateSegment()
-            self.setupViewsOfCalendar(currentDate.startDate, endDate: currentDate.endDate)
-        }
+//        calendarView.scrollToDate(NSDate(), triggerScrollToDateDelegate: false, animateScroll: false) {
+//            let currentDate = self.calendarView.currentCalendarDateSegment()
+//            self.setupViewsOfCalendar(currentDate.startDate, endDate: currentDate.endDate)
+//        }
     }
     
     @IBAction func select10(sender: AnyObject?) {

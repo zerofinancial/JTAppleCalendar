@@ -24,11 +24,13 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
     var cellCache: [Int:[UICollectionViewLayoutAttributes]] = [:]
     var headerCache: [UICollectionViewLayoutAttributes] = []
     
-    
     weak var delegate: JTAppleCalendarDelegateProtocol?
     
     var currentHeader: (section: Int, size: CGSize)? // Tracks the current header size
     var currentCell: (section: Int, itemSize: CGSize)? // Tracks the current cell size
+    
+    var contentHeight: CGFloat = 0 // Content height of calendarView
+    var contentWidth: CGFloat = 0 // Content wifth of calendarView
     
     init(withDelegate delegate: JTAppleCalendarDelegateProtocol) {
         super.init()
@@ -44,12 +46,16 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         maxSections = numberOfMonthsInCalendar * numberOfSectionsPerMonth
         daysPerSection = numberOfDaysPerSection
         
-        // // Generate and cache the headers
+         // Generate and cache the headers
         for section in 0..<maxSections {
             // generate header views
             let sectionIndexPath = NSIndexPath(forItem: 0, inSection: section)
             if let aHeaderAttr = layoutAttributesForSupplementaryViewOfKind(UICollectionElementKindSectionHeader, atIndexPath: sectionIndexPath) {
                 headerCache.append(aHeaderAttr)
+                
+                if scrollDirection == .Vertical {
+                    contentHeight += aHeaderAttr.frame.height
+                }
             }
             
             // Generate and cache the cells
@@ -58,26 +64,30 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
                 if let attribute = layoutAttributesForItemAtIndexPath(indexPath) {
                     if cellCache[section] == nil {
                         cellCache[section] = []
+                        
+                        if scrollDirection == .Vertical {
+                            contentHeight += (attribute.frame.height * CGFloat(numberOfRows))
+                        }
                     }
                     cellCache[section]!.append(attribute)
                 } else {
                     print("error.")
                 }
+                
             }
+        }
+        
+        if scrollDirection == .Horizontal {
+            contentWidth = self.collectionView!.bounds.size.width * CGFloat(numberOfMonthsInCalendar * numberOfSectionsPerMonth)
+            contentHeight = self.collectionView!.bounds.size.height
+        } else {
+            contentWidth = self.collectionView!.bounds.size.width
         }
     }
     
     /// Returns the width and height of the collection view’s contents. The width and height of the collection view’s contents.
     public override func collectionViewContentSize() -> CGSize {
-        var size = super.collectionViewContentSize()
-        
-        if scrollDirection == .Horizontal {
-            size.width = self.collectionView!.bounds.size.width * CGFloat(numberOfMonthsInCalendar * numberOfSectionsPerMonth)
-        } else {
-            size.height = self.collectionView!.bounds.size.height * CGFloat(numberOfMonthsInCalendar * numberOfSectionsPerMonth)
-            size.width = self.collectionView!.bounds.size.width
-        }
-        return size
+        return CGSize(width: contentWidth, height: contentHeight)
     }
     
     /// Returns the layout attributes for all of the cells and views in the specified rectangle.
@@ -85,9 +95,6 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         var startSectionIndex = scrollDirection == .Horizontal ? Int(floor(rect.origin.x / collectionView!.frame.width)): Int(floor(rect.origin.y / collectionView!.frame.height))
         if startSectionIndex < 0 { startSectionIndex = 0 }
         if startSectionIndex > cellCache.count { startSectionIndex = cellCache.count }
-        
-//        let requestedSections = scrollDirection == .Horizontal ? Int(ceil(rect.width / collectionView!.frame.width)) : Int(ceil(rect.height / collectionView!.frame.height))
-//        let endsection = startSectionIndex + requestedSections
         
         // keep looping until there were no interception rects
         var attributes: [UICollectionViewLayoutAttributes] = []
@@ -174,9 +181,11 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
     func applyLayoutAttributes(attributes : UICollectionViewLayoutAttributes) {
         if attributes.representedElementKind != nil { return }
         
+
+        
         if let collectionView = self.collectionView {
             
-            let sectionStride: CGFloat = scrollDirection == .Horizontal ? collectionView.frame.size.width : collectionView.frame.size.height
+            let sectionStride: CGFloat = scrollDirection == .Horizontal ? itemSize.width * CGFloat(numberOfColumns) : itemSize.height * CGFloat(numberOfRows)
             let sectionOffset = CGFloat(attributes.indexPath.section) * sectionStride
             var xCellOffset : CGFloat = CGFloat(attributes.indexPath.item % 7) * self.itemSize.width
             var yCellOffset :CGFloat = CGFloat(attributes.indexPath.item / 7) * self.itemSize.height
@@ -226,5 +235,7 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         cellCache.removeAll()
         currentHeader = nil
         currentCell = nil
+        contentHeight = 0
+        contentWidth = 0
     }
 }

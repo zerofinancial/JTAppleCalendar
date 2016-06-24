@@ -157,6 +157,10 @@ public class JTAppleCalendarView: UIView {
     public var bufferTop: CGFloat    = 0.0
     /// The amount of buffer space after the last row of date-cells
     public var bufferBottom: CGFloat = 0.0
+    
+    public var itemSize: CGFloat?
+    
+    
     /// Enables and disables animations when scrolling to and from date-cells
     public var animationsEnabled = true
     /// The scroll direction of the sections in JTAppleCalendar.
@@ -325,11 +329,26 @@ public class JTAppleCalendarView: UIView {
             return
         }
         
-        layout.itemSize = CGSizeMake(
-            self.calendarView.bounds.size.width / CGFloat(MAX_NUMBER_OF_DAYS_IN_WEEK),
-            (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows)
-        )
-
+        var itemSize = CGSizeZero
+        if let userSetItemSize = self.itemSize {
+            var height: CGFloat = (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows) // Default Item height
+            var width: CGFloat = self.calendarView.bounds.size.width / CGFloat(MAX_NUMBER_OF_DAYS_IN_WEEK) // Default Item width
+            
+            if direction == .Vertical {
+                height = userSetItemSize
+            }
+            if direction == .Horizontal {
+                width = userSetItemSize
+            }
+            itemSize = CGSize(width: width, height: height)
+        } else {
+            itemSize = CGSize(
+                width: self.calendarView.bounds.size.width / CGFloat(MAX_NUMBER_OF_DAYS_IN_WEEK),
+                height: (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows)
+            )
+        }
+        
+        layout.itemSize = itemSize
         self.calendarView.collectionViewLayout = layout as! UICollectionViewLayout
     }
     
