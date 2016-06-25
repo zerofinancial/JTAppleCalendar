@@ -46,16 +46,12 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         
          // Generate and cache the headers
         for section in 0..<maxSections {
-            
             if headerViewXibs.count > 0 {
                 // generate header views
                 let sectionIndexPath = NSIndexPath(forItem: 0, inSection: section)
                 if let aHeaderAttr = layoutAttributesForSupplementaryViewOfKind(UICollectionElementKindSectionHeader, atIndexPath: sectionIndexPath) {
                     headerCache.append(aHeaderAttr)
-                    
-                    if scrollDirection == .Vertical {
-                        contentHeight += aHeaderAttr.frame.height
-                    }
+                    if scrollDirection == .Vertical { contentHeight += aHeaderAttr.frame.height } else { contentWidth += aHeaderAttr.frame.width }
                 }
             }
             
@@ -68,17 +64,18 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
                         
                         if scrollDirection == .Vertical {
                             contentHeight += (attribute.frame.height * CGFloat(numberOfRows))
+                        } else {
+                            contentWidth += (attribute.frame.width * CGFloat(numberOfColumns))
                         }
                     }
                     cellCache[section]!.append(attribute)
                 }
             }
-            
 
         }
         
         if scrollDirection == .Horizontal {
-            contentWidth = self.collectionView!.bounds.size.width * CGFloat(numberOfMonthsInCalendar * numberOfSectionsPerMonth)
+//            contentWidth = self.collectionView!.bounds.size.width * CGFloat(numberOfMonthsInCalendar * numberOfSectionsPerMonth)
             contentHeight = self.collectionView!.bounds.size.height
         } else {
             contentWidth = self.collectionView!.bounds.size.width
@@ -183,11 +180,13 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         if attributes.representedElementKind != nil { return }
         guard let collectionView = self.collectionView else { return }
     
-        if let itemHeight = delegate!.itemSize {
-            itemSize.height = itemHeight
+        
+        if let itemSize = delegate!.itemSize {
+            if scrollDirection == .Vertical { self.itemSize.height = itemSize } else { self.itemSize.width = itemSize}
         } else {
             let sizeOfItem = sizeForitemAtIndexPath(attributes.indexPath)
             itemSize.height = sizeOfItem.height
+            // jt101 the width is already set form the outside. may change this to all inside here.
         }
         
         var stride: CGFloat = 0
@@ -198,8 +197,10 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
             let headerOrigin = headerCache[attributes.indexPath.section].frame.origin.y
             stride += headerSize + headerOrigin
         } else { // If there are no headers then alll the cells will have the same height, therefore the strides will have the same height
-            let sectionHeight = itemSize.height * CGFloat(numberOfRows)
-            stride = CGFloat(attributes.indexPath.section) * sectionHeight
+            
+            stride = scrollDirection == .Horizontal ?
+                 CGFloat(attributes.indexPath.section) * itemSize.width * CGFloat(numberOfColumns):
+                CGFloat(attributes.indexPath.section) * itemSize.height * CGFloat(numberOfRows)
         }
         
         var xCellOffset : CGFloat = CGFloat(attributes.indexPath.item % 7) * self.itemSize.width
