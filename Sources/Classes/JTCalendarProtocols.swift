@@ -18,11 +18,12 @@ protocol JTAppleCalendarLayoutProtocol: class {
 }
 
 protocol JTAppleCalendarDelegateProtocol: class {
+    var itemSize: CGFloat? {get set}
+    
     func numberOfRows() -> Int
     func numberOfColumns() -> Int
     func numberOfsectionsPermonth() -> Int
     func numberOfMonthsInCalendar() -> Int
     func numberOfDaysPerSection() -> Int
-    
     func referenceSizeForHeaderInSection(section: Int) -> CGSize
 }

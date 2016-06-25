@@ -325,30 +325,19 @@ public class JTAppleCalendarView: UIView {
     }()
     
     private func updateLayoutItemSize (layout: JTAppleCalendarLayoutProtocol) {
-        if delegate == nil { // If the delegate is not set yet, then return
-            return
-        }
+        if delegate == nil { return }// If the delegate is not set yet, then return
         
-        var itemSize = CGSizeZero
+        // Default Item height
+        var height: CGFloat = (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows)
+        // Default Item width
+        var width: CGFloat = self.calendarView.bounds.size.width / CGFloat(MAX_NUMBER_OF_DAYS_IN_WEEK)
+
         if let userSetItemSize = self.itemSize {
-            var height: CGFloat = (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows) // Default Item height
-            var width: CGFloat = self.calendarView.bounds.size.width / CGFloat(MAX_NUMBER_OF_DAYS_IN_WEEK) // Default Item width
-            
-            if direction == .Vertical {
-                height = userSetItemSize
-            }
-            if direction == .Horizontal {
-                width = userSetItemSize
-            }
-            itemSize = CGSize(width: width, height: height)
-        } else {
-            itemSize = CGSize(
-                width: self.calendarView.bounds.size.width / CGFloat(MAX_NUMBER_OF_DAYS_IN_WEEK),
-                height: (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows)
-            )
+            if direction == .Vertical { height = userSetItemSize }
+            if direction == .Horizontal { width = userSetItemSize }
         }
-        
-        layout.itemSize = itemSize
+
+        layout.itemSize = CGSize(width: width, height: height)
         self.calendarView.collectionViewLayout = layout as! UICollectionViewLayout
     }
     
