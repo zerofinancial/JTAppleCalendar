@@ -308,7 +308,7 @@ extension JTAppleCalendarView {
                     if headerViewXibs.count > 0 {
                         // If both paging and header is on, then scroll to the actual date
                         if self.direction == .Vertical {
-                            self.scrollToHeaderInSection(sectionIndexPath.section, triggerScrollToDateDelegate: triggerScrollToDateDelegate, withAnimation: animateScroll)
+                            self.scrollToHeaderInSection(sectionIndexPath.section, triggerScrollToDateDelegate: triggerScrollToDateDelegate, withAnimation: animateScroll, completionHandler: completionHandler)
                             return
                         } else {
                             scrollToIndexPath(NSIndexPath(forItem: 0, inSection: sectionIndexPath.section), animateScroll)
