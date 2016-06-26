@@ -267,7 +267,7 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         let theOffet = scrollDirection == .Horizontal ? offset.x : offset.y
         var val: Int = 0
         for (index, sectionSizeValue) in sectionSize.enumerate() {
-            if theOffet <= sectionSizeValue {
+            if theOffet < sectionSizeValue {
                 val = index
                 break
             }

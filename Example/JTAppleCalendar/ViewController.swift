@@ -61,14 +61,15 @@ class ViewController: UIViewController {
         calendarView.scrollEnabled = true                          // default is true
         calendarView.pagingEnabled = true                          // default is true
         calendarView.scrollResistance = 0.75                       // default is 0.75 - this is only applicable when paging is not enabled.
-        calendarView.itemSize = nil
+        calendarView.itemSize = nil                                // default is nil. Use a value here to change the size of your cells
+        calendarView.cellSnapsToEdge = true                        // default is true. Disabling this causes calendar to not snap to grid
         calendarView.reloadData()
         
         // After reloading. Scroll to your selected date, and setup your calendar
-//        calendarView.scrollToDate(NSDate(), triggerScrollToDateDelegate: false, animateScroll: false) {
-//            let currentDate = self.calendarView.currentCalendarDateSegment()
-//            self.setupViewsOfCalendar(currentDate.startDate, endDate: currentDate.endDate)
-//        }
+        calendarView.scrollToDate(NSDate(), triggerScrollToDateDelegate: false, animateScroll: false) {
+            let currentDate = self.calendarView.currentCalendarDateSegment()
+            self.setupViewsOfCalendar(currentDate.startDate, endDate: currentDate.endDate)
+        }
     }
     
     @IBAction func select10(sender: AnyObject?) {
