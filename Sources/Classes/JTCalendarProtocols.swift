@@ -15,6 +15,7 @@ protocol JTAppleCalendarLayoutProtocol: class {
     
     func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint) -> CGPoint
     func sectionFromRectOffset(offset: CGPoint)-> Int
+    func sizeOfContentForSection(section: Int)-> CGFloat
     func clearCache()
 }
 

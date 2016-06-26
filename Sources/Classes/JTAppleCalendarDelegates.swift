@@ -13,8 +13,12 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     public func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
         // Update the date when user lifts finger
-        let currentSegmentDates = currentCalendarDateSegment()
-        self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.startDate, endingWithDate: currentSegmentDates.endDate)
+        delayRunOnGlobalThread(0.0, qos: QOS_CLASS_USER_INITIATED) { 
+            let currentSegmentDates = self.currentCalendarDateSegment()
+            delayRunOnMainThread(0.0, closure: { 
+                self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.startDate, endingWithDate: currentSegmentDates.endDate)
+            })
+        }
 
         if pagingEnabled || !cellSnapsToEdge { return }
         // Snap to grid setup
@@ -42,7 +46,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         
         let calcTestPoint = {(velocity: CGFloat) -> CGPoint in
             var recalcOffset: CGFloat
-            if velocity == 0 || velocity > 0 {
+            if velocity >= 0 {
                 recalcOffset = theTargetContentOffset - (diff * self.scrollResistance)
             } else {
                 recalcOffset = theTargetContentOffset + (diff * self.scrollResistance)

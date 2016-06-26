@@ -262,6 +262,10 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         let key =  scrollDirection == .Horizontal ? offset.x : offset.y
         return binarySearch(sectionSize, key: key)
     }
+    
+    func sizeOfContentForSection(section: Int) -> CGFloat {
+        return sizeOfSection(section)
+    }
 
     func sectionFromRectOffset(offset: CGPoint)-> Int {
         let theOffet = scrollDirection == .Horizontal ? offset.x : offset.y
