@@ -185,8 +185,10 @@ public class JTAppleCalendarView: UIView {
             }
         }
     }
-    
+    /// When enabled the date snaps to the edges of the calendar view when a user scrolls
+    public var cellSnapsToEdge = true
     var triggerScrollToDateDelegate: Bool? = true
+    
     
     // Keeps track of item size for a section. This is an optimization
     var scrollInProgress = false
@@ -210,16 +212,7 @@ public class JTAppleCalendarView: UIView {
     var lastOrientation: UIInterfaceOrientation?
     
     var currentSectionPage: Int {
-        let cvbounds = self.calendarView.bounds
-        var page : Int = 0
-        if self.direction == .Horizontal {
-            page = Int(floor(self.calendarView.contentOffset.x / cvbounds.size.width))
-        } else {
-            page = Int(floor(self.calendarView.contentOffset.y / cvbounds.size.height))
-        }
-        let totalSections = monthInfo.count * numberOfSectionsPerMonth
-        if page >= totalSections {return totalSections - 1}
-        return page > 0 ? page : 0
+        return (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).sectionFromRectOffset(calendarView.contentOffset)
     }
   
     var startDateCache: NSDate {
@@ -847,7 +840,6 @@ extension JTAppleCalendarView {
         for path in indexPath {
             if (calendarView.cellForItemAtIndexPath(path) as? JTAppleDayCell) != nil {
                 visiblePaths.append(path)
-                
             }
         }
         if visiblePaths.count > 0 {
@@ -908,8 +900,6 @@ extension JTAppleCalendarView {
     }
 }
 
-
-
 extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
     func numberOfRows() -> Int {return cachedConfiguration.numberOfRows}
     func numberOfColumns() -> Int { return MAX_NUMBER_OF_DAYS_IN_WEEK }
@@ -922,56 +912,4 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
         return calendarViewHeaderSizeForSection(section)
     }
     
-}
-
-/// NSDates can be compared with the == and != operators
-public func ==(lhs: NSDate, rhs: NSDate) -> Bool {
-    return lhs === rhs || lhs.compare(rhs) == .OrderedSame
-}
-/// NSDates can be compared with the > and < operators
-public func <(lhs: NSDate, rhs: NSDate) -> Bool {
-    return lhs.compare(rhs) == .OrderedAscending
-}
-
-func delayRunOnMainThread(delay:Double, closure:()->()) {
-    dispatch_after(
-        dispatch_time(
-            DISPATCH_TIME_NOW,
-            Int64(delay * Double(NSEC_PER_SEC))
-        ),
-        dispatch_get_main_queue(), closure)
-}
-
-func delayRunOnGlobalThread(delay:Double, qos: qos_class_t,closure:()->()) {
-    dispatch_after(
-        dispatch_time(
-            DISPATCH_TIME_NOW,
-            Int64(delay * Double(NSEC_PER_SEC))
-        ), dispatch_get_global_queue(qos, 0), closure)
-}
-
-extension NSDate: Comparable { }
-
-extension NSDate {
-
-    class func numberOfDaysDifferenceBetweenFirstDate(firstDate: NSDate, secondDate: NSDate, usingCalendar calendar: NSCalendar)->Int {
-        let date1 = calendar.startOfDayForDate(firstDate)
-        let date2 = calendar.startOfDayForDate(secondDate)
-        
-        let flags = NSCalendarUnit.Day
-        let components = calendar.components(flags, fromDate: date1, toDate: date2, options: .WrapComponents)
-        return abs(components.day)
-    }
-    
-    class func startOfMonthForDate(date: NSDate, usingCalendar calendar:NSCalendar) -> NSDate? {
-        let dayOneComponents = calendar.components([.Era, .Year, .Month], fromDate: date)
-        return calendar.dateFromComponents(dayOneComponents)
-    }
-    
-    class func endOfMonthForDate(date: NSDate, usingCalendar calendar:NSCalendar) -> NSDate? {
-        let lastDayComponents = calendar.components([NSCalendarUnit.Era, NSCalendarUnit.Year, NSCalendarUnit.Month], fromDate: date)
-        lastDayComponents.month = lastDayComponents.month + 1
-        lastDayComponents.day = 0
-        return calendar.dateFromComponents(lastDayComponents)
-    }
 }

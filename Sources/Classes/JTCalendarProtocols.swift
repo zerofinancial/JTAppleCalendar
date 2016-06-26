@@ -14,6 +14,7 @@ protocol JTAppleCalendarLayoutProtocol: class {
     var headerCache: [UICollectionViewLayoutAttributes] {get set}
     
     func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint) -> CGPoint
+    func sectionFromRectOffset(offset: CGPoint)-> Int
     func clearCache()
 }
 

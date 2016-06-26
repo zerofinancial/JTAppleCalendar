@@ -287,9 +287,7 @@ extension JTAppleCalendarView {
                 }
                 
                 let scrollToIndexPath = {(iPath: NSIndexPath, withAnimation: Bool)-> Void in
-                    if let validCompletionHandler = completionHandler {
-                        self.delayedExecutionClosure.append(validCompletionHandler)
-                    }
+                    if let validCompletionHandler = completionHandler { self.delayedExecutionClosure.append(validCompletionHandler) }
                      
                     // regular movement
                     self.calendarView.scrollToItemAtIndexPath(iPath, atScrollPosition: position, animated: animateScroll)

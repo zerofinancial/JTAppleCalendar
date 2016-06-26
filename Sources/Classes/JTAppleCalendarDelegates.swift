@@ -11,11 +11,13 @@
 extension JTAppleCalendarView: UIScrollViewDelegate {
     /// Tells the delegate when the user finishes scrolling the content.
     public func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if pagingEnabled {
-//            (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).pointForFocusItem = targetContentOffset.memory
-            return
-        }
         
+        // Update the date when user lifts finger
+        let currentSegmentDates = currentCalendarDateSegment()
+        self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.startDate, endingWithDate: currentSegmentDates.endDate)
+
+        if pagingEnabled || !cellSnapsToEdge { return }
+        // Snap to grid setup
         var contentOffset: CGFloat = 0,
         theTargetContentOffset: CGFloat = 0,
         directionVelocity: CGFloat = 0,
@@ -109,7 +111,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 setTestPoint(calcTestPoint(directionVelocity))
             }
         }
-//        (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).pointForFocusItem = targetContentOffset.memory
     }
     
     /// Tells the delegate when a scrolling animation in the scroll view concludes.
@@ -118,13 +119,9 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             scrollViewDidEndDecelerating(scrollView)
             triggerScrollToDateDelegate = nil
         }
-        
         executeDelayedTasks()
-    
-        // Update the focus item whenever scrolled
-//        (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).pointForFocusItem = scrollView.contentOffset
         
-        // A scroll was just completed. 
+        // A scroll was just completed.
         scrollInProgress = false
     }
     
@@ -136,11 +133,9 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     
     func executeDelayedTasks() {
         let tasksToExecute = delayedExecutionClosure
-        
         for aTaskToExecute in tasksToExecute {
             aTaskToExecute()
         }
-        
         delayedExecutionClosure.removeAll()
     }
 }
@@ -170,7 +165,6 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(kind,
                                                                                withReuseIdentifier: reuseIdentifier,
                                                                                forIndexPath: indexPath) as! JTAppleCollectionReusableView
-        
         delegate?.calendar(self, isAboutToDisplaySectionHeader: headerView.view, date: date, identifier: reuseIdentifier)
         return headerView
     }
@@ -257,6 +251,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     }
     /// Tells the delegate that the item at the specified index path was selected. The collection view calls this method when the user successfully selects an item in the collection view. It does not call this method when you programmatically set the selection.
     public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        print(indexPath)
         if let
             delegate = self.delegate,
             dateSelectedByUser = dateFromPath(indexPath) {
