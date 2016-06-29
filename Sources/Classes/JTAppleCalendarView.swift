@@ -47,9 +47,11 @@ public struct CellState {
     /// returns the day
     public let day: DaysOfWeek
     /// returns the row in which the date cell appears visually
-    public let row: Int
+    public let row: ()->Int
     /// returns the column in which the date cell appears visually
-    public let column: Int
+    public let column: ()->Int
+    /// returns the section the date cell belongs to
+    public let dateSection: ()->(startDate: NSDate, endDate: NSDate)
 }
 
 /// Days of the week. By setting you calandar's first day of week, you can change which day is the first for the week. Sunday is by default.
@@ -180,9 +182,7 @@ public class JTAppleCalendarView: UIView {
     /// First day of the week value for JTApleCalendar. You can set this to anyday. After changing this value you must reload your calendar view to show the change.
     public var firstDayOfWeek = DaysOfWeek.Sunday {
         didSet {
-            if firstDayOfWeek != oldValue {
-                layoutNeedsUpdating = true
-            }
+            if firstDayOfWeek != oldValue { layoutNeedsUpdating = true }
         }
     }
     /// When enabled the date snaps to the edges of the calendar view when a user scrolls
@@ -201,6 +201,7 @@ public class JTAppleCalendarView: UIView {
     public var dataSource : JTAppleCalendarViewDataSource? {
         didSet {
             monthInfo = setupMonthInfoDataForStartAndEndDate()
+            updateLayoutItemSize(calendarView.collectionViewLayout as! JTAppleCalendarLayout)
             reloadData(checkDelegateDataSource: false)
         }
     }
@@ -285,17 +286,13 @@ public class JTAppleCalendarView: UIView {
     
     /// Enable or disable paging when the calendar view is scrolled
     public var pagingEnabled: Bool = true {
-        didSet {
-            calendarView.pagingEnabled = pagingEnabled
-        }
+        didSet { calendarView.pagingEnabled = pagingEnabled }
     }
     
     
     /// Enable or disable swipe scrolling of the calendar with this variable
     public var scrollEnabled: Bool = true {
-        didSet {
-            calendarView.scrollEnabled = scrollEnabled
-        }
+        didSet { calendarView.scrollEnabled = scrollEnabled }
     }
     
     /// This is only applicable when calendar view paging is not enabled. Use this variable to decelerate the scroll movement to make it more 'sticky' or more fluid scrolling
@@ -318,8 +315,7 @@ public class JTAppleCalendarView: UIView {
     }()
     
     private func updateLayoutItemSize (layout: JTAppleCalendarLayoutProtocol) {
-        if delegate == nil { return }// If the delegate is not set yet, then return
-        
+        if dataSource == nil { return } // If the delegate is not set yet, then return
         // Default Item height
         var height: CGFloat = (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows)
         // Default Item width
@@ -341,11 +337,10 @@ public class JTAppleCalendarView: UIView {
             let orientation = UIApplication.sharedApplication().statusBarOrientation
             if orientation == .Unknown { return }
             if lastOrientation != orientation {
-                lastOrientation = orientation
                 calendarView.collectionViewLayout.invalidateLayout()
                 let layout = calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol
-                layout.clearCache()
-                calendarView.reloadData()
+                layout.clearCache()   
+                lastOrientation = orientation
             }
             updateLayoutItemSize(self.calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol)
         }
@@ -375,10 +370,7 @@ public class JTAppleCalendarView: UIView {
     // MARK: Setup
     func initialSetup() {
         self.clipsToBounds = true
-        self.calendarView.registerClass(JTAppleDayCell.self,
-                                        forCellWithReuseIdentifier: cellReuseIdentifier)
-        
-        
+        self.calendarView.registerClass(JTAppleDayCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         self.addSubview(self.calendarView)
     }
     
@@ -389,9 +381,7 @@ public class JTAppleCalendarView: UIView {
     }
     
     func dateFromSection(section: Int) -> (startDate: NSDate, endDate: NSDate)? {
-        if monthInfo.count < 1 {
-            return nil
-        }
+        if monthInfo.count < 1 { return nil }
         
         let monthData = monthInfo[section]
         let itemLength = monthData[NUMBER_OF_DAYS_INDEX]
@@ -512,8 +502,10 @@ public class JTAppleCalendarView: UIView {
                 self.layoutNeedsUpdating = false
             })
         } else {
-            (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).clearCache()
-            calendarView.reloadData()
+            if dataSource == nil {
+                (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).clearCache()
+                calendarView.reloadData()
+            }
         }
     }
     
@@ -796,25 +788,18 @@ extension JTAppleCalendarView {
         
         let dayOfWeek: DaysOfWeek
         switch componentWeekDay {
-        case 1:
-            dayOfWeek = .Sunday
-        case 2:
-            dayOfWeek = .Monday
-        case 3:
-            dayOfWeek = .Tuesday
-        case 4:
-            dayOfWeek = .Wednesday
-        case 5:
-            dayOfWeek = .Thursday
-        case 6:
-            dayOfWeek = .Friday
-        default:
-            dayOfWeek = .Saturday
+            case 1:  dayOfWeek = .Sunday
+            case 2:  dayOfWeek = .Monday
+            case 3:  dayOfWeek = .Tuesday
+            case 4:  dayOfWeek = .Wednesday
+            case 5:  dayOfWeek = .Thursday
+            case 6:  dayOfWeek = .Friday
+            default: dayOfWeek = .Saturday
         }
         
-        let row = {()->Int in return (itemIndex / 7) }
-        
-        let column = {()->Int in return (itemIndex % 7) }
+        let row = {()->Int in return itemIndex / MAX_NUMBER_OF_DAYS_IN_WEEK }
+        let column = {()->Int in return itemIndex % MAX_NUMBER_OF_DAYS_IN_WEEK }
+        let monthSection = {()->(startDate: NSDate, endDate: NSDate) in return self.dateFromSection(itemSection)! }
         
         let cellState = CellState(
             isSelected: theSelectedIndexPaths.contains(indexPath),
@@ -822,10 +807,10 @@ extension JTAppleCalendarView {
             dateBelongsTo: dateBelongsTo,
             date: date,
             day: dayOfWeek,
-            row: row(),
-            column: column()
+            row: row,
+            column: column,
+            dateSection: monthSection
         )
-        
         return cellState
     }
     
