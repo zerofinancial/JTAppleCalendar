@@ -47,6 +47,23 @@ class CellView: JTAppleDayCellView {
         
         // Configure Visibility
         configureVisibility(cellState)
+        
+        // With cell states you can literally control every aspect of the calendar view
+        // Uncomment this code block to watch "JTAPPLE" spelt on the calendar
+//        let dateSection = c.stringFromDate(cellState.dateSection().startDate)
+//        if dateSection == "2016-01-01" && (cellState.row() == 0 || cellState.column() == 3 || (cellState.row() == 5 && cellState.column() < 4)) {
+//            self.backgroundColor = UIColor.redColor()
+//        } else if dateSection == "2016-02-01" && (cellState.row() == 0 || cellState.column() == 3) {
+//            self.backgroundColor = UIColor.redColor()
+//        } else if dateSection == "2016-03-01" && (cellState.column() == 0 || cellState.column() == 6 || cellState.row() == 2 || cellState.row() == 0) {
+//            self.backgroundColor = UIColor.redColor()
+//        } else if dateSection == "2016-04-01" && (cellState.column() == 0 || (cellState.column() == 6 && cellState.row() < 3) || cellState.row() == 2 || cellState.row() == 0) {
+//            self.backgroundColor = UIColor.redColor()
+//        } else if dateSection == "2016-05-01" && (cellState.column() == 0 || (cellState.column() == 6 && cellState.row() < 3) || cellState.row() == 2 || cellState.row() == 0) {
+//            self.backgroundColor = UIColor.redColor()
+//        } else if dateSection == "2016-06-01" && (cellState.column() == 0 || cellState.row() == 5) {
+//            self.backgroundColor = UIColor.redColor()
+//        }
     }
     
     func configureVisibility(cellState: CellState) {
