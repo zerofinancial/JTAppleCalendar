@@ -470,9 +470,7 @@ public class JTAppleCalendarView: UIView {
     }
     
     func reloadData(checkDelegateDataSource check: Bool, withAnchorDate anchorDate: NSDate? = nil, withAnimation animation: Bool = false, completionHandler:(()->Void)? = nil) {
-        if check {
-            reloadDelegateDataSource() // Reload the datasource
-        }
+        if check { reloadDelegateDataSource() } // Reload the datasource
         
         // Delay on main thread. We want this to be called after the view is displayed on the main run loop
         if layoutNeedsUpdating {
@@ -502,10 +500,7 @@ public class JTAppleCalendarView: UIView {
                 self.layoutNeedsUpdating = false
             })
         } else {
-            if dataSource == nil {
-                (calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol).clearCache()
-                calendarView.reloadData()
-            }
+            if dataSource != nil { calendarView.reloadData() }
         }
     }
     
