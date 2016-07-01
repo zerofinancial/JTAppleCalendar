@@ -191,11 +191,7 @@ public class JTAppleCalendarView: UIView {
     
     
     // Keeps track of item size for a section. This is an optimization
-    var scrollInProgress = false {
-        didSet {
-            print("Scroll in progress was set to: \(scrollInProgress)")
-        }
-    }
+    var scrollInProgress = false
     private var layoutNeedsUpdating = false
     
     @available(*, deprecated, message="This has been deprecated in 4.0.3. Please consider removing it from your code")
