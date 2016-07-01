@@ -327,7 +327,6 @@ public class JTAppleCalendarView: UIView {
         }
 
         layout.itemSize = CGSize(width: width, height: height)
-        self.calendarView.collectionViewLayout = layout as! UICollectionViewLayout
     }
     
     /// The frame rectangle which defines the view's location and size in its superview coordinate system.
@@ -480,6 +479,12 @@ public class JTAppleCalendarView: UIView {
         }
         // Reload the data
         self.calendarView.reloadData()
+        
+        // Restore the selected index paths
+        for indexPath in theSelectedIndexPaths {
+            restoreSelectionStateForCellAtIndexPath(indexPath)
+        }
+        
         delayRunOnMainThread(0.0) {
             let scrollToDate = {(date: NSDate) -> Void in
                 if headerViewXibs.count < 1 {
