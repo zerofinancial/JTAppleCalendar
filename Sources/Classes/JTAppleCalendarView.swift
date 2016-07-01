@@ -478,22 +478,24 @@ public class JTAppleCalendarView: UIView {
                 if !self.scrollInProgress { // Make sure this scroll only gets activated if no other scroll is in queue
                     self.configureChangeOfRows()
                     
-                    guard let validAnchorDate = anchorDate else { // If the date is invalid just scroll to the the first item on the view or scroll to the start of a header (if header is enabled)
+                    let scrollToDate = {(date: NSDate) -> Void in
                         if headerViewXibs.count < 1 {
-                            self.scrollToDate(self.startOfMonthCache, triggerScrollToDateDelegate: false, animateScroll: animation, completionHandler: completionHandler)
+                            self.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: animation, completionHandler: completionHandler)
                         } else {
-                            self.scrollToHeaderForDate(self.startOfMonthCache, triggerScrollToDateDelegate: false, withAnimation: animation, completionHandler: completionHandler)
+                            self.scrollToHeaderForDate(date, triggerScrollToDateDelegate: false, withAnimation: animation, completionHandler: completionHandler)
                         }
+                    }
+                    
+                    guard let validAnchorDate = anchorDate else { // If the date is invalid just scroll to the the first item on the view or scroll to the start of a header (if header is enabled)
+                        scrollToDate(self.startOfMonthCache)
                         return
                     }
                     
                     delayRunOnMainThread(0.0, closure: { () -> () in
-                        self.scrollToDate(validAnchorDate, triggerScrollToDateDelegate: false, animateScroll: animation, completionHandler: completionHandler)
+                        scrollToDate(validAnchorDate)
                     })
                 } else {
-                    if let validHandler = completionHandler {
-                        self.delayedExecutionClosure.append(validHandler)
-                    }
+                    if let validHandler = completionHandler { self.delayedExecutionClosure.append(validHandler) }
                 }
                 
                 // Set layoutNeedsUpdating to false
@@ -525,11 +527,16 @@ public class JTAppleCalendarView: UIView {
     }
     
     func configureChangeOfRows() {
-        theSelectedDates.removeAll()
-        theSelectedIndexPaths.removeAll()
         let layout = calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol
         layout.clearCache()
         monthInfo = setupMonthInfoDataForStartAndEndDate()
+        
+        // Only remove the selected dates and paths if the new layout does nto contain the date
+        if pathsFromDates(theSelectedDates).count != theSelectedIndexPaths.count {
+            theSelectedDates.removeAll()
+            theSelectedIndexPaths.removeAll()
+        }
+
         self.calendarView.reloadData()
     }
     
@@ -731,7 +738,6 @@ public class JTAppleCalendarView: UIView {
     
     func pathsFromDates(dates:[NSDate])-> [NSIndexPath] {
         var returnPaths: [NSIndexPath] = []
-        
         for date in dates {
             if date >= startOfMonthCache && date <= endOfMonthCache {
                 let periodApart = calendar.components(.Month, fromDate: startOfMonthCache, toDate: date, options: [])
@@ -752,7 +758,6 @@ public class JTAppleCalendarView: UIView {
                 returnPaths.append(NSIndexPath(forItem: adjustedCellIndex, inSection: adjustedSection))
             }
         }
-        
         return returnPaths
     }
 }
