@@ -134,14 +134,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         let currentSegmentDates = currentCalendarDateSegment()
         self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.startDate, endingWithDate: currentSegmentDates.endDate)
     }
-    
-    func executeDelayedTasks() {
-        let tasksToExecute = delayedExecutionClosure
-        for aTaskToExecute in tasksToExecute {
-            aTaskToExecute()
-        }
-        delayedExecutionClosure.removeAll()
-    }
 }
 
 // MARK: CollectionView delegates

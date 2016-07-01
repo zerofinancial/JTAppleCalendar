@@ -191,7 +191,11 @@ public class JTAppleCalendarView: UIView {
     
     
     // Keeps track of item size for a section. This is an optimization
-    var scrollInProgress = false
+    var scrollInProgress = false {
+        didSet {
+            print("Scroll in progress was set to: \(scrollInProgress)")
+        }
+    }
     private var layoutNeedsUpdating = false
     
     @available(*, deprecated, message="This has been deprecated in 4.0.3. Please consider removing it from your code")
@@ -470,40 +474,53 @@ public class JTAppleCalendarView: UIView {
     }
     
     func reloadData(checkDelegateDataSource check: Bool, withAnchorDate anchorDate: NSDate? = nil, withAnimation animation: Bool = false, completionHandler:(()->Void)? = nil) {
-        if check { reloadDelegateDataSource() } // Reload the datasource
-        
-        // Delay on main thread. We want this to be called after the view is displayed on the main run loop
+        // Reload the datasource
+        if check { reloadDelegateDataSource() }
+        var layoutWasUpdated: Bool?
         if layoutNeedsUpdating {
-            delayRunOnMainThread(0.0, closure: {
-                if !self.scrollInProgress { // Make sure this scroll only gets activated if no other scroll is in queue
-                    self.configureChangeOfRows()
-                    
-                    let scrollToDate = {(date: NSDate) -> Void in
-                        if headerViewXibs.count < 1 {
-                            self.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: animation, completionHandler: completionHandler)
+            self.configureChangeOfRows()
+            self.layoutNeedsUpdating = false
+            layoutWasUpdated = true
+        }
+        // Reload the data
+        self.calendarView.reloadData()
+        delayRunOnMainThread(0.0) {
+            let scrollToDate = {(date: NSDate) -> Void in
+                if headerViewXibs.count < 1 {
+                    self.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: animation, completionHandler: completionHandler)
+                } else {
+                    self.scrollToHeaderForDate(date, triggerScrollToDateDelegate: false, withAnimation: animation, completionHandler: completionHandler)
+                }
+            }
+            if let validAnchorDate = anchorDate { // If we have a valid anchor dat, this means we want to scroll
+                // This scroll should happen after the reload above
+                scrollToDate(validAnchorDate)
+            } else {
+                if layoutWasUpdated == true {
+                    // This is a scroll done after a layout reset and dev didnt set an anchor date. If a scroll is in progress, then cancel this one and
+                    // allow it to take precedent
+                    if !self.scrollInProgress {
+                        scrollToDate(self.startOfMonthCache)
+                    } else {
+                        if let validCompletionHandler = completionHandler { self.delayedExecutionClosure.append(validCompletionHandler) }
+                    }
+                } else {
+                    if let validCompletionHandler = completionHandler {
+                        if self.scrollInProgress {
+                            self.delayedExecutionClosure.append(validCompletionHandler)
                         } else {
-                            self.scrollToHeaderForDate(date, triggerScrollToDateDelegate: false, withAnimation: animation, completionHandler: completionHandler)
+                            validCompletionHandler()
                         }
                     }
-                    
-                    guard let validAnchorDate = anchorDate else { // If the date is invalid just scroll to the the first item on the view or scroll to the start of a header (if header is enabled)
-                        scrollToDate(self.startOfMonthCache)
-                        return
-                    }
-                    
-                    delayRunOnMainThread(0.0, closure: { () -> () in
-                        scrollToDate(validAnchorDate)
-                    })
-                } else {
-                    if let validHandler = completionHandler { self.delayedExecutionClosure.append(validHandler) }
                 }
-                
-                // Set layoutNeedsUpdating to false
-                self.layoutNeedsUpdating = false
-            })
-        } else {
-            if dataSource != nil { calendarView.reloadData() }
+            }
         }
+    }
+    
+    func executeDelayedTasks() {
+        let tasksToExecute = delayedExecutionClosure
+        for aTaskToExecute in tasksToExecute { aTaskToExecute() }
+        delayedExecutionClosure.removeAll()
     }
     
     private func reloadDelegateDataSource() {
@@ -537,7 +554,7 @@ public class JTAppleCalendarView: UIView {
             theSelectedIndexPaths.removeAll()
         }
 
-        self.calendarView.reloadData()
+        
     }
     
     func calendarViewHeaderSizeForSection(section: Int) -> CGSize {
