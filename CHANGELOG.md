@@ -2,8 +2,8 @@
 All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
-#### 3.x Releases
-- `4.0.0` Releases - [4.0.0](#400)|[4.0.1](#401)|[4.0.2](#402)|[4.0.3](#403)
+#### 4.x Releases
+- `4.0.0` Releases - [4.0.0](#400)|[4.0.1](#401)|[4.0.2](#402)|[4.0.3](#403)|[4.1.0](#410)
 
 #### 3.x Releases
 - `3.0.0` Releases - [3.0.0](#300)|[3.0.1](#301)
@@ -17,6 +17,13 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [4.1.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/4.1.0)
+- Feature Added: Devs can now configure the width and height of a dateCell.
+- Fixed issue: Synchonization issues on calendar start
+- Fixed issue: Fixed layout [Bug](https://github.com/patchthecode/JTAppleCalendar/issues/57)
+- performance fixes
+  - Updated by [JayT](https://github.com/patchthecode).
+
 ## [4.0.3](https://github.com/patchthecode/JTAppleCalendar/releases/tag/4.0.3)
 - Fixed issue: Performance fixes - Library should work smooth on an iPhone 4s
 - Fixed issue: Scroll to segments were not calling completion handlers
