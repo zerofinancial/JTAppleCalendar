@@ -7,7 +7,7 @@
 //
 
 /// The JTAppleCalendarViewDataSource protocol is adopted by an object that mediates the application’s data model for a JTAppleCalendarViewDataSource object. The data source provides the calendar-view object with the information it needs to construct and modify it self
-public protocol JTAppleCalendarViewDataSource {
+public protocol JTAppleCalendarViewDataSource: NSObjectProtocol {
     /// Asks the data source to return the start and end boundary dates as well as the calendar to use. You should properly configure your calendar at this point.
     /// - Parameters:
     ///     - calendar: The JTAppleCalendar view requesting this information.
@@ -22,7 +22,7 @@ public protocol JTAppleCalendarViewDataSource {
 
 /// The delegate of a JTAppleCalendarView object must adopt the JTAppleCalendarViewDelegate protocol.
 /// Optional methods of the protocol allow the delegate to manage selections, and configure the cells.
-public protocol JTAppleCalendarViewDelegate {
+public protocol JTAppleCalendarViewDelegate: NSObjectProtocol {
     /// Asks the delegate if selecting the date-cell with a specified date is allowed
     /// - Parameters:
     ///     - calendar: The JTAppleCalendar view requesting this information.
