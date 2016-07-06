@@ -118,7 +118,7 @@ public class JTAppleCalendarView: UIView {
     public var numberOfRowsPerMonth: Int = 0
     
     /// The object that acts as the data source of the calendar view.
-    public var dataSource : JTAppleCalendarViewDataSource? {
+    weak public var dataSource : JTAppleCalendarViewDataSource? {
         didSet {
             monthInfo = setupMonthInfoDataForStartAndEndDate()
             updateLayoutItemSize(calendarView.collectionViewLayout as! JTAppleCalendarLayout)
@@ -126,7 +126,7 @@ public class JTAppleCalendarView: UIView {
         }
     }
     /// The object that acts as the delegate of the calendar view.
-    public var delegate: JTAppleCalendarViewDelegate?
+    weak public var delegate: JTAppleCalendarViewDelegate?
 
     var dateComponents = NSDateComponents()
     var delayedExecutionClosure: [(()->Void)] = []
