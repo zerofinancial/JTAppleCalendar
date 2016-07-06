@@ -57,7 +57,7 @@ public struct CellState {
 /// Days of the week. By setting you calandar's first day of week, you can change which day is the first for the week. Sunday is by default.
 public enum DaysOfWeek: Int {
     /// Days of the week.
-    case Sunday = 7, Monday = 6, Tuesday = 5, Wednesday = 4, Thursday = 10, Friday = 9, Saturday = 8
+    case Sunday = 1, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 }
 
 /// Default delegate functions
@@ -631,7 +631,16 @@ public class JTAppleCalendarView: UIView {
                         
                         var firstWeekdayOfMonthIndex = validConfig.calendar.component(.Weekday, fromDate: correctMonthForSectionDate)
                         firstWeekdayOfMonthIndex -= 1 // firstWeekdayOfMonthIndex should be 0-Indexed
-                        firstWeekdayOfMonthIndex = (firstWeekdayOfMonthIndex + firstDayOfWeek.rawValue) % 7 // push it modularly so that we take it back one day so that the first day is Monday instead of Sunday which is the default
+                        
+
+                        var firstDayCalValue = 0
+                        switch firstDayOfWeek {
+                            case .Monday: firstDayCalValue = 6 case .Tuesday: firstDayCalValue = 5 case .Wednesday: firstDayCalValue = 4
+                            case .Thursday: firstDayCalValue = 10 case .Friday: firstDayCalValue = 9
+                            case .Saturday: firstDayCalValue = 8 default: firstDayCalValue = 7
+                        }
+                        
+                        firstWeekdayOfMonthIndex = (firstWeekdayOfMonthIndex + firstDayCalValue) % 7 // push it modularly so that we take it back one day so that the first day is Monday instead of Sunday which is the default
                         
                         
                         // We have number of days in month, now lets see how these days will be allotted into the number of sections in the month
