@@ -388,6 +388,19 @@ public class JTAppleCalendarView: UIView {
         }
     }
     
+    func generatedDateRange(from startDate: NSDate, to endDate:NSDate)-> [NSDate] {
+        var days = NSDateComponents()
+        var dayCount = NSDate.numberOfDaysDifferenceBetweenFirstDate(startDate, secondDate: endDate, usingCalendar: calendar)
+        var returnDates: [NSDate] = []
+        
+        for index in 0...dayCount {
+            days.day = index
+            let date = calendar.dateByAddingComponents(days, toDate: startDate, options: [])!
+            returnDates.append(date)
+        }
+        return returnDates
+    }
+    
     func reloadData(checkDelegateDataSource check: Bool, withAnchorDate anchorDate: NSDate? = nil, withAnimation animation: Bool = false, completionHandler:(()->Void)? = nil) {
         // Reload the datasource
         if check { reloadDelegateDataSource() }
