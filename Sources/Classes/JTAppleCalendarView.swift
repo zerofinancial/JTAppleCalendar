@@ -52,6 +52,8 @@ public struct CellState {
     public let column: ()->Int
     /// returns the section the date cell belongs to
     public let dateSection: ()->(startDate: NSDate, endDate: NSDate)
+    /// returns the cell frame. Useful if you wish to display something at the cell's frame/position
+    public let frame: ()->CGRect?
 }
 
 /// Days of the week. By setting you calandar's first day of week, you can change which day is the first for the week. Sunday is by default.
@@ -723,7 +725,7 @@ public class JTAppleCalendarView: UIView {
 }
 
 extension JTAppleCalendarView {
-    func cellStateFromIndexPath(indexPath: NSIndexPath, withDate date: NSDate)->CellState {
+    func cellStateFromIndexPath(indexPath: NSIndexPath, withDate date: NSDate, cell: JTAppleDayCell? = nil)->CellState {
         let itemIndex = indexPath.item
         let itemSection = indexPath.section
         let currentMonthInfo = monthInfo[itemSection]
@@ -746,30 +748,18 @@ extension JTAppleCalendarView {
             dateBelongsTo = .FollowingMonthOutsideBoundary
         }
         
-        let dayOfWeek: DaysOfWeek
-        switch componentWeekDay {
-            case 1:  dayOfWeek = .Sunday
-            case 2:  dayOfWeek = .Monday
-            case 3:  dayOfWeek = .Tuesday
-            case 4:  dayOfWeek = .Wednesday
-            case 5:  dayOfWeek = .Thursday
-            case 6:  dayOfWeek = .Friday
-            default: dayOfWeek = .Saturday
-        }
-        
-        let row = {()->Int in return itemIndex / MAX_NUMBER_OF_DAYS_IN_WEEK }
-        let column = {()->Int in return itemIndex % MAX_NUMBER_OF_DAYS_IN_WEEK }
-        let monthSection = {()->(startDate: NSDate, endDate: NSDate) in return self.dateFromSection(itemSection)! }
-        
+        let dayOfWeek = DaysOfWeek(rawValue: componentWeekDay)!
+
         let cellState = CellState(
             isSelected: theSelectedIndexPaths.contains(indexPath),
             text: cellText,
             dateBelongsTo: dateBelongsTo,
             date: date,
             day: dayOfWeek,
-            row: row,
-            column: column,
-            dateSection: monthSection
+            row: {()->Int in return itemIndex / MAX_NUMBER_OF_DAYS_IN_WEEK },
+            column: {()->Int in return itemIndex % MAX_NUMBER_OF_DAYS_IN_WEEK },
+            dateSection: {()->(startDate: NSDate, endDate: NSDate) in return self.dateFromSection(itemSection)! },
+            frame: {()->CGRect? in return cell?.frame}
         )
         return cellState
     }

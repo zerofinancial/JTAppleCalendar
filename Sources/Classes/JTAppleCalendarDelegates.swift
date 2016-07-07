@@ -168,14 +168,14 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     /// Asks your data source object for the cell that corresponds to the specified item in the collection view.
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         restoreSelectionStateForCellAtIndexPath(indexPath)
-        
         let dayCell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIdentifier, forIndexPath: indexPath) as! JTAppleDayCell
-        let date = dateFromPath(indexPath)!
-        let cellState = cellStateFromIndexPath(indexPath, withDate: date)
         
         dayCell.updateCellView(dayCell.cellView)
         dayCell.bounds.origin = CGPoint(x: 0, y: 0)
         
+        let date = dateFromPath(indexPath)!
+        let cellState = cellStateFromIndexPath(indexPath, withDate: date, cell: dayCell)
+
         delegate?.calendar(self, isAboutToDisplayCell: dayCell.cellView, date: date, cellState: cellState)
 
         return dayCell
@@ -247,7 +247,6 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     }
     /// Tells the delegate that the item at the specified index path was selected. The collection view calls this method when the user successfully selects an item in the collection view. It does not call this method when you programmatically set the selection.
     public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        print(indexPath)
         if let
             delegate = self.delegate,
             dateSelectedByUser = dateFromPath(indexPath) {
