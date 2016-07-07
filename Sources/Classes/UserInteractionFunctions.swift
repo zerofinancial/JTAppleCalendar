@@ -234,31 +234,19 @@ extension JTAppleCalendarView {
     /// Scrolls the calendar view to the next section view. It will execute a completion handler at the end of scroll animation if provided.
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
-    public func scrollToNextSegment(animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
+    public func scrollToNextSegment(triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
         let page = currentSectionPage + 1
         if page < monthInfo.count {
-            scrollToSection(page, completionHandler: completionHandler)
+            scrollToSection(page,  animateScroll: animateScroll, completionHandler: completionHandler)
         }
     }
     /// Scrolls the calendar view to the previous section view. It will execute a completion handler at the end of scroll animation if provided.
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
-    public func scrollToPreviousSegment(animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
+    public func scrollToPreviousSegment(triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
         let page = currentSectionPage - 1
         if page > -1 {
-            scrollToSection(page, completionHandler: completionHandler)
-        }
-    }
-    
-    func scrollToSection(section: Int, completionHandler: (()->Void)?) {
-        let position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
-        if let validHandler = completionHandler {
-            delayedExecutionClosure.append(validHandler)
-        }
-        
-        if let date = dateFromPath(NSIndexPath(forItem: MAX_NUMBER_OF_DAYS_IN_WEEK - 1, inSection:section)) {
-            let recalcDate = NSDate.startOfMonthForDate(date, usingCalendar: calendar)
-            self.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: false, preferredScrollPosition: nil, completionHandler: completionHandler)
+            scrollToSection(page, animateScroll: animateScroll, completionHandler: completionHandler)
         }
     }
 
