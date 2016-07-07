@@ -226,26 +226,30 @@ extension JTAppleCalendarView {
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
     public func scrollToNextSegment(animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
-        let page = currentSectionPage
-        if page + 1 < monthInfo.count {
-            let position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
-            if let validHandler = completionHandler {
-              delayedExecutionClosure.append(validHandler)
-            }
-            calendarView.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection:page + 1), atScrollPosition: position, animated: animateScroll)
+        let page = currentSectionPage + 1
+        if page < monthInfo.count {
+            scrollToSection(page, completionHandler: completionHandler)
         }
     }
     /// Scrolls the calendar view to the previous section view. It will execute a completion handler at the end of scroll animation if provided.
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
     public func scrollToPreviousSegment(animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
-        let page = currentSectionPage
-        if page - 1 > -1 {
-            let position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
-            if let validHandler = completionHandler {
-              delayedExecutionClosure.append(validHandler)
-            }
-            calendarView.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection:page - 1), atScrollPosition: position, animated: animateScroll)
+        let page = currentSectionPage - 1
+        if page > -1 {
+            scrollToSection(page, completionHandler: completionHandler)
+        }
+    }
+    
+    func scrollToSection(section: Int, completionHandler: (()->Void)?) {
+        let position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
+        if let validHandler = completionHandler {
+            delayedExecutionClosure.append(validHandler)
+        }
+        
+        if let date = dateFromPath(NSIndexPath(forItem: MAX_NUMBER_OF_DAYS_IN_WEEK - 1, inSection:section)) {
+            let recalcDate = NSDate.startOfMonthForDate(date, usingCalendar: calendar)
+            self.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: false, preferredScrollPosition: nil, completionHandler: completionHandler)
         }
     }
 
