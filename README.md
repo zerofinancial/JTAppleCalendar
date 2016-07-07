@@ -13,7 +13,7 @@ The look of this calendar is up to the developer. Check out what people have dev
 
 * Downloaded and liked this calendar's ease of use?
 * Then don't forget to leave a ★ Star rating on Github. It's needed to make this control #1 :)
-* Also, Support is not manditory, but will be much appreciated. Let's keep ~~OpenScource~~ good OpenSource projects alive.
+* Also, [Support](https://salt.bountysource.com/teams/jtapplecalendar) is not manditory, but will be much appreciated. Let's keep ~~OpenScource~~ good OpenSource projects alive.
 
 ### **Features**
 ---
