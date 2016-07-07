@@ -41,6 +41,15 @@ extension JTAppleCalendarView {
         return nil
     }
     
+    public func cellStatusForDate(date: NSDate)-> CellState? {
+        // validate the path
+        let paths = pathsFromDates([date])
+        if paths.count < 1 { return nil }
+        
+        let stateOfCell = cellStateFromIndexPath(paths[0], withDate: date)
+        return stateOfCell
+    }
+    
     /// Returns the calendar view's current section boundary dates.
     /// - returns:
     ///     - startDate: The start date of the current section
