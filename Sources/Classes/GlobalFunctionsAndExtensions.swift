@@ -36,16 +36,6 @@ public func <(lhs: NSDate, rhs: NSDate) -> Bool {
 
 extension NSDate: Comparable { }
 extension NSDate {
-    
-    class func numberOfDaysDifferenceBetweenFirstDate(firstDate: NSDate, secondDate: NSDate, usingCalendar calendar: NSCalendar)->Int {
-        let date1 = calendar.startOfDayForDate(firstDate)
-        let date2 = calendar.startOfDayForDate(secondDate)
-        
-        let flags = NSCalendarUnit.Day
-        let components = calendar.components(flags, fromDate: date1, toDate: date2, options: .WrapComponents)
-        return abs(components.day)
-    }
-    
     class func startOfMonthForDate(date: NSDate, usingCalendar calendar:NSCalendar) -> NSDate? {
         let dayOneComponents = calendar.components([.Era, .Year, .Month], fromDate: date)
         return calendar.dateFromComponents(dayOneComponents)
