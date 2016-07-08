@@ -185,7 +185,7 @@ public class JTAppleCalendarView: UIView {
     public var selectedDates: [NSDate] {
         get {
             // Array may contain duplicate dates in case where out-dates are selected. So clean it up here
-            return Array(Set(theSelectedDates))
+            return Array(Set(theSelectedDates)).sort()
         }
     }
 
@@ -391,15 +391,13 @@ public class JTAppleCalendarView: UIView {
     }
     
     func generatedDateRange(from startDate: NSDate, to endDate:NSDate)-> [NSDate] {
-        var days = NSDateComponents()
-        var dayCount = NSDate.numberOfDaysDifferenceBetweenFirstDate(startDate, secondDate: endDate, usingCalendar: calendar)
+        if startDate > endDate { return [] }
         var returnDates: [NSDate] = []
-        
-        for index in 0...dayCount {
-            days.day = index
-            let date = calendar.dateByAddingComponents(days, toDate: startDate, options: [])!
-            returnDates.append(date)
-        }
+        var currentDate = startDate
+        repeat {
+            returnDates.append(currentDate)
+            currentDate = calendar.dateByAddingUnit(.Day, value: 1, toDate: currentDate, options: NSCalendarOptions.MatchNextTime)!
+        } while currentDate < endDate
         return returnDates
     }
     
