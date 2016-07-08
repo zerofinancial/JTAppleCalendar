@@ -589,10 +589,6 @@ public class JTAppleCalendarView: UIView {
     func scrollToSection(section: Int, triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (()->Void)?) {
         if scrollInProgress { return }
         let position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
-        if let validHandler = completionHandler {
-            delayedExecutionClosure.append(validHandler)
-        }
-        
         if let date = dateFromPath(NSIndexPath(forItem: MAX_NUMBER_OF_DAYS_IN_WEEK - 1, inSection:section)) {
             let recalcDate = NSDate.startOfMonthForDate(date, usingCalendar: calendar)!
             self.scrollToDate(recalcDate, triggerScrollToDateDelegate: triggerScrollToDateDelegate, animateScroll: animateScroll, preferredScrollPosition: nil, completionHandler: completionHandler)
@@ -783,18 +779,13 @@ extension JTAppleCalendarView {
         return nextSection
     }
     
-    func reloadIndexPathsIfVisible(indexPath: [NSIndexPath]) {
-        var visiblePaths: [NSIndexPath] = []
-        for path in indexPath {
-            if (calendarView.cellForItemAtIndexPath(path) as? JTAppleDayCell) != nil {
-                visiblePaths.append(path)
-            }
-        }
-        if visiblePaths.count > 0 {
-            delayRunOnMainThread(0.0, closure: {
-                self.calendarView.reloadItemsAtIndexPaths(visiblePaths)
-            })
-        }
+    func batchReloadIndexPaths(indexPaths: [NSIndexPath]) {
+        if indexPaths.count < 1 { return }
+        UICollectionView.performWithoutAnimation({
+            self.calendarView.performBatchUpdates({
+                self.calendarView.reloadItemsAtIndexPaths(indexPaths)
+                }, completion: nil)  
+        })
     }
     
     func addCellToSelectedSetIfUnselected(indexPath: NSIndexPath, date: NSDate) {
