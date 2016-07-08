@@ -115,7 +115,7 @@ extension JTAppleCalendarView {
     /// Reload the date of specified date-cells on the calendar-view
     /// - Parameter dates: Date-cells with these specified dates will be reloaded
     public func reloadDates(dates: [NSDate]) {
-        reloadIndexPathsIfVisible(pathsFromDates(dates))
+        batchReloadIndexPaths(pathsFromDates(dates))
     }
     
     /// Select a date-cell range
@@ -151,15 +151,10 @@ extension JTAppleCalendarView {
             
             
             let selectTheDate = {
-                delayRunOnMainThread(0.0) {
-                    self.calendarView.selectItemAtIndexPath(sectionIndexPath, animated: false, scrollPosition: .None)
-                }
-                
+                self.calendarView.selectItemAtIndexPath(sectionIndexPath, animated: false, scrollPosition: .None)
                 // If triggereing is enabled, then let their delegate handle the reloading of view, else we will reload the data
                 if triggerSelectionDelegate {
-                    delayRunOnMainThread(0.0) {
-                        self.collectionView(self.calendarView, didSelectItemAtIndexPath: sectionIndexPath)
-                    }
+                    self.collectionView(self.calendarView, didSelectItemAtIndexPath: sectionIndexPath)
                 } else { // Although we do not want the delegate triggered, we still want counterpart cells to be selected
                     
                     // Because there is no triggering of the delegate, the cell will not be added to selection and it will not be reloaded. We need to do this here
@@ -176,21 +171,14 @@ extension JTAppleCalendarView {
             
             let deSelectTheDate = { (indexPath: NSIndexPath) -> Void in
                 allIndexPathsToReload.append(indexPath)
-                delayRunOnMainThread(0.0) {
-                    self.calendarView.deselectItemAtIndexPath(indexPath, animated: false)
-                }
-                if
-                    self.theSelectedIndexPaths.contains(indexPath),
-                    let index = self.theSelectedIndexPaths.indexOf(indexPath) {
-                    
+                self.calendarView.deselectItemAtIndexPath(indexPath, animated: false)
+                if let index = self.theSelectedIndexPaths.indexOf(indexPath) {
                     self.theSelectedIndexPaths.removeAtIndex(index)
                     self.theSelectedDates.removeAtIndex(index)
                 }
                 // If delegate triggering is enabled, let the delegate function handle the cell
                 if triggerSelectionDelegate {
-                    delayRunOnMainThread(0.0) {
-                        self.collectionView(self.calendarView, didDeselectItemAtIndexPath: indexPath)
-                    }
+                    self.collectionView(self.calendarView, didDeselectItemAtIndexPath: indexPath)
                 } else { // Although we do not want the delegate triggered, we still want counterpart cells to be deselected
                     let cellState = self.cellStateFromIndexPath(sectionIndexPath, withDate: date)
                     if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(indexPath, date: date, dateOwner: cellState.dateBelongsTo) {
@@ -203,9 +191,7 @@ extension JTAppleCalendarView {
             // Remove old selections
             if self.calendarView.allowsMultipleSelection == false { // If single selection is ON
                 for indexPath in self.theSelectedIndexPaths {
-                    if indexPath != sectionIndexPath {
-                        deSelectTheDate(indexPath)
-                    }
+                    if indexPath != sectionIndexPath { deSelectTheDate(indexPath) }
                 }
                 
                 // Add new selections
@@ -226,7 +212,7 @@ extension JTAppleCalendarView {
         // If triggering was false, although the selectDelegates weren't called, we do want the cell refreshed. Reload to call itemAtIndexPath
         if triggerSelectionDelegate == false {
             delayRunOnMainThread(0.0) {
-                self.reloadIndexPathsIfVisible(allIndexPathsToReload)
+                self.batchReloadIndexPaths(allIndexPathsToReload)
             }
         }
     }

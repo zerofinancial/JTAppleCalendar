@@ -226,7 +226,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
             if let anUnselectedCounterPartIndexPath = deselectCounterPartCellIndexPath(indexPath, date: dateDeselectedByUser, dateOwner: cellState.dateBelongsTo) {
                 deleteCellFromSelectedSetIfSelected(anUnselectedCounterPartIndexPath)
                 // ONLY if the counterPart cell is visible, then we need to inform the delegate
-                reloadIndexPathsIfVisible([anUnselectedCounterPartIndexPath])
+                batchReloadIndexPaths([anUnselectedCounterPartIndexPath])
             }
             
             delegate.calendar(self, didDeselectDate: dateDeselectedByUser, cell: selectedCell?.cellView, cellState: cellState)
@@ -259,7 +259,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
             if let aSelectedCounterPartIndexPath = selectCounterPartCellIndexPathIfExists(indexPath, date: dateSelectedByUser, dateOwner: cellState.dateBelongsTo) {
                 // ONLY if the counterPart cell is visible, then we need to inform the delegate
                 delayRunOnMainThread(0.0, closure: {
-                    self.reloadIndexPathsIfVisible([aSelectedCounterPartIndexPath])
+                    self.batchReloadIndexPaths([aSelectedCounterPartIndexPath])
                 })
             }
             
