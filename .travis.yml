@@ -1,7 +1,13 @@
-language: swift
-xcode_workspace: Example/JTAppleCalendar.xcworkspace
-xcode_scheme: JTAppleCalendar-Example
-xcode_sdk: iphonesimulator
-env: CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO
+language: objective-c
+osx_image: xcode7.3
+env:
+- DESTINATION="OS=9.3,name=iPhone 6s" SCHEME="JTAppleCalendar-Example" SDK=iphonesimulator9.3 CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO
+before_install:
+- gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+script:
+- set -o pipefail
+- xcodebuild -version
+- xcodebuild -workspace Example/JTAppleCalendar.xcworkspace -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION"
+-configuration Debug ONLY_ACTIVE_ARCH=NO test | xcpretty -c
 notifications:
-  email: false
+email: false
