@@ -131,25 +131,21 @@ extension JTAppleCalendarView {
     /// - Parameter triggerDidSelectDelegate: Triggers the delegate function only if the value is set to true. Sometimes it is necessary to setup some dates without triggereing the delegate e.g. For instance, when youre initally setting up data in your viewDidLoad
     public func selectDates(dates: [NSDate], triggerSelectionDelegate: Bool = true) {
         var allIndexPathsToReload: [NSIndexPath] = []
-        for date in dates {
+        var validDatesToSelect = dates
+        // If user is trying to select multiple dates with multiselection disabled, then only select the last object
+        if !calendarView.allowsMultipleSelection && dates.count > 0 { validDatesToSelect = [dates.last!] }
+        
+        for date in validDatesToSelect {
             let components = self.calendar.components([.Year, .Month, .Day],  fromDate: date)
             let firstDayOfDate = self.calendar.dateFromComponents(components)!
             
-            if !(firstDayOfDate >= self.startOfMonthCache && firstDayOfDate <= self.endOfMonthCache) {
-                // If the date is not within valid boundaries, then exit
-                continue
-            }
-            
+            // If the date is not within valid boundaries, then exit
+            if !(firstDayOfDate >= self.startOfMonthCache && firstDayOfDate <= self.endOfMonthCache) { continue }
             let pathFromDates = self.pathsFromDates([date])
             
             // If the date path youre searching for, doesnt exist, then return
-            if pathFromDates.count < 0 {
-                continue
-            }
-            
+            if pathFromDates.count < 0 { continue }
             let sectionIndexPath = pathFromDates[0]
-            
-            
             let selectTheDate = {
                 self.calendarView.selectItemAtIndexPath(sectionIndexPath, animated: false, scrollPosition: .None)
                 // If triggereing is enabled, then let their delegate handle the reloading of view, else we will reload the data
@@ -169,19 +165,23 @@ extension JTAppleCalendarView {
                 }
             }
             
-            let deSelectTheDate = { (indexPath: NSIndexPath) -> Void in
-                allIndexPathsToReload.append(indexPath)
-                self.calendarView.deselectItemAtIndexPath(indexPath, animated: false)
-                if let index = self.theSelectedIndexPaths.indexOf(indexPath) {
-                    self.theSelectedIndexPaths.removeAtIndex(index)
-                    self.theSelectedDates.removeAtIndex(index)
-                }
+            let deSelectTheDate = { (oldIndexPath: NSIndexPath) -> Void in
+                allIndexPathsToReload.append(oldIndexPath)
+                
+                let index = self.theSelectedIndexPaths.indexOf(oldIndexPath)!
+                let oldDate = self.theSelectedDates[index]
+                
+                self.calendarView.deselectItemAtIndexPath(oldIndexPath, animated: false)
+                self.theSelectedIndexPaths.removeAtIndex(index)
+                self.theSelectedDates.removeAtIndex(index)
+                
                 // If delegate triggering is enabled, let the delegate function handle the cell
                 if triggerSelectionDelegate {
-                    self.collectionView(self.calendarView, didDeselectItemAtIndexPath: indexPath)
+                    self.collectionView(self.calendarView, didDeselectItemAtIndexPath: oldIndexPath)
                 } else { // Although we do not want the delegate triggered, we still want counterpart cells to be deselected
-                    let cellState = self.cellStateFromIndexPath(sectionIndexPath, withDate: date)
-                    if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(indexPath, date: date, dateOwner: cellState.dateBelongsTo) {
+                    
+                    let cellState = self.cellStateFromIndexPath(oldIndexPath, withDate: oldDate)
+                    if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
                         // If there was a counterpart cell then it will also need to be reloaded
                          allIndexPathsToReload.append(anUnselectedCounterPartIndexPath)
                     }
@@ -209,8 +209,9 @@ extension JTAppleCalendarView {
             }
         }
         
+        
         // If triggering was false, although the selectDelegates weren't called, we do want the cell refreshed. Reload to call itemAtIndexPath
-        if triggerSelectionDelegate == false {
+        if triggerSelectionDelegate == false && allIndexPathsToReload.count > 0 {
             delayRunOnMainThread(0.0) {
                 self.batchReloadIndexPaths(allIndexPathsToReload)
             }

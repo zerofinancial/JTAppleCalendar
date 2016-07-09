@@ -188,7 +188,6 @@ public class JTAppleCalendarView: UIView {
             return Array(Set(theSelectedDates)).sort()
         }
     }
-
     
     lazy var monthInfo : [[Int]] = {
         [weak self] in
