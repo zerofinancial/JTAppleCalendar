@@ -9,7 +9,7 @@ before_install:
 script:
   - set -o pipefail
   - xcodebuild -version
-  - xcodebuild -workspace Example/JTAppleCalendar.xcworkspace -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION"
+  - xcodebuild -workspace JTAppleCalendar.xcworkspace -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION"
     -configuration Debug ONLY_ACTIVE_ARCH=NO test | xcpretty -c
 notifications:
   email: false
