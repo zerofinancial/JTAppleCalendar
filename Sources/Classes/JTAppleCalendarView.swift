@@ -588,7 +588,6 @@ public class JTAppleCalendarView: UIView {
     
     func scrollToSection(section: Int, triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (()->Void)?) {
         if scrollInProgress { return }
-        let position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
         if let date = dateFromPath(NSIndexPath(forItem: MAX_NUMBER_OF_DAYS_IN_WEEK - 1, inSection:section)) {
             let recalcDate = NSDate.startOfMonthForDate(date, usingCalendar: calendar)!
             self.scrollToDate(recalcDate, triggerScrollToDateDelegate: triggerScrollToDateDelegate, animateScroll: animateScroll, preferredScrollPosition: nil, completionHandler: completionHandler)

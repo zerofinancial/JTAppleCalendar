@@ -255,7 +255,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
             let selectedCell = collectionView.cellForItemAtIndexPath(indexPath) as? JTAppleDayCell
             
             // If cell has a counterpart cell, then select it as well
-            var cellState = cellStateFromIndexPath(indexPath, withDate: dateSelectedByUser, cell: selectedCell)
+            let cellState = cellStateFromIndexPath(indexPath, withDate: dateSelectedByUser, cell: selectedCell)
             if let aSelectedCounterPartIndexPath = selectCounterPartCellIndexPathIfExists(indexPath, date: dateSelectedByUser, dateOwner: cellState.dateBelongsTo) {
                 // ONLY if the counterPart cell is visible, then we need to inform the delegate
                 delayRunOnMainThread(0.0, closure: {
