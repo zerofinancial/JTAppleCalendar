@@ -53,7 +53,7 @@ public struct CellState {
     /// returns the section the date cell belongs to
     public let dateSection: ()->(startDate: NSDate, endDate: NSDate)
     /// returns the cell frame. Useful if you wish to display something at the cell's frame/position
-    public let cell: ()->JTAppleDayCell?
+    public var cell: ()->JTAppleDayCell?
 }
 
 /// Days of the week. By setting you calandar's first day of week, you can change which day is the first for the week. Sunday is by default.
@@ -261,8 +261,11 @@ public class JTAppleCalendarView: UIView {
                 let layout = calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol
                 layout.clearCache()   
                 lastOrientation = orientation
+                updateLayoutItemSize(self.calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol)
+                if delegate != nil { reloadData() }
+            } else {
+                updateLayoutItemSize(self.calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol)
             }
-            updateLayoutItemSize(self.calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol)
         }
     }
     
