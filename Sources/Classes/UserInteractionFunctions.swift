@@ -45,8 +45,8 @@ extension JTAppleCalendarView {
         // validate the path
         let paths = pathsFromDates([date])
         if paths.count < 1 { return nil }
-        
-        let stateOfCell = cellStateFromIndexPath(paths[0], withDate: date)
+        let cell = calendarView.cellForItemAtIndexPath(paths[0]) as? JTAppleDayCell
+        let stateOfCell = cellStateFromIndexPath(paths[0], withDate: date, cell: cell)
         return stateOfCell
     }
     
