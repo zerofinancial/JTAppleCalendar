@@ -337,4 +337,21 @@ extension JTAppleCalendarView {
         if path.count < 1 { return }
         scrollToHeaderInSection(path[0].section, triggerScrollToDateDelegate: triggerScrollToDateDelegate, withAnimation: animation, completionHandler: completionHandler)
     }
+    
+    /// Generates a range of dates from from a startDate to an endDate you provide
+    /// Parameter startDate: Start date to generate dates from
+    /// Parameter endDate: End date to generate dates to
+    /// returns:
+    ///     - An array of the successfully generated dates
+    public func generatedDateRange(from startDate: NSDate, to endDate:NSDate)-> [NSDate] {
+        if startDate > endDate { return [] }
+        var returnDates: [NSDate] = []
+        var currentDate = startDate
+        repeat {
+            returnDates.append(currentDate)
+            currentDate = calendar.dateByAddingUnit(.Day, value: 1, toDate: currentDate, options: NSCalendarOptions.MatchNextTime)!
+        } while currentDate < endDate
+        return returnDates
+    }
+
 }

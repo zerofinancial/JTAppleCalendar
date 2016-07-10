@@ -387,18 +387,7 @@ public class JTAppleCalendarView: UIView {
             })
         }
     }
-    
-    func generatedDateRange(from startDate: NSDate, to endDate:NSDate)-> [NSDate] {
-        if startDate > endDate { return [] }
-        var returnDates: [NSDate] = []
-        var currentDate = startDate
-        repeat {
-            returnDates.append(currentDate)
-            currentDate = calendar.dateByAddingUnit(.Day, value: 1, toDate: currentDate, options: NSCalendarOptions.MatchNextTime)!
-        } while currentDate < endDate
-        return returnDates
-    }
-    
+        
     func reloadData(checkDelegateDataSource check: Bool, withAnchorDate anchorDate: NSDate? = nil, withAnimation animation: Bool = false, completionHandler:(()->Void)? = nil) {
         // Reload the datasource
         if check { reloadDelegateDataSource() }
