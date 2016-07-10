@@ -26,10 +26,6 @@ class ViewController: UIViewController {
         calendarView.reloadData()
     }
     
-    
-    @IBAction func reloadData(sender: UIButton) {
-        calendarView.reloadData()
-    }
     override func viewDidLoad() {
         super.viewDidLoad()
         formatter.dateFormat = "yyyy MM dd"
@@ -52,12 +48,12 @@ class ViewController: UIViewController {
         
         // The following default code can be removed since they are already the default.
         // They are only included here so that you can know what properties can be configured
-        calendarView.direction = .Vertical                       // default is horizontal
+        calendarView.direction = .Horizontal                       // default is horizontal
         calendarView.cellInset = CGPoint(x: 0, y: 0)               // default is (3,3)
         calendarView.allowsMultipleSelection = false               // default is false
         calendarView.bufferTop = 0                                 // default is 0. - still work in progress on this
         calendarView.bufferBottom = 0                              // default is 0. - still work in progress on this
-        calendarView.firstDayOfWeek = .Monday                      // default is Sunday
+        calendarView.firstDayOfWeek = .Sunday                      // default is Sunday
         calendarView.scrollEnabled = true                          // default is true
         calendarView.pagingEnabled = true                          // default is true
         calendarView.scrollResistance = 0.75                       // default is 0.75 - this is only applicable when paging is not enabled.
@@ -70,19 +66,6 @@ class ViewController: UIViewController {
             let currentDate = self.calendarView.currentCalendarDateSegment()
             self.setupViewsOfCalendar(currentDate.startDate, endDate: currentDate.endDate)
         }
-    }
-    
-    @IBAction func select10(sender: AnyObject?) {
-        calendarView.allowsMultipleSelection = true
-        var dates: [NSDate] = []
-        
-        dates.append(formatter.dateFromString("2016 02 03")!)
-        dates.append(formatter.dateFromString("2016 02 05")!)
-        dates.append(formatter.dateFromString("2016 02 07")!)
-        dates.append(formatter.dateFromString("2020 02 16")!) // --> This date will never be selected as it is outsde bounds
-                                                              // --> This is what happens when you select an invalid date
-                                                              // --> It is simply not selected
-        calendarView.selectDates(dates, triggerSelectionDelegate: false)
     }
     
     @IBAction func select11(sender: AnyObject?) {
@@ -101,6 +84,14 @@ class ViewController: UIViewController {
         for date in calendarView.selectedDates {
             print(formatter.stringFromDate(date))
         }
+    }
+
+    @IBAction func next(sender: UIButton) {
+        self.calendarView.scrollToNextSegment()
+        
+    }
+    @IBAction func previous(sender: UIButton) {
+        self.calendarView.scrollToPreviousSegment()
     }
     
     override func viewDidAppear(animated: Bool) {
