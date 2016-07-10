@@ -126,7 +126,7 @@ extension JTAppleCalendarView {
     /// - Parameter endDate: Date to end the selection from
     /// - Parameter triggerDidSelectDelegate: Triggers the delegate function only if the value is set to true. Sometimes it is necessary to setup some dates without triggereing the delegate e.g. For instance, when youre initally setting up data in your viewDidLoad
     public func selectDates(from startDate:NSDate, to endDate:NSDate, triggerSelectionDelegate: Bool = true) {
-        selectDates(generatedDateRange(from: startDate, to: endDate), triggerSelectionDelegate: triggerSelectionDelegate)
+        selectDates(generateDateRange(from: startDate, to: endDate), triggerSelectionDelegate: triggerSelectionDelegate)
     }
     
     /// Select a date-cells
@@ -343,14 +343,14 @@ extension JTAppleCalendarView {
     /// Parameter endDate: End date to generate dates to
     /// returns:
     ///     - An array of the successfully generated dates
-    public func generatedDateRange(from startDate: NSDate, to endDate:NSDate)-> [NSDate] {
+    public func generateDateRange(from startDate: NSDate, to endDate:NSDate)-> [NSDate] {
         if startDate > endDate { return [] }
         var returnDates: [NSDate] = []
         var currentDate = startDate
         repeat {
             returnDates.append(currentDate)
             currentDate = calendar.dateByAddingUnit(.Day, value: 1, toDate: currentDate, options: NSCalendarOptions.MatchNextTime)!
-        } while currentDate < endDate
+        } while currentDate <= endDate
         return returnDates
     }
 
