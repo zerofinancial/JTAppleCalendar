@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 4.x Releases
-- `4.0.0` Releases - [4.0.0](#400)|[4.0.1](#401)|[4.0.2](#402)|[4.0.3](#403)|[4.1.0](#410)
+- `4.0.0` Releases - [4.0.0](#400)|[4.0.1](#401)|[4.0.2](#402)|[4.0.3](#403)|[4.1.0](#410)|[4.1.1](#411)
 
 #### 3.x Releases
 - `3.0.0` Releases - [3.0.0](#300)|[3.0.1](#301)
@@ -17,6 +17,16 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [4.1.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/4.1.1)
+- Fixed issue: Various bug fixes and enhancements
+   - [Days of the week can now be used in calculations]()
+   - [Cells cannot be decelected sometimes](https://github.com/patchthecode/JTAppleCalendar/issues/67)
+   - [Bug on multiple selection](https://github.com/patchthecode/JTAppleCalendar/issues/64)
+   - [Bug when 2 months are displayed](https://github.com/patchthecode/JTAppleCalendar/issues/63)
+   - performance fix
+- Added functoin to generate dates and select date range
+  - Updated by [JayT](https://github.com/patchthecode).
+
 ## [4.1.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/4.1.0)
 - Feature Added: Devs can now configure the width and height of a dateCell.
 - Fixed issue: Synchonization issues on calendar start
