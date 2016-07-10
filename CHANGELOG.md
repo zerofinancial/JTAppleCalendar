@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 4.x Releases
-- `4.0.0` Releases - [4.0.0](#400)|[4.0.1](#401)|[4.0.2](#402)|[4.0.3](#403)|[4.1.0](#410)|[4.1.1](#411)
+- `4.0.0` Releases - [4.0.0](#400)|[4.0.1](#401)|[4.0.2](#402)|[4.0.3](#403)|[4.1.0](#410)|[4.1.1](#411)|[4.1.2](#412)
 
 #### 3.x Releases
 - `3.0.0` Releases - [3.0.0](#300)|[3.0.1](#301)
@@ -17,6 +17,11 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [4.1.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/4.1.1)
+- Fixed issue: removed forced unwrapping of date on deselection. [Caused crash](https://github.com/patchthecode/JTAppleCalendar/issues/69)
+- Fixed issue: on reloading index paths, removed dupicates. Caused visual glitch.
+  - Updated by [JayT](https://github.com/patchthecode).
+
 ## [4.1.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/4.1.1)
 - Fixed issue: Various bug fixes and enhancements
    - [Days of the week can now be used in calculations]()
