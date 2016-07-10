@@ -12,7 +12,7 @@ extension JTAppleCalendarView {
     /// - Paramater row: Int row of the date to find
     /// - Paramater column: Int column of the date to find
     /// - returns:
-    ///     - CellState: The start date of the current section
+    ///     - CellState: The state of the found cell
     public func cellStatusForDateAtRow(row: Int, column: Int) -> CellState? {
         if // the row or column falls within an invalid range
             row < 0 || row >= cachedConfiguration.numberOfRows ||
@@ -40,7 +40,10 @@ extension JTAppleCalendarView {
         }
         return nil
     }
-    
+    /// Returns the cell status for a given date
+    /// - Parameter: date Date of the cell you which to find
+    /// - returns:
+    ///     - CellState: The state of the found cell
     public func cellStatusForDate(date: NSDate)-> CellState? {
         // validate the path
         let paths = pathsFromDates([date])
