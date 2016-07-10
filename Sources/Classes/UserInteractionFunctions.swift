@@ -159,7 +159,6 @@ extension JTAppleCalendarView {
                     // Because there is no triggering of the delegate, the cell will not be added to selection and it will not be reloaded. We need to do this here
                     self.addCellToSelectedSetIfUnselected(sectionIndexPath, date: date)
                     allIndexPathsToReload.append(sectionIndexPath)
-                    
                     let cellState = self.cellStateFromIndexPath(sectionIndexPath, withDate: date)
                     if let aSelectedCounterPartIndexPath = self.selectCounterPartCellIndexPathIfExists(sectionIndexPath, date: date, dateOwner: cellState.dateBelongsTo) {
                         // If there was a counterpart cell then it will also need to be reloaded
@@ -169,31 +168,30 @@ extension JTAppleCalendarView {
             }
             
             let deSelectTheDate = { (oldIndexPath: NSIndexPath) -> Void in
-                allIndexPathsToReload.append(oldIndexPath)
-                
-                let index = self.theSelectedIndexPaths.indexOf(oldIndexPath)!
-                let oldDate = self.theSelectedDates[index]
-                
-                self.calendarView.deselectItemAtIndexPath(oldIndexPath, animated: false)
-                self.theSelectedIndexPaths.removeAtIndex(index)
-                self.theSelectedDates.removeAtIndex(index)
-                
-                // If delegate triggering is enabled, let the delegate function handle the cell
-                if triggerSelectionDelegate {
-                    self.collectionView(self.calendarView, didDeselectItemAtIndexPath: oldIndexPath)
-                } else { // Although we do not want the delegate triggered, we still want counterpart cells to be deselected
+                if !allIndexPathsToReload.contains(oldIndexPath) { allIndexPathsToReload.append(oldIndexPath) } // To avoid adding the  same indexPath twice.
+                if let index = self.theSelectedIndexPaths.indexOf(oldIndexPath) {
+                    let oldDate = self.theSelectedDates[index]
+                    self.calendarView.deselectItemAtIndexPath(oldIndexPath, animated: false)
+                    self.theSelectedIndexPaths.removeAtIndex(index)
+                    self.theSelectedDates.removeAtIndex(index)
                     
-                    let cellState = self.cellStateFromIndexPath(oldIndexPath, withDate: oldDate)
-                    if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
-                        // If there was a counterpart cell then it will also need to be reloaded
-                         allIndexPathsToReload.append(anUnselectedCounterPartIndexPath)
+                    // If delegate triggering is enabled, let the delegate function handle the cell
+                    if triggerSelectionDelegate {
+                        self.collectionView(self.calendarView, didDeselectItemAtIndexPath: oldIndexPath)
+                    } else { // Although we do not want the delegate triggered, we still want counterpart cells to be deselected
+                        let cellState = self.cellStateFromIndexPath(oldIndexPath, withDate: oldDate)
+                        if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
+                            // If there was a counterpart cell then it will also need to be reloaded
+                             allIndexPathsToReload.append(anUnselectedCounterPartIndexPath)
+                        }
                     }
                 }
             }
             
             // Remove old selections
             if self.calendarView.allowsMultipleSelection == false { // If single selection is ON
-                for indexPath in self.theSelectedIndexPaths {
+                let selectedIndexPaths = self.theSelectedIndexPaths // made a copy because the array is about to be mutated
+                for indexPath in selectedIndexPaths {
                     if indexPath != sectionIndexPath { deSelectTheDate(indexPath) }
                 }
                 
