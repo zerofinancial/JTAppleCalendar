@@ -221,6 +221,7 @@ extension JTAppleCalendarView {
     
     /// Scrolls the calendar view to the next section view. It will execute a completion handler at the end of scroll animation if provided.
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
+    /// - Parameter triggerScrollToDateDelegate: Trigger delegate if set to true
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
     public func scrollToNextSegment(triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
         let page = currentSectionPage + 1
@@ -229,6 +230,7 @@ extension JTAppleCalendarView {
         }
     }
     /// Scrolls the calendar view to the previous section view. It will execute a completion handler at the end of scroll animation if provided.
+    /// - Parameter triggerScrollToDateDelegate: Trigger delegate if set to true
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
     public func scrollToPreviousSegment(triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler:(()->Void)? = nil) {
@@ -240,6 +242,7 @@ extension JTAppleCalendarView {
 
     /// Scrolls the calendar view to the start of a section view containing a specified date.
     /// - Paramater date: The calendar view will scroll to a date-cell containing this date if it exists
+    /// - Parameter triggerScrollToDateDelegate: Trigger delegate if set to true
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
     /// - Paramater preferredScrollPositionIndex: Integer indicating the end scroll position on the screen. This value indicates column number for Horizontal scrolling and row number for a vertical scrolling calendar
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
@@ -285,7 +288,6 @@ extension JTAppleCalendarView {
                      
                     // regular movement
                     self.calendarView.scrollToItemAtIndexPath(iPath, atScrollPosition: position, animated: animateScroll)
-                    
                     
                     if animateScroll {
                         if let check = self.calendarOffsetIsAlreadyAtScrollPosition(forIndexPath: iPath) where check == true {
