@@ -93,7 +93,6 @@ protocol JTAppleCalendarLayoutProtocol: class {
     var scrollDirection: UICollectionViewScrollDirection {get set}
     var cellCache: [Int:[UICollectionViewLayoutAttributes]] {get set}
     var headerCache: [UICollectionViewLayoutAttributes] {get set}
-    
     func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint) -> CGPoint
     func sectionFromRectOffset(offset: CGPoint)-> Int
     func sizeOfContentForSection(section: Int)-> CGFloat
@@ -102,7 +101,7 @@ protocol JTAppleCalendarLayoutProtocol: class {
 
 protocol JTAppleCalendarDelegateProtocol: class {
     var itemSize: CGFloat? {get set}
-    
+    var headerViewXibs: [String] {get set}
     func numberOfRows() -> Int
     func numberOfColumns() -> Int
     func numberOfsectionsPermonth() -> Int

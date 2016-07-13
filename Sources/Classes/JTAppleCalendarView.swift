@@ -196,10 +196,9 @@ public class JTAppleCalendarView: UIView {
     var numberOfItemsPerSection: Int {return MAX_NUMBER_OF_DAYS_IN_WEEK * cachedConfiguration.numberOfRows}
     
     /// Cell inset padding for the x and y axis of every date-cell on the calendar view.
-    public var cellInset: CGPoint {
-        get {return internalCellInset}
-        set {internalCellInset = newValue}
-    }
+    public var cellInset: CGPoint = CGPoint(x: 3, y: 3)
+    var cellViewSource: JTAppleCallendarCellViewSource!
+    var headerViewXibs: [String] = []
     
     /// Enable or disable paging when the calendar view is scrolled
     public var pagingEnabled: Bool = true {
@@ -407,7 +406,7 @@ public class JTAppleCalendarView: UIView {
         
         delayRunOnMainThread(0.0) {
             let scrollToDate = {(date: NSDate) -> Void in
-                if headerViewXibs.count < 1 {
+                if self.headerViewXibs.count < 1 {
                     self.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: animation, completionHandler: completionHandler)
                 } else {
                     self.scrollToHeaderForDate(date, triggerScrollToDateDelegate: false, withAnimation: animation, completionHandler: completionHandler)

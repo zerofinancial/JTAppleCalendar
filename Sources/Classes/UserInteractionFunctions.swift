@@ -297,7 +297,7 @@ extension JTAppleCalendarView {
                 }
                 
                 if self.pagingEnabled {
-                    if headerViewXibs.count > 0 {
+                    if self.headerViewXibs.count > 0 {
                         // If both paging and header is on, then scroll to the actual date
                         // If direction is vertical and user has a custom size that is at least the size of the collectionview. 
                         // If this check is not done, it will scroll to header, and have white space at bottom because view is smaller due to small custom user itemSize

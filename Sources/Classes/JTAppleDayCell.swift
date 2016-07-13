@@ -12,20 +12,14 @@ enum JTAppleCallendarCellViewSource {
     case fromClassName(String)
 }
 
-var cellViewSource: JTAppleCallendarCellViewSource?
-var internalCellInset: CGPoint = CGPoint(x: 3.0, y: 3.0)
-
 /// The JTAppleDayCell class defines the attributes and behavior of the cells that appear in JTAppleCalendarView objects.
 public class JTAppleDayCell: UICollectionViewCell {
 
 	var cellView: JTAppleDayCellView!
 
-	func setupCellView() {
+    func setupCellView(cellSource: JTAppleCallendarCellViewSource) {
 
-		guard let cellSource = cellViewSource else {
-			print("Did you remember to register your JTAppleCalendarView? Because we can't find any")
-			return
-		}
+        if cellView != nil { return}
 
 		var theView: JTAppleDayCellView
 
@@ -61,21 +55,21 @@ public class JTAppleDayCell: UICollectionViewCell {
 			theView = theCellClass.init()
 			break
 		}
-
-		updateCellView(theView)
+        cellView = theView
+        self.addSubview(cellView!)
 	}
 
-	func updateCellView(view: JTAppleDayCellView) {
-		let vFrame = CGRectInset(self.frame, internalCellInset.x, internalCellInset.y)
-		view.frame = vFrame
-		view.center = CGPoint(x: self.bounds.size.width * 0.5, y: self.bounds.size.height * 0.5)
-		cellView = view
+    func updateCellView(cellInsetX: CGFloat, cellInsetY: CGFloat) {
+        if let cellView = self.cellView {
+            let vFrame = CGRectInset(self.frame, cellInsetX, cellInsetY)
+            cellView.frame = vFrame
+            cellView.center = CGPoint(x: self.bounds.size.width * 0.5, y: self.bounds.size.height * 0.5)
+        }
 	}
+    
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-		self.setupCellView()
-		self.addSubview(cellView)
 	}
 
 	/// Returns an object initialized from data in a given unarchiver.

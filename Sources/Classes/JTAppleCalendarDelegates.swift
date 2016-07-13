@@ -56,7 +56,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             if self.direction == .Vertical {
                 retval = CGPoint(x: 0, y: recalcOffset)
             } else {
-                if headerViewXibs.count < 1 {
+                if self.headerViewXibs.count < 1 {
                     retval = CGPoint(x: recalcOffset, y: 0)
                 } else {
                     let targetSection =  Int(recalcOffset / self.calendarView.frame.size.width)
@@ -157,10 +157,11 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
             reuseIdentifier = identifier
         }
         
-        currentXib = reuseIdentifier
         let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(kind,
                                                                                withReuseIdentifier: reuseIdentifier,
                                                                                forIndexPath: indexPath) as! JTAppleCollectionReusableView
+        headerView.setupHeaderView(headerViewXibs, currentXib: reuseIdentifier)
+        headerView.update()
         delegate?.calendar(self, isAboutToDisplaySectionHeader: headerView.view, date: date, identifier: reuseIdentifier)
         return headerView
     }
@@ -168,8 +169,10 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     /// Asks your data source object for the cell that corresponds to the specified item in the collection view.
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         restoreSelectionStateForCellAtIndexPath(indexPath)
+        
         let dayCell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIdentifier, forIndexPath: indexPath) as! JTAppleDayCell
-        dayCell.updateCellView(dayCell.cellView)
+        dayCell.setupCellView(cellViewSource)
+        dayCell.updateCellView(cellInset.x, cellInsetY: cellInset.y)
         dayCell.bounds.origin = CGPoint(x: 0, y: 0)
         
         let date = dateFromPath(indexPath)!
@@ -181,10 +184,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     }
     /// Asks your data source object for the number of sections in the collection view. The number of sections in collectionView.
     public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        if !xibFileValid() {
-            return 0
-        }
-        
+        if !xibFileValid() { return 0 }
         return monthInfo.count
     }
 
