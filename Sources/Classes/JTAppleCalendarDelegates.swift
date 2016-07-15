@@ -184,7 +184,6 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     }
     /// Asks your data source object for the number of sections in the collection view. The number of sections in collectionView.
     public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        if !xibFileValid() { return 0 }
         return monthInfo.count
     }
 
