@@ -73,26 +73,17 @@ extension JTAppleCalendarView {
     
     /// Let's the calendar know which cell class to use for the displaying of it's date-cells.
     /// - Parameter name: The class name of your cell design
-    public func registerCellViewClass(fileName name: String) {
-        cellViewSource = JTAppleCallendarCellViewSource.fromClassName(name)
-    }
+    public func registerCellViewClass(fileName name: String) { cellViewSource = JTAppleCallendarCellViewSource.fromClassName(name) }
     
     /// Let's the calendar know which cell class to use for the displaying of it's date-cells.
     /// - Parameter name: The type of your cell design
-    public func registerCellViewClass(cellClass cellClass: AnyClass) {
-        cellViewSource = JTAppleCallendarCellViewSource.fromType(cellClass)
-    }
-    
+    public func registerCellViewClass(cellClass cellClass: AnyClass) { cellViewSource = JTAppleCallendarCellViewSource.fromType(cellClass) }
     
     /// Register header views with the calender. This needs to be done before the view can be displayed
     /// - Parameter fileNames: A dictionary containing [headerViewNames:HeaderviewSizes]
     public func registerHeaderViewXibs(fileNames headerViewXibNames: [String]) {
         headerViewXibs.removeAll() // remove the already registered xib files if the user re-registers again.
-        
-        if headerViewXibNames.count < 1 {
-            return
-        }
-
+        if headerViewXibNames.count < 1 { return }
         for headerViewXibName in headerViewXibNames {
             let viewObject = NSBundle.mainBundle().loadNibNamed(headerViewXibName, owner: self, options: [:])
             assert(viewObject.count > 0, "your nib file name \(headerViewXibName) could not be loaded)")
@@ -101,9 +92,7 @@ extension JTAppleCalendarView {
                 assert(false, "xib file class does not conform to the protocol<JTAppleHeaderViewProtocol>")
                 return
             }
-            
             headerViewXibs.append(headerViewXibName)
-            
             self.calendarView.registerClass(JTAppleCollectionReusableView.self,
                                             forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
                                             withReuseIdentifier: headerViewXibName)

@@ -271,19 +271,13 @@ public class JTAppleCalendarView: UIView {
     
     
     /// Returns an object initialized from data in a given unarchiver. self, initialized using the data in decoder.
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+    required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
-    override public func awakeFromNib() {
-        self.initialSetup()
-    }
+    override public func awakeFromNib() { self.initialSetup() }
     
     /// Lays out subviews.
-    override public func layoutSubviews() {
-        self.frame = super.frame
-    }
+    override public func layoutSubviews() { self.frame = super.frame }
     
     // MARK: Setup
     func initialSetup() {
@@ -400,9 +394,7 @@ public class JTAppleCalendarView: UIView {
         self.calendarView.reloadData()
         
         // Restore the selected index paths
-        for indexPath in theSelectedIndexPaths {
-            restoreSelectionStateForCellAtIndexPath(indexPath)
-        }
+        for indexPath in theSelectedIndexPaths { restoreSelectionStateForCellAtIndexPath(indexPath) }
         
         delayRunOnMainThread(0.0) {
             let scrollToDate = {(date: NSDate) -> Void in

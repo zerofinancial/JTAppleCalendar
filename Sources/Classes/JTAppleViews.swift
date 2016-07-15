@@ -16,10 +16,6 @@ public class JTAppleDayCellView: UIView, JTAppleDayCellViewProtocol {
 }
 
 
-
-
-
-
 /// Does nothing for now. New features are on the way.
 public protocol JTAppleHeaderViewProtocol {
 }
