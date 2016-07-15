@@ -12,6 +12,8 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		6B00CCA41D396447009B564B /* CodePinkSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B00CCA31D396447009B564B /* CodePinkSectionHeaderView.swift */; };
+		6B00CCA61D396571009B564B /* CodeWhiteSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B00CCA51D396571009B564B /* CodeWhiteSectionHeaderView.swift */; };
 		6B4D5B461CEAC4EC00459CEC /* WhiteSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6B4D5B451CEAC4EC00459CEC /* WhiteSectionHeaderView.xib */; };
 		6B4D5B481CEAC50400459CEC /* WhiteSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B4D5B471CEAC50400459CEC /* WhiteSectionHeaderView.swift */; };
 		6B7535BF1CFA5A7300F02669 /* testVCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7535BE1CFA5A7300F02669 /* testVCViewController.swift */; };
@@ -49,6 +51,8 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		69F5BD94F97916B7483833AC /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		6B00CCA31D396447009B564B /* CodePinkSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodePinkSectionHeaderView.swift; sourceTree = "<group>"; };
+		6B00CCA51D396571009B564B /* CodeWhiteSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeWhiteSectionHeaderView.swift; sourceTree = "<group>"; };
 		6B4D5B451CEAC4EC00459CEC /* WhiteSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WhiteSectionHeaderView.xib; sourceTree = "<group>"; };
 		6B4D5B471CEAC50400459CEC /* WhiteSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhiteSectionHeaderView.swift; sourceTree = "<group>"; };
 		6B7535BE1CFA5A7300F02669 /* testVCViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = testVCViewController.swift; sourceTree = "<group>"; };
@@ -176,13 +180,31 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
-		6B4D5B441CEA6AC300459CEC /* ExampleSectionHeaders */ = {
+		6B00CCA11D39633E009B564B /* HeaderAsXibs */ = {
 			isa = PBXGroup;
 			children = (
 				6BCA1FDC1CE3504B0058F1FF /* PinkSectionHeaderView.xib */,
 				6BCA1FDE1CE351110058F1FF /* PinkSectionHeaderView.swift */,
 				6B4D5B451CEAC4EC00459CEC /* WhiteSectionHeaderView.xib */,
 				6B4D5B471CEAC50400459CEC /* WhiteSectionHeaderView.swift */,
+			);
+			name = HeaderAsXibs;
+			sourceTree = "<group>";
+		};
+		6B00CCA21D396350009B564B /* HeaderAsClass */ = {
+			isa = PBXGroup;
+			children = (
+				6B00CCA31D396447009B564B /* CodePinkSectionHeaderView.swift */,
+				6B00CCA51D396571009B564B /* CodeWhiteSectionHeaderView.swift */,
+			);
+			name = HeaderAsClass;
+			sourceTree = "<group>";
+		};
+		6B4D5B441CEA6AC300459CEC /* ExampleSectionHeaders */ = {
+			isa = PBXGroup;
+			children = (
+				6B00CCA21D396350009B564B /* HeaderAsClass */,
+				6B00CCA11D39633E009B564B /* HeaderAsXibs */,
 			);
 			name = ExampleSectionHeaders;
 			sourceTree = "<group>";
@@ -432,6 +454,8 @@
 				6BCA1FDF1CE351110058F1FF /* PinkSectionHeaderView.swift in Sources */,
 				6BB8DBEA1CA8710F009DB5F8 /* CHANGELOG.md in Sources */,
 				6B80035F1C9983AE00A3ED9C /* AnimationClass.swift in Sources */,
+				6B00CCA41D396447009B564B /* CodePinkSectionHeaderView.swift in Sources */,
+				6B00CCA61D396571009B564B /* CodeWhiteSectionHeaderView.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				6B4D5B481CEAC50400459CEC /* WhiteSectionHeaderView.swift in Sources */,
 				6B7535BF1CFA5A7300F02669 /* testVCViewController.swift in Sources */,
