@@ -197,8 +197,8 @@ public class JTAppleCalendarView: UIView {
     
     /// Cell inset padding for the x and y axis of every date-cell on the calendar view.
     public var cellInset: CGPoint = CGPoint(x: 3, y: 3)
-    var cellViewSource: JTAppleCallendarCellViewSource!
-    var headerViewXibs: [String] = []
+    var cellViewSource: JTAppleCalendarViewSource!
+    var registeredHeaderViews: [JTAppleCalendarViewSource] = []
     
     /// Enable or disable paging when the calendar view is scrolled
     public var pagingEnabled: Bool = true {
@@ -315,16 +315,12 @@ public class JTAppleCalendarView: UIView {
         if let attributes = self.calendarView.layoutAttributesForItemAtIndexPath(indexPath) {
             let origin = attributes.frame.origin
             let offset = direction == .Horizontal ? origin.x : origin.y
-            if
-                self.calendarView.contentOffset.x == offset ||
-                    (self.pagingEnabled && (indexPath.section ==  currentSectionPage)){
-                
+            if  self.calendarView.contentOffset.x == offset || (self.pagingEnabled && (indexPath.section ==  currentSectionPage)) {
                 retval = true
             } else {
                 retval = false
             }
         }
-        
         return retval
     }
     
@@ -345,13 +341,11 @@ public class JTAppleCalendarView: UIView {
         } else {
             retval = false
         }
-        
-        
         return retval
     }
     
     func scrollToHeaderInSection(section:Int, triggerScrollToDateDelegate: Bool = false, withAnimation animation: Bool = true, completionHandler: (()->Void)? = nil)  {
-        if headerViewXibs.count < 1 { return }
+        if registeredHeaderViews.count < 1 { return }
         
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         
@@ -398,7 +392,7 @@ public class JTAppleCalendarView: UIView {
         
         delayRunOnMainThread(0.0) {
             let scrollToDate = {(date: NSDate) -> Void in
-                if self.headerViewXibs.count < 1 {
+                if self.registeredHeaderViews.count < 1 {
                     self.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: animation, completionHandler: completionHandler)
                 } else {
                     self.scrollToHeaderForDate(date, triggerScrollToDateDelegate: false, withAnimation: animation, completionHandler: completionHandler)
@@ -471,7 +465,7 @@ public class JTAppleCalendarView: UIView {
     
     func calendarViewHeaderSizeForSection(section: Int) -> CGSize {
         var retval = CGSizeZero
-        if headerViewXibs.count > 0 {
+        if registeredHeaderViews.count > 0 {
             if let date = dateFromSection(section), size = delegate?.calendar(self, sectionHeaderSizeForDate: date){ retval = size }
         }
         return retval
@@ -822,7 +816,7 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
     func numberOfDaysPerSection() -> Int { return numberOfItemsPerSection }
     
     func referenceSizeForHeaderInSection(section: Int) -> CGSize {
-        if headerViewXibs.count < 1 { return CGSizeZero }
+        if registeredHeaderViews.count < 1 { return CGSizeZero }
         return calendarViewHeaderSizeForSection(section)
     }
     

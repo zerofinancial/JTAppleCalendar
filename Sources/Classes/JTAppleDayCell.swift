@@ -6,7 +6,7 @@
 //  Copyright © 2016 OS-Tech. All rights reserved.
 //
 
-enum JTAppleCallendarCellViewSource {
+enum JTAppleCalendarViewSource {
     case fromXib(String)
     case fromType(AnyClass)
     case fromClassName(String)
@@ -17,7 +17,7 @@ public class JTAppleDayCell: UICollectionViewCell {
 
 	var cellView: JTAppleDayCellView!
 
-    func setupCellView(cellSource: JTAppleCallendarCellViewSource) {
+    func setupCellView(cellSource: JTAppleCalendarViewSource) {
 
         if cellView != nil { return}
 

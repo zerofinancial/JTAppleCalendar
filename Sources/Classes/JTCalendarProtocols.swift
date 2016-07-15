@@ -101,7 +101,7 @@ protocol JTAppleCalendarLayoutProtocol: class {
 
 protocol JTAppleCalendarDelegateProtocol: class {
     var itemSize: CGFloat? {get set}
-    var headerViewXibs: [String] {get set}
+    var registeredHeaderViews: [JTAppleCalendarViewSource] {get set}
     func numberOfRows() -> Int
     func numberOfColumns() -> Int
     func numberOfsectionsPermonth() -> Int
