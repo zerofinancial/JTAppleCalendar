@@ -67,35 +67,47 @@ extension JTAppleCalendarView {
     
     /// Let's the calendar know which cell xib to use for the displaying of it's date-cells.
     /// - Parameter name: The name of the xib of your cell design
-    public func registerCellViewXib(fileName name: String) {
-        cellViewSource = JTAppleCallendarCellViewSource.fromXib(name)
-    }
+    public func registerCellViewXib(fileName name: String) { cellViewSource = JTAppleCalendarViewSource.fromXib(name) }
     
     /// Let's the calendar know which cell class to use for the displaying of it's date-cells.
     /// - Parameter name: The class name of your cell design
-    public func registerCellViewClass(fileName name: String) { cellViewSource = JTAppleCallendarCellViewSource.fromClassName(name) }
+    public func registerCellViewClass(fileName name: String) { cellViewSource = JTAppleCalendarViewSource.fromClassName(name) }
     
     /// Let's the calendar know which cell class to use for the displaying of it's date-cells.
     /// - Parameter name: The type of your cell design
-    public func registerCellViewClass(cellClass cellClass: AnyClass) { cellViewSource = JTAppleCallendarCellViewSource.fromType(cellClass) }
+    public func registerCellViewClass(cellClass cellClass: AnyClass) { cellViewSource = JTAppleCalendarViewSource.fromType(cellClass) }
     
     /// Register header views with the calender. This needs to be done before the view can be displayed
     /// - Parameter fileNames: A dictionary containing [headerViewNames:HeaderviewSizes]
     public func registerHeaderViewXibs(fileNames headerViewXibNames: [String]) {
-        headerViewXibs.removeAll() // remove the already registered xib files if the user re-registers again.
-        if headerViewXibNames.count < 1 { return }
+        registeredHeaderViews.removeAll() // remove the already registered xib files if the user re-registers again.
         for headerViewXibName in headerViewXibNames {
-            let viewObject = NSBundle.mainBundle().loadNibNamed(headerViewXibName, owner: self, options: [:])
-            assert(viewObject.count > 0, "your nib file name \(headerViewXibName) could not be loaded)")
-            
-            guard viewObject[0] is JTAppleHeaderView else {
-                assert(false, "xib file class does not conform to the protocol<JTAppleHeaderViewProtocol>")
-                return
-            }
-            headerViewXibs.append(headerViewXibName)
+            registeredHeaderViews.append(JTAppleCalendarViewSource.fromXib(headerViewXibName))
             self.calendarView.registerClass(JTAppleCollectionReusableView.self,
                                             forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
                                             withReuseIdentifier: headerViewXibName)
+        }
+    }
+    /// Register header views with the calender. This needs to be done before the view can be displayed
+    /// - Parameter fileNames: A dictionary containing [headerViewNames:HeaderviewSizes]
+    public func registerHeaderViewClass(fileNames headerViewClassNames: [String]) {
+        registeredHeaderViews.removeAll() // remove the already registered xib files if the user re-registers again.
+        for headerViewClassName in headerViewClassNames {
+            registeredHeaderViews.append(JTAppleCalendarViewSource.fromClassName(headerViewClassName))
+            self.calendarView.registerClass(JTAppleCollectionReusableView.self,
+                                            forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                                            withReuseIdentifier: headerViewClassName)
+        }
+    }
+    /// Register header views with the calender. This needs to be done before the view can be displayed
+    /// - Parameter fileNames: A dictionary containing [headerViewNames:HeaderviewSizes]
+    public func registerHeaderViewClass(headerClass headerViewClasses: [AnyClass]) {
+        registeredHeaderViews.removeAll() // remove the already registered xib files if the user re-registers again.
+        for aClass in headerViewClasses {
+            registeredHeaderViews.append(JTAppleCalendarViewSource.fromType(aClass))
+            self.calendarView.registerClass(JTAppleCollectionReusableView.self,
+                                            forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                                            withReuseIdentifier: aClass.description())
         }
     }
     
@@ -288,7 +300,7 @@ extension JTAppleCalendarView {
                 }
                 
                 if self.pagingEnabled {
-                    if self.headerViewXibs.count > 0 {
+                    if self.registeredHeaderViews.count > 0 {
                         // If both paging and header is on, then scroll to the actual date
                         // If direction is vertical and user has a custom size that is at least the size of the collectionview. 
                         // If this check is not done, it will scroll to header, and have white space at bottom because view is smaller due to small custom user itemSize
