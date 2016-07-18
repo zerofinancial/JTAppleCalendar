@@ -129,6 +129,9 @@ extension ViewController: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
         printSelectedDates()
     }
     
+    func calendar(calendar: JTAppleCalendarView, isAboutToResetCell cell: JTAppleDayCellView) {
+        (cell as? CellView)?.selectedView.hidden = true
+    }
     
     func calendar(calendar: JTAppleCalendarView, didScrollToDateSegmentStartingWithdate startDate: NSDate, endingWithDate endDate: NSDate) {
         setupViewsOfCalendar(startDate, endDate: endDate)

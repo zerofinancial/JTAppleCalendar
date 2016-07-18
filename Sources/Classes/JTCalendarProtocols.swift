@@ -12,6 +12,20 @@ enum JTAppleCalendarViewSource {
     case fromClassName(String)
 }
 
+/// Default delegate functions
+public extension JTAppleCalendarViewDelegate {
+    func calendar(calendar : JTAppleCalendarView, canSelectDate date : NSDate, cell: JTAppleDayCellView, cellState: CellState)->Bool {return true}
+    func calendar(calendar : JTAppleCalendarView, canDeselectDate date : NSDate, cell: JTAppleDayCellView, cellState: CellState)->Bool {return true}
+    func calendar(calendar : JTAppleCalendarView, didSelectDate date : NSDate, cell: JTAppleDayCellView?, cellState: CellState) {}
+    func calendar(calendar : JTAppleCalendarView, didDeselectDate date : NSDate, cell: JTAppleDayCellView?, cellState: CellState) {}
+    func calendar(calendar : JTAppleCalendarView, didScrollToDateSegmentStartingWithdate startDate: NSDate, endingWithDate endDate: NSDate) {}
+    func calendar(calendar : JTAppleCalendarView, isAboutToDisplayCell cell: JTAppleDayCellView, date:NSDate, cellState: CellState) {}
+    func calendar(calendar : JTAppleCalendarView, isAboutToResetCell cell: JTAppleDayCellView){}
+    func calendar(calendar : JTAppleCalendarView, isAboutToDisplaySectionHeader header: JTAppleHeaderView, date: (startDate: NSDate, endDate: NSDate), identifier: String) {}
+    func calendar(calendar : JTAppleCalendarView, sectionHeaderIdentifierForDate date: (startDate: NSDate, endDate: NSDate)) -> String? {return nil}
+    func calendar(calendar : JTAppleCalendarView, sectionHeaderSizeForDate date: (startDate: NSDate, endDate: NSDate)) -> CGSize {return CGSizeZero}
+}
+
 /// The JTAppleCalendarViewDataSource protocol is adopted by an object that mediates the application’s data model for a JTAppleCalendarViewDataSource object. The data source provides the calendar-view object with the information it needs to construct and modify it self
 public protocol JTAppleCalendarViewDataSource: class {
     /// Asks the data source to return the start and end boundary dates as well as the calendar to use. You should properly configure your calendar at this point.
@@ -72,6 +86,10 @@ public protocol JTAppleCalendarViewDelegate: class {
     ///     - date: The date attached to the cell.
     ///     - cellState: The month the date-cell belongs to.
     func calendar(calendar : JTAppleCalendarView, isAboutToDisplayCell cell: JTAppleDayCellView, date:NSDate, cellState: CellState) -> Void
+    /// Tells the delegate that the JTAppleCalendar is about to reset a date-cell. Reset your cell here before being reused on screen. Make sure this function exits quicky.
+    /// - Parameters:
+    ///     - cell: The date-cell that is about to be reset.
+    func calendar(calendar : JTAppleCalendarView, isAboutToResetCell cell: JTAppleDayCellView) -> Void
     /// Implement this function to use headers in your project. Return your registered header for the date presented.
     /// - Parameters:
     ///     - date: Contains the startDate and endDate for the header that is about to be displayed

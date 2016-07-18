@@ -147,7 +147,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         }
         
         let reuseIdentifier: String
-        var index = 0
+        var source: JTAppleCalendarViewSource = registeredHeaderViews[0]
         
         // Get the reuse identifier and index
         if registeredHeaderViews.count == 1 {
@@ -158,16 +158,16 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
             }
         } else {
             reuseIdentifier = delegate!.calendar(self, sectionHeaderIdentifierForDate: date)!
-            for (itemIndex, value) in registeredHeaderViews.enumerate() {
-                switch registeredHeaderViews[itemIndex] {
+            for item in registeredHeaderViews {
+                switch item {
                 case let .fromXib(xibName) where xibName == reuseIdentifier:
-                    index = itemIndex
+                    source = item
                     break
                 case let .fromClassName(className) where className == reuseIdentifier:
-                    index = itemIndex
+                    source = item
                     break
                 case let .fromType(type) where type.description() == reuseIdentifier:
-                    index = itemIndex
+                    source = item
                     break
                 default:
                     continue
@@ -176,10 +176,14 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         }
         
         let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: reuseIdentifier, forIndexPath: indexPath) as! JTAppleCollectionReusableView
-        headerView.setupView(registeredHeaderViews[index])
+        headerView.setupView(source)
         headerView.update()
         delegate?.calendar(self, isAboutToDisplaySectionHeader: headerView.view!, date: date, identifier: reuseIdentifier)
         return headerView
+    }
+    
+    public func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+        delegate?.calendar(self, isAboutToResetCell: (cell as! JTAppleDayCell).view!)
     }
     
     /// Asks your data source object for the cell that corresponds to the specified item in the collection view.
