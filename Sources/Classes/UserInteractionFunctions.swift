@@ -260,9 +260,7 @@ extension JTAppleCalendarView {
                 self.scrollInProgress = false
                 return
             }
-            
             let retrievedPathsFromDates = self.pathsFromDates([date])
-            
             if retrievedPathsFromDates.count > 0 {
                 let sectionIndexPath =  self.pathsFromDates([date])[0]
                 var position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
@@ -326,6 +324,8 @@ extension JTAppleCalendarView {
                         self.scrollInProgress = false
                     }
                 })
+            } else {
+                self.scrollInProgress = false
             }
         })
     }
