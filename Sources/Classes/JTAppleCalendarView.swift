@@ -385,7 +385,7 @@ public class JTAppleCalendarView: UIView {
                     self.scrollToHeaderForDate(date, triggerScrollToDateDelegate: false, withAnimation: animation, completionHandler: completionHandler)
                 }
             }
-            if let validAnchorDate = anchorDate { // If we have a valid anchor dat, this means we want to scroll
+            if let validAnchorDate = anchorDate { // If we have a valid anchor date, this means we want to scroll
                 // This scroll should happen after the reload above
                 scrollToDate(validAnchorDate)
             } else {
@@ -647,7 +647,7 @@ public class JTAppleCalendarView: UIView {
     func pathsFromDates(dates:[NSDate])-> [NSIndexPath] {
         var returnPaths: [NSIndexPath] = []
         for date in dates {
-            if date >= startOfMonthCache && date <= endOfMonthCache {
+            if  calendar.startOfDayForDate(date) >= startOfMonthCache && calendar.startOfDayForDate(date) <= endOfMonthCache {
                 let periodApart = calendar.components(.Month, fromDate: startOfMonthCache, toDate: date, options: [])
                 let monthSectionIndex = periodApart.month
                 let startSectionIndex = monthSectionIndex * numberOfSectionsPerMonth
