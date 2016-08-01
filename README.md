@@ -64,12 +64,15 @@ The following structure was returned when a cell is about to be displayed.
 #### User functions
 
 ```swift
+    public func generateDateRange(from startDate: NSDate, to endDate:NSDate)-> [NSDate]
     public func reloadData()
     public func reloadDates(dates: [NSDate])
     public func scrollToNextSegment() 
     public func scrollToPreviousSegment()
     public func scrollToDate()
     public func selectDates()
+    public func selectDates(from startDate:NSDate, to endDate:NSDate)
+    public func cellStatusForDate(date: NSDate)-> CellState?
     public func cellStatusForDateAtRow(row: Int, column: Int) -> CellState?
     public func currentCalendarDateSegment() -> (startDate: NSDate, endDate: NSDate)
     public func scrollToHeaderForDate(date: NSDate)
