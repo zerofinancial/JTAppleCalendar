@@ -79,15 +79,16 @@ The following structure was returned when a cell is about to be displayed.
 ```swift
 // Note: You do not need to configure your calendar with this if it is already the default
 calendarView.direction = .Horizontal                       // default is horizontal
-calendarView.numberOfRowsPerMonth                          // default is 6. This is now setup in the configure Datasource Delegate Methhod
 calendarView.cellInset = CGPoint(x: 0, y: 0)               // default is (3,3)
 calendarView.allowsMultipleSelection = false               // default is false
-calendarView.bufferTop = 0                                 // default is 0. - still work in progress
-calendarView.bufferBottom = 0                              // default is 0. - still work in progress
+calendarView.bufferTop = 0                                 // default is 0. - still work in progress on this
+calendarView.bufferBottom = 0                              // default is 0. - still work in progress on this
 calendarView.firstDayOfWeek = .Sunday                      // default is Sunday
 calendarView.scrollEnabled = true                          // default is true
 calendarView.pagingEnabled = true                          // default is true
-calendarView.scrollResistance = 0.75                       // default is 0.75 - this is only applicable when paging is not enabled
+calendarView.scrollResistance = 0.75                       // default is 0.75 - this is only applicable when paging is not enabled.
+calendarView.itemSize = nil                                // default is nil. Use a value here to change the size of your cells
+calendarView.cellSnapsToEdge = true                        // default is true. Disabling this causes calendar to not snap to grid
 ```
 
 Do you have any other questions?. If you are trying to bend heaven and earth to do something complicated with this calendar, then chances are there is already an easy way for it to be done. So [Opening an issue](https://github.com/patchthecode/JTAppleCalendar/issues/new) might be a good idea.
