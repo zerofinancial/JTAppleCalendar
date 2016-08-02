@@ -748,12 +748,8 @@ extension JTAppleCalendarView {
     
     func selectCounterPartCellIndexPathIfExists(indexPath: NSIndexPath, date: NSDate, dateOwner: CellState.DateOwner) -> NSIndexPath? {
         if let counterPartCellIndexPath = indexPathOfdateCellCounterPart(date, indexPath: indexPath, dateOwner: dateOwner) {
-            
             let dateComps = calendar.components([.Month, .Day, .Year], fromDate: date)
-            guard let counterpartDate = calendar.dateFromComponents(dateComps) else {
-                return nil
-            }
-            
+            guard let counterpartDate = calendar.dateFromComponents(dateComps) else { return nil }
             addCellToSelectedSetIfUnselected(counterPartCellIndexPath, date:counterpartDate)
             return counterPartCellIndexPath
         }
