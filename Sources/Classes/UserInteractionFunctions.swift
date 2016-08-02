@@ -126,14 +126,15 @@ extension JTAppleCalendarView {
     /// - Parameter startDate: Date to start the selection from
     /// - Parameter endDate: Date to end the selection from
     /// - Parameter triggerDidSelectDelegate: Triggers the delegate function only if the value is set to true. Sometimes it is necessary to setup some dates without triggereing the delegate e.g. For instance, when youre initally setting up data in your viewDidLoad
-    public func selectDates(from startDate:NSDate, to endDate:NSDate, triggerSelectionDelegate: Bool = true) {
-        selectDates(generateDateRange(from: startDate, to: endDate), triggerSelectionDelegate: triggerSelectionDelegate)
+    /// - Parameter keepSelectionIfMultiSelectionAllowed: This is only applicable in allowedMultiSelection = true. This overrides the default toggle behavior of selection. If true, selected cells will remain selected.
+    public func selectDates(from startDate:NSDate, to endDate:NSDate, triggerSelectionDelegate: Bool = true, keepSelectionIfMultiSelectionAllowed: Bool = false) {
+        selectDates(generateDateRange(from: startDate, to: endDate), triggerSelectionDelegate: triggerSelectionDelegate, keepSelectionIfMultiSelectionAllowed: keepSelectionIfMultiSelectionAllowed)
     }
     
     /// Select a date-cells
     /// - Parameter date: The date-cell with this date will be selected
     /// - Parameter triggerDidSelectDelegate: Triggers the delegate function only if the value is set to true. Sometimes it is necessary to setup some dates without triggereing the delegate e.g. For instance, when youre initally setting up data in your viewDidLoad
-    public func selectDates(dates: [NSDate], triggerSelectionDelegate: Bool = true) {
+    public func selectDates(dates: [NSDate], triggerSelectionDelegate: Bool = true, keepSelectionIfMultiSelectionAllowed: Bool = false) {
         var allIndexPathsToReload: [NSIndexPath] = []
         var validDatesToSelect = dates
         // If user is trying to select multiple dates with multiselection disabled, then only select the last object
@@ -199,8 +200,14 @@ extension JTAppleCalendarView {
                 // Add new selections
                 // Must be added here. If added in delegate didSelectItemAtIndexPath
                 selectTheDate()
-            } else { // If multiple selection is on. Multiple selection behaves differently to singleselection. It behaves like a toggle.
-                
+            } else { // If multiple selection is on. Multiple selection behaves differently to singleselection. It behaves like a toggle. unless keepSelectionIfMultiSelectionAllowed is true.
+                // If user wants to force selection if multiselection is enabled, then removed the selected dates from generated dates
+                if keepSelectionIfMultiSelectionAllowed {
+                    if selectedDates.contains(calendar.startOfDayForDate(date)) {
+                        if !allIndexPathsToReload.contains(sectionIndexPath) { allIndexPathsToReload.append(sectionIndexPath) } // To avoid adding the  same indexPath twice.
+                        continue // Do not deselect or select the cell. Just add it to be reloaded
+                    }
+                }
                 if self.theSelectedIndexPaths.contains(sectionIndexPath) { // If this cell is already selected, then deselect it
                     deSelectTheDate(sectionIndexPath)
                 } else {
@@ -350,7 +357,7 @@ extension JTAppleCalendarView {
         var currentDate = startDate
         repeat {
             returnDates.append(currentDate)
-            currentDate = calendar.dateByAddingUnit(.Day, value: 1, toDate: currentDate, options: NSCalendarOptions.MatchNextTime)!
+            currentDate = calendar.startOfDayForDate(calendar.dateByAddingUnit(.Day, value: 1, toDate: currentDate, options: [])!)
         } while currentDate <= endDate
         return returnDates
     }
