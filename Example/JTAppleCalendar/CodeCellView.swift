@@ -2,7 +2,7 @@
 //  CodeCellView.swift
 //  JTAppleCalendar
 //
-//  Created by Jeron Thomas on 2016-05-26.
+//  Created by Jay Thomas on 2016-05-26.
 //  Copyright © 2016 CocoaPods. All rights reserved.
 //
 

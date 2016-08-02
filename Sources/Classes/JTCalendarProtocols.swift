@@ -2,7 +2,7 @@
 //  JTCalendarProtocols.swift
 //  Pods
 //
-//  Created by Jeron Thomas on 2016-06-07.
+//  Created by Jay Thomas on 2016-06-07.
 //
 //
 

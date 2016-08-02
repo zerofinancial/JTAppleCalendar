@@ -2,7 +2,7 @@
 //  WhiteSectionHeaderView.swift
 //  JTAppleCalendar
 //
-//  Created by Jeron Thomas on 2016-05-16.
+//  Created by Jay Thomas on 2016-05-16.
 //  Copyright © 2016 CocoaPods. All rights reserved.
 //
 import JTAppleCalendar
