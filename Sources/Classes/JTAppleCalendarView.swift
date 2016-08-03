@@ -52,8 +52,16 @@ public struct CellState {
     public let column: ()->Int
     /// returns the section the date cell belongs to
     public let dateSection: ()->(startDate: NSDate, endDate: NSDate)
+    /// returns the position of a selection in the event you wish to do range selection
+    public let selectedPosition: ()->SelectionRangePosition
     /// returns the cell frame. Useful if you wish to display something at the cell's frame/position
     public var cell: ()->JTAppleDayCell?
+}
+
+/// Selection position of a range-selected date cell
+public enum SelectionRangePosition: Int {
+    /// Selection position
+    case Left = 1, Middle, Right, Full, None
 }
 
 /// Days of the week. By setting you calandar's first day of week, you can change which day is the first for the week. Sunday is by default.
@@ -695,6 +703,20 @@ extension JTAppleCalendarView {
         }
         
         let dayOfWeek = DaysOfWeek(rawValue: componentWeekDay)!
+        let rangePosition = {()->SelectionRangePosition in
+            if self.theSelectedIndexPaths.contains(indexPath) {
+                if self.selectedDates.count == 1 { return .Full}
+                let left = self.theSelectedIndexPaths.contains(NSIndexPath(forItem: indexPath.item - 1, inSection: indexPath.section))
+                let right = self.theSelectedIndexPaths.contains(NSIndexPath(forItem: indexPath.item + 1, inSection: indexPath.section))
+                if (left == right) {
+                    if left == false { return .Full } else { return .Middle }
+                } else {
+                    if left == false { return .Left } else { return .Right }
+                }
+            }
+            return .None
+        }
+        
 
         let cellState = CellState(
             isSelected: theSelectedIndexPaths.contains(indexPath),
@@ -705,6 +727,7 @@ extension JTAppleCalendarView {
             row: {()->Int in return itemIndex / MAX_NUMBER_OF_DAYS_IN_WEEK },
             column: {()->Int in return itemIndex % MAX_NUMBER_OF_DAYS_IN_WEEK },
             dateSection: {()->(startDate: NSDate, endDate: NSDate) in return self.dateFromSection(itemSection)! },
+            selectedPosition: rangePosition,
             cell: {()->JTAppleDayCell? in return cell}
         )
         return cellState
