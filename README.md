@@ -19,6 +19,7 @@ The look of this calendar is up to the developer. Check out what people have dev
 ### **Features**
 ---
 
+- [x] Range selection - select dates in a range. The design is entirely up to you.
 - [x] Boundary dates - limit the calendar date range
 - [x] Week/month mode - show 1 row of weekdays. Or 2, 3 or 6
 - [x] Custom cells - make your day-cells look however you want, with any functionality you want
