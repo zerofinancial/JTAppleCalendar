@@ -9,6 +9,7 @@
 
 /// Base class for the Horizontal layout
 public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtocol {
+    let errorDelta: CGFloat = 0.0000001
     var itemSize: CGSize = CGSizeZero
     var headerReferenceSize: CGSize = CGSizeZero
     var scrollDirection: UICollectionViewScrollDirection = .Horizontal
@@ -244,6 +245,7 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
         let theOffet = scrollDirection == .Horizontal ? offset.x : offset.y
         var val: Int = 0
         for (index, sectionSizeValue) in sectionSize.enumerate() {
+            if abs(theOffet - sectionSizeValue) < errorDelta { continue }
             if theOffet < sectionSizeValue {
                 val = index
                 break
