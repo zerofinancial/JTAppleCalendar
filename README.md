@@ -13,7 +13,7 @@ Inspiration for this control was made possible by Michael @ Karmadust. Want to k
 The look of this calendar is up to the developer. Check out what people have developed with this library and also post your own images [at this link](https://github.com/patchthecode/JTAppleCalendar/issues/2). A sample iOS application is also included in this project's [Github Repository](https://github.com/patchthecode/JTAppleCalendar) to give you an idea of what you can do.
 
 * Downloaded and liked this calendar's ease of use?
-* Then don't forget to leave a ★ Star rating on Github. It's needed to make this control #1 :)
+* Then don't forget to leave a ★ Star rating on [Github](https://github.com/patchthecode/JTAppleCalendar). It's needed to make this control #1 :)
 * Also, [Support](https://salt.bountysource.com/teams/jtapplecalendar) is not manditory, but will be much appreciated. Let's keep ~~OpenSource~~ good OpenSource projects alive.
 
 ### **Features**
