@@ -243,10 +243,13 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
 
     func sectionFromRectOffset(offset: CGPoint)-> Int {
         let theOffet = scrollDirection == .Horizontal ? offset.x : offset.y
+        return sectionFromOffset(theOffet)
+    }
+    func sectionFromOffset(theOffSet: CGFloat) -> Int {
         var val: Int = 0
         for (index, sectionSizeValue) in sectionSize.enumerate() {
-            if abs(theOffet - sectionSizeValue) < errorDelta { continue }
-            if theOffet < sectionSizeValue {
+            if abs(theOffSet - sectionSizeValue) < errorDelta { continue }
+            if theOffSet < sectionSizeValue {
                 val = index
                 break
             }

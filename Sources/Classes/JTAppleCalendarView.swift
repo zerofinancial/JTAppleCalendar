@@ -205,6 +205,23 @@ public class JTAppleCalendarView: UIView {
     public var scrollEnabled: Bool = true {
         didSet { calendarView.scrollEnabled = scrollEnabled }
     }
+        
+    public var scrollingMode: ScrollingMode = .StopAtEachSection {
+        didSet {
+            switch scrollingMode {
+            case let .StopAtEach(customInterval: CGFloat):
+                calendarView.decelerationRate = UIScrollViewDecelerationRateFast
+            case .StopAtEachSection:
+                calendarView.decelerationRate = UIScrollViewDecelerationRateFast
+            case let . NonStopToSection(val):
+                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
+            case let .NonStopToCell(val):
+                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
+            case let .NonStopTo(val, resistance):
+                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
+            }
+        }
+    }
     
     /// This is only applicable when calendar view paging is not enabled. Use this variable to decelerate the scroll movement to make it more 'sticky' or more fluid scrolling
     public var scrollResistance: CGFloat = 0.75
@@ -217,7 +234,7 @@ public class JTAppleCalendarView: UIView {
         let cv = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
         cv.dataSource = self
         cv.delegate = self
-        cv.pagingEnabled = true
+        cv.decelerationRate = UIScrollViewDecelerationRateFast
         cv.backgroundColor = UIColor.clearColor()
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
@@ -288,8 +305,7 @@ public class JTAppleCalendarView: UIView {
     }
     
     func dateFromSection(section: Int) -> (startDate: NSDate, endDate: NSDate)? {
-        if monthInfo.count < 1 { return nil }
-        
+        if !monthInfo.indices.contains(section) {return nil}
         let monthData = monthInfo[section]
         let itemLength = monthData[NUMBER_OF_DAYS_INDEX]
         let fdIndex = monthData[FIRST_DAY_INDEX]
