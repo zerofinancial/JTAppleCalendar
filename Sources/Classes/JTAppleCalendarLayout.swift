@@ -224,11 +224,11 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
     }
     
     func sizeOfSection(section: Int)-> CGFloat {
-        let headerSizeOfPreviousSection = headerCache[section].frame.height
         if scrollDirection == .Horizontal {
             return cellCache[section]![0].frame.width * CGFloat(numberOfColumns)
         } else {
-            return cellCache[section]![0].frame.height * CGFloat(numberOfRows) + headerSizeOfPreviousSection
+            let headerSizeOfSection = headerCache.count > 0 ? headerCache[section].frame.height : 0
+            return cellCache[section]![0].frame.height * CGFloat(numberOfRows) + headerSizeOfSection
         }
     }
     

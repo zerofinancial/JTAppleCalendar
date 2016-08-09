@@ -101,9 +101,11 @@ public class JTAppleCalendarView: UIView {
             if firstDayOfWeek != oldValue { layoutNeedsUpdating = true }
         }
     }
-    /// When enabled the date snaps to the edges of the calendar view when a user scrolls
-    public var cellSnapsToEdge = true
+    
+    var lastSavedContentOffset: CGFloat = 0.0
     var triggerScrollToDateDelegate: Bool? = true
+    
+    
     
     
     // Keeps track of item size for a section. This is an optimization
@@ -197,7 +199,13 @@ public class JTAppleCalendarView: UIView {
     
     /// Enable or disable paging when the calendar view is scrolled
     public var pagingEnabled: Bool = true {
-        didSet { calendarView.pagingEnabled = pagingEnabled }
+        didSet {
+            if pagingEnabled == true {
+                self.scrollingMode = .StopAtEachCalendarFrameWidth
+            } else {
+                self.scrollingMode = .NonStopToCell(withResistance: 0.75)
+            }
+        }
     }
     
     
@@ -206,9 +214,11 @@ public class JTAppleCalendarView: UIView {
         didSet { calendarView.scrollEnabled = scrollEnabled }
     }
         
-    public var scrollingMode: ScrollingMode = .StopAtEachSection {
+    public var scrollingMode: ScrollingMode = .StopAtEachCalendarFrameWidth {
         didSet {
             switch scrollingMode {
+            case .StopAtEachCalendarFrameWidth:
+                calendarView.decelerationRate = UIScrollViewDecelerationRateFast
             case let .StopAtEach(customInterval: CGFloat):
                 calendarView.decelerationRate = UIScrollViewDecelerationRateFast
             case .StopAtEachSection:
@@ -218,6 +228,8 @@ public class JTAppleCalendarView: UIView {
             case let .NonStopToCell(val):
                 calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
             case let .NonStopTo(val, resistance):
+                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
+            case .None:
                 calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
             }
         }

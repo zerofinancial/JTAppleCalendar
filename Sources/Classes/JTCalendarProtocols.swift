@@ -13,7 +13,13 @@ enum JTAppleCalendarViewSource {
 }
 
 public enum ScrollingMode {
-    case StopAtEachSection, StopAtEach(customInterval: CGFloat), NonStopToSection(withResistance: CGFloat), NonStopToCell(withResistance: CGFloat), NonStopTo(customInterval: CGFloat, withResistance: CGFloat)
+    case StopAtEachCalendarFrameWidth,
+    StopAtEachSection,
+    StopAtEach(customInterval: CGFloat),
+    NonStopToSection(withResistance: CGFloat),
+    NonStopToCell(withResistance: CGFloat),
+    NonStopTo(customInterval: CGFloat, withResistance: CGFloat),
+    None
 }
 
 /// Default delegate functions
