@@ -227,7 +227,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             return contentOffset
         }
         
-        let k = {(diff: CGFloat, interval: CGFloat)-> CGFloat in
+        let recalculateOffset = {(diff: CGFloat, interval: CGFloat)-> CGFloat in
             if isScrollingForward() {
                 let recalcOffsetAfterResistanceApplied = theTargetContentOffset - diff
                 return ceil(recalcOffsetAfterResistanceApplied / interval) * interval
@@ -280,13 +280,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 let diffResistance = diff * resistance
                 
                 if direction == .Horizontal {
-                    if isScrollingForward() {
-                        let recalcOffsetAfterResistanceApplied = theTargetContentOffset - diffResistance
-                        calculatedOffSet = ceil(recalcOffsetAfterResistanceApplied / interval) * interval
-                    } else {
-                        let recalcOffsetAfterResistanceApplied = theTargetContentOffset + diffResistance
-                        calculatedOffSet = floor(recalcOffsetAfterResistanceApplied / interval) * interval
-                    }
+                    calculatedOffSet = recalculateOffset(diffResistance, interval)
                 } else {
                     if isScrollingForward() {
                         calculatedOffSet = theTargetContentOffset - diffResistance
@@ -301,16 +295,8 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             case let .NonStopToCell(resistance):
                 var interval = calendarLayout.cellCache[targetSection]![0].frame.width
                 let diffResistance = diff * resistance
-                
-                
                 if direction == .Horizontal {
-                    if isScrollingForward() {
-                        let recalcOffsetAfterResistanceApplied = theTargetContentOffset - diffResistance
-                        calculatedOffSet = ceil(recalcOffsetAfterResistanceApplied / interval) * interval
-                    } else if isScrollingBackward() {
-                        let recalcOffsetAfterResistanceApplied = theTargetContentOffset + diffResistance
-                        calculatedOffSet = floor(recalcOffsetAfterResistanceApplied / interval) * interval
-                    }
+                    calculatedOffSet = recalculateOffset(diffResistance, interval)
                 } else {
                     var stopSection: Int
                     if isScrollingForward() {
@@ -340,17 +326,9 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 setTargetContentOffset(calculatedOffSet)
             case let .NonStopTo(interval, resistance): // Both horizontal and vertical are fixed
                 let diffResistance = diff * resistance
-                var finalValue: CGFloat = 0
-                if isScrollingForward() {
-                    let recalcOffsetAfterResistanceApplied = theTargetContentOffset - diffResistance
-                    calculatedOffSet = ceil(recalcOffsetAfterResistanceApplied / interval) * interval
-                    finalValue = ceil(calculatedOffSet / interval) * interval
-                } else {
-                    let recalcOffsetAfterResistanceApplied = theTargetContentOffset + diffResistance
-                    calculatedOffSet = floor(recalcOffsetAfterResistanceApplied / interval) * interval
-                    finalValue = floor(calculatedOffSet / interval) * interval
-                }
-                setTargetContentOffset(finalValue)
+                calculatedOffSet = recalculateOffset(diffResistance, interval)
+                
+                setTargetContentOffset(calculatedOffSet)
             default:
                 break
             }
