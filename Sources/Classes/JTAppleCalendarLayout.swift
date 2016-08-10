@@ -224,11 +224,11 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
     }
     
     func sizeOfSection(section: Int)-> CGFloat {
-        let headerSizeOfPreviousSection = headerCache[section].frame.height
         if scrollDirection == .Horizontal {
             return cellCache[section]![0].frame.width * CGFloat(numberOfColumns)
         } else {
-            return cellCache[section]![0].frame.height * CGFloat(numberOfRows) + headerSizeOfPreviousSection
+            let headerSizeOfSection = headerCache.count > 0 ? headerCache[section].frame.height : 0
+            return cellCache[section]![0].frame.height * CGFloat(numberOfRows) + headerSizeOfSection
         }
     }
     
@@ -243,10 +243,13 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
 
     func sectionFromRectOffset(offset: CGPoint)-> Int {
         let theOffet = scrollDirection == .Horizontal ? offset.x : offset.y
+        return sectionFromOffset(theOffet)
+    }
+    func sectionFromOffset(theOffSet: CGFloat) -> Int {
         var val: Int = 0
         for (index, sectionSizeValue) in sectionSize.enumerate() {
-            if abs(theOffet - sectionSizeValue) < errorDelta { continue }
-            if theOffet < sectionSizeValue {
+            if abs(theOffSet - sectionSizeValue) < errorDelta { continue }
+            if theOffSet < sectionSizeValue {
                 val = index
                 break
             }

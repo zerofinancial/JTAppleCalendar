@@ -101,9 +101,11 @@ public class JTAppleCalendarView: UIView {
             if firstDayOfWeek != oldValue { layoutNeedsUpdating = true }
         }
     }
-    /// When enabled the date snaps to the edges of the calendar view when a user scrolls
-    public var cellSnapsToEdge = true
+    
+    var lastSavedContentOffset: CGFloat = 0.0
     var triggerScrollToDateDelegate: Bool? = true
+    
+    
     
     
     // Keeps track of item size for a section. This is an optimization
@@ -195,9 +197,28 @@ public class JTAppleCalendarView: UIView {
     var cellViewSource: JTAppleCalendarViewSource!
     var registeredHeaderViews: [JTAppleCalendarViewSource] = []
     
+    
+    @available(*, deprecated=4.1.5, renamed="scrollingMode = .NonStopToSection(withResistance: <#CGFloat#>)")
     /// Enable or disable paging when the calendar view is scrolled
     public var pagingEnabled: Bool = true {
-        didSet { calendarView.pagingEnabled = pagingEnabled }
+        didSet {
+            if pagingEnabled == true {
+                self.scrollingMode = .StopAtEachCalendarFrameWidth
+            } else {
+                self.scrollingMode = .NonStopToCell(withResistance: 0.75)
+            }
+        }
+    }
+    /// Enable or disable snapping to cells when the calendar view is scrolled
+    @available(*, deprecated=4.1.5, renamed="calendarView.scrollingMode = NonStopToCell(withResistance: value)")
+    public var cellSnapsToEdge: Bool = false {
+        didSet {
+            if cellSnapsToEdge == true {
+                self.scrollingMode = .NonStopToCell(withResistance: 0.75)
+            } else {
+                self.scrollingMode = .StopAtEachCalendarFrameWidth
+            }
+        }
     }
     
     
@@ -205,8 +226,20 @@ public class JTAppleCalendarView: UIView {
     public var scrollEnabled: Bool = true {
         didSet { calendarView.scrollEnabled = scrollEnabled }
     }
+        
+    public var scrollingMode: ScrollingMode = .StopAtEachCalendarFrameWidth {
+        didSet {
+            switch scrollingMode {
+            case .StopAtEachCalendarFrameWidth, .StopAtEach,.StopAtEachSection:
+                calendarView.decelerationRate = UIScrollViewDecelerationRateFast
+            case .NonStopToSection, .NonStopToCell, .NonStopTo, .None:
+                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
+            }
+        }
+    }
     
     /// This is only applicable when calendar view paging is not enabled. Use this variable to decelerate the scroll movement to make it more 'sticky' or more fluid scrolling
+    @available(*, deprecated=4.1.5, message="This variable does nothing.")
     public var scrollResistance: CGFloat = 0.75
     
     lazy var calendarView : UICollectionView = {
@@ -217,7 +250,7 @@ public class JTAppleCalendarView: UIView {
         let cv = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
         cv.dataSource = self
         cv.delegate = self
-        cv.pagingEnabled = true
+        cv.decelerationRate = UIScrollViewDecelerationRateFast
         cv.backgroundColor = UIColor.clearColor()
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
@@ -288,8 +321,7 @@ public class JTAppleCalendarView: UIView {
     }
     
     func dateFromSection(section: Int) -> (startDate: NSDate, endDate: NSDate)? {
-        if monthInfo.count < 1 { return nil }
-        
+        if !monthInfo.indices.contains(section) {return nil}
         let monthData = monthInfo[section]
         let itemLength = monthData[NUMBER_OF_DAYS_INDEX]
         let fdIndex = monthData[FIRST_DAY_INDEX]
@@ -310,7 +342,7 @@ public class JTAppleCalendarView: UIView {
         if let attributes = self.calendarView.layoutAttributesForItemAtIndexPath(indexPath) {
             let origin = attributes.frame.origin
             let offset = direction == .Horizontal ? origin.x : origin.y
-            if  self.calendarView.contentOffset.x == offset || (self.pagingEnabled && (indexPath.section ==  currentSectionPage)) {
+            if  self.calendarView.contentOffset.x == offset || (scrollingMode.pagingIsEnabled() && (indexPath.section ==  currentSectionPage)) {
                 retval = true
             } else {
                 retval = false
@@ -331,7 +363,7 @@ public class JTAppleCalendarView: UIView {
         let calendarCurrentOffset = direction == .Horizontal ? calendarView.contentOffset.x : calendarView.contentOffset.y
         if
             calendarCurrentOffset == theOffset ||
-                (self.pagingEnabled && (sectionForOffset ==  currentSectionPage)){
+                (scrollingMode.pagingIsEnabled() && (sectionForOffset ==  currentSectionPage)){
             retval = true
         } else {
             retval = false
@@ -449,13 +481,27 @@ public class JTAppleCalendarView: UIView {
         layout.clearCache()
         monthInfo = setupMonthInfoDataForStartAndEndDate()
         
-        // Only remove the selected dates and paths if the new layout does nto contain the date
-        if pathsFromDates(theSelectedDates).count != theSelectedIndexPaths.count {
-            theSelectedDates.removeAll()
-            theSelectedIndexPaths.removeAll()
+        // the selected dates and paths will be retained. Ones that are not available on the new layout will be removed.
+        var indexPathsToReselect = [NSIndexPath]()
+        var newDates = [NSDate]()
+        for date in selectedDates {
+            // add the index paths of the new layout
+            let path = pathsFromDates([date])
+            indexPathsToReselect.appendContentsOf(path)
+            
+            if
+                path.count > 0,
+                let possibleCounterPartDateIndex = indexPathOfdateCellCounterPart(date, indexPath: path[0], dateOwner: CellState.DateOwner.ThisMonth) {
+                indexPathsToReselect.append(possibleCounterPartDateIndex)
+            }
         }
-
         
+        for path in indexPathsToReselect {
+            if let date = dateFromPath(path) { newDates.append(date) }
+        }
+        
+        theSelectedDates = newDates
+        theSelectedIndexPaths = indexPathsToReselect
     }
     
     func calendarViewHeaderSizeForSection(section: Int) -> CGSize {

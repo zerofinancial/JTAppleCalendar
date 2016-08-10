@@ -12,6 +12,23 @@ enum JTAppleCalendarViewSource {
     case fromClassName(String)
 }
 
+public enum ScrollingMode {
+    case StopAtEachCalendarFrameWidth,
+    StopAtEachSection,
+    StopAtEach(customInterval: CGFloat),
+    NonStopToSection(withResistance: CGFloat),
+    NonStopToCell(withResistance: CGFloat),
+    NonStopTo(customInterval: CGFloat, withResistance: CGFloat),
+    None
+    
+    func  pagingIsEnabled()->Bool {
+        switch self {
+            case .StopAtEachSection: return true
+            default: return false
+        }
+    }
+}
+
 /// Default delegate functions
 public extension JTAppleCalendarViewDelegate {
     func calendar(calendar : JTAppleCalendarView, canSelectDate date : NSDate, cell: JTAppleDayCellView, cellState: CellState)->Bool {return true}
@@ -117,8 +134,10 @@ protocol JTAppleCalendarLayoutProtocol: class {
     var scrollDirection: UICollectionViewScrollDirection {get set}
     var cellCache: [Int:[UICollectionViewLayoutAttributes]] {get set}
     var headerCache: [UICollectionViewLayoutAttributes] {get set}
+    var sectionSize: [CGFloat] {get set}
     func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint) -> CGPoint
     func sectionFromRectOffset(offset: CGPoint)-> Int
+    func sectionFromOffset(theOffSet: CGFloat) -> Int
     func sizeOfContentForSection(section: Int)-> CGFloat
     func clearCache()
 }

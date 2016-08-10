@@ -89,10 +89,7 @@ calendarView.bufferTop = 0                                 // default is 0. - st
 calendarView.bufferBottom = 0                              // default is 0. - still work in progress on this
 calendarView.firstDayOfWeek = .Sunday                      // default is Sunday
 calendarView.scrollEnabled = true                          // default is true
-calendarView.pagingEnabled = true                          // default is true
-calendarView.scrollResistance = 0.75                       // default is 0.75 - this is only applicable when paging is not enabled.
 calendarView.itemSize = nil                                // default is nil. Use a value here to change the size of your cells
-calendarView.cellSnapsToEdge = true                        // default is true. Disabling this causes calendar to not snap to grid
 ```
 
 Do you have any other questions?. If you are trying to bend heaven and earth to do something complicated with this calendar, then chances are there is already an easy way for it to be done. So [Opening an issue](https://github.com/patchthecode/JTAppleCalendar/issues/new) might be a good idea.
