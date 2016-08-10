@@ -89,8 +89,6 @@ calendarView.bufferTop = 0                                 // default is 0. - st
 calendarView.bufferBottom = 0                              // default is 0. - still work in progress on this
 calendarView.firstDayOfWeek = .Sunday                      // default is Sunday
 calendarView.scrollEnabled = true                          // default is true
-calendarView.pagingEnabled = true                          // default is true
-calendarView.scrollResistance = 0.75                       // default is 0.75 - this is only applicable when paging is not enabled.
 calendarView.itemSize = nil                                // default is nil. Use a value here to change the size of your cells
 ```
 

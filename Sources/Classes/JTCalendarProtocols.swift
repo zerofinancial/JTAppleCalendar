@@ -20,6 +20,13 @@ public enum ScrollingMode {
     NonStopToCell(withResistance: CGFloat),
     NonStopTo(customInterval: CGFloat, withResistance: CGFloat),
     None
+    
+    func  pagingIsEnabled()->Bool {
+        switch self {
+            case .StopAtEachSection: return true
+            default: return false
+        }
+    }
 }
 
 /// Default delegate functions

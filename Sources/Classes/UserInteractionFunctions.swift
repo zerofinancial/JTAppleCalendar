@@ -276,7 +276,7 @@ extension JTAppleCalendarView {
             if retrievedPathsFromDates.count > 0 {
                 let sectionIndexPath =  self.pathsFromDates([date])[0]
                 var position: UICollectionViewScrollPosition = self.direction == .Horizontal ? .Left : .Top
-                if !self.pagingEnabled {
+                if !self.scrollingMode.pagingIsEnabled() {
                     if let validPosition:UICollectionViewScrollPosition = preferredScrollPosition {
                         if self.direction == .Horizontal {
                             if validPosition == .Left || validPosition == .Right || validPosition == .CenteredHorizontally {
@@ -309,7 +309,7 @@ extension JTAppleCalendarView {
                     }
                 }
                 
-                if self.pagingEnabled {
+                if self.scrollingMode.pagingIsEnabled() {
                     if self.registeredHeaderViews.count > 0 {
                         // If both paging and header is on, then scroll to the actual date
                         // If direction is vertical and user has a custom size that is at least the size of the collectionview. 

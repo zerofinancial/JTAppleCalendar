@@ -197,6 +197,8 @@ public class JTAppleCalendarView: UIView {
     var cellViewSource: JTAppleCalendarViewSource!
     var registeredHeaderViews: [JTAppleCalendarViewSource] = []
     
+    
+    @available(*, deprecated=4.1.5, renamed="scrollingMode = .NonStopToSection(withResistance: <#CGFloat#>)")
     /// Enable or disable paging when the calendar view is scrolled
     public var pagingEnabled: Bool = true {
         didSet {
@@ -204,6 +206,17 @@ public class JTAppleCalendarView: UIView {
                 self.scrollingMode = .StopAtEachCalendarFrameWidth
             } else {
                 self.scrollingMode = .NonStopToCell(withResistance: 0.75)
+            }
+        }
+    }
+    /// Enable or disable snapping to cells when the calendar view is scrolled
+    @available(*, deprecated=4.1.5, renamed="calendarView.scrollingMode = NonStopToCell(withResistance: value)")
+    public var cellSnapsToEdge: Bool = false {
+        didSet {
+            if cellSnapsToEdge == true {
+                self.scrollingMode = .NonStopToCell(withResistance: 0.75)
+            } else {
+                self.scrollingMode = .StopAtEachCalendarFrameWidth
             }
         }
     }
@@ -217,25 +230,16 @@ public class JTAppleCalendarView: UIView {
     public var scrollingMode: ScrollingMode = .StopAtEachCalendarFrameWidth {
         didSet {
             switch scrollingMode {
-            case .StopAtEachCalendarFrameWidth:
+            case .StopAtEachCalendarFrameWidth, .StopAtEach,.StopAtEachSection:
                 calendarView.decelerationRate = UIScrollViewDecelerationRateFast
-            case let .StopAtEach(customInterval: CGFloat):
-                calendarView.decelerationRate = UIScrollViewDecelerationRateFast
-            case .StopAtEachSection:
-                calendarView.decelerationRate = UIScrollViewDecelerationRateFast
-            case let . NonStopToSection(val):
-                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
-            case let .NonStopToCell(val):
-                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
-            case let .NonStopTo(val, resistance):
-                calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
-            case .None:
+            case .NonStopToSection, .NonStopToCell, .NonStopTo, .None:
                 calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
             }
         }
     }
     
     /// This is only applicable when calendar view paging is not enabled. Use this variable to decelerate the scroll movement to make it more 'sticky' or more fluid scrolling
+    @available(*, deprecated=4.1.5, message="This variable does nothing.")
     public var scrollResistance: CGFloat = 0.75
     
     lazy var calendarView : UICollectionView = {
@@ -338,7 +342,7 @@ public class JTAppleCalendarView: UIView {
         if let attributes = self.calendarView.layoutAttributesForItemAtIndexPath(indexPath) {
             let origin = attributes.frame.origin
             let offset = direction == .Horizontal ? origin.x : origin.y
-            if  self.calendarView.contentOffset.x == offset || (self.pagingEnabled && (indexPath.section ==  currentSectionPage)) {
+            if  self.calendarView.contentOffset.x == offset || (scrollingMode.pagingIsEnabled() && (indexPath.section ==  currentSectionPage)) {
                 retval = true
             } else {
                 retval = false
@@ -359,7 +363,7 @@ public class JTAppleCalendarView: UIView {
         let calendarCurrentOffset = direction == .Horizontal ? calendarView.contentOffset.x : calendarView.contentOffset.y
         if
             calendarCurrentOffset == theOffset ||
-                (self.pagingEnabled && (sectionForOffset ==  currentSectionPage)){
+                (scrollingMode.pagingIsEnabled() && (sectionForOffset ==  currentSectionPage)){
             retval = true
         } else {
             retval = false
