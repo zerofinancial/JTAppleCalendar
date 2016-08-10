@@ -481,13 +481,27 @@ public class JTAppleCalendarView: UIView {
         layout.clearCache()
         monthInfo = setupMonthInfoDataForStartAndEndDate()
         
-        // Only remove the selected dates and paths if the new layout does nto contain the date
-        if pathsFromDates(theSelectedDates).count != theSelectedIndexPaths.count {
-            theSelectedDates.removeAll()
-            theSelectedIndexPaths.removeAll()
+        // the selected dates and paths will be retained. Ones that are not available on the new layout will be removed.
+        var indexPathsToReselect = [NSIndexPath]()
+        var newDates = [NSDate]()
+        for date in selectedDates {
+            // add the index paths of the new layout
+            let path = pathsFromDates([date])
+            indexPathsToReselect.appendContentsOf(path)
+            
+            if
+                path.count > 0,
+                let possibleCounterPartDateIndex = indexPathOfdateCellCounterPart(date, indexPath: path[0], dateOwner: CellState.DateOwner.ThisMonth) {
+                indexPathsToReselect.append(possibleCounterPartDateIndex)
+            }
         }
-
         
+        for path in indexPathsToReselect {
+            if let date = dateFromPath(path) { newDates.append(date) }
+        }
+        
+        theSelectedDates = newDates
+        theSelectedIndexPaths = indexPathsToReselect
     }
     
     func calendarViewHeaderSizeForSection(section: Int) -> CGSize {
