@@ -176,6 +176,11 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
 }
 
 extension JTAppleCalendarView: UIScrollViewDelegate {
+    /// Inform the scrollViewDidEndDecelerating function that scrolling just occurred
+    public func scrollViewDidScrollToTop(scrollView: UIScrollView) {
+        self.scrollViewDidEndDecelerating(calendarView)
+    }
+    
     /// Tells the delegate when the user finishes scrolling the content.
     public func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let saveLastContentOffset = { self.lastSavedContentOffset = self.direction == .Horizontal ? targetContentOffset.memory.x : targetContentOffset.memory.y }
@@ -328,11 +333,8 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             
         default:
             // If we go through this route, then no animated scrolling was done. User scrolled and stopped and lifted finger. Thus update the label.
-            delayRunOnGlobalThread(0.0, qos: QOS_CLASS_USER_INITIATED) {
-                let currentSegmentDates = self.currentCalendarDateSegment()
-                delayRunOnMainThread(0.0, closure: {
-                    self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.startDate, endingWithDate: currentSegmentDates.endDate)
-                })
+            delayRunOnMainThread(0.0) {
+                self.scrollViewDidEndDecelerating(self.calendarView)
             }
         }
         
