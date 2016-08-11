@@ -23,7 +23,7 @@ public enum ScrollingMode {
     
     func  pagingIsEnabled()->Bool {
         switch self {
-            case .StopAtEachSection: return true
+            case .StopAtEachCalendarFrameWidth: return true
             default: return false
         }
     }
