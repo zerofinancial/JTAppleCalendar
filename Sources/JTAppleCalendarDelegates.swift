@@ -327,7 +327,13 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             }
             
         default:
-            break
+            // If we go through this route, then no animated scrolling was done. User scrolled and stopped and lifted finger. Thus update the label.
+            delayRunOnGlobalThread(0.0, qos: QOS_CLASS_USER_INITIATED) {
+                let currentSegmentDates = self.currentCalendarDateSegment()
+                delayRunOnMainThread(0.0, closure: {
+                    self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.startDate, endingWithDate: currentSegmentDates.endDate)
+                })
+            }
         }
         
         saveLastContentOffset()
