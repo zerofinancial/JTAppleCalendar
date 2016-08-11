@@ -213,7 +213,7 @@ public class JTAppleCalendarView: UIView {
         }
     }
     /// Enable or disable snapping to cells when the calendar view is scrolled
-    @available(*, deprecated=4.1.5, renamed="calendarView.scrollingMode = NonStopToCell(withResistance: value)")
+    @available(*, deprecated=4.1.5, renamed="calendarView.scrollingMode = NonStopToCell(withResistance: <#CGFloat#>)")
     public var cellSnapsToEdge: Bool = false {
         didSet {
             if cellSnapsToEdge == true {
@@ -233,11 +233,22 @@ public class JTAppleCalendarView: UIView {
     public var scrollingMode: ScrollingMode = .StopAtEachCalendarFrameWidth {
         didSet {
             switch scrollingMode {
-            case .StopAtEachCalendarFrameWidth, .StopAtEach,.StopAtEachSection:
+            case .StopAtEachCalendarFrameWidth:
+                calendarView.decelerationRate = UIScrollViewDecelerationRateFast
+            case .StopAtEach,.StopAtEachSection:
                 calendarView.decelerationRate = UIScrollViewDecelerationRateFast
             case .NonStopToSection, .NonStopToCell, .NonStopTo, .None:
                 calendarView.decelerationRate = UIScrollViewDecelerationRateNormal
             }
+            
+            #if os(iOS)
+                switch scrollingMode {
+                case .StopAtEachCalendarFrameWidth:
+                    calendarView.pagingEnabled = true
+                default:
+                    calendarView.pagingEnabled = false
+                }
+            #endif
         }
     }
     
@@ -258,6 +269,10 @@ public class JTAppleCalendarView: UIView {
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
         cv.allowsMultipleSelection = false
+        #if os(iOS)
+            cv.pagingEnabled = true
+        #endif
+        
         return cv
     }()
     
@@ -385,19 +400,17 @@ public class JTAppleCalendarView: UIView {
     
     func scrollToHeaderInSection(section:Int, triggerScrollToDateDelegate: Bool = false, withAnimation animation: Bool = true, completionHandler: (()->Void)? = nil)  {
         if registeredHeaderViews.count < 1 { return }
-        
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
-        
         let indexPath = NSIndexPath(forItem: 0, inSection: section)
-        calendarView.layoutIfNeeded()
-        if let attributes =  calendarView.layoutAttributesForSupplementaryElementOfKind(UICollectionElementKindSectionHeader, atIndexPath: indexPath) {
-            if let validHandler = completionHandler {
-                delayedExecutionClosure.append(validHandler)
-            }
-            
-            let topOfHeader = CGPointMake(attributes.frame.origin.x, attributes.frame.origin.y)
-            self.scrollInProgress = true
-            delayRunOnMainThread(0.0, closure: {
+        delayRunOnMainThread(0.0) {
+            if let attributes =  self.calendarView.layoutAttributesForSupplementaryElementOfKind(UICollectionElementKindSectionHeader, atIndexPath: indexPath) {
+                if let validHandler = completionHandler {
+                    self.delayedExecutionClosure.append(validHandler)
+                }
+                
+                let topOfHeader = CGPointMake(attributes.frame.origin.x, attributes.frame.origin.y)
+                self.scrollInProgress = true
+                
                 self.calendarView.setContentOffset(topOfHeader, animated:animation)
                 if  !animation {
                     self.scrollViewDidEndScrollingAnimation(self.calendarView)
@@ -410,7 +423,7 @@ public class JTAppleCalendarView: UIView {
                         self.scrollInProgress = false
                     }
                 }
-            })
+            }
         }
     }
         
