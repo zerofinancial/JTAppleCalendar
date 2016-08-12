@@ -72,10 +72,6 @@ public enum DaysOfWeek: Int {
 
 /// An instance of JTAppleCalendarView (or simply, a calendar view) is a means for displaying and interacting with a gridstyle layout of date-cells
 public class JTAppleCalendarView: UIView {
-    /// The amount of buffer space before the first row of date-cells
-    public var bufferTop: CGFloat    = 0.0
-    /// The amount of buffer space after the last row of date-cells
-    public var bufferBottom: CGFloat = 0.0
     /// Configures the size of your date cells
     public var itemSize: CGFloat?
     
