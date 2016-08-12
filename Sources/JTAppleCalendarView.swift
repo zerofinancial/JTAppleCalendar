@@ -563,11 +563,17 @@ public class JTAppleCalendarView: UIView {
                     }
                     let indexPathOfLastDayOfPreviousMonth = pathsFromDates([lastDayOfPrevMonth])
                     if indexPathOfLastDayOfPreviousMonth.count > 0 {
-                        let lastDayIndex = indexPathOfLastDayOfPreviousMonth[0].item
+                        var indexOfItemToBeFound = indexPathOfLastDayOfPreviousMonth[0].item + dayIndex
+                        var sectionOfItemToBeFound = indexPathOfLastDayOfPreviousMonth[0].section
+                                                
+                        // If this is true, then we have a case where the index path is in the follow section. We need to recalc it here
+                        if indexOfItemToBeFound >= numberOfItemsPerSection {
+                            sectionOfItemToBeFound += 1
+                            indexOfItemToBeFound -= numberOfItemsPerSection
+                        }
                         
-                        let indexPathItemToBeFound = lastDayIndex + dayIndex
-                        if indexPathItemToBeFound < 42 { // then it is valid
-                            retval = NSIndexPath(forItem: indexPathItemToBeFound, inSection: indexPathOfLastDayOfPreviousMonth[0].section)
+                        if indexOfItemToBeFound < 42 { // then it is valid
+                            retval = NSIndexPath(forItem: indexOfItemToBeFound, inSection: sectionOfItemToBeFound)
                         }
                     } else {
                         print("out of range error in indexPathOfdateCellCounterPart() upper. This should not happen. Contact developer on github")
