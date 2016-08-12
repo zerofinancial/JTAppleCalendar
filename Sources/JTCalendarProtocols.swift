@@ -82,27 +82,27 @@ public protocol JTAppleCalendarViewDelegate: class {
     ///     - date: The date attached to the date-cell.
     ///     - cell: The date-cell view. This can be customized at this point. This may be nil if the selected cell is off the screen
     ///     - cellState: The month the date-cell belongs to.
-    func calendar(calendar : JTAppleCalendarView, didSelectDate date : NSDate, cell: JTAppleDayCellView?, cellState: CellState) -> Void
+    func calendar(calendar : JTAppleCalendarView, didSelectDate date : NSDate, cell: JTAppleDayCellView?, cellState: CellState)
     /// Tells the delegate that a date-cell with a specified date was de-selected
     /// - Parameters:
     ///     - calendar: The JTAppleCalendar view giving this information.
     ///     - date: The date attached to the date-cell.
     ///     - cell: The date-cell view. This can be customized at this point. This may be nil if the selected cell is off the screen
     ///     - cellState: The month the date-cell belongs to.
-    func calendar(calendar : JTAppleCalendarView, didDeselectDate date : NSDate, cell: JTAppleDayCellView?, cellState: CellState) -> Void
+    func calendar(calendar : JTAppleCalendarView, didDeselectDate date : NSDate, cell: JTAppleDayCellView?, cellState: CellState)
     /// Tells the delegate that the JTAppleCalendar view scrolled to a segment beginning and ending with a particular date
     /// - Parameters:
     ///     - calendar: The JTAppleCalendar view giving this information.
     ///     - startDate: The date at the start of the segment.
     ///     - endDate: The date at the end of the segment.
-    func calendar(calendar : JTAppleCalendarView, didScrollToDateSegmentStartingWithdate startDate: NSDate, endingWithDate endDate: NSDate) -> Void
+    func calendar(calendar : JTAppleCalendarView, didScrollToDateSegmentStartingWithdate startDate: NSDate, endingWithDate endDate: NSDate)
     /// Tells the delegate that the JTAppleCalendar is about to display a date-cell. This is the point of customization for your date cells
     /// - Parameters:
     ///     - calendar: The JTAppleCalendar view giving this information.
     ///     - cell: The date-cell that is about to be displayed.
     ///     - date: The date attached to the cell.
     ///     - cellState: The month the date-cell belongs to.
-    func calendar(calendar : JTAppleCalendarView, isAboutToDisplayCell cell: JTAppleDayCellView, date:NSDate, cellState: CellState) -> Void
+    func calendar(calendar : JTAppleCalendarView, isAboutToDisplayCell cell: JTAppleDayCellView, date:NSDate, cellState: CellState)
     /// Tells the delegate that the JTAppleCalendar is about to reset a date-cell. Reset your cell here before being reused on screen. Make sure this function exits quicky.
     /// - Parameters:
     ///     - cell: The date-cell that is about to be reset.
@@ -125,7 +125,7 @@ public protocol JTAppleCalendarViewDelegate: class {
     ///     - header: The header view that is about to be displayed.
     ///     - date: The date attached to the header.
     ///     - identifier: The identifier you provided for the header
-    func calendar(calendar : JTAppleCalendarView, isAboutToDisplaySectionHeader header: JTAppleHeaderView, dateRange: (start: NSDate, end: NSDate), identifier: String) -> Void
+    func calendar(calendar : JTAppleCalendarView, isAboutToDisplaySectionHeader header: JTAppleHeaderView, dateRange: (start: NSDate, end: NSDate), identifier: String)
 }
 
 protocol JTAppleCalendarLayoutProtocol: class {

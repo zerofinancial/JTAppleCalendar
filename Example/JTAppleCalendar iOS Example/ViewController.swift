@@ -46,7 +46,7 @@ class ViewController: UIViewController {
         // calendarView.registerCellViewClass(fileName: "JTAppleCalendar_Example.CodeCellView")
         //_____________________________________________________________________________________________
         
-        
+
         
         // Enable/disable the following code line to show/hide headers.
         calendarView.registerHeaderViewXibs(fileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"]) // headers are Optional. You can register multiple if you want.
@@ -62,7 +62,7 @@ class ViewController: UIViewController {
         calendarView.bufferBottom = 0                                        // default is 0. - still work in progress on this
         calendarView.firstDayOfWeek = .Sunday                                // default is Sunday
         calendarView.scrollEnabled = true                                    // default is true
-        calendarView.scrollingMode = .NonStopToSection(withResistance: 0.75) // default is true
+        calendarView.scrollingMode = .StopAtEachCalendarFrameWidth           // default is .StopAtEachCalendarFrameWidth
         calendarView.itemSize = 30                                           // default is nil. Use a value here to change the size of your cells
         //_____________________________________________________________________________________________
         
@@ -146,23 +146,22 @@ extension ViewController: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
         setupViewsOfCalendar(startDate, endDate: endDate)
     }
     
-    func calendar(calendar: JTAppleCalendarView, sectionHeaderIdentifierForDate date: (startDate: NSDate, endDate: NSDate)) -> String? {
-        let comp = testCalendar.component(.Month, fromDate: date.startDate)
-        if comp % 2 > 0{
+    func calendar(calendar : JTAppleCalendarView, sectionHeaderIdentifierForDate dateRange: (start: NSDate, end: NSDate), belongingTo month: Int) -> String? {
+        if month % 2 > 0 {
             return "WhiteSectionHeaderView"
         }
         return "PinkSectionHeaderView"
     }
     
-    func calendar(calendar: JTAppleCalendarView, sectionHeaderSizeForDate date: (startDate: NSDate, endDate: NSDate)) -> CGSize {
-        if testCalendar.component(.Month, fromDate: date.startDate) % 2 == 1 {
+    func calendar(calendar : JTAppleCalendarView, sectionHeaderSizeForDate dateRange: (start: NSDate, end: NSDate), belongingTo month: Int) -> CGSize {
+        if month % 2 > 0 {
             return CGSize(width: 200, height: 50)
         } else {
             return CGSize(width: 200, height: 100) // Yes you can have different size headers
         }
     }
     
-    func calendar(calendar: JTAppleCalendarView, isAboutToDisplaySectionHeader header: JTAppleHeaderView, date: (startDate: NSDate, endDate: NSDate), identifier: String) {
+    func calendar(calendar : JTAppleCalendarView, isAboutToDisplaySectionHeader header: JTAppleHeaderView, dateRange: (start: NSDate, end: NSDate), identifier: String) {
         switch identifier {
         case "WhiteSectionHeaderView":
             let headerCell = (header as? WhiteSectionHeaderView)
