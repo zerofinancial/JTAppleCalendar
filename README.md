@@ -82,14 +82,13 @@ The following structure was returned when a cell is about to be displayed.
 #### Properties you can configure
 ```swift
 // Note: You do not need to configure your calendar with this if it is already the default
-calendarView.direction = .Horizontal                       // default is horizontal
-calendarView.cellInset = CGPoint(x: 0, y: 0)               // default is (3,3)
-calendarView.allowsMultipleSelection = false               // default is false
-calendarView.bufferTop = 0                                 // default is 0. - still work in progress on this
-calendarView.bufferBottom = 0                              // default is 0. - still work in progress on this
-calendarView.firstDayOfWeek = .Sunday                      // default is Sunday
-calendarView.scrollEnabled = true                          // default is true
-calendarView.itemSize = nil                                // default is nil. Use a value here to change the size of your cells
+calendarView.direction = .Horizontal                                 // default is horizontal
+calendarView.cellInset = CGPoint(x: 0, y: 0)                         // default is (3,3)
+calendarView.allowsMultipleSelection = false                         // default is false
+calendarView.firstDayOfWeek = .Sunday                                // default is Sunday
+calendarView.scrollEnabled = true                                    // default is true
+calendarView.scrollingMode = .StopAtEachCalendarFrameWidth           // default is .StopAtEachCalendarFrameWidth
+calendarView.itemSize = nil                                          // default is nil. Use a value here to change the size of your cells
 ```
 
 Do you have any other questions?. If you are trying to bend heaven and earth to do something complicated with this calendar, then chances are there is already an easy way for it to be done. So [Opening an issue](https://github.com/patchthecode/JTAppleCalendar/issues/new) might be a good idea.
