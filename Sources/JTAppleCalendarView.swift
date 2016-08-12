@@ -361,6 +361,19 @@ public class JTAppleCalendarView: UIView {
         return nil
     }
     
+    func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: NSIndexPath)->[NSIndexPath] {
+        var retval = [NSIndexPath]()
+        if let validForwardIndex = calendarView.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: indexPath.item + 1, inSection: indexPath.section)) where
+            theSelectedIndexPaths.contains(validForwardIndex.indexPath){
+            retval.append(validForwardIndex.indexPath)
+        }
+        if let validBackwardIndex = calendarView.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: indexPath.item - 1, inSection: indexPath.section)) where
+            theSelectedIndexPaths.contains(validBackwardIndex.indexPath) {
+            retval.append(validBackwardIndex.indexPath)
+        }
+        return retval
+    }
+    
     func calendarOffsetIsAlreadyAtScrollPosition(forIndexPath indexPath:NSIndexPath) -> Bool? {
         var retval: Bool?
         

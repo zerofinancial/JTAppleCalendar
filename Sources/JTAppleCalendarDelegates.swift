@@ -102,7 +102,8 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     
     /// Tells the delegate that the item at the specified path was deselected. The collection view calls this method when the user successfully deselects an item in the collection view. It does not call this method when you programmatically deselect items.
     public func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-        internalCollectionView(collectionView, didDeselectItemAtIndexPath: indexPath, indexPathsToReload: theSelectedIndexPaths)
+        let indexPathsToBeReloaded = validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)
+        internalCollectionView(collectionView, didDeselectItemAtIndexPath: indexPath, indexPathsToReload: indexPathsToBeReloaded)
     }
     func internalCollectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath, indexPathsToReload: [NSIndexPath] = []) {
         if let
@@ -144,7 +145,9 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     
     /// Tells the delegate that the item at the specified index path was selected. The collection view calls this method when the user successfully selects an item in the collection view. It does not call this method when you programmatically set the selection.
     public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        internalCollectionView(collectionView, didSelectItemAtIndexPath: indexPath, indexPathsToReload: theSelectedIndexPaths)
+        // index paths to be reloaded should be index to the left and right of the selected index
+        let indexPathsToBeReloaded = validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)
+        internalCollectionView(collectionView, didSelectItemAtIndexPath: indexPath, indexPathsToReload: indexPathsToBeReloaded)
     }
     
     func internalCollectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath, indexPathsToReload: [NSIndexPath] = []) {
@@ -161,7 +164,9 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
             var pathsToReload = indexPathsToReload
             if let aSelectedCounterPartIndexPath = selectCounterPartCellIndexPathIfExists(indexPath, date: dateSelectedByUser, dateOwner: cellState.dateBelongsTo) {
                 // ONLY if the counterPart cell is visible, then we need to inform the delegate
-                if !pathsToReload.contains(aSelectedCounterPartIndexPath){ pathsToReload.append(aSelectedCounterPartIndexPath) }
+                if !pathsToReload.contains(aSelectedCounterPartIndexPath) && calendarView.indexPathsForVisibleItems().contains(aSelectedCounterPartIndexPath){
+                    pathsToReload.append(aSelectedCounterPartIndexPath)
+                }
             }
             if pathsToReload.count > 0 {
                 delayRunOnMainThread(0.0) {
