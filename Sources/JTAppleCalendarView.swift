@@ -797,11 +797,11 @@ extension JTAppleCalendarView {
             dateBelongsTo: dateBelongsTo,
             date: date,
             day: dayOfWeek,
-            row: {()->Int in return itemIndex / MAX_NUMBER_OF_DAYS_IN_WEEK },
-            column: {()->Int in return itemIndex % MAX_NUMBER_OF_DAYS_IN_WEEK },
-            dateSection: {()->(startDate: NSDate, endDate: NSDate) in return self.dateFromSection(itemSection)! },
+            row: { return itemIndex / MAX_NUMBER_OF_DAYS_IN_WEEK },
+            column: { return itemIndex % MAX_NUMBER_OF_DAYS_IN_WEEK },
+            dateSection: { return self.dateFromSection(itemSection)! },
             selectedPosition: rangePosition,
-            cell: {()->JTAppleDayCell? in return cell}
+            cell: {return cell}
         )
         return cellState
     }
