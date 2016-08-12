@@ -336,8 +336,8 @@
 		6B60DF721D5C07F4009174A2 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				6B60DF531D5BFE41009174A2 /* JTAppleCalendar tvOS Example */,
 				6B60DF0C1D5BE834009174A2 /* JTAppleCalendar iOS Example */,
+				6B60DF531D5BFE41009174A2 /* JTAppleCalendar tvOS Example */,
 			);
 			path = Example;
 			sourceTree = "<group>";

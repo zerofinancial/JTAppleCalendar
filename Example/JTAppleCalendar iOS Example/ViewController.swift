@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         // After reloading. Scroll to your selected date, and setup your calendar
         calendarView.scrollToDate(NSDate(), triggerScrollToDateDelegate: false, animateScroll: false) {
             let currentDate = self.calendarView.currentCalendarDateSegment()
-            self.setupViewsOfCalendar(currentDate.startDate, endDate: currentDate.endDate)
+            self.setupViewsOfCalendar(currentDate.dateRange.start, endDate: currentDate.dateRange.end)
         }
     }
     
