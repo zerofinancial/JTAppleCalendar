@@ -57,10 +57,10 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - startDate: The start date of the current section
     ///     - endDate: The end date of the current section
-    public func currentCalendarDateSegment() -> (startDate: NSDate, endDate: NSDate) {
+    public func currentCalendarDateSegment() -> (dateRange:(start: NSDate, end: NSDate), month: Int) {
         guard let dateSegment = dateFromSection(currentSectionPage) else {
             assert(false, "Error in currentCalendarDateSegment method. Report this issue to Jay on github.")
-            return (NSDate(), NSDate())
+            return ((NSDate(), NSDate()), 0)
         }
         return dateSegment
     }

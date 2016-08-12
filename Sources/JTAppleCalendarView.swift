@@ -51,7 +51,7 @@ public struct CellState {
     /// returns the column in which the date cell appears visually
     public let column: ()->Int
     /// returns the section the date cell belongs to
-    public let dateSection: ()->(startDate: NSDate, endDate: NSDate)
+    public let dateSection: ()->(dateRange:(start: NSDate, end: NSDate), month: Int)
     /// returns the position of a selection in the event you wish to do range selection
     public let selectedPosition: ()->SelectionRangePosition
     /// returns the cell frame. Useful if you wish to display something at the cell's frame/position
@@ -347,16 +347,16 @@ public class JTAppleCalendarView: UIView {
         }
     }
     
-    func dateFromSection(section: Int) -> (startDate: NSDate, endDate: NSDate)? {
+    func dateFromSection(section: Int) -> (dateRange:(start: NSDate, end: NSDate), month: Int)? {
         if !monthInfo.indices.contains(section) {return nil}
         let monthData = monthInfo[section]
-        let itemLength = monthData[NUMBER_OF_DAYS_INDEX]
+        let itemLength = monthData[NUMBER_OF_DAYS_INDEX] == 0 ? 7 : monthData[NUMBER_OF_DAYS_INDEX]
         let fdIndex = monthData[FIRST_DAY_INDEX]
         let startIndex = NSIndexPath(forItem: fdIndex, inSection: section)
         let endIndex = NSIndexPath(forItem: fdIndex + itemLength - 1, inSection: section)
-        
-        if let theStartDate = dateFromPath(startIndex), theEndDate = dateFromPath(endIndex) {
-            return (theStartDate, theEndDate)
+        if let theDate = calendar.dateByAddingUnit(.Month, value: section / (numberOfSectionsPerMonth), toDate: cachedConfiguration.startDate, options: []) {
+            let monthNumber = calendar.components(.Month, fromDate: theDate)
+            if let theStartDate = dateFromPath(startIndex), theEndDate = dateFromPath(endIndex) { return ((theStartDate, theEndDate), monthNumber.month) }
         }
         return nil
     }
@@ -532,7 +532,9 @@ public class JTAppleCalendarView: UIView {
     func calendarViewHeaderSizeForSection(section: Int) -> CGSize {
         var retval = CGSizeZero
         if registeredHeaderViews.count > 0 {
-            if let date = dateFromSection(section), size = delegate?.calendar(self, sectionHeaderSizeForDate: date){ retval = size }
+            if let
+                validDate = dateFromSection(section),
+                size = delegate?.calendar(self, sectionHeaderSizeForDate:validDate.dateRange, belongingTo: validDate.month){retval = size }
         }
         return retval
     }
@@ -619,7 +621,7 @@ public class JTAppleCalendarView: UIView {
         return layout
     }
     
-    private func setupMonthInfoDataForStartAndEndDate()-> [[Int]] {
+    func setupMonthInfoDataForStartAndEndDate()-> [[Int]] {
         var retval: [[Int]] = []
         if var validConfig = dataSource?.configureCalendar(self) {
             // check if the dates are in correct order

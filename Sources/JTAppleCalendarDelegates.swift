@@ -11,11 +11,10 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
     /// Asks your data source object to provide a supplementary view to display in the collection view.
     
     public func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-        guard let date = dateFromSection(indexPath.section) else {
+        guard let validDate = dateFromSection(indexPath.section) else {
             assert(false, "Date could not be generated fro section. This is a bug. Contact the developer")
             return UICollectionReusableView()
         }
-        
         let reuseIdentifier: String
         var source: JTAppleCalendarViewSource = registeredHeaderViews[0]
         
@@ -27,7 +26,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
             case let .fromType(classType): reuseIdentifier = classType.description()
             }
         } else {
-            reuseIdentifier = delegate!.calendar(self, sectionHeaderIdentifierForDate: date)!
+            reuseIdentifier = delegate!.calendar(self, sectionHeaderIdentifierForDate: validDate.dateRange, belongingTo: validDate.month)!
             for item in registeredHeaderViews {
                 switch item {
                 case let .fromXib(xibName) where xibName == reuseIdentifier:
@@ -48,7 +47,7 @@ extension JTAppleCalendarView: UICollectionViewDataSource, UICollectionViewDeleg
         let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: reuseIdentifier, forIndexPath: indexPath) as! JTAppleCollectionReusableView
         headerView.setupView(source)
         headerView.update()
-        delegate?.calendar(self, isAboutToDisplaySectionHeader: headerView.view!, date: date, identifier: reuseIdentifier)
+        delegate?.calendar(self, isAboutToDisplaySectionHeader: headerView.view!, dateRange: validDate.dateRange, identifier: reuseIdentifier)
         return headerView
     }
     
@@ -362,6 +361,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     /// Tells the delegate that the scroll view has ended decelerating the scrolling movement.
     public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let currentSegmentDates = currentCalendarDateSegment()
-        self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.startDate, endingWithDate: currentSegmentDates.endDate)
+        self.delegate?.calendar(self, didScrollToDateSegmentStartingWithdate: currentSegmentDates.dateRange.start, endingWithDate: currentSegmentDates.dateRange.end)
     }
 }
