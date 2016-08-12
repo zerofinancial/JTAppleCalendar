@@ -7,12 +7,20 @@
 //
 
 import XCTest
+@testable import JTAppleCalendar
 
-class JTAppleCalendar_iOSTests: XCTestCase {
+class JTAppleCalendar_iOSTests: XCTestCase, JTAppleCalendarViewDataSource {
+    let calendarView = JTAppleCalendarView()
+    let formatter = NSDateFormatter()
+    let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
+    var numberOfRows = 6
+    var firstDate = "2016 01 01"
+    var secondDate = "2017 12 01"
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        formatter.dateFormat = "yyyy MM dd"
+        
     }
     
     override func tearDown() {
@@ -20,16 +28,90 @@ class JTAppleCalendar_iOSTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testCountOfMonths() {
+        print("Testing to see if setupMonthInfoDataForStartAndEndDate() gives valid month data even when number of rows change")
+        firstDate = "2016 01 01"
+        secondDate = "2017 01 01"
+        calendarView.dataSource = self
+        
+        var monthData = calendarView.setupMonthInfoDataForStartAndEndDate()
+        XCTAssert(monthData.count == 13)
+        
+        numberOfRows = 3
+        calendarView.reloadData()
+        
+        monthData = calendarView.setupMonthInfoDataForStartAndEndDate()
+        XCTAssert(monthData.count == 26)
+        
+        numberOfRows = 2
+        calendarView.reloadData()
+        
+        monthData = calendarView.setupMonthInfoDataForStartAndEndDate()
+        XCTAssert(monthData.count == 39)
+        
+        numberOfRows = 1
+        calendarView.reloadData()
+        
+        monthData = calendarView.setupMonthInfoDataForStartAndEndDate()
+        XCTAssert(monthData.count == 78)
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
+    func testSegmentFunction() {
+        print("Testing to see if degment function returns valid data")
+        firstDate = "2016 01 01"
+        secondDate = "2016 01 01"
+        numberOfRows = 6
+        
+        calendarView.dataSource = self
+        calendarView.reloadData()
+        let date = formatter.dateFromString("2016 01 01")!
+        
+        var month = calendarView.dateFromSection(0)!.month
+        
+        var compMonth = calendar!.component(.Month, fromDate: date)
+        XCTAssert(month == compMonth)
+        
+        numberOfRows = 3
+        calendarView.reloadData()
+        
+        for index in 0...1 {
+            month = calendarView.dateFromSection(index)!.month
+            compMonth = calendar!.component(.Month, fromDate: date)
+            XCTAssert(month == compMonth)
         }
+        
+        numberOfRows = 2
+        calendarView.reloadData()
+        
+        for index in 0...2 {
+            month = calendarView.dateFromSection(index)!.month
+            compMonth = calendar!.component(.Month, fromDate: date)
+            XCTAssert(month == compMonth)
+        }
+        
+        numberOfRows = 1
+        calendarView.reloadData()
+        
+        for index in 0...5 {
+            month = calendarView.dateFromSection(index)!.month
+            compMonth = calendar!.component(.Month, fromDate: date)
+            XCTAssert(month == compMonth)
+        }
+    }
+    
+//    func testChangeRowToOne() {
+//        
+//        // This is an example of a performance test case.
+////        self.measureBlock {
+//            // Put the code you want to measure the time of here.
+////        }
+//    }
+    
+    func configureCalendar(calendar: JTAppleCalendarView) -> (startDate: NSDate, endDate: NSDate, numberOfRows: Int, calendar: NSCalendar) {
+        let aFirstDate = formatter.dateFromString(firstDate)
+        let aSecondDate = formatter.dateFromString(secondDate)
+        let aCalendar = NSCalendar.currentCalendar() // Properly configure your calendar to your time zone here
+        return (startDate: aFirstDate!, endDate: aSecondDate!, numberOfRows: numberOfRows, calendar: aCalendar)
     }
     
 }
