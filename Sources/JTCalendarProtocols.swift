@@ -106,7 +106,7 @@ public protocol JTAppleCalendarViewDelegate: class {
     /// Tells the delegate that the JTAppleCalendar is about to reset a date-cell. Reset your cell here before being reused on screen. Make sure this function exits quicky.
     /// - Parameters:
     ///     - cell: The date-cell that is about to be reset.
-    func calendar(calendar : JTAppleCalendarView, isAboutToResetCell cell: JTAppleDayCellView) -> Void
+    func calendar(calendar : JTAppleCalendarView, isAboutToResetCell cell: JTAppleDayCellView)
     /// Implement this function to use headers in your project. Return your registered header for the date presented.
     /// - Parameters:
     ///     - date: Contains the startDate and endDate for the header that is about to be displayed

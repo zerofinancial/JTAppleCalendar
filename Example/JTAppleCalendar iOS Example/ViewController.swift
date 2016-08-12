@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         calendarView.dataSource = self
         //_____________________________________________________________________________________________
         
-        
+
         
         // Registering your cells is manditory
         //_____________________________________________________________________________________________
@@ -55,15 +55,13 @@ class ViewController: UIViewController {
         // The following default code can be removed since they are already the default.
         // They are only included here so that you can know what properties can be configured
         //_____________________________________________________________________________________________
-        calendarView.direction = .Vertical                                   // default is horizontal
+        calendarView.direction = .Horizontal                                 // default is horizontal
         calendarView.cellInset = CGPoint(x: 0, y: 0)                         // default is (3,3)
         calendarView.allowsMultipleSelection = false                         // default is false
-        calendarView.bufferTop = 0                                           // default is 0. - still work in progress on this
-        calendarView.bufferBottom = 0                                        // default is 0. - still work in progress on this
         calendarView.firstDayOfWeek = .Sunday                                // default is Sunday
         calendarView.scrollEnabled = true                                    // default is true
         calendarView.scrollingMode = .StopAtEachCalendarFrameWidth           // default is .StopAtEachCalendarFrameWidth
-        calendarView.itemSize = 30                                           // default is nil. Use a value here to change the size of your cells
+        calendarView.itemSize = nil                                          // default is nil. Use a value here to change the size of your cells
         //_____________________________________________________________________________________________
         
         // Reloading the data on viewDidLoad() is only necessary if you made LAYOUT changes eg. number of row per month change
