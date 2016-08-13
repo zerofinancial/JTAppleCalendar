@@ -111,7 +111,10 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
     }
     
     /// Returns the layout attributes for the item at the specified index path. A layout attributes object containing the information to apply to the item’s cell.
+    
     override  public func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        
+        if !(0...maxSections ~= indexPath.section) || !(0...numberOfDaysPerSection  ~= indexPath.item) { return nil}
         let attr = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
         
         // If this index is already cached, then return it else, apply a new layout attribut to it
