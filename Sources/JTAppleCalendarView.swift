@@ -363,7 +363,8 @@ public class JTAppleCalendarView: UIView {
             theSelectedIndexPaths.contains(validForwardIndex.indexPath){
             retval.append(validForwardIndex.indexPath)
         }
-        if let validBackwardIndex = calendarView.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: indexPath.item - 1, inSection: indexPath.section)) where
+        
+        if let validBackwardIndex = calendarView.collectionViewLayout.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: indexPath.item - 1, inSection: indexPath.section)) where
             theSelectedIndexPaths.contains(validBackwardIndex.indexPath) {
             retval.append(validBackwardIndex.indexPath)
         }
@@ -572,17 +573,10 @@ public class JTAppleCalendarView: UIView {
                     }
                     let indexPathOfLastDayOfPreviousMonth = pathsFromDates([lastDayOfPrevMonth])
                     if indexPathOfLastDayOfPreviousMonth.count > 0 {
-                        var indexOfItemToBeFound = indexPathOfLastDayOfPreviousMonth[0].item + dayIndex
-                        var sectionOfItemToBeFound = indexPathOfLastDayOfPreviousMonth[0].section
-                                                
-                        // If this is true, then we have a case where the index path is in the follow section. We need to recalc it here
-                        if indexOfItemToBeFound >= numberOfItemsPerSection {
-                            sectionOfItemToBeFound += 1
-                            indexOfItemToBeFound -= numberOfItemsPerSection
-                        }
-                        
-                        if indexOfItemToBeFound < 42 { // then it is valid
-                            retval = NSIndexPath(forItem: indexOfItemToBeFound, inSection: sectionOfItemToBeFound)
+                        let LastDayIndexPath = indexPathOfLastDayOfPreviousMonth[0]
+                        let reCalcRapth = NSIndexPath(forItem: LastDayIndexPath.item + dayIndex, inSection: LastDayIndexPath.section)
+                        if let attrib = calendarView.layoutAttributesForItemAtIndexPath(reCalcRapth) {
+                            if dateFromPath(attrib.indexPath) == date { retval = attrib.indexPath }
                         }
                     } else {
                         print("out of range error in indexPathOfdateCellCounterPart() upper. This should not happen. Contact developer on github")
@@ -615,7 +609,6 @@ public class JTAppleCalendarView: UIView {
                     }
                 }
             }
-            
         }
         return retval
     }
