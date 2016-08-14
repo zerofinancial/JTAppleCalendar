@@ -171,7 +171,6 @@ extension ViewController: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
     }
 }
 
-
 func delayRunOnMainThread(delay:Double, closure:()->()) {
     dispatch_after(
         dispatch_time(
