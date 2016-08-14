@@ -50,7 +50,7 @@ class CellView: JTAppleDayCellView {
         
         // With cell states you can literally control every aspect of the calendar view
         // Uncomment this code block to watch "JTAPPLE" spelt on the calendar
-//        let dateSection = c.stringFromDate(cellState.dateSection().startDate)
+//        let dateSection = c.stringFromDate(cellState.dateSection().dateRange.start)
 //        if dateSection == "2016-01-01" && (cellState.row() == 0 || cellState.column() == 3 || (cellState.row() == 5 && cellState.column() < 4)) {
 //            self.backgroundColor = UIColor.redColor()
 //        } else if dateSection == "2016-02-01" && (cellState.row() == 0 || cellState.column() == 3) {
