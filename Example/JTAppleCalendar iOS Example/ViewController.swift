@@ -55,7 +55,7 @@ class ViewController: UIViewController {
         // The following default code can be removed since they are already the default.
         // They are only included here so that you can know what properties can be configured
         //_____________________________________________________________________________________________
-        calendarView.direction = .Horizontal                                 // default is horizontal
+        calendarView.direction = .Vertical                                 // default is horizontal
         calendarView.cellInset = CGPoint(x: 0, y: 0)                         // default is (3,3)
         calendarView.allowsMultipleSelection = false                         // default is false
         calendarView.firstDayOfWeek = .Sunday                                // default is Sunday
