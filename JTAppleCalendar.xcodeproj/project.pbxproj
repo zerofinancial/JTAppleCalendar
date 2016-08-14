@@ -46,8 +46,6 @@
 		6B60DF491D5BF6E2009174A2 /* CodePinkSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF471D5BF6E2009174A2 /* CodePinkSectionHeaderView.swift */; };
 		6B60DF4A1D5BF6E2009174A2 /* CodeWhiteSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF481D5BF6E2009174A2 /* CodeWhiteSectionHeaderView.swift */; };
 		6B60DF4C1D5BF729009174A2 /* AnimationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF4B1D5BF729009174A2 /* AnimationClass.swift */; };
-		6B60DF551D5BFE41009174A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF541D5BFE41009174A2 /* AppDelegate.swift */; };
-		6B60DF571D5BFE41009174A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF561D5BFE41009174A2 /* ViewController.swift */; };
 		6B60DF5A1D5BFE41009174A2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B60DF581D5BFE41009174A2 /* Main.storyboard */; };
 		6B60DF5C1D5BFE41009174A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B60DF5B1D5BFE41009174A2 /* Assets.xcassets */; };
 		6B60DF611D5BFFCD009174A2 /* CellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF361D5BF5D7009174A2 /* CellView.swift */; };
@@ -62,6 +60,8 @@
 		6B60DF701D5C00BB009174A2 /* WhiteSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6B60DF6F1D5C00BB009174A2 /* WhiteSectionHeaderView.xib */; };
 		6B6162981D5C0E55002CF8E8 /* JTAppleCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DEBC1D5BDA46009174A2 /* JTAppleCalendar.framework */; };
 		6B6162991D5C0E75002CF8E8 /* JTAppleCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DECA1D5BDA74009174A2 /* JTAppleCalendar.framework */; };
+		6BF7B1FF1D606BA600D60900 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0F1D5BE834009174A2 /* ViewController.swift */; };
+		6BF7B2001D606C0F00D60900 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0D1D5BE834009174A2 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,8 +123,6 @@
 		6B60DF481D5BF6E2009174A2 /* CodeWhiteSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeWhiteSectionHeaderView.swift; sourceTree = "<group>"; };
 		6B60DF4B1D5BF729009174A2 /* AnimationClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationClass.swift; sourceTree = "<group>"; };
 		6B60DF521D5BFE41009174A2 /* JTAppleCalendar tvOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "JTAppleCalendar tvOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6B60DF541D5BFE41009174A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6B60DF561D5BFE41009174A2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		6B60DF591D5BFE41009174A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6B60DF5B1D5BFE41009174A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6B60DF5D1D5BFE41009174A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -321,8 +319,6 @@
 		6B60DF531D5BFE41009174A2 /* JTAppleCalendar tvOS Example */ = {
 			isa = PBXGroup;
 			children = (
-				6B60DF541D5BFE41009174A2 /* AppDelegate.swift */,
-				6B60DF561D5BFE41009174A2 /* ViewController.swift */,
 				6B60DF581D5BFE41009174A2 /* Main.storyboard */,
 				6B60DF5B1D5BFE41009174A2 /* Assets.xcassets */,
 				6B60DF5D1D5BFE41009174A2 /* Info.plist */,
@@ -648,9 +644,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B60DF691D5C0002009174A2 /* CodeWhiteSectionHeaderView.swift in Sources */,
-				6B60DF571D5BFE41009174A2 /* ViewController.swift in Sources */,
-				6B60DF551D5BFE41009174A2 /* AppDelegate.swift in Sources */,
 				6B60DF611D5BFFCD009174A2 /* CellView.swift in Sources */,
+				6BF7B1FF1D606BA600D60900 /* ViewController.swift in Sources */,
+				6BF7B2001D606C0F00D60900 /* AppDelegate.swift in Sources */,
 				6B60DF661D5BFFFD009174A2 /* WhiteSectionHeaderView.swift in Sources */,
 				6B60DF6A1D5C0011009174A2 /* AnimationClass.swift in Sources */,
 				6B60DF631D5BFFF5009174A2 /* CodeCellView.swift in Sources */,
