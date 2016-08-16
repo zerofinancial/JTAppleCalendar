@@ -139,7 +139,7 @@ $ pod install
 
 ## Author
 
-JayT, patchthecode@gmail.com
+JayT, patchthecode@gmail.com <-- Sending me emails will not get you a swift response. I check it once every 2 weeks or so. Create a new issue [here on github](https://github.com/patchthecode/JTAppleCalendar/issues) if you need help.
 
 ## License
 
