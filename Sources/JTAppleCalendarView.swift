@@ -514,7 +514,6 @@ public class JTAppleCalendarView: UIView {
         let layout = calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol
         layout.clearCache()
         monthInfo = setupMonthInfoDataForStartAndEndDate()
-        calendarView.collectionViewLayout.prepareLayout()
         
         // the selected dates and paths will be retained. Ones that are not available on the new layout will be removed.
         var indexPathsToReselect = [NSIndexPath]()
@@ -588,6 +587,10 @@ public class JTAppleCalendarView: UIView {
                         
                         let reCalcRapth = NSIndexPath(forItem: itemIndex, inSection: section)
                         
+                        // We are going to call a layout attribute function. Make sure the layout is updated. The layout/cell cache will be empty if there was a layout change
+                        if (calendarView.collectionViewLayout as! JTAppleCalendarLayout).cellCache.count < 1 {
+                            self.calendarView.collectionViewLayout.prepareLayout()
+                        }
                         if let attrib = calendarView.collectionViewLayout.layoutAttributesForItemAtIndexPath(reCalcRapth) {
                             if dateFromPath(attrib.indexPath) == date { retval = attrib.indexPath }
                         }
