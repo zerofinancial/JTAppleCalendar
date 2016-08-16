@@ -1,6 +1,6 @@
 ![JTAppleCalendar](Images/JTAppleCalendar.jpg)
 
-The final iOS calendar control you'll ever try
+An iOS calendar control. Written in swift.
 
 
 
