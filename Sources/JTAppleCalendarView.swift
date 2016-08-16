@@ -499,7 +499,6 @@ public class JTAppleCalendarView: UIView {
             let newEndOfMonth = NSDate.endOfMonthForDate(newDateBoundary.startDate, usingCalendar: cachedConfiguration.calendar)
             let oldStartOfMonth = NSDate.startOfMonthForDate(cachedConfiguration.startDate, usingCalendar: cachedConfiguration.calendar)
             let oldEndOfMonth = NSDate.endOfMonthForDate(cachedConfiguration.startDate, usingCalendar: cachedConfiguration.calendar)
-
             
             if
                 newStartOfMonth != oldStartOfMonth ||
@@ -515,6 +514,7 @@ public class JTAppleCalendarView: UIView {
         let layout = calendarView.collectionViewLayout as! JTAppleCalendarLayoutProtocol
         layout.clearCache()
         monthInfo = setupMonthInfoDataForStartAndEndDate()
+        calendarView.collectionViewLayout.prepareLayout()
         
         // the selected dates and paths will be retained. Ones that are not available on the new layout will be removed.
         var indexPathsToReselect = [NSIndexPath]()
@@ -572,10 +572,23 @@ public class JTAppleCalendarView: UIView {
                         return retval
                     }
                     let indexPathOfLastDayOfPreviousMonth = pathsFromDates([lastDayOfPrevMonth])
+                    
                     if indexPathOfLastDayOfPreviousMonth.count > 0 {
                         let LastDayIndexPath = indexPathOfLastDayOfPreviousMonth[0]
-                        let reCalcRapth = NSIndexPath(forItem: LastDayIndexPath.item + dayIndex, inSection: LastDayIndexPath.section)
-                        if let attrib = calendarView.layoutAttributesForItemAtIndexPath(reCalcRapth) {
+                        
+                        var section = LastDayIndexPath.section
+                        var itemIndex = LastDayIndexPath.item + dayIndex
+                        
+                        // Determine if the sections/item needs to be adjusted
+                        let extraSection = itemIndex / numberOfItemsPerSection
+                        let extraIndex = itemIndex % numberOfItemsPerSection
+                        
+                        section += extraSection
+                        itemIndex = extraIndex
+                        
+                        let reCalcRapth = NSIndexPath(forItem: itemIndex, inSection: section)
+                        
+                        if let attrib = calendarView.collectionViewLayout.layoutAttributesForItemAtIndexPath(reCalcRapth) {
                             if dateFromPath(attrib.indexPath) == date { retval = attrib.indexPath }
                         }
                     } else {
@@ -593,11 +606,8 @@ public class JTAppleCalendarView: UIView {
                     let indexPathOfFirstDayOfFollowingMonth = pathsFromDates([firstDayOfFollowingMonth])
                     if indexPathOfFirstDayOfFollowingMonth.count > 0 {
                         let firstDayIndex = indexPathOfFirstDayOfFollowingMonth[0].item
-                        
-                        
                         let lastDay = NSDate.endOfMonthForDate(date, usingCalendar: calendar)!
                         let lastDayIndex = calendar.components(.Day, fromDate: lastDay).day
-                        
                         let x = lastDayIndex - dayIndex
                         let y = firstDayIndex - x - 1
                         

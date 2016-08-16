@@ -114,7 +114,7 @@ public class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayou
     
     override  public func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
         
-        if !(0...maxSections ~= indexPath.section) || !(0...numberOfDaysPerSection  ~= indexPath.item) { return nil}
+        if !(0...maxSections ~= indexPath.section) || !(0...numberOfDaysPerSection  ~= indexPath.item) { return nil} // return nil on invalid range
         let attr = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
         
         // If this index is already cached, then return it else, apply a new layout attribut to it
