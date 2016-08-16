@@ -98,6 +98,9 @@ public class JTAppleCalendarView: UIView {
         }
     }
     
+    /// Alerts the calendar that range selection will be checked. If you are not using rangeSelection and you enable this, then whenever you click on a datecell, you may notice a very fast refreshing of the date-cells both left and right of the cell you just selected.
+    public var rangeSelectionWillBeUsed = false
+    
     var lastSavedContentOffset: CGFloat = 0.0
     var triggerScrollToDateDelegate: Bool? = true
     
