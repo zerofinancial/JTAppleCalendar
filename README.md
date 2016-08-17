@@ -88,6 +88,7 @@ calendarView.firstDayOfWeek = .Sunday                                // default 
 calendarView.scrollEnabled = true                                    // default is true
 calendarView.scrollingMode = .StopAtEachCalendarFrameWidth           // default is .StopAtEachCalendarFrameWidth
 calendarView.itemSize = nil                                          // default is nil. Use a value here to change the size of your cells
+calendarView.rangeSelectionWillBeUsed = false                        // default is false
 ```
 
 Do you have any other questions?. If you are trying to bend heaven and earth to do something complicated with this calendar, then chances are there is already an easy way for it to be done. So [Opening an issue](https://github.com/patchthecode/JTAppleCalendar/issues/new) might be a good idea.

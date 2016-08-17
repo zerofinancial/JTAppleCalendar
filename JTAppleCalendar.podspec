@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "JTAppleCalendar"
   s.version          = "5.0.0"
-  s.summary          = "The final calendar control you'll ever try"
+  s.summary          = "The Unofficial Swift Apple Calendar Library. View. Control. for iOS & tvOS"
   s.description      = <<-DESC
 A highly configurable Apple calendar control. Contains features like boundary dates, month and week view. Very light weight.
                        DESC
