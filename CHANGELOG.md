@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
+#### 5.x Releases
+- `5.0.0` Releases - [5.0.0](#500)
+
 #### 4.x Releases
 - `4.1.0` Releases - [4.1.0](#410)|[4.1.1](#411)|[4.1.2](#412)|[4.1.3](#413)|[4.1.4](#414)
 - `4.0.0` Releases - [4.0.0](#400)|[4.0.1](#401)|[4.0.2](#402)|[4.0.3](#403)
@@ -18,6 +21,15 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [5.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/5.0.0)
+- Bug Fix: [Double calling of delegate method on finger lift](https://github.com/patchthecode/JTAppleCalendar/issues/102)
+- Bug Fix: [Delegate call fixed when user scrolls to top using status bar](https://github.com/patchthecode/JTAppleCalendar/issues/89)
+- Bug Fix: [Crash when calenader switched to single row](https://github.com/patchthecode/JTAppleCalendar/issues/111)
+- Update: Added range selection
+- Update: [Deprecations](https://github.com/patchthecode/JTAppleCalendar/wiki/Message-to-testers-working-on-master-branch)
+- Update: JTApplecalendar now works for tvOS
+  - Updated by [JayT](https://github.com/patchthecode).
+
 ## [4.1.4](https://github.com/patchthecode/JTAppleCalendar/releases/tag/4.1.4)
 - Bug Fixes: [Scroll to section bug introduced](https://github.com/patchthecode/JTAppleCalendar/issues/96)
   - Updated by [JayT](https://github.com/patchthecode).
