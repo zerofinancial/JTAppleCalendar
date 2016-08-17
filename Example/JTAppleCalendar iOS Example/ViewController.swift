@@ -55,13 +55,14 @@ class ViewController: UIViewController {
         // The following default code can be removed since they are already the default.
         // They are only included here so that you can know what properties can be configured
         //_____________________________________________________________________________________________
-        calendarView.direction = .Vertical                                 // default is horizontal
+        calendarView.direction = .Horizontal                                 // default is horizontal
         calendarView.cellInset = CGPoint(x: 0, y: 0)                         // default is (3,3)
         calendarView.allowsMultipleSelection = false                         // default is false
         calendarView.firstDayOfWeek = .Sunday                                // default is Sunday
         calendarView.scrollEnabled = true                                    // default is true
         calendarView.scrollingMode = .StopAtEachCalendarFrameWidth           // default is .StopAtEachCalendarFrameWidth
         calendarView.itemSize = nil                                          // default is nil. Use a value here to change the size of your cells
+        calendarView.rangeSelectionWillBeUsed = false                        // default is false
         //_____________________________________________________________________________________________
         
         // Reloading the data on viewDidLoad() is only necessary if you made LAYOUT changes eg. number of row per month change
