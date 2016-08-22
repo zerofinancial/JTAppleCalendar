@@ -190,6 +190,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         let saveLastContentOffset = { self.lastSavedContentOffset = self.direction == .Horizontal ? targetContentOffset.memory.x : targetContentOffset.memory.y }
         let cachedDecelerationRate = calendarView.decelerationRate
         let theCurrentSection = currentSectionPage
+        let contentSizeEndOffset: CGFloat
         var contentOffset: CGFloat = 0,
         theTargetContentOffset: CGFloat = 0,
         directionVelocity: CGFloat = 0
@@ -199,10 +200,12 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             contentOffset = scrollView.contentOffset.x
             theTargetContentOffset = targetContentOffset.memory.x
             directionVelocity = velocity.x
+            contentSizeEndOffset = scrollView.contentSize.width - scrollView.frame.width
         } else {
             contentOffset = scrollView.contentOffset.y
             theTargetContentOffset = targetContentOffset.memory.y
             directionVelocity = velocity.y
+            contentSizeEndOffset = scrollView.contentSize.height - scrollView.frame.height
         }
         
         let isScrollingForward = {return directionVelocity > 0 || contentOffset > self.lastSavedContentOffset}
@@ -238,6 +241,9 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 return floor(recalcOffsetAfterResistanceApplied / interval) * interval
             }
         }
+        
+        let scrollViewShouldStopAtBeginning = {()->Bool in return contentOffset < 0 && theTargetContentOffset == 0 ? true : false}
+        let scrollViewShouldStopAtEnd = {(calculatedOffSet: CGFloat)->Bool in return calculatedOffSet > contentSizeEndOffset }
         
         
         switch scrollingMode {
@@ -301,14 +307,20 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 let interval = calendarLayout.cellCache[targetSection]![0].frame.width
                 let diffResistance = diff * resistance
                 if direction == .Horizontal {
-                    calculatedOffSet = recalculateOffset(diffResistance, interval)
+                    if scrollViewShouldStopAtBeginning() {
+                        calculatedOffSet = 0
+                    } else if scrollViewShouldStopAtEnd(calculatedOffSet) {
+                        calculatedOffSet = theTargetContentOffset
+                    } else {
+                        calculatedOffSet = recalculateOffset(diffResistance, interval)
+                    }
                 } else {
                     var stopSection: Int
                     if isScrollingForward() {
-                        calculatedOffSet = theTargetContentOffset - diffResistance
+                        calculatedOffSet =  scrollViewShouldStopAtEnd(calculatedOffSet) ? theTargetContentOffset : theTargetContentOffset - diffResistance
                         stopSection = calendarLayout.sectionFromOffset(calculatedOffSet)
                     } else {
-                        calculatedOffSet = theTargetContentOffset + diffResistance
+                        calculatedOffSet = scrollViewShouldStopAtBeginning() ? 0 : theTargetContentOffset + diffResistance
                         stopSection = calendarLayout.sectionFromOffset(calculatedOffSet)
                     }
                     if contentOffset > 0, let path = self.calendarView.indexPathForItemAtPoint(CGPoint(x: targetContentOffset.memory.x, y: calculatedOffSet)) {
@@ -318,7 +330,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                         } else {
                             calculatedOffSet = attrib.frame.origin.y
                         }
-                    } else if let attrib = self.calendarView.layoutAttributesForSupplementaryElementOfKind(UICollectionElementKindSectionHeader, atIndexPath: (NSIndexPath(forItem: 0, inSection: stopSection))) {
+                    } else if registeredHeaderViews.count > 0, let attrib = self.calendarView.layoutAttributesForSupplementaryElementOfKind(UICollectionElementKindSectionHeader, atIndexPath: (NSIndexPath(forItem: 0, inSection: stopSection))) {
                         // change the final value to the end of the header
                         if isScrollingForward() {
                             calculatedOffSet = attrib.frame.origin.y + attrib.frame.size.height
@@ -326,13 +338,11 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                             calculatedOffSet =  stopSection - 1 < 0 ? 0 : calendarLayout.sectionSize[stopSection - 1]
                         }
                     }
-
                 }
                 setTargetContentOffset(calculatedOffSet)
             case let .NonStopTo(interval, resistance): // Both horizontal and vertical are fixed
                 let diffResistance = diff * resistance
                 calculatedOffSet = recalculateOffset(diffResistance, interval)
-                
                 setTargetContentOffset(calculatedOffSet)
             default:
                 break
