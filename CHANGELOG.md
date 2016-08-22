@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 5.x Releases
-- `5.0.0` Releases - [5.0.0](#500)
+- `5.0.0` Releases - [5.0.0](#500)|[5.0.1](#501)
 
 #### 4.x Releases
 - `4.1.0` Releases - [4.1.0](#410)|[4.1.1](#411)|[4.1.2](#412)|[4.1.3](#413)|[4.1.4](#414)
@@ -21,6 +21,9 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [5.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/5.0.1)
+- Bug Fix: [Crash on negative scroll in vertical mode](https://github.com/patchthecode/JTAppleCalendar/issues/115)
+
 ## [5.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/5.0.0)
 - Bug Fix: [Double calling of delegate method on finger lift](https://github.com/patchthecode/JTAppleCalendar/issues/102)
 - Bug Fix: [Delegate call fixed when user scrolls to top using status bar](https://github.com/patchthecode/JTAppleCalendar/issues/89)
