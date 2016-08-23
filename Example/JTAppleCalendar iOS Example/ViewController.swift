@@ -95,11 +95,17 @@ class ViewController: UIViewController {
     }
     
     @IBAction func next(sender: UIButton) {
-        self.calendarView.scrollToNextSegment()
-        
+        self.calendarView.scrollToNextSegment() {
+            let currentSegmentDates = self.calendarView.currentCalendarDateSegment()
+            self.setupViewsOfCalendar(currentSegmentDates.dateRange.start, endDate: currentSegmentDates.dateRange.end)
+        }
     }
+    
     @IBAction func previous(sender: UIButton) {
-        self.calendarView.scrollToPreviousSegment()
+        self.calendarView.scrollToPreviousSegment() {
+            let currentSegmentDates = self.calendarView.currentCalendarDateSegment()
+            self.setupViewsOfCalendar(currentSegmentDates.dateRange.start, endDate: currentSegmentDates.dateRange.end)
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
