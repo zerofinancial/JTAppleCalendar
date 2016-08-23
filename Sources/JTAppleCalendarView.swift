@@ -352,9 +352,16 @@ public class JTAppleCalendarView: UIView {
         // If the scroll is set to animate, and the target content offset is already on the screen, then the didFinishScrollingAnimation
         // delegate will not get called. Once animation is on let's force a scroll so the delegate MUST get caalled
         if let attributes = self.calendarView.layoutAttributesForItemAtIndexPath(indexPath) {
-            let origin = attributes.frame.origin
-            let offset = direction == .Horizontal ? origin.x : origin.y
-            if  self.calendarView.contentOffset.x == offset || (scrollingMode.pagingIsEnabled() && (indexPath.section ==  currentSectionPage)) {
+            let layoutOffset: CGFloat
+            let calendarOffset: CGFloat
+            if direction == .Horizontal {
+                layoutOffset = attributes.frame.origin.x
+                calendarOffset = calendarView.contentOffset.x
+            } else {
+                layoutOffset = attributes.frame.origin.y
+                calendarOffset = calendarView.contentOffset.y
+            }
+            if  calendarOffset == layoutOffset || (scrollingMode.pagingIsEnabled() && (indexPath.section ==  currentSectionPage)) {
                 retval = true
             } else {
                 retval = false
