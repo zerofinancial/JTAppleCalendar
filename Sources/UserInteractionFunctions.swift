@@ -104,9 +104,9 @@ extension JTAppleCalendarView {
         var paths = [NSIndexPath]()
         for date in dates {
             let aPath = pathsFromDates([date])
-            paths.appendContentsOf(aPath)
             
-            if aPath.count > 0 {
+            if aPath.count > 0 && !paths.contains(aPath[0]) {
+                paths.append(aPath[0])
                 let cellState = cellStateFromIndexPath(aPath[0], withDate: date)
                 if let validCounterPartCell = indexPathOfdateCellCounterPart(date, indexPath: aPath[0], dateOwner: cellState.dateBelongsTo) {
                     paths.append(validCounterPartCell)
