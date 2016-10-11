@@ -7,14 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6B2EA0391D644A8B006DAD00 /* JTAppleCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DEBC1D5BDA46009174A2 /* JTAppleCalendar.framework */; };
 		6B2EA03A1D644A8B006DAD00 /* JTAppleCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DEBC1D5BDA46009174A2 /* JTAppleCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6B2EA03E1D644ABC006DAD00 /* JTAppleCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DECA1D5BDA74009174A2 /* JTAppleCalendar.framework */; };
 		6B2EA03F1D644ABC006DAD00 /* JTAppleCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DECA1D5BDA74009174A2 /* JTAppleCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6B60DEC01D5BDA46009174A2 /* JTAppleCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B60DEBF1D5BDA46009174A2 /* JTAppleCalendar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6B60DED31D5BDCBA009174A2 /* JTAppleCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B60DEBF1D5BDA46009174A2 /* JTAppleCalendar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6B60DEDD1D5BDD4D009174A2 /* GlobalFunctionsAndExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED41D5BDD4D009174A2 /* GlobalFunctionsAndExtensions.swift */; };
-		6B60DEDE1D5BDD4D009174A2 /* JTAppleCalendarDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED51D5BDD4D009174A2 /* JTAppleCalendarDelegates.swift */; };
+		6B60DEDE1D5BDD4D009174A2 /* UIScrollViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED51D5BDD4D009174A2 /* UIScrollViewDelegates.swift */; };
 		6B60DEDF1D5BDD4D009174A2 /* JTAppleCalendarLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED61D5BDD4D009174A2 /* JTAppleCalendarLayout.swift */; };
 		6B60DEE01D5BDD4D009174A2 /* JTAppleCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED71D5BDD4D009174A2 /* JTAppleCalendarView.swift */; };
 		6B60DEE11D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED81D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift */; };
@@ -23,7 +21,7 @@
 		6B60DEE41D5BDD4D009174A2 /* JTCalendarProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DEDB1D5BDD4D009174A2 /* JTCalendarProtocols.swift */; };
 		6B60DEE51D5BDD4D009174A2 /* UserInteractionFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DEDC1D5BDD4D009174A2 /* UserInteractionFunctions.swift */; };
 		6B60DEE61D5BDD51009174A2 /* GlobalFunctionsAndExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED41D5BDD4D009174A2 /* GlobalFunctionsAndExtensions.swift */; };
-		6B60DEE71D5BDD58009174A2 /* JTAppleCalendarDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED51D5BDD4D009174A2 /* JTAppleCalendarDelegates.swift */; };
+		6B60DEE71D5BDD58009174A2 /* UIScrollViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED51D5BDD4D009174A2 /* UIScrollViewDelegates.swift */; };
 		6B60DEE81D5BDD58009174A2 /* JTAppleCalendarLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED61D5BDD4D009174A2 /* JTAppleCalendarLayout.swift */; };
 		6B60DEE91D5BDD58009174A2 /* JTAppleCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED71D5BDD4D009174A2 /* JTAppleCalendarView.swift */; };
 		6B60DEEA1D5BDD58009174A2 /* JTAppleCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DED81D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift */; };
@@ -64,6 +62,18 @@
 		6B60DF701D5C00BB009174A2 /* WhiteSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6B60DF6F1D5C00BB009174A2 /* WhiteSectionHeaderView.xib */; };
 		6B6162981D5C0E55002CF8E8 /* JTAppleCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DEBC1D5BDA46009174A2 /* JTAppleCalendar.framework */; };
 		6B6162991D5C0E75002CF8E8 /* JTAppleCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B60DECA1D5BDA74009174A2 /* JTAppleCalendar.framework */; };
+		6B6B1F691DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F681DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift */; };
+		6B6B1F6A1DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F681DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift */; };
+		6B6B1F6C1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F6B1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift */; };
+		6B6B1F6D1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F6B1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift */; };
+		6B6B1F701DA1CC130063A678 /* CalendarStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F6F1DA1CC130063A678 /* CalendarStructs.swift */; };
+		6B6B1F711DA1CC130063A678 /* CalendarStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F6F1DA1CC130063A678 /* CalendarStructs.swift */; };
+		6B6B1F731DA1CD5D0063A678 /* UICollectionViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */; };
+		6B6B1F741DA1CD5D0063A678 /* UICollectionViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */; };
+		6B74405E1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */; };
+		6B74405F1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */; };
+		6BA9245E1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA9245D1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift */; };
+		6BA9245F1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA9245D1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift */; };
 		6BF7B1FF1D606BA600D60900 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0F1D5BE834009174A2 /* ViewController.swift */; };
 		6BF7B2001D606C0F00D60900 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0D1D5BE834009174A2 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
@@ -131,7 +141,7 @@
 		6B60DECA1D5BDA74009174A2 /* JTAppleCalendar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JTAppleCalendar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B60DECE1D5BDA74009174A2 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		6B60DED41D5BDD4D009174A2 /* GlobalFunctionsAndExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalFunctionsAndExtensions.swift; sourceTree = "<group>"; };
-		6B60DED51D5BDD4D009174A2 /* JTAppleCalendarDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCalendarDelegates.swift; sourceTree = "<group>"; };
+		6B60DED51D5BDD4D009174A2 /* UIScrollViewDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIScrollViewDelegates.swift; sourceTree = "<group>"; };
 		6B60DED61D5BDD4D009174A2 /* JTAppleCalendarLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCalendarLayout.swift; sourceTree = "<group>"; };
 		6B60DED71D5BDD4D009174A2 /* JTAppleCalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCalendarView.swift; sourceTree = "<group>"; };
 		6B60DED81D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCollectionReusableView.swift; sourceTree = "<group>"; };
@@ -172,6 +182,12 @@
 		6B60DF6B1D5C0079009174A2 /* CellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CellView.xib; sourceTree = "<group>"; };
 		6B60DF6D1D5C00A9009174A2 /* PinkSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PinkSectionHeaderView.xib; sourceTree = "<group>"; };
 		6B60DF6F1D5C00BB009174A2 /* WhiteSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WhiteSectionHeaderView.xib; sourceTree = "<group>"; };
+		6B6B1F681DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCalendarLayoutProtocol.swift; sourceTree = "<group>"; };
+		6B6B1F6B1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleReusableViewProtocol.swift; sourceTree = "<group>"; };
+		6B6B1F6F1DA1CC130063A678 /* CalendarStructs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarStructs.swift; sourceTree = "<group>"; };
+		6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICollectionViewDelegates.swift; sourceTree = "<group>"; };
+		6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarEnums.swift; sourceTree = "<group>"; };
+		6BA9245D1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCalendarDelegateProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,7 +218,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B6162981D5C0E55002CF8E8 /* JTAppleCalendar.framework in Frameworks */,
-				6B2EA0391D644A8B006DAD00 /* JTAppleCalendar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +234,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B6162991D5C0E75002CF8E8 /* JTAppleCalendar.framework in Frameworks */,
-				6B2EA03E1D644ABC006DAD00 /* JTAppleCalendar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,14 +267,15 @@
 		6B60DED21D5BDAF4009174A2 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				6B6B1F761DA1CDB40063A678 /* Delegates */,
+				6B6B1F6E1DA1CBED0063A678 /* DataStructures */,
+				6B6B1F671DA1C1790063A678 /* Protocols */,
 				6B60DED41D5BDD4D009174A2 /* GlobalFunctionsAndExtensions.swift */,
-				6B60DED51D5BDD4D009174A2 /* JTAppleCalendarDelegates.swift */,
 				6B60DED61D5BDD4D009174A2 /* JTAppleCalendarLayout.swift */,
 				6B60DED71D5BDD4D009174A2 /* JTAppleCalendarView.swift */,
 				6B60DED81D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift */,
 				6B60DED91D5BDD4D009174A2 /* JTAppleDayCell.swift */,
 				6B60DEDA1D5BDD4D009174A2 /* JTAppleViews.swift */,
-				6B60DEDB1D5BDD4D009174A2 /* JTCalendarProtocols.swift */,
 				6B60DEDC1D5BDD4D009174A2 /* UserInteractionFunctions.swift */,
 				6B60DEBF1D5BDA46009174A2 /* JTAppleCalendar.h */,
 				6B60DECE1D5BDA74009174A2 /* Info-tvOS.plist */,
@@ -383,6 +398,35 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
+		6B6B1F671DA1C1790063A678 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				6BA9245D1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift */,
+				6B60DEDB1D5BDD4D009174A2 /* JTCalendarProtocols.swift */,
+				6B6B1F681DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift */,
+				6B6B1F6B1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		6B6B1F6E1DA1CBED0063A678 /* DataStructures */ = {
+			isa = PBXGroup;
+			children = (
+				6B6B1F6F1DA1CC130063A678 /* CalendarStructs.swift */,
+				6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */,
+			);
+			name = DataStructures;
+			sourceTree = "<group>";
+		};
+		6B6B1F761DA1CDB40063A678 /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */,
+				6B60DED51D5BDD4D009174A2 /* UIScrollViewDelegates.swift */,
+			);
+			name = Delegates;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -413,6 +457,7 @@
 				6B60DEB81D5BDA46009174A2 /* Frameworks */,
 				6B60DEB91D5BDA46009174A2 /* Headers */,
 				6B60DEBA1D5BDA46009174A2 /* Resources */,
+				A6DEF96A2FE3F7CE47390D26 /* Tailor */,
 			);
 			buildRules = (
 			);
@@ -431,6 +476,7 @@
 				6B60DEC61D5BDA74009174A2 /* Frameworks */,
 				6B60DEC71D5BDA74009174A2 /* Headers */,
 				6B60DEC81D5BDA74009174A2 /* Resources */,
+				65B34C321DA622B7005C3583 /* Tailor */,
 			);
 			buildRules = (
 			);
@@ -467,6 +513,7 @@
 				6B60DF081D5BE834009174A2 /* Frameworks */,
 				6B60DF091D5BE834009174A2 /* Resources */,
 				6B2EA03D1D644A8B006DAD00 /* Embed Frameworks */,
+				6BA9245C1D8FA1CF00415488 /* Tailor */,
 			);
 			buildRules = (
 			);
@@ -504,6 +551,7 @@
 				6B60DF4F1D5BFE41009174A2 /* Frameworks */,
 				6B60DF501D5BFE41009174A2 /* Resources */,
 				6B2EA0421D644ABD006DAD00 /* Embed Frameworks */,
+				65B34C331DA622FD005C3583 /* Tailor */,
 			);
 			buildRules = (
 			);
@@ -522,25 +570,31 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				TargetAttributes = {
 					6B60DEBB1D5BDA46009174A2 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					6B60DEC91D5BDA74009174A2 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					6B60DEFB1D5BE766009174A2 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 					6B60DF0A1D5BE834009174A2 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = WE23L742P8;
+						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					6B60DF201D5BE8A4009174A2 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 					6B60DF511D5BFE41009174A2 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -623,6 +677,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		65B34C321DA622B7005C3583 /* Tailor */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Tailor;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if hash tailor 2>/dev/null; then\ntailor -l 78 #--max-name-length 30\nelse\necho \"warning: Please install Tailor from https://tailor.sh\"\nfi";
+		};
+		65B34C331DA622FD005C3583 /* Tailor */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Tailor;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if hash tailor 2>/dev/null; then\ntailor -l 78 #--max-name-length 30\nelse\necho \"warning: Please install Tailor from https://tailor.sh\"\nfi";
+		};
+		6BA9245C1D8FA1CF00415488 /* Tailor */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Tailor;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if hash tailor 2>/dev/null; then\ntailor -l 78 #--max-name-length 30\nelse\necho \"warning: Please install Tailor from https://tailor.sh\"\nfi";
+		};
+		A6DEF96A2FE3F7CE47390D26 /* Tailor */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Tailor;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if hash tailor 2>/dev/null; then\n    tailor -l 78 #--max-name-length 30\nelse\n  echo \"warning: Please install Tailor from https://tailor.sh\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		6B60DEB71D5BDA46009174A2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -630,13 +743,19 @@
 			files = (
 				6B60DEDD1D5BDD4D009174A2 /* GlobalFunctionsAndExtensions.swift in Sources */,
 				6B60DEE41D5BDD4D009174A2 /* JTCalendarProtocols.swift in Sources */,
+				6BA9245E1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift in Sources */,
+				6B6B1F731DA1CD5D0063A678 /* UICollectionViewDelegates.swift in Sources */,
 				6B60DEE51D5BDD4D009174A2 /* UserInteractionFunctions.swift in Sources */,
+				6B6B1F691DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift in Sources */,
 				6B60DEE01D5BDD4D009174A2 /* JTAppleCalendarView.swift in Sources */,
 				6B60DEE31D5BDD4D009174A2 /* JTAppleViews.swift in Sources */,
 				6B60DEDF1D5BDD4D009174A2 /* JTAppleCalendarLayout.swift in Sources */,
+				6B74405E1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */,
 				6B60DEE11D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift in Sources */,
-				6B60DEDE1D5BDD4D009174A2 /* JTAppleCalendarDelegates.swift in Sources */,
+				6B60DEDE1D5BDD4D009174A2 /* UIScrollViewDelegates.swift in Sources */,
 				6B60DEE21D5BDD4D009174A2 /* JTAppleDayCell.swift in Sources */,
+				6B6B1F701DA1CC130063A678 /* CalendarStructs.swift in Sources */,
+				6B6B1F6C1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -646,13 +765,19 @@
 			files = (
 				6B60DEE61D5BDD51009174A2 /* GlobalFunctionsAndExtensions.swift in Sources */,
 				6B60DEED1D5BDD58009174A2 /* JTCalendarProtocols.swift in Sources */,
+				6BA9245F1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift in Sources */,
+				6B6B1F741DA1CD5D0063A678 /* UICollectionViewDelegates.swift in Sources */,
 				6B60DEEE1D5BDD58009174A2 /* UserInteractionFunctions.swift in Sources */,
+				6B6B1F6A1DA1CB130063A678 /* JTAppleCalendarLayoutProtocol.swift in Sources */,
 				6B60DEE91D5BDD58009174A2 /* JTAppleCalendarView.swift in Sources */,
 				6B60DEEC1D5BDD58009174A2 /* JTAppleViews.swift in Sources */,
 				6B60DEE81D5BDD58009174A2 /* JTAppleCalendarLayout.swift in Sources */,
+				6B74405F1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */,
 				6B60DEEA1D5BDD58009174A2 /* JTAppleCollectionReusableView.swift in Sources */,
-				6B60DEE71D5BDD58009174A2 /* JTAppleCalendarDelegates.swift in Sources */,
+				6B60DEE71D5BDD58009174A2 /* UIScrollViewDelegates.swift in Sources */,
 				6B60DEEB1D5BDD58009174A2 /* JTAppleDayCell.swift in Sources */,
+				6B6B1F711DA1CC130063A678 /* CalendarStructs.swift in Sources */,
+				6B6B1F6D1DA1CB7A0063A678 /* JTAppleReusableViewProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -760,12 +885,49 @@
 		6B60DEB51D5BD9DE009174A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		6B60DEB61D5BD9DE009174A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -788,7 +950,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -814,7 +976,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Sources/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -823,6 +985,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -848,7 +1011,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -868,13 +1031,14 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Sources/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "OST.JTAppleCalendar-iOS";
 				PRODUCT_NAME = JTAppleCalendar;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -901,6 +1065,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -934,6 +1099,7 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -960,6 +1126,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -985,6 +1152,7 @@
 				PRODUCT_NAME = JTAppleCalendar;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VALIDATE_PRODUCT = YES;
@@ -1087,6 +1255,7 @@
 		6B60DF1B1D5BE834009174A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1103,10 +1272,11 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				DEVELOPMENT_TEAM = WE23L742P8;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1132,12 +1302,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		6B60DF1C1D5BE834009174A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1154,10 +1326,11 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				DEVELOPMENT_TEAM = WE23L742P8;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1175,6 +1348,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "OST.JTAppleCalendar-iOS-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 3.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1271,6 +1445,7 @@
 		6B60DF5F1D5BFE41009174A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1290,7 +1465,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1315,6 +1489,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
@@ -1323,6 +1498,7 @@
 		6B60DF601D5BFE41009174A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1342,7 +1518,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1359,6 +1534,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "OST.JTAppleCalendar-tvOS-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VALIDATE_PRODUCT = YES;
