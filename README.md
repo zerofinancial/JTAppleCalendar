@@ -35,8 +35,8 @@ This Library is a `UICollectionView` subclass. This means your date cells will l
 ### IMPORTANT: Tutorials and guide is now on [patchthecode.github.io](https://patchthecode.github.io/)
 ___
 
-1. Version 5.0.1 is the final version to support Swift 2.
-2. Upcoming version 6.0 will be in swift 3. Pre-release is on master branch.
+1. **Version 5.0.1 is the final version to support Swift 2.**
+2. Upcoming versions will all be in swift 3. Pre-release is on master branch.
 
 ## Author
 
