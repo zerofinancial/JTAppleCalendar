@@ -21,7 +21,7 @@ An iOS calendar control. Written in swift.
 - [x] [Complete Documentation](http://cocoadocs.org/docsets/JTAppleCalendar)
 
 
-### Full documentation and tutorials are [located here](https://patchthecode.github.io/)
+### Full documentation and tutorials are on [patchthecode.github.io](https://patchthecode.github.io/)
 
 **Important:**  We are officially moving to swift3. All documentation has now been updated to reflect this. Pre-release is on master branch.
 
