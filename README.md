@@ -28,9 +28,6 @@ ___
 2. Upcoming version 6.0 will be in swift 3. Pre-release is on master branch.
 3. Version 6 documentation is now on **[patchthecode.github.io](https://patchthecode.github.io/)**
 
-
-**Important:**  We are officially moving to swift3. All documentation has now been updated to reflect this. Pre-release is on master branch.
-
 ## Author
 
 JayT, patchthecode@gmail.com <-- Sending me emails will not get you a swift response. I check it once every 2 weeks or so. Create a new issue [here on github](https://github.com/patchthecode/JTAppleCalendar/issues) if you need help.
