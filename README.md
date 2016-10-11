@@ -23,11 +23,7 @@ An iOS calendar control. Written in swift.
 
 ### Full documentation and tutorials are [located here](https://patchthecode.github.io/)
 
-### Notice: 
-___
-
-<font color="red"> We are officially moving to swift3. All documentation has now been updated to reflect this. Pre-release is on master branch.</font>
-
+**Important:**  We are officially moving to swift3. All documentation has now been updated to reflect this. Pre-release is on master branch.
 
 ## Author
 
