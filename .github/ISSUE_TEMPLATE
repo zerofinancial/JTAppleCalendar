@@ -2,16 +2,14 @@ IMPORTANT - BEFORE CREATING YOUR ISSUE PLEASE READ THE FOLLOWING:
 
 IF YOU ARE USING THE OFFICIAL RELEASE VERSION, FOLLOW THE FOLLOWING 4 INSTRUCTIONS:
 ________________________________________
-1. Are you using the latest version of JTAppleCalendar? Latest version is currently 5.0.1
-2. Did you leave a ★ rating on this repository if you like it? Yea.. I kinda need that. Get's me all pumped to answer questions/bugs.
-3. Did you check the Wiki page to see if your question is already answered? --> https://github.com/patchthecode/JTAppleCalendar/wiki
-4. If you just upgraded from 4.1.4 to 5.0.0, you might want to look at these changes --> https://github.com/patchthecode/JTAppleCalendar/wiki/Message-to-testers-working-on-master-branch
 
+1. Are you using the latest version of JTAppleCalendar? Latest version is currently 6.0
+2. Is your question already answered in the tutorials and guides —> https://patchthecode.github.io/
+3. If you just upgraded from version 5.0.1 or from the swift3 branch, function names have changed. Make sure they match.
 
-IF YOU ARE INSTEAD USING THE TEST MASTER BRANCH VERSION, THEN PLEASE VISIT THIS LINK ->
+Like this project? Consider supporting by leaving a STAR rating.
 
-https://github.com/patchthecode/JTAppleCalendar/wiki/Message-to-testers-working-on-master-branch
-
-
+Thanks,
+Jay
 
 
