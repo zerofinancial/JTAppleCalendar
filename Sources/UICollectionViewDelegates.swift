@@ -298,10 +298,8 @@ extension JTAppleCalendarView: UICollectionViewDelegate,
             cell: selectedCell?.view,
             cellState: cellState
         )
-
-        print("columns: \(cellStateFromIndexPath(indexPath).column()) " +
-            "row: \(cellStateFromIndexPath(indexPath).row())")
-
+        print(cellState.date)
+        print(indexPath)
     }
 
 }

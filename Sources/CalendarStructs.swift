@@ -177,7 +177,18 @@ struct Month {
         }
         return retval
     }
-
+    
+    func boundaryIndicesFor(section: Int) -> (startIndex: Int, endIndex: Int)? {
+        if !(0...sections.count ~=  section) {
+            return nil
+        }
+        let startIndex = section == 0 ? preDates : 0
+        var endIndex =  sections[section] - 1
+        if section + 1  == sections.count {
+            endIndex -= postDates
+        }
+        return (startIndex: startIndex, endIndex: endIndex)
+    }
 }
 
 struct DateConfigParameters {

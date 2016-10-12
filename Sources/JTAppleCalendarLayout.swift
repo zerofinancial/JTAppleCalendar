@@ -64,11 +64,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
 
     /// Tells the layout object to update the current layout.
     open override func prepare() {
-        print("Prepare was called")
         if !cellCache.isEmpty {
             return
         }
-        print("All was recreated!! ")
         maxMissCount = scrollDirection == .horizontal ?
             maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
         if scrollDirection == .vertical {

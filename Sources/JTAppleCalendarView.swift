@@ -107,11 +107,7 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    var layoutNeedsUpdating = false {
-        didSet {
-            print("")
-        }
-    }
+    var layoutNeedsUpdating = false
 
     /// The object that acts as the data source of the calendar view.
     weak open var dataSource: JTAppleCalendarViewDataSource? {
@@ -1044,12 +1040,18 @@ extension JTAppleCalendarView {
 
     func monthInfoFromSection(_ section: Int) ->
         (range: (start: Date, end: Date), month: Int, rowsForSection: Int)? {
-            let monthIndex = monthMap[section]!
+            guard let monthIndex = monthMap[section] else {
+                return nil
+            }
             let monthData = monthInfo[monthIndex]
-            let startIndex = monthData.preDates
-            let endIndex = monthData.numberOfDaysInMonth + startIndex - 1
-            let startIndexPath = IndexPath(item: startIndex, section: section)
-            let endIndexPath = IndexPath(item: endIndex, section: section)
+            
+            guard let
+                monthDataMapSection = monthData.sectionIndexMaps[section],
+                let indices = monthData.boundaryIndicesFor(section: monthDataMapSection) else {
+                    return nil
+            }
+            let startIndexPath = IndexPath(item: indices.startIndex, section: section)
+            let endIndexPath = IndexPath(item: indices.endIndex, section: section)
             guard let
                 startDate = dateInfoFromPath(startIndexPath)?.date,
                 let endDate = dateInfoFromPath(endIndexPath)?.date else {
