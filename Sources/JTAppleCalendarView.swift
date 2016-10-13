@@ -643,13 +643,13 @@ open class JTAppleCalendarView: UIView {
                 Date.startOfMonth(for: newDateBoundary.startDate,
                                   using: cachedConfiguration.calendar)
             let newEndOfMonth =
-                Date.endOfMonth(for: newDateBoundary.startDate,
+                Date.endOfMonth(for: newDateBoundary.endDate,
                                 using: cachedConfiguration.calendar)
             let oldStartOfMonth =
                 Date.startOfMonth(for: cachedConfiguration.startDate,
                                   using: cachedConfiguration.calendar)
             let oldEndOfMonth =
-                Date.endOfMonth(for: cachedConfiguration.startDate,
+                Date.endOfMonth(for: cachedConfiguration.endDate,
                                 using: cachedConfiguration.calendar)
             if newStartOfMonth != oldStartOfMonth ||
                 newEndOfMonth != oldEndOfMonth ||
