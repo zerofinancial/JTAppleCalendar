@@ -45,24 +45,45 @@ extension JTAppleCalendarView {
         return stateOfCell
     }
 
-    /// Returns the calendar view's current section boundary dates.
+    /// Returns the visible dates of the calendar.
     /// - returns:
-    ///     - range: A range containing the startDate and the
-    ///              endDaye for the current date segment
-    ///     - month: The month that the date range belongs to.
-    ///              If you have pre/post dates, this value can be useful
-    ///              to know which month it belongs to.
-    public func dateSegment() -> (range: (start: Date, end: Date),
-                                  month: Int, rowsForSection: Int) {
-        guard dataSource != nil, let dateSegment =
-            monthInfoFromSection(currentSectionPage) else {
-                if dataSource == nil {
-                    print("Error: DataSource not yet set")
-                }
-                return (range: (start: Date(), end: Date()),
-                        month: 0, rowsForSection: 0)
+    ///     - DateSegmentInfo
+    public func visibleDates(_ completionHandler: @escaping (_ dateSegmentInfo: DateSegmentInfo) ->()) {
+        if !calendarIsAlreadyLoaded {
+            delayedExecutionClosure.append {
+                self.visibleDates(completionHandler)
+            }
+            return
         }
-        return dateSegment
+        
+        let rect = CGRect(x: calendarView.contentOffset.x + 1, y: calendarView.contentOffset.y + 1, width: calendarView.frame.width - 2, height: calendarView.frame.height - 2)
+        guard let attributes = calendarViewLayout.layoutAttributesForElements(in: rect), attributes.count > 0 else {
+            return
+        }
+        
+        let indexPaths: [IndexPath] = Array(Set(attributes.map { $0.indexPath })).sorted()
+        
+        var preDates   = [Date]()
+        var monthDates = [Date]()
+        var postDates  = [Date]()
+
+        for indexPath in indexPaths {
+            let info = dateInfoFromPath(indexPath)
+            
+            if let validInfo = info  {
+                switch validInfo.owner {
+                case .thisMonth:
+                    monthDates.append(validInfo.date)
+                case .previousMonthWithinBoundary, .previousMonthOutsideBoundary:
+                    preDates.append(validInfo.date)
+                default:
+                    postDates.append(validInfo.date)
+                }
+            }
+        }
+        
+        let retval = DateSegmentInfo(predates: preDates, monthDates: monthDates, postdates: postDates)
+        completionHandler(retval)
     }
 
     /// Let's the calendar know which cell xib to

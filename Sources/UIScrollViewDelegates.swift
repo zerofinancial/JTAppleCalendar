@@ -286,16 +286,9 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     /// Tells the delegate that the scroll view has
     /// ended decelerating the scrolling movement.
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let currentSegmentDates = dateSegment()
-        self.delegate?.calendar(
-            self,
-            didScrollToDateSegmentFor: (
-                start: currentSegmentDates.range.start,
-                end: currentSegmentDates.range.end
-            ),
-            belongingTo: currentSegmentDates.month,
-            rows: currentSegmentDates.rowsForSection
-        )
+        visibleDates { dates in
+            self.delegate?.calendar(self, didScrollToDateSegmentWith: dates)
+        }
     }
 
 }
