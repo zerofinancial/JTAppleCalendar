@@ -131,18 +131,13 @@ class ViewController: UIViewController {
         calendarView.registerHeaderView(xibFileNames:
             ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
 
-//        calendarView.itemSize = 25
+
         calendarView.cellInset = CGPoint(x: 0, y: 0)
         calendarView.allowsMultipleSelection = true
 
-//        calendarView.scrollingMode = .nonStopToCell(withResistance: 0.75)
-
-        let currentDate = self.calendarView.dateSegment()
-        self.setupViewsOfCalendar(
-            currentDate.range.start,
-            endDate: currentDate.range.end,
-            month: currentDate.month
-        )
+        calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
+            self.setupViewsOfCalendar(from: visibleDates)
+        }
     }
 
     @IBAction func selectDate(_ sender: AnyObject?) {
@@ -179,21 +174,17 @@ class ViewController: UIViewController {
 
     @IBAction func next(_ sender: UIButton) {
         self.calendarView.scrollToNextSegment {
-            let currentSegmentDates = self.calendarView.dateSegment()
-            self.setupViewsOfCalendar(
-                currentSegmentDates.range.start,
-                endDate: currentSegmentDates.range.end,
-                month: currentSegmentDates.month
-            )
+            self.calendarView.visibleDates({ (visibleDates: DateSegmentInfo) in
+                self.setupViewsOfCalendar(from: visibleDates)
+            })
         }
     }
 
     @IBAction func previous(_ sender: UIButton) {
         self.calendarView.scrollToPreviousSegment {
-            let currentSegmentDates = self.calendarView.dateSegment()
-            self.setupViewsOfCalendar(currentSegmentDates.range.start,
-                                      endDate: currentSegmentDates.range.end,
-                                      month: currentSegmentDates.month)
+            self.calendarView.visibleDates({ (visibleDates: DateSegmentInfo) in
+                self.setupViewsOfCalendar(from: visibleDates)
+            })
         }
     }
 
@@ -201,7 +192,12 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)
     }
 
-    func setupViewsOfCalendar(_ startDate: Date, endDate: Date, month: Int) {
+    func setupViewsOfCalendar(from visibleDates: DateSegmentInfo) {
+        guard let startDate = visibleDates.monthDates.first else {
+            return
+        }
+        
+        let month = testCalendar.dateComponents([.month], from: startDate).month!
         let monthName = DateFormatter().monthSymbols[(month-1) % 12]
         // 0 indexed array
         let year = Calendar.current.component(.year, from: startDate)
@@ -216,8 +212,8 @@ extension ViewController: JTAppleCalendarViewDelegate,
 
     func configureCalendar(_ calendar: JTAppleCalendarView) ->
         ConfigurationParameters {
-            let startDate = formatter.date(from: "2016 01 01")!
-            let endDate = formatter.date(from: "2016 09 20")!
+            let startDate = formatter.date(from: "2016 10 01")!
+            let endDate = formatter.date(from: "2016 12 20")!
             let calendar = Calendar.current
 
             let parameters = ConfigurationParameters(
@@ -227,7 +223,7 @@ extension ViewController: JTAppleCalendarViewDelegate,
                 calendar: calendar,
                 generateInDates: generateInDates,
                 generateOutDates: generateOutDates,
-                firstDayOfWeek: firstDayOfWeek
+                firstDayOfWeek: .monday
             )
             return parameters
     }
@@ -257,10 +253,10 @@ extension ViewController: JTAppleCalendarViewDelegate,
         (cell as? CellView)?.selectedView.isHidden = true
     }
 
-    func calendar(_ calendar: JTAppleCalendarView,
-                  didScrollToDateSegmentFor range: (start: Date, end: Date),
-                  belongingTo month: Int, rows: Int) {
-        setupViewsOfCalendar(range.start, endDate: range.end, month: month)
+    func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
+        calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
+            self.setupViewsOfCalendar(from: visibleDates)
+        }
     }
 
     func calendar(_ calendar: JTAppleCalendarView,
