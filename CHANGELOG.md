@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
+#### 6.x Releases
+- `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
+
 #### 5.x Releases
 - `5.0.0` Releases - [5.0.0](#500)|[5.0.1](#501)
 
@@ -21,6 +24,11 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.0.0-beta.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.0-beta.1)
+- Made function names more standardised
+- Added ability enable/disable in-dates/out-dates generation
+- Added ability to choose buldle for xib files
+
 ## [5.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/5.0.1)
 - Bug Fix: [Crash on negative scroll in vertical mode](https://github.com/patchthecode/JTAppleCalendar/issues/115)
 

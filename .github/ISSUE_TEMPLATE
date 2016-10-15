@@ -3,7 +3,7 @@ IMPORTANT - BEFORE CREATING YOUR ISSUE PLEASE READ THE FOLLOWING:
 IF YOU ARE USING THE OFFICIAL RELEASE VERSION, FOLLOW THE FOLLOWING 4 INSTRUCTIONS:
 ________________________________________
 
-1. Are you using the latest version of JTAppleCalendar? Latest version is currently 6.0
+1. Are you using the latest version of JTAppleCalendar? Latest version is currently 6.0.0-beta.1
 2. Is your question already answered in the tutorials and guides —> https://patchthecode.github.io/
 3. If you just upgraded from version 5.0.1 or from the swift3 branch, function names have changed. Make sure they match.
 
