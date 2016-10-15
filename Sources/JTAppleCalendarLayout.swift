@@ -85,13 +85,10 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
 
     func horizontalStuff() {
         var section = 0
-        var rowNumber = 0
         var totalDayCounter = 0
         var headerGuide = 0
-        
-        var stillInPreviousVirtualSection = false
-        var offsetCOUNTER = 0
-        
+        let fullSection = numberOfRows * 7
+        var extra = 0
         for aMonth in monthData {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
@@ -128,61 +125,39 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
                             }
                         } else {
                             totalDayCounter += 1
-
-                            if stillInPreviousVirtualSection == true {
-                                offsetCOUNTER += 1
-                            }
-                            
-                            if totalDayCounter >= delegate.totalDays {
-                                // If we are at the last item and we are
-                                // also ona partial (because we were not
-                                // at end of row)
-                                contentWidth += lastWrittenCellAttribute!
-                                    .frame.width * 7
-                            } else if totalDayCounter % 7 == 0 {
+                            extra += 1
+                            if totalDayCounter % fullSection == 0 { // If you have a full section
                                 xCellOffset = 0
-                                if rowNumber + 1 == numberOfRows {
-                                    // If we are at the end of
-                                    // a virtual section
-                                    yCellOffset = 0
-                                    contentWidth += lastWrittenCellAttribute!
-                                        .frame.width * 7
-                                    stride = contentWidth
-                                    stillInPreviousVirtualSection = false
-                                    rowNumber = 0
-                                } else if numberOfDaysInCurrentSection + offsetCOUNTER - 1 ==
-                                    item {
-                                        xCellOffset = 0
-                                        yCellOffset = 0
-                                        contentWidth +=
-                                            lastWrittenCellAttribute!
-                                                .frame.width * 7
-                                        stride = contentWidth
-                                        rowNumber = 0
-                                        stillInPreviousVirtualSection = false
-                                } else {
-                                    // We we are simply only at
-                                    // the end of a row
-                                    yCellOffset += attribute.frame.height
-                                    rowNumber += 1
+                                yCellOffset = 0
+                                contentWidth += attribute.frame.width * 7 
+                                stride = contentWidth
+                                sectionSize.append(contentWidth)
+                            } else {
+                                if totalDayCounter >= delegate.totalDays {
+                                    contentWidth += attribute.frame.width * 7
+                                    sectionSize.append(contentWidth)
                                 }
-                            } else if numberOfDaysInCurrentSection + offsetCOUNTER - 1 ==
-                                item { // Here we are at the end of a section.
-                                stillInPreviousVirtualSection = true
-                                offsetCOUNTER = 0
+                                
+                                if totalDayCounter % 7 == 0 {
+                                    xCellOffset = 0
+                                    yCellOffset += attribute.frame.height
+                                }
                             }
                         }
                     }
                 }
                 // Save the content size for each section
-                sectionSize.append(contentWidth)
+                
                 if thereAreHeaders {
+                    sectionSize.append(contentWidth)
                     stride = sectionSize[section]
+                    
                 }
                 section += 1
             }
         }
         contentHeight = self.collectionView!.bounds.size.height
+        print(sectionSize)
     }
 
     func verticalStuff() {
@@ -438,21 +413,19 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
                 headerSize = cachedHeaderSizeForSection(indexPath.section)
             }
             var height: CGFloat = 0
-
-            let totalNumberOfRows =
-                monthData[monthMap[indexPath.section]!].rows
+            let totalNumberOfRows = monthData[monthMap[indexPath.section]!].rows
             let currentMonth = monthData[monthMap[indexPath.section]!]
-            let monthSection = currentMonth
-                .sectionIndexMaps[indexPath.section]!
-            let numberOfSections =
-                CGFloat(totalNumberOfRows) / CGFloat(numberOfRows)
+            let monthSection = currentMonth.sectionIndexMaps[indexPath.section]!
+            let numberOfSections = CGFloat(totalNumberOfRows) / CGFloat(numberOfRows)
             let fullSections =  Int(numberOfSections)
             let numberOfRowsForSection: Int
             if scrollDirection == .horizontal {
-                numberOfRowsForSection = currentMonth
-                    .maxNumberOfRowsForFull(developerSetRows: numberOfRows)
-                height = (collectionView!.frame.height - headerSize.height) /
-                    CGFloat(numberOfRowsForSection)
+                if thereAreHeaders {
+                    numberOfRowsForSection = currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)
+                } else {
+                    numberOfRowsForSection = numberOfRows
+                }
+                height = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
             } else {
                 if monthSection + 1 <= fullSections {
                     numberOfRowsForSection = numberOfRows
