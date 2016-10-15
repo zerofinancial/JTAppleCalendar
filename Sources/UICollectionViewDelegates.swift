@@ -76,7 +76,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate,
                 identifier: reuseIdentifier)
             return headerView
     }
-
+    /// Notifies the delegate that a cell is no longer on screen
     public func collectionView(_ collectionView: UICollectionView,
                                didEndDisplaying cell: UICollectionViewCell,
                                forItemAt indexPath: IndexPath) {

@@ -16,7 +16,9 @@ public enum OutDateCellGeneration {
 
 /// Describes the types of out-date cells to be generated.
 public enum InDateCellGeneration {
-    /// self explanatory
+    /// forFirstMonthOnly will generate dates for the first month only
+    /// forAllMonths will generate dates for all months
+    /// off setting wilil generate no dates
     case forFirstMonthOnly, forAllMonths, off
 }
 

@@ -111,15 +111,14 @@ extension JTAppleCalendarView {
 
     /// Let's the calendar know which cell
     /// class to use for the displaying of it's date-cells.
-    /// - Parameter name: The type of your cell design
+    /// - Parameter type: The type of your cell design
     public func registerCellViewClass(type: AnyClass) {
         cellViewSource = JTAppleCalendarViewSource.fromType(type)
     }
 
     /// Register header views with the calender. This needs to be done
     /// before the view can be displayed
-    /// - Parameter fileNames: A dictionary containing
-    ///                        [headerViewNames:HeaderviewSizes]
+    /// - Parameter xibFileNames: An array of xib file string names
     /// - Parameter bundle: The bundle where the xibs can be found.
     ///                     If left nil, the library will search the
     ///                     main bundle
@@ -143,8 +142,7 @@ extension JTAppleCalendarView {
 
     /// Register header views with the calender. This needs to be
     /// done before header views can be displayed
-    /// - Parameter fileNames: A dictionary containing
-    ///                        [headerViewNames:HeaderviewSizes]
+    /// - Parameter classStringNames: An array of class string names
     /// - Parameter bundle: The bundle where the xibs can be found. If left
     ///                     nil, the library will search the main bundle
     public func registerHeaderView(classStringNames: [String],
@@ -167,8 +165,7 @@ extension JTAppleCalendarView {
 
     /// Register header views with the calender. This needs to be done
     /// before header views can be displayed
-    /// - Parameter fileNames: A dictionary containing
-    ///                        [headerViewNames:HeaderviewSizes]
+    /// - Parameter classTypeNames: An array of class types
     public func registerHeaderView(classTypeNames: [AnyClass]) {
         if classTypeNames.count < 1 {
             return
@@ -247,14 +244,10 @@ extension JTAppleCalendarView {
     ///   applicable in allowedMultiSelection = true.
     /// This overrides the default toggle behavior of selection.
     /// If true, selected cells will remain selected.
-    public func selectDates(
-        from startDate: Date, to endDate: Date,
-        triggerSelectionDelegate: Bool = true,
-        keepSelectionIfMultiSelectionAllowed: Bool = false) {
-            selectDates(generateDateRange(from: startDate, to: endDate),
-                        triggerSelectionDelegate: triggerSelectionDelegate,
-                        keepSelectionIfMultiSelectionAllowed:
-                            keepSelectionIfMultiSelectionAllowed)
+    public func selectDates(from startDate: Date, to endDate: Date, triggerSelectionDelegate: Bool = true, keepSelectionIfMultiSelectionAllowed: Bool = false) {
+        selectDates(generateDateRange(from: startDate, to: endDate),
+                    triggerSelectionDelegate: triggerSelectionDelegate,
+                    keepSelectionIfMultiSelectionAllowed: keepSelectionIfMultiSelectionAllowed)
     }
 
     public func deselectAllDates(triggerSelectionDelegate: Bool = true) {
@@ -269,22 +262,19 @@ extension JTAppleCalendarView {
     /// Sometimes it is necessary to setup some dates without triggereing
     /// the delegate e.g. For instance, when youre initally setting up data
     /// in your viewDidLoad
-    public func selectDates(
-        _ dates: [Date],
-        triggerSelectionDelegate: Bool = true,
-        keepSelectionIfMultiSelectionAllowed: Bool = false) {
-            if !calendarIsAlreadyLoaded {
-                // If the calendar is nnot yet fully loaded.
-                // Add the task to the delayed queue
-                delayedExecutionClosure.append {
-                    self.selectDates(
-                        dates,
-                        triggerSelectionDelegate: triggerSelectionDelegate,
-                        keepSelectionIfMultiSelectionAllowed:
-                            keepSelectionIfMultiSelectionAllowed
-                    )
-                }
-                return
+    public func selectDates(_ dates: [Date], triggerSelectionDelegate: Bool = true, keepSelectionIfMultiSelectionAllowed: Bool = false) {
+        if !calendarIsAlreadyLoaded {
+            // If the calendar is not yet fully loaded.
+            // Add the task to the delayed queue
+            delayedExecutionClosure.append {
+                self.selectDates(
+                    dates,
+                    triggerSelectionDelegate: triggerSelectionDelegate,
+                    keepSelectionIfMultiSelectionAllowed:
+                        keepSelectionIfMultiSelectionAllowed
+                )
+            }
+            return
         }
         var allIndexPathsToReload: [IndexPath] = []
         var validDatesToSelect = dates

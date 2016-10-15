@@ -39,31 +39,30 @@ public struct CellState {
     /// returns the section the date cell belongs to
     public let dateSection: () ->
         (range: (start: Date, end: Date), month: Int, rowsForSection: Int)
-    /// returns the position of a selection
-    /// in the event you wish to do range selection
+    /// returns the position of a selection in the event you wish to do range selection
     public let selectedPosition: () -> SelectionRangePosition
     /// returns the cell frame.
     /// Useful if you wish to display something at the cell's frame/position
     public var cell: () -> JTAppleDayCell?
 }
 
-/// Defines the parameters which configures the calendar. The following
-/// parameters are: - startDate: The start date boundary of your calendar -
-/// endDate: The end-date boundary of your calendar - numberOfRows: Number of
-/// rows you want to calendar to display per date section - calendar: Your
-/// Calendar() instance. You are responsible for PROPERLY configuring this to
-/// you region settings. All calendar calculations will be based on what you
-/// have setup here. - generateInDates: Set to true if you want pre-dates to
-/// be generated. - generateOutDates: Describes the types of out-date cells to
-/// be generated. - firstDayOfWeek: Sets the first day of week.
+/// Defines the parameters which configures the calendar.
 public struct ConfigurationParameters {
+    /// The start date boundary of your calendar
     var startDate: Date
+    /// The end-date boundary of your calendar
     var endDate: Date
+    /// Number of rows you want to calendar to display per date section
     var numberOfRows: Int
+    /// Your Calendar() instance
     var calendar: Calendar
+    /// Describes the types of in-date cells to be generated.
     var generateInDates: InDateCellGeneration
+    /// Describes the types of out-date cells to be generated.
     var generateOutDates: OutDateCellGeneration
+    /// Sets the first day of week
     var firstDayOfWeek: DaysOfWeek
+    /// init-function
     public init(startDate: Date,
                 endDate: Date,
                 numberOfRows: Int, calendar: Calendar,
