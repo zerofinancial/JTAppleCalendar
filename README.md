@@ -5,6 +5,12 @@ An iOS calendar control. Written in swift.
 
 [![CI Status](http://img.shields.io/travis/patchthecode/JTAppleCalendar.svg?style=flat)](https://travis-ci.org/patchthecode/JTAppleCalendar) [![Version](https://img.shields.io/cocoapods/v/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Platform](https://img.shields.io/cocoapods/p/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![License](https://img.shields.io/cocoapods/l/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![](https://www.paypalobjects.com/webstatic/en_US/btn/btn_donate_74x21.png)](https://salt.bountysource.com/teams/jtapplecalendar)
 
+### IMPORTANT: Tutorials and guide is now on [patchthecode.github.io](https://patchthecode.github.io/)
+___
+
+1. **Version 5.0.1 is the final version to support Swift 2.**
+2. Upcoming versions will all be in swift 3. Pre-release of 6.0 is currently on master branch.
+
 ## How will my calendar dateCells look with this library?
 
 
@@ -30,13 +36,6 @@ This Library is a `UICollectionView` subclass. This means your date cells will l
 - [x] Ability to scroll to any month by simply using the date
 - [x] Ability to design your calendar [however you want.](https://github.com/patchthecode/JTAppleCalendar/issues/2) You want it, you build it
 - [x] [Complete Documentation](http://cocoadocs.org/docsets/JTAppleCalendar)
-
-
-### IMPORTANT: Tutorials and guide is now on [patchthecode.github.io](https://patchthecode.github.io/)
-___
-
-1. **Version 5.0.1 is the final version to support Swift 2.**
-2. Upcoming versions will all be in swift 3. Pre-release is on master branch.
 
 ## Author
 
