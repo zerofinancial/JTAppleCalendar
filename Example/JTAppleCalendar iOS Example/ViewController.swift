@@ -123,13 +123,16 @@ class ViewController: UIViewController {
         calendarView.delegate = self
         calendarView.dataSource = self
 
-//        calendarView.direction = .vertical
+
         // ___________________________________________________________________
         // Registering your cells is manditory
         // ___________________________________________________________________
         calendarView.registerCellViewXib(file: "CellView")
-        calendarView.registerHeaderView(xibFileNames:
-            ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
+        
+        // ___________________________________________________________________
+        // Registering your cells is optional
+        // ___________________________________________________________________
+        calendarView.registerHeaderView(xibFileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
 
 
         calendarView.cellInset = CGPoint(x: 0, y: 0)
@@ -207,56 +210,44 @@ class ViewController: UIViewController {
 }
 
 // MARK : JTAppleCalendarDelegate
-extension ViewController: JTAppleCalendarViewDelegate,
-                          JTAppleCalendarViewDataSource {
+extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
+    func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
+        let startDate = formatter.date(from: "2010 10 01")!
+        let endDate = formatter.date(from: "2020 12 20")!
+        let calendar = Calendar.current
 
-    func configureCalendar(_ calendar: JTAppleCalendarView) ->
-        ConfigurationParameters {
-            let startDate = formatter.date(from: "2016 10 01")!
-            let endDate = formatter.date(from: "2016 12 20")!
-            let calendar = Calendar.current
-
-            let parameters = ConfigurationParameters(
-                startDate: startDate,
-                endDate: endDate,
-                numberOfRows: numberOfRows,
-                calendar: calendar,
-                generateInDates: generateInDates,
-                generateOutDates: generateOutDates,
-                firstDayOfWeek: .monday
-            )
-            return parameters
+        let parameters = ConfigurationParameters(
+            startDate: startDate,
+            endDate: endDate,
+            numberOfRows: numberOfRows,
+            calendar: calendar,
+            generateInDates: generateInDates,
+            generateOutDates: generateOutDates,
+            firstDayOfWeek: firstDayOfWeek
+        )
+        return parameters
     }
 
-    func calendar(_ calendar: JTAppleCalendarView,
-                  willDisplayCell cell: JTAppleDayCellView,
-                  date: Date, cellState: CellState) {
+    func calendar(_ calendar: JTAppleCalendarView, willDisplayCell cell: JTAppleDayCellView, date: Date, cellState: CellState) {
         (cell as? CellView)?.setupCellBeforeDisplay(cellState, date: date)
     }
 
-    func calendar(_ calendar: JTAppleCalendarView,
-                  didDeselectDate date: Date,
-                  cell: JTAppleDayCellView?, cellState: CellState) {
+    func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
         (cell as? CellView)?.cellSelectionChanged(cellState)
     }
 
-    func calendar(_ calendar: JTAppleCalendarView,
-                  didSelectDate date: Date,
-                  cell: JTAppleDayCellView?, cellState: CellState) {
+    func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
         (cell as? CellView)?.cellSelectionChanged(cellState)
-//        printSelectedDates()
     }
 
+    
     // NOTICE: this function is not needed for iOS 10. It will not be called
-    func calendar(_ calendar: JTAppleCalendarView,
-                  willResetCell cell: JTAppleDayCellView) {
+    func calendar(_ calendar: JTAppleCalendarView, willResetCell cell: JTAppleDayCellView) {
         (cell as? CellView)?.selectedView.isHidden = true
     }
 
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
-        calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
-            self.setupViewsOfCalendar(from: visibleDates)
-        }
+        self.setupViewsOfCalendar(from: visibleDates)
     }
 
     func calendar(_ calendar: JTAppleCalendarView,
@@ -268,9 +259,7 @@ extension ViewController: JTAppleCalendarViewDelegate,
             return "PinkSectionHeaderView"
     }
 
-    func calendar(_ calendar: JTAppleCalendarView,
-                  sectionHeaderSizeFor range: (start: Date, end: Date),
-                  belongingTo month: Int) -> CGSize {
+    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize {
         if month % 2 > 0 {
             return CGSize(width: 200, height: 50)
         } else {
@@ -279,9 +268,7 @@ extension ViewController: JTAppleCalendarViewDelegate,
         }
     }
 
-    func calendar(_ calendar: JTAppleCalendarView,
-                  willDisplaySectionHeader header: JTAppleHeaderView,
-                  range: (start: Date, end: Date), identifier: String) {
+    func calendar(_ calendar: JTAppleCalendarView, willDisplaySectionHeader header: JTAppleHeaderView, range: (start: Date, end: Date), identifier: String) {
         switch identifier {
         case "WhiteSectionHeaderView":
             let headerCell = header as? WhiteSectionHeaderView
