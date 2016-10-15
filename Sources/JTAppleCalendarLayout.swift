@@ -157,7 +157,6 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
             }
         }
         contentHeight = self.collectionView!.bounds.size.height
-        print(sectionSize)
     }
 
     func verticalStuff() {

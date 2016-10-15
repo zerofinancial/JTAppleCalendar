@@ -63,9 +63,9 @@ extension JTAppleCalendarView {
         
         let indexPaths: [IndexPath] = Array(Set(attributes.map { $0.indexPath })).sorted()
         
-        var preDates   = [Date]()
+        var inDates   = [Date]()
         var monthDates = [Date]()
-        var postDates  = [Date]()
+        var outDates  = [Date]()
 
         for indexPath in indexPaths {
             let info = dateInfoFromPath(indexPath)
@@ -75,14 +75,14 @@ extension JTAppleCalendarView {
                 case .thisMonth:
                     monthDates.append(validInfo.date)
                 case .previousMonthWithinBoundary, .previousMonthOutsideBoundary:
-                    preDates.append(validInfo.date)
+                    inDates.append(validInfo.date)
                 default:
-                    postDates.append(validInfo.date)
+                    outDates.append(validInfo.date)
                 }
             }
         }
         
-        let retval = DateSegmentInfo(predates: preDates, monthDates: monthDates, postdates: postDates)
+        let retval = DateSegmentInfo(predates: inDates, monthDates: monthDates, postdates: outDates)
         completionHandler(retval)
     }
 
