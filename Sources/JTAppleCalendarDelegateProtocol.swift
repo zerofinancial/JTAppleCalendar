@@ -10,7 +10,7 @@
 protocol JTAppleCalendarDelegateProtocol: class {
     var itemSize: CGFloat? {get set}
     var registeredHeaderViews: [JTAppleCalendarViewSource] {get set}
-    var cachedConfiguration: ConfigurationParameters {get set}
+    var cachedConfiguration: ConfigurationParameters! {get set}
     var monthInfo: [Month] {get set}
     var monthMap: [Int: Int] {get set}
     var totalDays: Int {get}

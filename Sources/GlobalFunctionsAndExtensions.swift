@@ -27,10 +27,7 @@ extension Date {
 
     static func startOfMonth(for date: Date, using calendar: Calendar) -> Date? {
         let dayOneComponents = calendar.dateComponents([.era, .year, .month], from: date)
-        if let theDate = calendar.date(from: dayOneComponents) {
-            return calendar.startOfDay(for: theDate)
-        }
-        return nil
+        return calendar.date(from: dayOneComponents)
     }
 
     static func endOfMonth(for date: Date, using calendar: Calendar) -> Date? {

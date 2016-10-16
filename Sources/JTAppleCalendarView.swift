@@ -179,30 +179,8 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    lazy var cachedConfiguration: ConfigurationParameters = {
-        [weak self] in
-        guard let  config = self!.dataSource?.configureCalendar(self!) else {
-            assert(false, "DataSource is not set")
-            return ConfigurationParameters(
-                startDate: Date(),
-                endDate: Date(),
-                numberOfRows: 0,
-                calendar: Calendar(identifier: .gregorian),
-                generateInDates: .off,
-                generateOutDates: .off,
-                firstDayOfWeek: .sunday
-            )
-        }
-        return ConfigurationParameters(startDate: config.startDate,
-                endDate: config.endDate,
-                numberOfRows: config.numberOfRows,
-                calendar: config.calendar,
-                generateInDates: config.generateInDates,
-                generateOutDates: config.generateOutDates,
-                firstDayOfWeek: config.firstDayOfWeek
-        )
-    }()
-
+    // Configuration parameters from the dataSource
+    var cachedConfiguration: ConfigurationParameters!
     // Set the start of the month
     var startOfMonthCache: Date!
     // Set the end of month
@@ -226,33 +204,21 @@ open class JTAppleCalendarView: UIView {
     }()
 
     var monthInfo: [Month] {
-        get {
-            return theData.months
-        }
-        set {
-            theData.months = monthInfo
-        }
+        get { return theData.months }
+        set { theData.months = monthInfo }
     }
 
     var monthMap: [Int: Int] {
-        get {
-            return theData.monthMap
-        }
-        set {
-            theData.monthMap = monthMap
-        }
+        get { return theData.monthMap }
+        set { theData.monthMap = monthMap }
     }
 
     var numberOfMonths: Int {
-        get {
-            return monthInfo.count
-        }
+        get { return monthInfo.count }
     }
 
     var totalDays: Int {
-        get {
-            return theData.totalDays
-        }
+        get { return theData.totalDays }
     }
 
     func numberOfItemsInSection(_ section: Int) -> Int {
@@ -825,7 +791,7 @@ extension JTAppleCalendarView {
         var monthMap = [Int: Int]()
         var totalSections = 0
         var totalDays = 0
-        if let validConfig = dataSource?.configureCalendar(self) {
+        if var validConfig = dataSource?.configureCalendar(self) {
             // check if the dates are in correct order
             let comparison = validConfig.calendar.compare( validConfig.startDate,
                                                            to: validConfig.endDate,
@@ -835,8 +801,10 @@ extension JTAppleCalendarView {
                 assert(false, "Error, your start date cannot be " + "greater than your end date\n")
                 return (CalendarData(months: [], totalSections: 0, monthMap: [:], totalDays: 0))
             }
+            
             // Set the new cache
             cachedConfiguration = validConfig
+            
             if let
                 startMonth = Date.startOfMonth(for: validConfig.startDate, using: validConfig.calendar),
                 let endMonth = Date.endOfMonth(for: validConfig.endDate, using: validConfig.calendar) {
