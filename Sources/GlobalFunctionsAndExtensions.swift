@@ -25,22 +25,20 @@ func delayRunOnGlobalThread(_ delay: Double,
 
 extension Date {
 
-    static func startOfMonth(for date: Date,
-                             using calendar: Calendar) -> Date? {
-        let dayOneComponents =
-            calendar.dateComponents([.era, .year, .month], from: date)
-        return calendar.date(from: dayOneComponents)
+    static func startOfMonth(for date: Date, using calendar: Calendar) -> Date? {
+        let dayOneComponents = calendar.dateComponents([.era, .year, .month], from: date)
+        if let theDate = calendar.date(from: dayOneComponents) {
+            return calendar.startOfDay(for: theDate)
+        }
+        return nil
     }
 
-    static func endOfMonth(for date: Date,
-                           using calendar: Calendar) -> Date? {
-        var lastDayComponents =
-            calendar.dateComponents([.era, .year, .month], from: date)
+    static func endOfMonth(for date: Date, using calendar: Calendar) -> Date? {
+        var lastDayComponents = calendar.dateComponents([.era, .year, .month], from: date)
         lastDayComponents.month = lastDayComponents.month! + 1
         lastDayComponents.day = 0
         return calendar.date(from: lastDayComponents)
     }
-
 }
 
 extension Dictionary where Value: Equatable {

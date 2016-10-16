@@ -204,28 +204,9 @@ open class JTAppleCalendarView: UIView {
     }()
 
     // Set the start of the month
-    lazy var startOfMonthCache: Date = {
-        [weak self] in
-        if let startDate = Date.startOfMonth(for: self!.startDateCache,
-                                             using: self!.calendar) {
-            return startDate
-        }
-        assert(false, "Error: StartDate was not correctly generated for " +
-            "start of month. current date was used: \(Date())")
-        return Date()
-        }()
-
+    var startOfMonthCache: Date!
     // Set the end of month
-    lazy var endOfMonthCache: Date = {
-        [weak self] in
-        if let endDate = Date.endOfMonth(for: self!.endDateCache,
-                                         using: self!.calendar) {
-            return endDate
-        }
-        assert(false, "Error: Date was not correctly generated for end " +
-            "of month. current date was used: \(Date())")
-        return Date()
-        }()
+    var endOfMonthCache: Date!
 
     var theSelectedIndexPaths: [IndexPath] = []
     var theSelectedDates: [Date] = []
@@ -846,22 +827,19 @@ extension JTAppleCalendarView {
         var totalDays = 0
         if let validConfig = dataSource?.configureCalendar(self) {
             // check if the dates are in correct order
-            if validConfig.calendar.compare(
-                validConfig.startDate, to: validConfig.endDate,
-                toGranularity: .nanosecond) ==
-                    ComparisonResult.orderedDescending {
-                        assert(false, "Error, your start date cannot be " +
-                            "greater than your end date\n")
-                        return (CalendarData(months: [], totalSections: 0,
-                                             monthMap: [:], totalDays: 0))
+            let comparison = validConfig.calendar.compare( validConfig.startDate,
+                                                           to: validConfig.endDate,
+                                                           toGranularity: .nanosecond)
+            
+            if comparison == ComparisonResult.orderedDescending {
+                assert(false, "Error, your start date cannot be " + "greater than your end date\n")
+                return (CalendarData(months: [], totalSections: 0, monthMap: [:], totalDays: 0))
             }
             // Set the new cache
             cachedConfiguration = validConfig
             if let
-                startMonth = Date.startOfMonth(for: validConfig.startDate,
-                                               using: validConfig.calendar),
-                let endMonth = Date.endOfMonth(for: validConfig.endDate,
-                                               using: validConfig.calendar) {
+                startMonth = Date.startOfMonth(for: validConfig.startDate, using: validConfig.calendar),
+                let endMonth = Date.endOfMonth(for: validConfig.endDate, using: validConfig.calendar) {
                 startOfMonthCache = startMonth
                 endOfMonthCache   = endMonth
                 // Create the parameters for the date format generator
@@ -910,8 +888,8 @@ extension JTAppleCalendarView {
     }
 
     func cellStateFromIndexPath(_ indexPath: IndexPath,
-                withDateInfo info: (date: Date, owner: DateOwner)? = nil,
-                cell: JTAppleDayCell? = nil) -> CellState {
+                                withDateInfo info: (date: Date, owner: DateOwner)? = nil,
+                                cell: JTAppleDayCell? = nil) -> CellState {
         let validDateInfo: (date: Date, owner: DateOwner)
         if let nonNilDateInfo = info {
             validDateInfo = nonNilDateInfo
@@ -938,6 +916,7 @@ extension JTAppleCalendarView {
         let date = validDateInfo.date
         let dateBelongsTo = validDateInfo.owner
         let currentDay = calendar.dateComponents([.day], from: date).day!
+        
         let componentWeekDay = calendar.component(.weekday, from: date)
         let cellText = String(describing: currentDay)
         let dayOfWeek = DaysOfWeek(rawValue: componentWeekDay)!
@@ -1072,13 +1051,12 @@ extension JTAppleCalendarView {
             return nil
     }
 
-    func dateInfoFromPath(_ indexPath: IndexPath) -> (date: Date,
-                                                     owner: DateOwner)? {
-                                   // Returns nil if date is out of scope
+    func dateInfoFromPath(_ indexPath: IndexPath) -> (date: Date, owner: DateOwner)? { // Returns nil if date is out of scope
         guard let monthIndex = monthMap[indexPath.section] else {
             return nil
         }
         let monthData = monthInfo[monthIndex]
+        // Calculate the offset
         let offSet: Int
         var numberOfDaysToAddToOffset: Int = 0
         switch monthData.sectionIndexMaps[indexPath.section]! {
@@ -1092,26 +1070,22 @@ extension JTAppleCalendarView {
                 monthData.sections[0..<currentSectionIndexMap].reduce(0, +)
             numberOfDaysToAddToOffset -= monthData.preDates
         }
+                                                        
         var dayIndex = 0
         var dateOwner: DateOwner = .thisMonth
         let date: Date?
         var dateComponents = DateComponents()
-        if indexPath.item >= offSet && indexPath.item +
-            numberOfDaysToAddToOffset <
-            monthData.numberOfDaysInMonth + offSet {
+        if indexPath.item >= offSet && indexPath.item + numberOfDaysToAddToOffset < monthData.numberOfDaysInMonth + offSet {
             // This is a month date
-            dayIndex = monthData.startDayIndex +
-                indexPath.item - offSet + numberOfDaysToAddToOffset
+            dayIndex = monthData.startDayIndex + indexPath.item - offSet + numberOfDaysToAddToOffset
             dateComponents.day = dayIndex
-            date = calendar.date(byAdding: dateComponents,
-                                 to: startOfMonthCache)
+            date = calendar.date(byAdding: dateComponents, to: startOfMonthCache)
             dateOwner = .thisMonth
         } else if indexPath.item < offSet {
             // This is a preDate
             dayIndex = indexPath.item - offSet  + monthData.startDayIndex
             dateComponents.day = dayIndex
-            date = calendar.date(byAdding: dateComponents,
-                                 to: startOfMonthCache)
+            date = calendar.date(byAdding: dateComponents, to: startOfMonthCache)
             if date! < startOfMonthCache {
                 dateOwner = .previousMonthOutsideBoundary
             } else {
