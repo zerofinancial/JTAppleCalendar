@@ -116,7 +116,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         formatter.dateFormat = "yyyy MM dd"
-        testCalendar.timeZone = TimeZone(abbreviation: "GMT")!
+        testCalendar.timeZone = TimeZone(secondsFromGMT: 0)!
 
         // Setting up your dataSource and delegate is manditory
         // ___________________________________________________________________
@@ -136,7 +136,7 @@ class ViewController: UIViewController {
 
 
         calendarView.cellInset = CGPoint(x: 0, y: 0)
-        calendarView.allowsMultipleSelection = true
+//        calendarView.allowsMultipleSelection = true
 
         calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
@@ -199,11 +199,10 @@ class ViewController: UIViewController {
         guard let startDate = visibleDates.monthDates.first else {
             return
         }
-        
         let month = testCalendar.dateComponents([.month], from: startDate).month!
         let monthName = DateFormatter().monthSymbols[(month-1) % 12]
         // 0 indexed array
-        let year = Calendar.current.component(.year, from: startDate)
+        let year = testCalendar.component(.year, from: startDate)
         monthLabel.text = monthName + " " + String(year)
     }
 
@@ -212,15 +211,14 @@ class ViewController: UIViewController {
 // MARK : JTAppleCalendarDelegate
 extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-        let startDate = formatter.date(from: "2010 10 01")!
-        let endDate = formatter.date(from: "2020 12 20")!
-        let calendar = Calendar.current
-
+        let startDate = formatter.date(from: "2010 01 01")!
+        let endDate = formatter.date(from: "2016 12 20")!
+        
         let parameters = ConfigurationParameters(
             startDate: startDate,
             endDate: endDate,
             numberOfRows: numberOfRows,
-            calendar: calendar,
+            calendar: testCalendar,
             generateInDates: generateInDates,
             generateOutDates: generateOutDates,
             firstDayOfWeek: firstDayOfWeek
@@ -230,6 +228,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
 
     func calendar(_ calendar: JTAppleCalendarView, willDisplayCell cell: JTAppleDayCellView, date: Date, cellState: CellState) {
         (cell as? CellView)?.setupCellBeforeDisplay(cellState, date: date)
+        print("\n\(date) == \(cellState.date) == \(cellState.text)")
     }
 
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
@@ -238,6 +237,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
 
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
         (cell as? CellView)?.cellSelectionChanged(cellState)
+        print("\n\(date) == \(cellState.date) == \(cellState.text)")
     }
 
     
