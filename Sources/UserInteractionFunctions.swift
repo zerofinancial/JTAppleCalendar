@@ -44,6 +44,17 @@ extension JTAppleCalendarView {
         let stateOfCell = cellStateFromIndexPath(paths[0], cell: cell)
         return stateOfCell
     }
+    
+    /// Returns the cell status for a given point
+    /// - Parameter: point of the cell you want to find
+    /// - returns:
+    ///     - CellState: The state of the found cell
+    public func cellStatus(at point: CGPoint) -> CellState? {
+        if let indexPath = calendarView.indexPathForItem(at: point) {
+            return cellStateFromIndexPath(indexPath)
+        }
+        return nil
+    }
 
     /// Returns the visible dates of the calendar.
     /// - returns:
