@@ -254,18 +254,17 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 default:
                     break
                 }
-            default:
-                // If we go through this route, then no animated scrolling
-                // was done. User scrolled and stopped and lifted finger.
-                // Thus update the label.
-                delayRunOnMainThread(0.0) {
-                    self.scrollViewDidEndDecelerating(self.calendarView)
-                }
+			case .none: break
             }
             saveLastContentOffset()
             delayRunOnMainThread(0.7) {
                 self.calendarView.decelerationRate = cachedDecelerationRate
             }
+		
+		// Always update the label.
+		delayRunOnMainThread(0.0) {
+			self.scrollViewDidEndDecelerating(self.calendarView)
+		}
     }
 
     /// Tells the delegate when a scrolling
