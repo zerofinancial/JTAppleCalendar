@@ -31,7 +31,7 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
     func cachedDate() -> (start: Date, end: Date, calendar: Calendar) {
         return (start: cachedConfiguration.startDate,
                 end: cachedConfiguration.endDate,
-                calendar: cachedConfiguration.calendar)
+                calendar: calendar)
     }
 
     func numberOfRows() -> Int {

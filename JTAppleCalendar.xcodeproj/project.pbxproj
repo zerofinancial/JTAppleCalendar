@@ -720,7 +720,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if hash tailor 2>/dev/null; then\ntailor -l 78 #--max-name-length 30\nelse\necho \"warning: Please install Tailor from https://tailor.sh\"\nfi";
+			shellScript = "if hash tailor 2>/dev/null; then\ntailor -l 78 #--max-name-length 30\nfi";
 		};
 		A6DEF96A2FE3F7CE47390D26 /* Tailor */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -734,7 +734,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if hash tailor 2>/dev/null; then\n    tailor -l 78 #--max-name-length 30\nelse\n  echo \"warning: Please install Tailor from https://tailor.sh\"\nfi";
+			shellScript = "if hash tailor 2>/dev/null; then\n    tailor -l 78 #--max-name-length 30\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -173,12 +173,12 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    var calendar: Calendar {
-        get {
-            return cachedConfiguration.calendar
-        }
-    }
-
+    let calendar: Calendar = {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone(secondsFromGMT: 0)!
+        return cal
+    }()
+    
     // Configuration parameters from the dataSource
     var cachedConfiguration: ConfigurationParameters!
     // Set the start of the month
@@ -588,28 +588,22 @@ open class JTAppleCalendarView: UIView {
             // user has bad star/end dates
             let newStartOfMonth =
                 Date.startOfMonth(for: newDateBoundary.startDate,
-                                  using: cachedConfiguration.calendar)
+                                  using: calendar)
             let newEndOfMonth =
                 Date.endOfMonth(for: newDateBoundary.endDate,
-                                using: cachedConfiguration.calendar)
+                                using: calendar)
             let oldStartOfMonth =
                 Date.startOfMonth(for: cachedConfiguration.startDate,
-                                  using: cachedConfiguration.calendar)
+                                  using: calendar)
             let oldEndOfMonth =
                 Date.endOfMonth(for: cachedConfiguration.endDate,
-                                using: cachedConfiguration.calendar)
+                                using: calendar)
             if newStartOfMonth != oldStartOfMonth ||
                 newEndOfMonth != oldEndOfMonth ||
-                newDateBoundary.calendar != cachedConfiguration.calendar ||
-                newDateBoundary.numberOfRows !=
-                    cachedConfiguration.numberOfRows ||
-                newDateBoundary.generateInDates !=
-                    cachedConfiguration.generateInDates ||
-                newDateBoundary.generateOutDates !=
-                    cachedConfiguration.generateOutDates ||
-                newDateBoundary.firstDayOfWeek !=
-                    cachedConfiguration.firstDayOfWeek {
-
+                newDateBoundary.numberOfRows != cachedConfiguration.numberOfRows ||
+                newDateBoundary.generateInDates != cachedConfiguration.generateInDates ||
+                newDateBoundary.generateOutDates != cachedConfiguration.generateOutDates ||
+                newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek {
                         setupMonthInfoAndMap()
                         layoutNeedsUpdating = true
             }
@@ -791,11 +785,11 @@ extension JTAppleCalendarView {
         var monthMap = [Int: Int]()
         var totalSections = 0
         var totalDays = 0
-        if var validConfig = dataSource?.configureCalendar(self) {
+        if let validConfig = dataSource?.configureCalendar(self) {
             // check if the dates are in correct order
-            let comparison = validConfig.calendar.compare( validConfig.startDate,
-                                                           to: validConfig.endDate,
-                                                           toGranularity: .nanosecond)
+            let comparison = calendar.compare(validConfig.startDate,
+                                              to: validConfig.endDate,
+                                              toGranularity: .nanosecond)
             
             if comparison == ComparisonResult.orderedDescending {
                 assert(false, "Error, your start date cannot be " + "greater than your end date\n")
@@ -806,8 +800,8 @@ extension JTAppleCalendarView {
             cachedConfiguration = validConfig
             
             if let
-                startMonth = Date.startOfMonth(for: validConfig.startDate, using: validConfig.calendar),
-                let endMonth = Date.endOfMonth(for: validConfig.endDate, using: validConfig.calendar) {
+                startMonth = Date.startOfMonth(for: validConfig.startDate, using: calendar),
+                let endMonth = Date.endOfMonth(for: validConfig.endDate, using: calendar) {
                 startOfMonthCache = startMonth
                 endOfMonthCache   = endMonth
                 // Create the parameters for the date format generator
@@ -817,7 +811,7 @@ extension JTAppleCalendarView {
                     numberOfRows: validConfig.numberOfRows,
                     startOfMonthCache: startOfMonthCache,
                     endOfMonthCache: endOfMonthCache,
-                    configuredCalendar: validConfig.calendar,
+                    configuredCalendar: calendar,
                     firstDayOfWeek: validConfig.firstDayOfWeek)
                 let generatedData = dateGenerator
                     .setupMonthInfoDataForStartAndEndDate(parameters)

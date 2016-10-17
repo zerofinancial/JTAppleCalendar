@@ -54,8 +54,6 @@ public struct ConfigurationParameters {
     var endDate: Date
     /// Number of rows you want to calendar to display per date section
     var numberOfRows: Int
-    /// Your Calendar() instance
-    var calendar: Calendar
     /// Describes the types of in-date cells to be generated.
     var generateInDates: InDateCellGeneration
     /// Describes the types of out-date cells to be generated.
@@ -72,7 +70,6 @@ public struct ConfigurationParameters {
         self.startDate = startDate
         self.endDate = endDate
         self.numberOfRows = numberOfRows
-        self.calendar = calendar
         self.generateInDates = generateInDates
         self.generateOutDates = generateOutDates
         self.firstDayOfWeek = firstDayOfWeek
