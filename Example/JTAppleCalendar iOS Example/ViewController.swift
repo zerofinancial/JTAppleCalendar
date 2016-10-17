@@ -228,7 +228,6 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
 
     func calendar(_ calendar: JTAppleCalendarView, willDisplayCell cell: JTAppleDayCellView, date: Date, cellState: CellState) {
         (cell as? CellView)?.setupCellBeforeDisplay(cellState, date: date)
-        print("\n\(date) == \(cellState.date) == \(cellState.text)")
     }
 
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
@@ -237,7 +236,6 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
 
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
         (cell as? CellView)?.cellSelectionChanged(cellState)
-        print("\n\(date) == \(cellState.date) == \(cellState.text)")
     }
 
     
