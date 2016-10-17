@@ -261,7 +261,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 self.calendarView.decelerationRate = cachedDecelerationRate
             }
 		
-		// Always update the label.
 		delayRunOnMainThread(0.0) {
 			self.scrollViewDidEndDecelerating(self.calendarView)
 		}
