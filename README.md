@@ -8,8 +8,7 @@ An iOS calendar control. Written in swift.
 ### IMPORTANT: Tutorials and guide is now on [patchthecode.github.io](https://patchthecode.github.io/)
 ___
 
-1. **Version 5.0.1 was the final version to support Swift 2.**
-2. Upcoming versions will all be in swift 3. Current version is now `6.0.0-beta.1`
+**Version 5.0.1 was the final version to support Swift 2.**
 
 ## How will my calendar dateCells look with this library?
 
