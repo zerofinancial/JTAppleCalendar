@@ -216,7 +216,6 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
             }
         }
         contentWidth = self.collectionView!.bounds.size.width
-        print(sectionSize)
     }
 
     /// Returns the width and height of the collection view’s contents.
