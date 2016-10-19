@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 6.x Releases
-- `6.0.x` Releases - [6.0.0](#600)
+- `6.0.x` Releases - [6.0.0](#600)|[6.0.1](#601)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
 #### 5.x Releases
@@ -25,6 +25,9 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.1)
+- Fixed error: [Left over artifacts](https://github.com/patchthecode/JTAppleCalendar/commit/f5be1e1c281cb08337ede276403311b3ee4a4e9f)
+
 ## [6.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.0)
 - Added functionality to get dateCell by CGPoint
 
