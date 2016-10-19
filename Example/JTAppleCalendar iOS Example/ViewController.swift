@@ -213,12 +213,10 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
         let startDate = formatter.date(from: "2010 01 01")!
         let endDate = formatter.date(from: "2016 12 20")!
-        
         let parameters = ConfigurationParameters(
             startDate: startDate,
             endDate: endDate,
             numberOfRows: numberOfRows,
-            calendar: testCalendar,
             generateInDates: generateInDates,
             generateOutDates: generateOutDates,
             firstDayOfWeek: firstDayOfWeek

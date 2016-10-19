@@ -63,7 +63,7 @@ public struct ConfigurationParameters {
     /// init-function
     public init(startDate: Date,
                 endDate: Date,
-                numberOfRows: Int, calendar: Calendar,
+                numberOfRows: Int,
                 generateInDates: InDateCellGeneration,
                 generateOutDates: OutDateCellGeneration,
                 firstDayOfWeek: DaysOfWeek) {
