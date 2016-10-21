@@ -217,6 +217,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
             startDate: startDate,
             endDate: endDate,
             numberOfRows: numberOfRows,
+            calendar: .gregorian,
             generateInDates: generateInDates,
             generateOutDates: generateOutDates,
             firstDayOfWeek: firstDayOfWeek
