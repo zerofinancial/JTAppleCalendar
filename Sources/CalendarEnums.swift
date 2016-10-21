@@ -22,6 +22,12 @@ public enum InDateCellGeneration {
     case forFirstMonthOnly, forAllMonths, off
 }
 
+/// Describes the calendar reading direction
+/// Useful for regions that read text from right to left
+public enum ReadingOrientation {
+    case rightToLeft, leftToRight
+}
+
 /// Describes which month owns the date
 public enum DateOwner: Int {
     /// Describes which month owns the date

@@ -29,8 +29,8 @@ protocol JTAppleCalendarDelegateProtocol: class {
 extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
 
     func cachedDate() -> (start: Date, end: Date, calendar: Calendar) {
-        return (start: cachedConfiguration.startDate,
-                end: cachedConfiguration.endDate,
+        return (start: startDateCache,
+                end: endDateCache,
                 calendar: calendar)
     }
 

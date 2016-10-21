@@ -173,12 +173,7 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    let calendar: Calendar = {
-        var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = TimeZone(secondsFromGMT: 0)!
-        return cal
-    }()
-    
+    var calendar: Calendar!
     // Configuration parameters from the dataSource
     var cachedConfiguration: ConfigurationParameters!
     // Set the start of the month
@@ -266,8 +261,8 @@ open class JTAppleCalendarView: UIView {
     lazy var calendarView: UICollectionView = {
         let layout = JTAppleCalendarLayout(withDelegate: self)
         layout.scrollDirection = self.direction
-        let cv = UICollectionView(frame: CGRect.zero,
-                                  collectionViewLayout: layout)
+        
+        let cv = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         cv.dataSource = self
         cv.delegate = self
         cv.decelerationRate = UIScrollViewDecelerationRateFast
@@ -314,6 +309,11 @@ open class JTAppleCalendarView: UIView {
             layout.itemSize = size
         }
     }
+    
+    /// Changes the calendar's reading orientation
+    /// from left-to-right or right-to-left
+    /// Useful for ethnic calendars
+    var orientation: ReadingOrientation = .leftToRight
 
     /// Initializes and returns a newly allocated
     /// view object with the specified frame rectangle.
@@ -405,6 +405,23 @@ open class JTAppleCalendarView: UIView {
                 }
             }
             return retval
+    }
+    /// Changes the calendar reading direction
+    public func changeVisibleDirection(to orientation: ReadingOrientation) {
+        if !calendarIsAlreadyLoaded {
+            delayedExecutionClosure.append {
+                self.changeVisibleDirection(to: orientation)
+            }
+            return
+        }
+        
+        if orientation == self.orientation {
+            return
+        }
+        
+        self.orientation = orientation
+        calendarView.transform.a = orientation == .leftToRight ? 1 : -1
+        calendarView.reloadData()
     }
 
     func calendarOffsetIsAlreadyAtScrollPosition(
@@ -593,13 +610,14 @@ open class JTAppleCalendarView: UIView {
                 Date.endOfMonth(for: newDateBoundary.endDate,
                                 using: calendar)
             let oldStartOfMonth =
-                Date.startOfMonth(for: cachedConfiguration.startDate,
+                Date.startOfMonth(for: startDateCache,
                                   using: calendar)
             let oldEndOfMonth =
-                Date.endOfMonth(for: cachedConfiguration.endDate,
+                Date.endOfMonth(for: endDateCache,
                                 using: calendar)
             if newStartOfMonth != oldStartOfMonth ||
                 newEndOfMonth != oldEndOfMonth ||
+                newDateBoundary.calendar != cachedConfiguration.calendar ||
                 newDateBoundary.numberOfRows != cachedConfiguration.numberOfRows ||
                 newDateBoundary.generateInDates != cachedConfiguration.generateInDates ||
                 newDateBoundary.generateOutDates != cachedConfiguration.generateOutDates ||
@@ -760,23 +778,18 @@ extension JTAppleCalendarView {
         return retval
     }
 
-    func scrollToSection(_ section: Int,
-                         triggerScrollToDateDelegate: Bool = false,
-                         animateScroll: Bool = true,
-                         completionHandler: (() -> Void)?) {
+    func scrollToSection(_ section: Int, triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (() -> Void)?) {
         if scrollInProgress {
             return
         }
-        if let date = dateInfoFromPath(IndexPath(
-            item: maxNumberOfDaysInWeek - 1, section: section))?.date {
-                let recalcDate = Date.startOfMonth(for: date,
-                                                   using: calendar)!
-                self.scrollToDate(recalcDate,
-                                  triggerScrollToDateDelegate:
-                                      triggerScrollToDateDelegate,
-                                  animateScroll: animateScroll,
-                                  preferredScrollPosition: nil,
-                                  completionHandler: completionHandler)
+        if let date = dateInfoFromPath(IndexPath( item: maxNumberOfDaysInWeek - 1, section: section))?.date {
+            let recalcDate = Date.startOfMonth(for: date, using: calendar)!
+            self.scrollToDate(recalcDate,
+                              triggerScrollToDateDelegate:
+                                  triggerScrollToDateDelegate,
+                              animateScroll: animateScroll,
+                              preferredScrollPosition: nil,
+                              completionHandler: completionHandler)
         }
     }
 
@@ -786,10 +799,14 @@ extension JTAppleCalendarView {
         var totalSections = 0
         var totalDays = 0
         if let validConfig = dataSource?.configureCalendar(self) {
-            // check if the dates are in correct order
-            let comparison = calendar.compare(validConfig.startDate,
-                                              to: validConfig.endDate,
-                                              toGranularity: .nanosecond)
+            // Create a new calendar and check if the dates are in correct order
+            
+            var aNewCalender = Calendar(identifier: validConfig.calendar)
+            aNewCalender.timeZone = TimeZone(secondsFromGMT: 0)!
+            
+            let comparison = aNewCalender.compare( validConfig.startDate,
+                                                   to: validConfig.endDate,
+                                                   toGranularity: .nanosecond)
             
             if comparison == ComparisonResult.orderedDescending {
                 assert(false, "Error, your start date cannot be " + "greater than your end date\n")
@@ -798,6 +815,7 @@ extension JTAppleCalendarView {
             
             // Set the new cache
             cachedConfiguration = validConfig
+            calendar = aNewCalender
             
             if let
                 startMonth = Date.startOfMonth(for: validConfig.startDate, using: calendar),
@@ -813,16 +831,14 @@ extension JTAppleCalendarView {
                     endOfMonthCache: endOfMonthCache,
                     configuredCalendar: calendar,
                     firstDayOfWeek: validConfig.firstDayOfWeek)
-                let generatedData = dateGenerator
-                    .setupMonthInfoDataForStartAndEndDate(parameters)
+                let generatedData = dateGenerator.setupMonthInfoDataForStartAndEndDate(parameters)
                 months = generatedData.months
                 monthMap = generatedData.monthMap
                 totalSections = generatedData.totalSections
                 totalDays = generatedData.totalDays
             }
         }
-        let data = CalendarData(months: months, totalSections: totalSections,
-                                monthMap: monthMap, totalDays: totalDays)
+        let data = CalendarData(months: months, totalSections: totalSections, monthMap: monthMap, totalDays: totalDays)
         return data
     }
 

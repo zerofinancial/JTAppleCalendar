@@ -6,75 +6,64 @@
 //
 //
 
-extension JTAppleCalendarView: UICollectionViewDelegate,
-                               UICollectionViewDataSource {
-
+extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
     /// Asks your data source object to provide a
     /// supplementary view to display in the collection view.
-    public func collectionView(_ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath) -> UICollectionReusableView {
-
-            guard let validDate =
-                monthInfoFromSection(indexPath.section) else {
-                    assert(false,
-                        "Date could not be generated fro section. " +
-                        "This is a bug. Contact the developer")
-                    return UICollectionReusableView()
+    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let validDate = monthInfoFromSection(indexPath.section) else {
+            assert(false, "Date could not be generated fro section. This is a bug. Contact the developer")
+            return UICollectionReusableView()
+        }
+        let reuseIdentifier: String
+        var source: JTAppleCalendarViewSource = registeredHeaderViews[0]
+        // Get the reuse identifier and index
+        if registeredHeaderViews.count == 1 {
+            switch registeredHeaderViews[0] {
+            case let .fromXib(xibName, _):
+                reuseIdentifier = xibName
+            case let .fromClassName(className, _):
+                reuseIdentifier = className
+            case let .fromType(classType):
+                reuseIdentifier = classType.description()
             }
-            let reuseIdentifier: String
-            var source: JTAppleCalendarViewSource = registeredHeaderViews[0]
-            // Get the reuse identifier and index
-            if registeredHeaderViews.count == 1 {
-                switch registeredHeaderViews[0] {
-                case let .fromXib(xibName, _):
-                    reuseIdentifier = xibName
-                case let .fromClassName(className, _):
-                    reuseIdentifier = className
-                case let .fromType(classType):
-                    reuseIdentifier = classType.description()
-                }
-            } else {
-                reuseIdentifier = delegate!.calendar(
-                    self,
-                    sectionHeaderIdentifierFor: validDate.range,
-                    belongingTo: validDate.month)
-                for item in registeredHeaderViews {
-                    switch item {
-                    case let .fromXib(xibName, _) where
-                        xibName == reuseIdentifier:
-                        source = item
-                        break
-                    case let .fromClassName(className, _) where
-                        className == reuseIdentifier:
-                        source = item
-                        break
-                    case let .fromType(type) where
-                        type.description() == reuseIdentifier:
-                        source = item
-                        break
-                    default:
-                        continue
-                    }
-                }
-            }
-            guard let headerView = collectionView
-                .dequeueReusableSupplementaryView(
-                    ofKind: kind,
-                    withReuseIdentifier: reuseIdentifier,
-                    for: indexPath) as? JTAppleCollectionReusableView else {
-                        developerError(string: "Headerview is not of type " +
-                            "'JTAppleCollectionReusableView'.")
-                        return UICollectionReusableView()
-            }
-            headerView.setupView(source)
-            headerView.update()
-            self.delegate?.calendar(
+        } else {
+            reuseIdentifier = delegate!.calendar(
                 self,
-                willDisplaySectionHeader: headerView.view!,
-                range: validDate.range,
-                identifier: reuseIdentifier)
-            return headerView
+                sectionHeaderIdentifierFor: validDate.range,
+                belongingTo: validDate.month)
+            for item in registeredHeaderViews {
+                switch item {
+                case let .fromXib(xibName, _) where
+                    xibName == reuseIdentifier:
+                    source = item
+                    break
+                case let .fromClassName(className, _) where
+                    className == reuseIdentifier:
+                    source = item
+                    break
+                case let .fromType(type) where
+                    type.description() == reuseIdentifier:
+                    source = item
+                    break
+                default:
+                    continue
+                }
+            }
+        }
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                               withReuseIdentifier: reuseIdentifier,
+                                                                               for: indexPath) as? JTAppleCollectionReusableView else {
+            developerError(string: "Headerview is not of type 'JTAppleCollectionReusableView'.")
+            return UICollectionReusableView()
+        }
+        headerView.setupView(source, leftToRightOrientation: orientation)
+        headerView.update()
+        self.delegate?.calendar(
+            self,
+            willDisplaySectionHeader: headerView.view!,
+            range: validDate.range,
+            identifier: reuseIdentifier)
+        return headerView
     }
     /// Notifies the delegate that a cell is no longer on screen
     public func collectionView(_ collectionView: UICollectionView,
@@ -94,24 +83,20 @@ extension JTAppleCalendarView: UICollectionViewDelegate,
 
     /// Asks your data source object for the cell that corresponds
     /// to the specified item in the collection view.
-    public func collectionView(_ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            restoreSelectionStateForCellAtIndexPath(indexPath)
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: cellReuseIdentifier,
-                for: indexPath) as? JTAppleDayCell else {
-                    developerError(string:
-                        "Cell was not of type JTAppleDayCell")
-                    return UICollectionViewCell()
-            }
-            cell.setupView(cellViewSource)
-            cell.updateCellView(cellInset.x, cellInsetY: cellInset.y)
-            cell.bounds.origin = CGPoint(x: 0, y: 0)
-            let cellState = cellStateFromIndexPath(indexPath)
-            delegate?.calendar(self, willDisplayCell:
-                cell.view!, date: cellState.date, cellState: cellState)
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        restoreSelectionStateForCellAtIndexPath(indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as? JTAppleDayCell else {
+            developerError(string: "Cell was not of type JTAppleDayCell")
+            return UICollectionViewCell()
+        }
+        cell.setupView(cellViewSource, leftToRightOrientation: orientation)
+        cell.updateCellView(cellInset.x, cellInsetY: cellInset.y)
+        cell.bounds.origin = CGPoint(x: 0, y: 0)
+        let cellState = cellStateFromIndexPath(indexPath)
+        delegate?.calendar(self, willDisplayCell:
+            cell.view!, date: cellState.date, cellState: cellState)
 
-            return cell
+        return cell
     }
 
     /// Asks your data sourceobject for the number of sections in
@@ -135,48 +120,40 @@ extension JTAppleCalendarView: UICollectionViewDelegate,
 
     /// Asks the delegate if the specified item should be selected.
     /// true if the item should be selected or false if it should not.
-    public func collectionView(_ collectionView: UICollectionView,
-        shouldSelectItemAt indexPath: IndexPath) -> Bool {
-            if let
-                delegate = self.delegate,
-                let infoOfDateUserSelected = dateInfoFromPath(indexPath),
-                let cell = collectionView
-                    .cellForItem(at: indexPath) as? JTAppleDayCell,
-                cellWasNotDisabledOrHiddenByTheUser(cell) {
-                let cellState = cellStateFromIndexPath(indexPath,
-                    withDateInfo: infoOfDateUserSelected)
-                return delegate.calendar(
-                    self,
-                    canSelectDate: infoOfDateUserSelected.date,
-                    cell: cell.view!,
-                    cellState: cellState
-                )
-            }
-            return false
+    public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        if let
+            delegate = self.delegate,
+            let infoOfDateUserSelected = dateInfoFromPath(indexPath),
+            let cell = collectionView
+                .cellForItem(at: indexPath) as? JTAppleDayCell,
+            cellWasNotDisabledOrHiddenByTheUser(cell) {
+            let cellState = cellStateFromIndexPath(indexPath,
+                withDateInfo: infoOfDateUserSelected)
+            return delegate.calendar(
+                self,
+                canSelectDate: infoOfDateUserSelected.date,
+                cell: cell.view!,
+                cellState: cellState
+            )
+        }
+        return false
     }
 
     func cellWasNotDisabledOrHiddenByTheUser(_ cell: JTAppleDayCell) -> Bool {
-        return cell.view!.isHidden == false &&
-            cell.view!.isUserInteractionEnabled == true
+        return cell.view!.isHidden == false && cell.view!.isUserInteractionEnabled == true
     }
 
     /// Tells the delegate that the item at the specified path was deselected.
     /// The collection view calls this method when the user successfully
     /// deselects an item in the collection view.
     /// It does not call this method when you programmatically deselect items.
-    public func collectionView(_ collectionView: UICollectionView,
-                               didDeselectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let indexPathsToBeReloaded = rangeSelectionWillBeUsed ?
-            validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) :
-            [IndexPath]()
-        internalCollectionView(collectionView,
-                               didDeselectItemAtIndexPath: indexPath,
-                               indexPathsToReload: indexPathsToBeReloaded)
+        validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : [IndexPath]()
+        internalCollectionView(collectionView, didDeselectItemAtIndexPath: indexPath, indexPathsToReload: indexPathsToBeReloaded)
     }
 
-    func internalCollectionView(_ collectionView: UICollectionView,
-        didDeselectItemAtIndexPath indexPath: IndexPath,
-        indexPathsToReload: [IndexPath] = []) {
+    func internalCollectionView(_ collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: IndexPath, indexPathsToReload: [IndexPath] = []) {
             if let
                 delegate = self.delegate,
                 let dateInfoDeselectedByUser = dateInfoFromPath(indexPath) {
