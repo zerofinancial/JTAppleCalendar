@@ -93,7 +93,7 @@ extension JTAppleCalendarView {
             }
         }
         
-        let retval = DateSegmentInfo(predates: inDates, monthDates: monthDates, postdates: outDates)
+        let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates)
         completionHandler(retval)
     }
 
