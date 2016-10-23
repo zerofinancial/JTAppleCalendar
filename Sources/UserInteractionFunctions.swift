@@ -59,17 +59,15 @@ extension JTAppleCalendarView {
     /// Returns the visible dates of the calendar.
     /// - returns:
     ///     - DateSegmentInfo
-    public func visibleDates(_ completionHandler: @escaping (_ dateSegmentInfo: DateSegmentInfo) ->()) {
-        if !calendarIsAlreadyLoaded {
-            delayedExecutionClosure.append {
-                self.visibleDates(completionHandler)
-            }
-            return
-        }
+    public func visibleDates()-> DateSegmentInfo {
+        let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [])
         
+        if !calendarIsAlreadyLoaded {
+            return emptySegment
+        }
         let rect = CGRect(x: calendarView.contentOffset.x + 1, y: calendarView.contentOffset.y + 1, width: calendarView.frame.width - 2, height: calendarView.frame.height - 2)
         guard let attributes = calendarViewLayout.layoutAttributesForElements(in: rect), attributes.count > 0 else {
-            return
+            return emptySegment
         }
         
         let indexPaths: [IndexPath] = Array(Set(attributes.map { $0.indexPath })).sorted()
@@ -77,7 +75,7 @@ extension JTAppleCalendarView {
         var inDates   = [Date]()
         var monthDates = [Date]()
         var outDates  = [Date]()
-
+        
         for indexPath in indexPaths {
             let info = dateInfoFromPath(indexPath)
             
@@ -94,6 +92,17 @@ extension JTAppleCalendarView {
         }
         
         let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates)
+        return retval
+    }
+    
+    public func visibleDates(_ completionHandler: @escaping (_ dateSegmentInfo: DateSegmentInfo) ->()) {
+        if !calendarIsAlreadyLoaded {
+            delayedExecutionClosure.append {
+                self.visibleDates(completionHandler)
+            }
+            return
+        }
+        let retval = visibleDates()
         completionHandler(retval)
     }
 
