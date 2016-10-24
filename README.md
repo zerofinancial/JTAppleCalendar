@@ -5,10 +5,8 @@ An iOS calendar control. Written in swift.
 
 [![CI Status](http://img.shields.io/travis/patchthecode/JTAppleCalendar.svg?style=flat)](https://travis-ci.org/patchthecode/JTAppleCalendar) [![Version](https://img.shields.io/cocoapods/v/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Platform](https://img.shields.io/cocoapods/p/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![License](https://img.shields.io/cocoapods/l/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![](https://www.paypalobjects.com/webstatic/en_US/btn/btn_donate_74x21.png)](https://salt.bountysource.com/teams/jtapplecalendar)
 
-### IMPORTANT: Tutorials and guide is now on [patchthecode.github.io](https://patchthecode.github.io/)
+## Tutorials and guide is now on [patchthecode.github.io](https://patchthecode.github.io/)
 ___
-
-**Version 5.0.1 was the final version to support Swift 2.**
 
 ## How will my calendar dateCells look with this library?
 
