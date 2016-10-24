@@ -591,10 +591,11 @@ open class JTAppleCalendarView: UIView {
 
     func executeDelayedTasks() {
         let tasksToExecute = delayedExecutionClosure
+        delayedExecutionClosure.removeAll()
+        
         for aTaskToExecute in tasksToExecute {
             aTaskToExecute()
         }
-        delayedExecutionClosure.removeAll()
     }
 
     // Only reload the dates if the datasource information has changed
