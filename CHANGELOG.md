@@ -27,6 +27,10 @@ All notable changes to this project will be documented in this file.
 ---
 ## [6.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.1)
 - Fixed error: [Left over artifacts](https://github.com/patchthecode/JTAppleCalendar/commit/f5be1e1c281cb08337ede276403311b3ee4a4e9f)
+- Fixed error: [Potential infinite loop on scrollViewDidEnd](https://github.com/patchthecode/JTAppleCalendar/commit/a115ff9301118fd93ab8ed960ba33ebeb28b8f7b)
+- Update: [Changed variable names for consistency](https://github.com/patchthecode/JTAppleCalendar/commit/3eca0fddc79a6425c146b65aabd2ff31b0c0d05d)
+- Update: [Added functionality to flip calendar horizontally for ethnic calendars](https://github.com/patchthecode/JTAppleCalendar/commit/a991b898a2ce5bc3a678bcf0b43a8e381e56a840)
+- Update: `ConfigureCaneldar` function signature has changed. 
 
 ## [6.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.0)
 - Added functionality to get dateCell by CGPoint
