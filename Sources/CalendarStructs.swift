@@ -65,18 +65,18 @@ public struct ConfigurationParameters {
     /// init-function
     public init(startDate: Date,
                 endDate: Date,
-                numberOfRows: Int,
+                numberOfRows: Int? = nil,
                 calendar: Calendar? = nil,
-                generateInDates: InDateCellGeneration,
-                generateOutDates: OutDateCellGeneration,
-                firstDayOfWeek: DaysOfWeek) {
+                generateInDates: InDateCellGeneration? = nil,
+                generateOutDates: OutDateCellGeneration? = nil,
+                firstDayOfWeek: DaysOfWeek? = nil) {
         self.startDate = startDate
         self.endDate = endDate
-        self.numberOfRows = numberOfRows
+        self.numberOfRows = numberOfRows ?? 6
         self.calendar = calendar ?? Calendar.current
-        self.generateInDates = generateInDates
-        self.generateOutDates = generateOutDates
-        self.firstDayOfWeek = firstDayOfWeek
+        self.generateInDates = generateInDates ?? .forAllMonths
+        self.generateOutDates = generateOutDates ?? .tillEndOfGrid
+        self.firstDayOfWeek = firstDayOfWeek ?? .sunday
     }
 }
 
