@@ -173,7 +173,11 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    var calendar: Calendar!
+    var calendar: Calendar {
+        get {
+            return cachedConfiguration.calendar
+        }
+    }
     // Configuration parameters from the dataSource
     var cachedConfiguration: ConfigurationParameters!
     // Set the start of the month
@@ -800,12 +804,8 @@ extension JTAppleCalendarView {
         var totalSections = 0
         var totalDays = 0
         if let validConfig = dataSource?.configureCalendar(self) {
-            // Create a new calendar and check if the dates are in correct order
             
-            var aNewCalender = Calendar(identifier: validConfig.calendar)
-            aNewCalender.timeZone = TimeZone(secondsFromGMT: 0)!
-            
-            let comparison = aNewCalender.compare( validConfig.startDate,
+            let comparison = validConfig.calendar.compare( validConfig.startDate,
                                                    to: validConfig.endDate,
                                                    toGranularity: .nanosecond)
             
@@ -816,7 +816,6 @@ extension JTAppleCalendarView {
             
             // Set the new cache
             cachedConfiguration = validConfig
-            calendar = aNewCalender
             
             if let
                 startMonth = Date.startOfMonth(for: validConfig.startDate, using: calendar),

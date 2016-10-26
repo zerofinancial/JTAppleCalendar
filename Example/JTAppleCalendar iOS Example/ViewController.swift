@@ -211,13 +211,13 @@ class ViewController: UIViewController {
 // MARK : JTAppleCalendarDelegate
 extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-        let startDate = formatter.date(from: "2010 01 01")!
-        let endDate = formatter.date(from: "2016 12 20")!
+        let startDate = formatter.date(from: "2016 10 01")!
+        let endDate = formatter.date(from: "2016 12 01")!
         let parameters = ConfigurationParameters(
             startDate: startDate,
             endDate: endDate,
             numberOfRows: numberOfRows,
-            calendar: .gregorian,
+            calendar: Calendar.current,
             generateInDates: generateInDates,
             generateOutDates: generateOutDates,
             firstDayOfWeek: firstDayOfWeek
@@ -235,6 +235,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
 
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
         (cell as? CellView)?.cellSelectionChanged(cellState)
+        print(date, cellState.text)
     }
 
     
