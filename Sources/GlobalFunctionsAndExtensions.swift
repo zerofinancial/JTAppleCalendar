@@ -46,5 +46,16 @@ extension Dictionary where Value: Equatable {
         }
         return self[index].0
     }
+}
 
+func <=(lhs: Date, rhs: Date!) -> Bool {
+    return lhs <= rhs
+}
+
+func >(lhs: Date, rhs: Date!) -> Bool {
+    return lhs > rhs
+}
+
+func >=(lhs: Date, rhs: Date!) -> Bool {
+    return lhs >= rhs
 }
