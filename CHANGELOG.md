@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - Update: [Changed variable names for consistency](https://github.com/patchthecode/JTAppleCalendar/commit/3eca0fddc79a6425c146b65aabd2ff31b0c0d05d)
 - Update: [Added functionality to flip calendar horizontally for ethnic calendars](https://github.com/patchthecode/JTAppleCalendar/commit/a991b898a2ce5bc3a678bcf0b43a8e381e56a840)
 - Update: `ConfigureCaneldar` function signature has changed. 
+- Fixed error: [XCode 8.1 has a bug](https://github.com/patchthecode/JTAppleCalendar/commit/97363897006877b62ebfb357cb98160a1b5b291b). So a work around was implemented 
 
 ## [6.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.0)
 - Added functionality to get dateCell by CGPoint
