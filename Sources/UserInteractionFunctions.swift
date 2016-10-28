@@ -375,13 +375,11 @@ extension JTAppleCalendarView {
             }
         }
         for date in validDatesToSelect {
-            let components = self.calendar
-                .dateComponents([.year, .month, .day], from: date)
-            let firstDayOfDate = self.calendar.date(from: components)!
+            let components = calendar.dateComponents([.year, .month, .day], from: date)
+            let firstDayOfDate = calendar.date(from: components)!
             // If the date is not within valid boundaries, then exit
-            if !(firstDayOfDate >= self.startOfMonthCache &&
-                firstDayOfDate <= self.endOfMonthCache) {
-                    continue
+            if !(firstDayOfDate >= startOfMonthCache! && firstDayOfDate <= endOfMonthCache!) {
+                continue
             }
             let pathFromDates = self.pathsFromDates([date])
             // If the date path youre searching for, doesnt exist, return
@@ -530,8 +528,7 @@ extension JTAppleCalendarView {
         scrollInProgress = true
         delayRunOnMainThread(0.0, closure: {
             // This part should be inside the mainRunLoop
-            if !(firstDayOfDate >= self.startOfMonthCache &&
-                firstDayOfDate <= self.endOfMonthCache) {
+            if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) {
                     self.scrollInProgress = false
                     return
             }
