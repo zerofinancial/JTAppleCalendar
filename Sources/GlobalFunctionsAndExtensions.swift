@@ -24,12 +24,10 @@ func delayRunOnGlobalThread(_ delay: Double,
 }
 
 extension Date {
-
     static func startOfMonth(for date: Date, using calendar: Calendar) -> Date? {
         let dayOneComponents = calendar.dateComponents([.era, .year, .month], from: date)
         return calendar.date(from: dayOneComponents)
     }
-
     static func endOfMonth(for date: Date, using calendar: Calendar) -> Date? {
         var lastDayComponents = calendar.dateComponents([.era, .year, .month], from: date)
         lastDayComponents.month = lastDayComponents.month! + 1
@@ -39,7 +37,6 @@ extension Date {
 }
 
 extension Dictionary where Value: Equatable {
-
     func key(for value: Value) -> Key? {
         guard let index = index(where: { $0.1 == value }) else {
             return nil
