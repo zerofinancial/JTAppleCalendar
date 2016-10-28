@@ -46,5 +46,16 @@ extension Dictionary where Value: Equatable {
         }
         return self[index].0
     }
+}
 
+func <=(lhs: Date, rhs: Date!) -> Bool {
+    return lhs.timeIntervalSince1970 <= rhs.timeIntervalSince1970
+}
+
+func >(lhs: Date, rhs: Date!) -> Bool {
+    return lhs.timeIntervalSince1970 > rhs.timeIntervalSince1970
+}
+
+func >=(lhs: Date, rhs: Date!) -> Bool {
+    return lhs.timeIntervalSince1970 >= rhs.timeIntervalSince1970
 }
