@@ -19,8 +19,7 @@ let developerErrorMessage = "There was an error in this code section. " +
 open class JTAppleCalendarView: UIView {
 
     lazy var dateGenerator: JTAppleDateConfigGenerator = {
-        var configurator = JTAppleDateConfigGenerator()
-        configurator.delegate = self
+        var configurator = JTAppleDateConfigGenerator(delegate: self)
         return configurator
     }()
 
@@ -823,14 +822,14 @@ extension JTAppleCalendarView {
                 startOfMonthCache = startMonth
                 endOfMonthCache   = endMonth
                 // Create the parameters for the date format generator
-                let parameters = DateConfigParameters(
-                    inCellGeneration: validConfig.generateInDates,
-                    outCellGeneration: validConfig.generateOutDates,
-                    numberOfRows: validConfig.numberOfRows,
-                    startOfMonthCache: startOfMonthCache,
-                    endOfMonthCache: endOfMonthCache,
-                    configuredCalendar: calendar,
-                    firstDayOfWeek: validConfig.firstDayOfWeek)
+                let parameters = ConfigurationParameters(startDate: startOfMonthCache,
+                                                         endDate: endOfMonthCache,
+                                                         numberOfRows: validConfig.numberOfRows,
+                                                         calendar: calendar,
+                                                         generateInDates: validConfig.generateInDates,
+                                                         generateOutDates: validConfig.generateOutDates,
+                                                         firstDayOfWeek: validConfig.firstDayOfWeek)
+                
                 let generatedData = dateGenerator.setupMonthInfoDataForStartAndEndDate(parameters)
                 months = generatedData.months
                 monthMap = generatedData.monthMap
@@ -845,19 +844,14 @@ extension JTAppleCalendarView {
     func pathsFromDates(_ dates: [Date]) -> [IndexPath] {
         var returnPaths: [IndexPath] = []
         for date in dates {
-            if  calendar.startOfDay(for: date) >= startOfMonthCache &&
-                        calendar.startOfDay(for: date) <= endOfMonthCache {
-                if  calendar.startOfDay(for: date) >= startOfMonthCache &&
-                        calendar.startOfDay(for: date) <= endOfMonthCache {
-
-                    let periodApart = calendar.dateComponents([.month],
-                                        from: startOfMonthCache, to: date)
+            if  calendar.startOfDay(for: date) >= startOfMonthCache! && calendar.startOfDay(for: date) <= endOfMonthCache! {
+                if  calendar.startOfDay(for: date) >= startOfMonthCache! && calendar.startOfDay(for: date) <= endOfMonthCache! {
+                    let periodApart = calendar.dateComponents([.month], from: startOfMonthCache, to: date)
                     let day = calendar.dateComponents([.day], from: date).day!
                     let monthSectionIndex = periodApart.month
                     let currentMonthInfo = monthInfo[monthSectionIndex!]
-                    if let indexPath = currentMonthInfo
-                        .indexPath(forDay: day) {
-                            returnPaths.append(indexPath)
+                    if let indexPath = currentMonthInfo.indexPath(forDay: day) {
+                        returnPaths.append(indexPath)
                     }
                 }
             }

@@ -45,6 +45,15 @@ public struct CellState {
     /// Useful if you wish to display something at the cell's frame/position
     public var cell: () -> JTAppleDayCell?
 }
+//struct DateConfigParameters {
+//    var inCellGeneration: InDateCellGeneration = .forAllMonths
+//    var outCellGeneration: OutDateCellGeneration = .tillEndOfGrid
+//    var numberOfRows = 6
+//    var startOfMonthCache: Date?
+//    var endOfMonthCache: Date?
+//    var configuredCalendar: Calendar?
+//    var firstDayOfWeek: DaysOfWeek = .sunday
+//}
 
 /// Defines the parameters which configures the calendar.
 public struct ConfigurationParameters {
@@ -72,6 +81,18 @@ public struct ConfigurationParameters {
                 firstDayOfWeek: DaysOfWeek? = nil) {
         self.startDate = startDate
         self.endDate = endDate
+
+        if let validNumberOfRows = numberOfRows {
+            switch validNumberOfRows {
+            case 1, 2, 3:
+                self.numberOfRows = validNumberOfRows
+            default:
+                self.numberOfRows = 6
+            }
+        } else {
+            self.numberOfRows = 6
+        }
+        
         self.numberOfRows = numberOfRows ?? 6
         self.calendar = calendar ?? Calendar.current
         self.generateInDates = generateInDates ?? .forAllMonths
@@ -191,40 +212,17 @@ struct Month {
     }
 }
 
-struct DateConfigParameters {
-    var inCellGeneration: InDateCellGeneration = .forAllMonths
-    var outCellGeneration: OutDateCellGeneration = .tillEndOfGrid
-    var numberOfRows = 6
-    var startOfMonthCache: Date?
-    var endOfMonthCache: Date?
-    var configuredCalendar: Calendar?
-    var firstDayOfWeek: DaysOfWeek = .sunday
-}
+
 
 struct JTAppleDateConfigGenerator {
-    var parameters: DateConfigParameters?
-    weak var delegate: JTAppleCalendarDelegateProtocol!
+    weak var delegate: JTAppleCalendarDelegateProtocol?
+    init(delegate: JTAppleCalendarDelegateProtocol) {
+        self.delegate = delegate
+    }
 
-    mutating func setupMonthInfoDataForStartAndEndDate(
-        _ parameters: DateConfigParameters?) -> (months: [Month],
-        monthMap: [Int: Int], totalSections: Int, totalDays: Int) {
-            self.parameters = parameters
-            guard
-                var validParameters = parameters,
-                let  startMonth = validParameters.startOfMonthCache,
-                let endMonth = validParameters.endOfMonthCache,
-                let calendar = validParameters.configuredCalendar else {
-                    return ([], [:], 0, 0)
-            }
-            // Only allow a row count of 1, 2, 3, or 6
-            switch validParameters.numberOfRows {
-            case 1, 2, 3:
-                break
-            default:
-                validParameters.numberOfRows = 6
-            }
-            let differenceComponents = calendar.dateComponents(
-                [.month], from: startMonth, to: endMonth)
+    mutating func setupMonthInfoDataForStartAndEndDate(_ parameters: ConfigurationParameters)
+        -> (months: [Month], monthMap: [Int: Int], totalSections: Int, totalDays: Int) {
+            let differenceComponents = parameters.calendar.dateComponents([.month], from: parameters.startDate, to: parameters.endDate)
             let numberOfMonths = differenceComponents.month! + 1
             // if we are for example on the same month
             // and the difference is 0 we still need 1 to display it
@@ -234,54 +232,44 @@ struct JTAppleDateConfigGenerator {
             var startIndexForMonth = 0
             var startCellIndexForMonth = 0
             var totalDays = 0
-            let numberOfRowsPerSectionThatUserWants =
-                validParameters.numberOfRows
+            let numberOfRowsPerSectionThatUserWants = parameters.numberOfRows
             // Section represents # of months. section is used as an offset
             // to determine which month to calculate
+            guard let nonNilDelegate = delegate else {
+                return ([], [:], 0, 0 )
+            }
             for monthIndex in 0 ..< numberOfMonths {
-                if let currentMonth = calendar.date(byAdding: .month,
+                if let currentMonth = parameters.calendar.date(byAdding: .month,
                                                     value: monthIndex,
-                                                    to: startMonth) {
-                    var numberOfDaysInMonthVariable = calendar.range(
+                                                    to: parameters.startDate) {
+                    var numberOfDaysInMonthVariable = parameters.calendar.range(
                         of: .day, in: .month, for: currentMonth)!.count
                     let numberOfDaysInMonthFixed = numberOfDaysInMonthVariable
                     var numberOfRowsToGenerateForCurrentMonth = 0
                     var numberOfPreDatesForThisMonth = 0
-                    let predatesGeneration = delegate.preDatesAreGenerated()
+                    let predatesGeneration = nonNilDelegate.preDatesAreGenerated()
                     if predatesGeneration != .off {
-                        numberOfPreDatesForThisMonth =
-                            delegate.numberOfPreDatesForMonth(currentMonth)
-                        numberOfDaysInMonthVariable +=
-                        numberOfPreDatesForThisMonth
-                        
+                        numberOfPreDatesForThisMonth = nonNilDelegate.numberOfPreDatesForMonth(currentMonth)
+                        numberOfDaysInMonthVariable += numberOfPreDatesForThisMonth
                         if predatesGeneration == .forFirstMonthOnly && monthIndex != 0 {
                             numberOfDaysInMonthVariable -= numberOfPreDatesForThisMonth
                             numberOfPreDatesForThisMonth = 0
                         }
                     }
                     
-                    if // validParameters.inCellGeneration == true &&
-                        validParameters.outCellGeneration == .tillEndOfGrid {
-                            numberOfRowsToGenerateForCurrentMonth =
-                                maxNumberOfRowsPerMonth
+                    if parameters.generateOutDates == .tillEndOfGrid {
+                        numberOfRowsToGenerateForCurrentMonth = maxNumberOfRowsPerMonth
                     } else {
-                        let actualNumberOfRowsForThisMonth =
-                            Int(ceil(Float(numberOfDaysInMonthVariable) /
-                                Float(maxNumberOfDaysInWeek)))
-                        numberOfRowsToGenerateForCurrentMonth =
-                        actualNumberOfRowsForThisMonth
+                        let actualNumberOfRowsForThisMonth = Int(ceil(Float(numberOfDaysInMonthVariable) / Float(maxNumberOfDaysInWeek)))
+                        numberOfRowsToGenerateForCurrentMonth = actualNumberOfRowsForThisMonth
                     }
                     var numberOfPostDatesForThisMonth = 0
-                    let postGeneration = delegate.postDatesAreGenerated()
+                    let postGeneration = nonNilDelegate.postDatesAreGenerated()
                     switch postGeneration {
                     case .tillEndOfGrid, .tillEndOfRow:
-                        numberOfPostDatesForThisMonth =
-                            maxNumberOfDaysInWeek *
-                            numberOfRowsToGenerateForCurrentMonth -
-                            (numberOfDaysInMonthFixed +
-                                numberOfPreDatesForThisMonth)
-                        numberOfDaysInMonthVariable +=
-                            numberOfPostDatesForThisMonth
+                        numberOfPostDatesForThisMonth = maxNumberOfDaysInWeek * numberOfRowsToGenerateForCurrentMonth -
+                            (numberOfDaysInMonthFixed + numberOfPreDatesForThisMonth)
+                        numberOfDaysInMonthVariable += numberOfPostDatesForThisMonth
                     default:
                         break
                     }
