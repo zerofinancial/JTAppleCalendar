@@ -231,8 +231,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         // index paths to be reloaded should be index
         // to the left and right of the selected index
         let indexPathsToBeReloaded = rangeSelectionWillBeUsed ?
-            validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) :
-            [IndexPath]()
+            validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : [IndexPath]()
         internalCollectionView(collectionView,
                                didSelectItemAtIndexPath: indexPath,
                                indexPathsToReload: indexPathsToBeReloaded)
@@ -248,8 +247,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         // Update model
         addCellToSelectedSetIfUnselected(indexPath,
                                          date: infoOfDateSelectedByUser.date)
-        let selectedCell = collectionView
-            .cellForItem(at: indexPath) as? JTAppleDayCell
+        let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell
         // If cell has a counterpart cell, then select it as well
         let cellState = cellStateFromIndexPath(indexPath,
             withDateInfo: infoOfDateSelectedByUser, cell: selectedCell)

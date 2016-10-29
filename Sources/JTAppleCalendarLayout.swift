@@ -67,8 +67,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
         if !cellCache.isEmpty {
             return
         }
-        maxMissCount = scrollDirection == .horizontal ?
-            maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
+        maxMissCount = scrollDirection == .horizontal ? maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
         if scrollDirection == .vertical {
             verticalStuff()
         } else {
@@ -168,11 +167,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
                 // Generate and cache the headers
                 let sectionIndexPath = IndexPath(item: 0, section: section)
                 if thereAreHeaders {
-                    if let aHeaderAttr =
-                        layoutAttributesForSupplementaryView(
-                            ofKind: UICollectionElementKindSectionHeader,
-                            at: sectionIndexPath) {
-
+                    if let aHeaderAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: sectionIndexPath) {
                         headerCache[section] = aHeaderAttr
                         yCellOffset += aHeaderAttr.frame.height
                         contentHeight += aHeaderAttr.frame.height
@@ -191,8 +186,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
                         xCellOffset += attribute.frame.width
                         if thereAreHeaders {
                             headerGuide += 1
-                            if headerGuide % 7 == 0 ||
-                                numberOfDaysInCurrentSection - 1 == item {
+                            if headerGuide % 7 == 0 || numberOfDaysInCurrentSection - 1 == item {
                                 // We are at the last item in the
                                 // section && if we have headers
                                 headerGuide = 0
@@ -238,10 +232,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
                     validSection.count > 0 {
                         // Add header view attributes
                         if thereAreHeaders {
-                            if headerCache[sectionIndex]!
-                                .frame.intersects(rect) {
-                                    attributes
-                                        .append(headerCache[sectionIndex]!)
+                            if headerCache[sectionIndex]!.frame.intersects(rect) {
+                                attributes.append(headerCache[sectionIndex]!)
                             }
                         }
                         for val in validSection {
@@ -288,12 +280,11 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
         UICollectionViewLayoutAttributes? {
             let monthIndex = monthMap[indexPath.section]!
             let numberOfDays = numberOfDaysInSection(monthIndex)
-            if !(0...maxSections ~= indexPath.section) ||
-                !(0...numberOfDays  ~= indexPath.item) {
-                    return nil
-            } // return nil on invalid range
-            let attr =
-                UICollectionViewLayoutAttributes(forCellWith: indexPath)
+            // return nil on invalid range
+            if !(0...maxSections ~= indexPath.section) || !(0...numberOfDays  ~= indexPath.item) {
+                return nil
+            }
+            let attr = UICollectionViewLayoutAttributes(forCellWith: indexPath)
             applyLayoutAttributes(attr)
             return attr
     }
@@ -336,19 +327,13 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
             return attributes
     }
 
-    func applyLayoutAttributes(
-        _ attributes: UICollectionViewLayoutAttributes) {
-            if attributes.representedElementKind != nil {
-                return
-            }
-            // Calculate the item size
-            let size = sizeForitemAtIndexPath(attributes.indexPath)
-            attributes.frame = CGRect(
-                x: xCellOffset + stride,
-                y: yCellOffset,
-                width: size.width,
-                height: size.height
-        )
+    func applyLayoutAttributes(_ attributes: UICollectionViewLayoutAttributes) {
+        if attributes.representedElementKind != nil {
+            return
+        }
+        // Calculate the item size
+        let size = sizeForitemAtIndexPath(attributes.indexPath)
+        attributes.frame = CGRect( x: xCellOffset + stride, y: yCellOffset, width: size.width, height: size.height)
     }
 
     func numberOfDaysInSection(_ index: Int) -> Int {
