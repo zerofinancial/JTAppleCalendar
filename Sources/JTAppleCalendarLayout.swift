@@ -200,6 +200,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
                                 xCellOffset = 0
                                 yCellOffset += attribute.frame.height
                                 contentHeight += attribute.frame.height
+                            } else if totalDayCounter == delegate.totalDays {
+                                contentHeight += attribute.frame.height
                             }
                         }
                     }
