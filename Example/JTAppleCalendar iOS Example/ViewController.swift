@@ -22,13 +22,12 @@ class ViewController: UIViewController {
     @IBOutlet var selectFrom: UITextField!
     @IBOutlet var selectTo: UITextField!
 
-    var numberOfRows = 2
+    var numberOfRows = 6
     let formatter = DateFormatter()
     var testCalendar = Calendar.current
     var generateInDates: InDateCellGeneration = .forAllMonths
     var generateOutDates: OutDateCellGeneration = .tillEndOfGrid
     let firstDayOfWeek: DaysOfWeek = .sunday
-    let direction: UICollectionViewScrollDirection = .vertical
     let disabledColor = UIColor.lightGray
     let enabledColor = UIColor.blue
     let dateCellSize: CGFloat? = nil
@@ -51,10 +50,8 @@ class ViewController: UIViewController {
 
         if sender.title(for: .normal)! == "HorizontalCalendar" {
             calendarView.direction = .horizontal
-            calendarView.itemSize = nil
         } else {
             calendarView.direction = .vertical
-            calendarView.itemSize = 30
         }
         calendarView.reloadData()
     }
@@ -213,7 +210,14 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
         let startDate = formatter.date(from: "2016 10 01")!
         let endDate = formatter.date(from: "2016 12 01")!
-        let parameters = ConfigurationParameters(startDate: startDate, endDate: endDate)
+        
+        let parameters = ConfigurationParameters(startDate: startDate,
+                                                 endDate: endDate,
+                                                 numberOfRows: numberOfRows,
+                                                 calendar: testCalendar,
+                                                 generateInDates: generateInDates,
+                                                 generateOutDates: generateOutDates,
+                                                 firstDayOfWeek: firstDayOfWeek)
         return parameters
     }
 
