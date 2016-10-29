@@ -414,11 +414,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout,
                 if monthSection + 1 <= fullSections {
                     numberOfRowsForSection = numberOfRows
                 } else {
-                    numberOfRowsForSection = totalNumberOfRows -
-                        (monthSection * numberOfRows)
+                    numberOfRowsForSection = totalNumberOfRows - (monthSection * numberOfRows)
                 }
-                height = (collectionView!.frame.height - headerSize.height) /
-                    CGFloat(numberOfRowsForSection)
+                height = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
             }
             size        = CGSize(width: itemSize.width, height: height)
             currentCell = (section: indexPath.section, itemSize: size)
