@@ -22,12 +22,13 @@ class ViewController: UIViewController {
     @IBOutlet var selectFrom: UITextField!
     @IBOutlet var selectTo: UITextField!
 
-    var numberOfRows = 6
+    var numberOfRows = 2
     let formatter = DateFormatter()
-    var testCalendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    var testCalendar = Calendar.current
     var generateInDates: InDateCellGeneration = .forAllMonths
     var generateOutDates: OutDateCellGeneration = .tillEndOfGrid
     let firstDayOfWeek: DaysOfWeek = .sunday
+    let direction: UICollectionViewScrollDirection = .vertical
     let disabledColor = UIColor.lightGray
     let enabledColor = UIColor.blue
     let dateCellSize: CGFloat? = nil
@@ -116,14 +117,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         formatter.dateFormat = "yyyy MM dd"
-        testCalendar.timeZone = TimeZone(secondsFromGMT: 0)!
 
         // Setting up your dataSource and delegate is manditory
         // ___________________________________________________________________
         calendarView.delegate = self
         calendarView.dataSource = self
-
-
+        
         // ___________________________________________________________________
         // Registering your cells is manditory
         // ___________________________________________________________________
@@ -131,6 +130,7 @@ class ViewController: UIViewController {
         
         // ___________________________________________________________________
         // Registering your cells is optional
+        
         // ___________________________________________________________________
         calendarView.registerHeaderView(xibFileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
 
