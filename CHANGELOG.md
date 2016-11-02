@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 ## [6.0.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.2)
 - Fixed error: [Fix for vertical direction](https://github.com/patchthecode/JTAppleCalendar/commit/4d48c594e00864dbe470dc64dbfd2e8790dbe783)
 - Fixed error: [Vertical cell size](https://github.com/patchthecode/JTAppleCalendar/commit/8e85b784bfe5ff8669157f42aee17aaee99a9429)
+- Fixed error: [Reload data completionhandler does not work when view is first loaded](https://github.com/patchthecode/JTAppleCalendar/commit/da0a0ad9b22b6e50fa2feec644afaa6902ad4a5e)
 
 ## [6.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.1)
 - Fixed error: [Left over artifacts](https://github.com/patchthecode/JTAppleCalendar/commit/f5be1e1c281cb08337ede276403311b3ee4a4e9f)
