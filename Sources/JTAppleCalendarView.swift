@@ -142,7 +142,9 @@ open class JTAppleCalendarView: UIView {
                             self.executeDelayedTasks()
                         }
                     }
-                    reloadData(completionHandler: anInitialCompletionHandler)
+                    delayRunOnMainThread(0) {
+                        self.reloadData(completionHandler: anInitialCompletionHandler)
+                    }
                 }
             }
         }
