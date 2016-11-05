@@ -222,12 +222,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                                     calculatedOffSet = attrib.frame.origin.y
                                 }
                         } else if registeredHeaderViews.count > 0,
-                            let attrib = self.calendarView
-                                .layoutAttributesForSupplementaryElement(
-                                    ofKind:
-                                        UICollectionElementKindSectionHeader,
-                                    at: attribPath) {
-
+                            let attrib = self.calendarView.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: attribPath) {
                             // change the final value to the end of the header
                             if isScrollingForward() {
                                 calculatedOffSet =
@@ -260,14 +255,13 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             }
 		
 		delayRunOnMainThread(0.0) {
-			self.scrollViewDidEndDecelerating(self.calendarView)
+            self.delegate?.scrollDidEndDecelerating(for: self)
 		}
     }
 
     /// Tells the delegate when a scrolling
     /// animation in the scroll view concludes.
-    public func scrollViewDidEndScrollingAnimation(
-        _ scrollView: UIScrollView) {
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
             if
                 let shouldTrigger = triggerScrollToDateDelegate,
                 shouldTrigger == true {

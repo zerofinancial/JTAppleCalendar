@@ -452,10 +452,7 @@ extension JTAppleCalendarView {
     ///   Trigger delegate if set to true
     /// - Parameter completionHandler: A completion handler that
     ///   will be executed at the end of the scroll animation
-    public func scrollToNextSegment(
-        _ triggerScrollToDateDelegate: Bool = false,
-        animateScroll: Bool = true,
-        completionHandler: (() -> Void)? = nil) {
+    public func scrollToNextSegment(_ triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (() -> Void)? = nil) {
             let page = currentSectionPage + 1
             if page < monthInfo.count {
                 scrollToSection(
