@@ -33,7 +33,7 @@ open class JTAppleCalendarView: UIView {
         nonStopTo(customInterval: CGFloat, withResistance: CGFloat),
         none
 
-        func  pagingIsEnabled() -> Bool {
+        func pagingIsEnabled() -> Bool {
             switch self {
             case .stopAtEachCalendarFrameWidth: return true
             default: return false
@@ -142,9 +142,9 @@ open class JTAppleCalendarView: UIView {
                             self.executeDelayedTasks()
                         }
                     }
-                    delayRunOnMainThread(0) {
+//                    delayRunOnMainThread(0) {
                         self.reloadData(completionHandler: anInitialCompletionHandler)
-                    }
+//                    }
                 }
             }
         }
@@ -363,53 +363,105 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    func validForwardAndBackwordSelectedIndexes(
-                    forIndexPath indexPath: IndexPath) -> [IndexPath] {
+    func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> [IndexPath] {
         var retval = [IndexPath]()
-        if let validForwardIndex = calendarView
-            .layoutAttributesForItem(
-                at: IndexPath(item: indexPath.item + 1,
-                              section: indexPath.section)),
+        if let validForwardIndex = calendarView.layoutAttributesForItem(at: IndexPath(item: indexPath.item + 1, section: indexPath.section)),
             theSelectedIndexPaths.contains(validForwardIndex.indexPath) {
                 retval.append(validForwardIndex.indexPath)
         }
-        if let validBackwardIndex = calendarView
-            .collectionViewLayout.layoutAttributesForItem(
-                at: IndexPath(item: indexPath.item - 1,
-                              section: indexPath.section)),
+        let previousItemIndex = IndexPath(item: indexPath.item - 1, section: indexPath.section)
+        if
+            let validBackwardIndex = calendarView.collectionViewLayout.layoutAttributesForItem(at: previousItemIndex),
             theSelectedIndexPaths.contains(validBackwardIndex.indexPath) {
                 retval.append(validBackwardIndex.indexPath)
         }
         return retval
     }
-
-    func calendarOffsetIsAlreadyAtScrollPosition(
-        forIndexPath indexPath: IndexPath) -> Bool? {
-            var retval: Bool?
-            // If the scroll is set to animate, and the target content offset
-            // is already on the screen, then the didFinishScrollingAnimation
-            // delegate will not get called. Once animation is on let's force
-            // a scroll so the delegate MUST get caalled
-            if let attributes = self.calendarView
-                .layoutAttributesForItem(at: indexPath) {
-                let layoutOffset: CGFloat
-                let calendarOffset: CGFloat
-                if direction == .horizontal {
-                    layoutOffset = attributes.frame.origin.x
-                    calendarOffset = calendarView.contentOffset.x
-                } else {
-                    layoutOffset = attributes.frame.origin.y
-                    calendarOffset = calendarView.contentOffset.y
-                }
-                if  calendarOffset == layoutOffset ||
-                    (scrollingMode.pagingIsEnabled() &&
-                        (indexPath.section ==  currentSectionPage)) {
-                            retval = true
-                } else {
-                    retval = false
-                }
+    
+    func scrollTo(indexPath: IndexPath, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, completionHandler: (() -> Void)?) {
+        if let validCompletionHandler = completionHandler {
+            self.delayedExecutionClosure.append(validCompletionHandler)
+        }
+        self.calendarView.scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
+        if isAnimationEnabled {
+            if calendarOffsetIsAlreadyAtScrollPosition(forIndexPath: indexPath) {
+                self.scrollViewDidEndScrollingAnimation(self.calendarView)
+                self.scrollInProgress = false
+                return
             }
-            return retval
+        }
+    }
+    func scrollTo(rect: CGRect, isAnimationEnabled: Bool, completionHandler: (() -> Void)?) {
+        if let validCompletionHandler = completionHandler {
+            self.delayedExecutionClosure.append(validCompletionHandler)
+        }
+        calendarView.scrollRectToVisible(rect, animated: isAnimationEnabled)
+        if isAnimationEnabled {
+            if calendarOffsetIsAlreadyAtScrollPosition(forOffset: rect.origin) {
+                self.scrollViewDidEndScrollingAnimation(self.calendarView)
+                self.scrollInProgress = false
+                return
+            }
+        }
+    }
+    
+    func rectForItemAt(indexPath: IndexPath) -> CGRect? {
+        var retval: CGRect?
+        if let attr = self.calendarView.layoutAttributesForItem(at: indexPath)?.frame.origin {
+            var x: CGFloat = 0
+            var y: CGFloat = 0
+            switch self.direction {
+            case .horizontal:
+                x = floor(attr.x / self.calendarView.frame.width) * self.calendarView.frame.width
+            case .vertical:
+                y = floor(attr.y / self.calendarView.frame.height) * self.calendarView.frame.height
+            }
+            retval = CGRect(x: x, y: y, width: self.calendarView.frame.width, height: self.calendarView.frame.height)
+        }
+        return retval
+    }
+
+    func calendarOffsetIsAlreadyAtScrollPosition(forOffset offset: CGPoint) -> Bool {
+        var retval = false
+        // If the scroll is set to animate, and the target content
+        // offset is already on the screen, then the
+        // didFinishScrollingAnimation
+        // delegate will not get called. Once animation is on let's
+        // force a scroll so the delegate MUST get caalled
+        let theOffset = direction == .horizontal ? offset.x : offset.y
+        let divValue = direction == .horizontal ? calendarView.frame.width : calendarView.frame.height
+        let sectionForOffset = Int(theOffset / divValue)
+        let calendarCurrentOffset = direction == .horizontal ? calendarView.contentOffset.x : calendarView.contentOffset.y
+        if calendarCurrentOffset == theOffset ||
+            (scrollingMode.pagingIsEnabled() &&
+                (sectionForOffset ==  currentSectionPage)) {
+            retval = true
+        }
+        return retval
+    }
+    
+    func calendarOffsetIsAlreadyAtScrollPosition(forIndexPath indexPath: IndexPath) -> Bool {
+        var retval = false
+        // If the scroll is set to animate, and the target content offset
+        // is already on the screen, then the didFinishScrollingAnimation
+        // delegate will not get called. Once animation is on let's force
+        // a scroll so the delegate MUST get caalled
+        if let attributes = self.calendarView.layoutAttributesForItem(at: indexPath) {
+            let layoutOffset: CGFloat
+            let calendarOffset: CGFloat
+            if direction == .horizontal {
+                layoutOffset = attributes.frame.origin.x
+                calendarOffset = calendarView.contentOffset.x
+            } else {
+                layoutOffset = attributes.frame.origin.y
+                calendarOffset = calendarView.contentOffset.y
+            }
+            if  calendarOffset == layoutOffset ||
+                (scrollingMode.pagingIsEnabled() && (indexPath.section ==  currentSectionPage)) {
+                    retval = true
+            }
+        }
+        return retval
     }
     /// Changes the calendar reading direction
     public func changeVisibleDirection(to orientation: ReadingOrientation) {
@@ -427,30 +479,6 @@ open class JTAppleCalendarView: UIView {
         self.orientation = orientation
         calendarView.transform.a = orientation == .leftToRight ? 1 : -1
         calendarView.reloadData()
-    }
-
-    func calendarOffsetIsAlreadyAtScrollPosition(
-        forOffset offset: CGPoint) -> Bool? {
-            var retval: Bool?
-            // If the scroll is set to animate, and the target content
-            // offset is already on the screen, then the
-            // didFinishScrollingAnimation
-            // delegate will not get called. Once animation is on let's
-            // force a scroll so the delegate MUST get caalled
-            let theOffset = direction == .horizontal ? offset.x : offset.y
-            let divValue = direction == .horizontal ?
-                calendarView.frame.width : calendarView.frame.height
-            let sectionForOffset = Int(theOffset / divValue)
-            let calendarCurrentOffset = direction == .horizontal ?
-                calendarView.contentOffset.x : calendarView.contentOffset.y
-            if calendarCurrentOffset == theOffset ||
-                    (scrollingMode.pagingIsEnabled() &&
-                    (sectionForOffset ==  currentSectionPage)) {
-                retval = true
-            } else {
-                retval = false
-            }
-            return retval
     }
 
     func firstDayIndexForMonth(_ date: Date) -> Int {
@@ -505,12 +533,8 @@ open class JTAppleCalendarView: UIView {
                     // didFinishScrollingAnimation
                     // delegate will not get called. Once animation is on
                     // let's force a scroll so the delegate MUST get caalled
-                    if let check = self
-                            .calendarOffsetIsAlreadyAtScrollPosition(
-                                forOffset: topOfHeader), check == true {
-
-                        self.scrollViewDidEndScrollingAnimation(
-                                                        self.calendarView)
+                    if self.calendarOffsetIsAlreadyAtScrollPosition(forOffset: topOfHeader) {
+                        self.scrollViewDidEndScrollingAnimation(self.calendarView)
                         self.scrollInProgress = false
                     }
                 }

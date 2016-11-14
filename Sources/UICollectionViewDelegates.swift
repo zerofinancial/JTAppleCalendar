@@ -226,8 +226,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// user successfully selects an item in the collection view.
     /// It does not call this method when you programmatically
     /// set the selection.
-    public func collectionView(_ collectionView: UICollectionView,
-                               didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // index paths to be reloaded should be index
         // to the left and right of the selected index
         let indexPathsToBeReloaded = rangeSelectionWillBeUsed ?
@@ -237,9 +236,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                                indexPathsToReload: indexPathsToBeReloaded)
     }
 
-    func internalCollectionView(_ collectionView: UICollectionView,
-                                didSelectItemAtIndexPath indexPath: IndexPath,
-                                indexPathsToReload: [IndexPath] = []) {
+    func internalCollectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath, indexPathsToReload: [IndexPath] = []) {
         guard let delegate = self.delegate,
             let infoOfDateSelectedByUser = dateInfoFromPath(indexPath) else {
                 return
