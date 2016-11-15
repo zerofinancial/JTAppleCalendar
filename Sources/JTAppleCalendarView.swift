@@ -884,7 +884,12 @@ extension JTAppleCalendarView {
         }
         return returnPaths
     }
-
+    
+    /// Add gesture recognizers to the calendar
+    override open func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
+        calendarView.addGestureRecognizer(gestureRecognizer)
+    }
+    
     func cellStateFromIndexPath(_ indexPath: IndexPath,
                                 withDateInfo info: (date: Date, owner: DateOwner)? = nil,
                                 cell: JTAppleDayCell? = nil) -> CellState {
