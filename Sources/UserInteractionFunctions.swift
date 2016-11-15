@@ -530,7 +530,6 @@ extension JTAppleCalendarView {
             let retrievedPathsFromDates = self.pathsFromDates([date])
             if retrievedPathsFromDates.count > 0 {
                 let sectionIndexPath =  self.pathsFromDates([date])[0]
-                print("section indexPath: \(sectionIndexPath))")
                 var position: UICollectionViewScrollPosition = self.direction == .horizontal ? .left : .top
                 if !self.scrollingMode.pagingIsEnabled() {
                     if let validPosition = preferredScrollPosition {
