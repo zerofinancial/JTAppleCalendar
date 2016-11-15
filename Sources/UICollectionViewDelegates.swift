@@ -124,17 +124,10 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         if let
             delegate = self.delegate,
             let infoOfDateUserSelected = dateInfoFromPath(indexPath),
-            let cell = collectionView
-                .cellForItem(at: indexPath) as? JTAppleDayCell,
-            cellWasNotDisabledOrHiddenByTheUser(cell) {
+            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell, cellWasNotDisabledOrHiddenByTheUser(cell) {
             let cellState = cellStateFromIndexPath(indexPath,
                 withDateInfo: infoOfDateUserSelected)
-            return delegate.calendar(
-                self,
-                canSelectDate: infoOfDateUserSelected.date,
-                cell: cell.view!,
-                cellState: cellState
-            )
+            return delegate.calendar(self, canSelectDate: infoOfDateUserSelected.date, cell: cell.view!, cellState: cellState)
         }
         return false
     }
@@ -159,17 +152,17 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 let dateInfoDeselectedByUser = dateInfoFromPath(indexPath) {
                 // Update model
                 deleteCellFromSelectedSetIfSelected(indexPath)
+                var pathsToReload = indexPathsToReload
                 let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell
+                if selectedCell == nil {
+                    pathsToReload.append(indexPath)
+                }
                 // Cell may be nil if user switches month sections
                 // Although the cell may be nil, we still want to
                 // return the cellstate
                 let cellState = cellStateFromIndexPath(indexPath, withDateInfo: dateInfoDeselectedByUser, cell: selectedCell)
-                var pathsToReload = indexPathsToReload
-                let deselectCPCell = deselectCounterPartCellIndexPath(
-                        indexPath,
-                        date: dateInfoDeselectedByUser.date,
-                        dateOwner: cellState.dateBelongsTo)
-                if let unselectedCounterPartIndexPath = deselectCPCell {
+                let deselectedCell = deselectCounterPartCellIndexPath(indexPath, date: dateInfoDeselectedByUser.date, dateOwner: cellState.dateBelongsTo)
+                if let unselectedCounterPartIndexPath = deselectedCell {
                     deleteCellFromSelectedSetIfSelected(
                         unselectedCounterPartIndexPath)
                     // ONLY if the counterPart cell is visible,
@@ -184,7 +177,6 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                     }
                 }
                 delegate.calendar(self, didDeselectDate: dateInfoDeselectedByUser.date, cell: selectedCell?.view, cellState: cellState)
-                
             }
     }
 
