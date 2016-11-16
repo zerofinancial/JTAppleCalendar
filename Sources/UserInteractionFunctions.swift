@@ -297,8 +297,8 @@ extension JTAppleCalendarView {
         var validDatesToSelect = dates
         // If user is trying to select multiple dates with
         // multiselection disabled, then only select the last object
-        if !calendarView.allowsMultipleSelection && dates.count > 0 {
-            validDatesToSelect = [dates.last!]
+        if !calendarView.allowsMultipleSelection, let dateToSelect = dates.last {
+            validDatesToSelect = [dateToSelect]
         }
         let addToIndexSetToReload = { (indexPath: IndexPath) -> Void in
             if !allIndexPathsToReload.contains(indexPath) {
