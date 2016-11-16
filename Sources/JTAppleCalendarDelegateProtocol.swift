@@ -15,6 +15,7 @@ protocol JTAppleCalendarDelegateProtocol: class {
     var monthMap: [Int: Int] {get set}
     var totalDays: Int {get}
     func numberOfRows() -> Int
+    func hasStrictBoundaries() -> Bool
     func cachedDate() -> (start: Date, end: Date, calendar: Calendar)
     func numberOfMonthsInCalendar() -> Int
     func numberOfPreDatesForMonth(_ month: Date) -> Int
@@ -32,6 +33,10 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
         return (start: startDateCache,
                 end: endDateCache,
                 calendar: calendar)
+    }
+    
+    func hasStrictBoundaries() -> Bool {
+        return cachedConfiguration.hasStrictBoundaries
     }
 
     func numberOfRows() -> Int {
@@ -60,8 +65,6 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
 
     func rowsAreStatic() -> Bool {
         // jt101 is the inDateCellGeneration check needed? because tillEndOfGrid will always compenste
-        return cachedConfiguration.generateInDates != .off &&
-            cachedConfiguration.generateOutDates == .tillEndOfGrid
+        return cachedConfiguration.generateInDates != .off && cachedConfiguration.generateOutDates == .tillEndOfGrid
     }
-
 }

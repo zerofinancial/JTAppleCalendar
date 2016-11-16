@@ -45,15 +45,6 @@ public struct CellState {
     /// Useful if you wish to display something at the cell's frame/position
     public var cell: () -> JTAppleDayCell?
 }
-//struct DateConfigParameters {
-//    var inCellGeneration: InDateCellGeneration = .forAllMonths
-//    var outCellGeneration: OutDateCellGeneration = .tillEndOfGrid
-//    var numberOfRows = 6
-//    var startOfMonthCache: Date?
-//    var endOfMonthCache: Date?
-//    var configuredCalendar: Calendar?
-//    var firstDayOfWeek: DaysOfWeek = .sunday
-//}
 
 /// Defines the parameters which configures the calendar.
 public struct ConfigurationParameters {
@@ -71,6 +62,11 @@ public struct ConfigurationParameters {
     var generateOutDates: OutDateCellGeneration
     /// Sets the first day of week
     var firstDayOfWeek: DaysOfWeek
+    /// Determine if dates of a month should stay in its section 
+    /// or if it can flow into another months section. This value is ignored
+    /// if your calendar has registered headers
+    var hasStrictBoundaries: Bool
+    
     /// init-function
     public init(startDate: Date,
                 endDate: Date,
@@ -78,22 +74,25 @@ public struct ConfigurationParameters {
                 calendar: Calendar? = nil,
                 generateInDates: InDateCellGeneration? = nil,
                 generateOutDates: OutDateCellGeneration? = nil,
-                firstDayOfWeek: DaysOfWeek? = nil) {
+                firstDayOfWeek: DaysOfWeek? = nil,
+                hasStrictBoundaries: Bool? = nil) {
         self.startDate = startDate
         self.endDate = endDate
-
+        self.numberOfRows = 6
+        
         if let validNumberOfRows = numberOfRows {
             switch validNumberOfRows {
             case 1, 2, 3:
                 self.numberOfRows = validNumberOfRows
             default:
-                self.numberOfRows = 6
+                break
             }
-        } else {
-            self.numberOfRows = 6
         }
-        
-        self.numberOfRows = numberOfRows ?? 6
+        if let nonNilHasStrictBoundaries = hasStrictBoundaries {
+            self.hasStrictBoundaries = nonNilHasStrictBoundaries
+        } else {
+            self.hasStrictBoundaries = self.numberOfRows > 1 ? true : false
+        }
         self.calendar = calendar ?? Calendar.current
         self.generateInDates = generateInDates ?? .forAllMonths
         self.generateOutDates = generateOutDates ?? .tillEndOfGrid

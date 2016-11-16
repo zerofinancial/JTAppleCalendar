@@ -690,11 +690,10 @@ open class JTAppleCalendarView: UIView {
     func calendarViewHeaderSizeForSection(_ section: Int) -> CGSize {
         var retval = CGSize.zero
         if registeredHeaderViews.count > 0 {
-            if let validDate = monthInfoFromSection(section),
-                let size = delegate?.calendar(self,
-                                    sectionHeaderSizeFor: validDate.range,
-                                    belongingTo: validDate.month) {
-                retval = size
+            if
+                let validDate = monthInfoFromSection(section),
+                let size = delegate?.calendar(self, sectionHeaderSizeFor: validDate.range, belongingTo: validDate.month) {
+                    retval = size
             }
         }
         return retval
@@ -829,11 +828,7 @@ extension JTAppleCalendarView {
         var totalSections = 0
         var totalDays = 0
         if let validConfig = dataSource?.configureCalendar(self) {
-            
-            let comparison = validConfig.calendar.compare( validConfig.startDate,
-                                                   to: validConfig.endDate,
-                                                   toGranularity: .nanosecond)
-            
+            let comparison = validConfig.calendar.compare(validConfig.startDate, to: validConfig.endDate, toGranularity: .nanosecond)
             if comparison == ComparisonResult.orderedDescending {
                 assert(false, "Error, your start date cannot be " + "greater than your end date\n")
                 return (CalendarData(months: [], totalSections: 0, monthMap: [:], totalDays: 0))
@@ -854,7 +849,8 @@ extension JTAppleCalendarView {
                                                          calendar: calendar,
                                                          generateInDates: validConfig.generateInDates,
                                                          generateOutDates: validConfig.generateOutDates,
-                                                         firstDayOfWeek: validConfig.firstDayOfWeek)
+                                                         firstDayOfWeek: validConfig.firstDayOfWeek,
+                                                         hasStrictBoundaries: validConfig.hasStrictBoundaries)
                 
                 let generatedData = dateGenerator.setupMonthInfoDataForStartAndEndDate(parameters)
                 months = generatedData.months

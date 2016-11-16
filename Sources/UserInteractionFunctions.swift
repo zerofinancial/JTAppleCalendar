@@ -142,21 +142,16 @@ extension JTAppleCalendarView {
     /// - Parameter bundle: The bundle where the xibs can be found.
     ///                     If left nil, the library will search the
     ///                     main bundle
-    public func registerHeaderView(xibFileNames: [String],
-                                   bundle: Bundle? = nil) {
+    public func registerHeaderView(xibFileNames: [String], bundle: Bundle? = nil) {
         if xibFileNames.count < 1 {
-        return
-    }
+            return
+        }
         unregisterHeaders()
         for headerViewXibName in xibFileNames {
-            registeredHeaderViews.append(JTAppleCalendarViewSource
-                .fromXib(headerViewXibName, bundle))
-            self.calendarView.register(
-                JTAppleCollectionReusableView.self,
-                forSupplementaryViewOfKind:
-                    UICollectionElementKindSectionHeader,
-                withReuseIdentifier: headerViewXibName
-            )
+            registeredHeaderViews.append(JTAppleCalendarViewSource.fromXib(headerViewXibName, bundle))
+            self.calendarView.register(JTAppleCollectionReusableView.self,
+                                       forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                                       withReuseIdentifier: headerViewXibName)
         }
     }
 
@@ -165,8 +160,7 @@ extension JTAppleCalendarView {
     /// - Parameter classStringNames: An array of class string names
     /// - Parameter bundle: The bundle where the xibs can be found. If left
     ///                     nil, the library will search the main bundle
-    public func registerHeaderView(classStringNames: [String],
-                                   bundle: Bundle? = nil) {
+    public func registerHeaderView(classStringNames: [String], bundle: Bundle? = nil) {
         if classStringNames.count < 1 {
             return
         }
