@@ -153,21 +153,16 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                         .sizeOfContentForSection(targetSection)
                     let diffResistance = diff * resistance
                     if direction == .horizontal {
-                        calculatedOffSet =
-                            recalculateOffset(diffResistance, interval)
+                        calculatedOffSet = recalculateOffset(diffResistance, interval)
                     } else {
                         if isScrollingForward() {
-                            calculatedOffSet =
-                                theTargetContentOffset - diffResistance
+                            calculatedOffSet = theTargetContentOffset - diffResistance
                         } else {
-                            calculatedOffSet =
-                                theTargetContentOffset + diffResistance
+                            calculatedOffSet = theTargetContentOffset + diffResistance
                         }
                         let stopSection = isScrollingForward() ?
-                            calendarLayout
-                                .sectionFromOffset(calculatedOffSet) :
-                            calendarLayout
-                                .sectionFromOffset(calculatedOffSet) - 1
+                            calendarLayout.sectionFromOffset(calculatedOffSet) :
+                            calendarLayout.sectionFromOffset(calculatedOffSet) - 1
                         calculatedOffSet = stopSection < 0 ?
                             0 : calendarLayout.sectionSize[stopSection]
                     }
@@ -179,12 +174,10 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                     if direction == .horizontal {
                         if scrollViewShouldStopAtBeginning() {
                             calculatedOffSet = 0
-                        } else if
-                            scrollViewShouldStopAtEnd(calculatedOffSet) {
-                                calculatedOffSet = theTargetContentOffset
+                        } else if scrollViewShouldStopAtEnd(calculatedOffSet) {
+                            calculatedOffSet = theTargetContentOffset
                         } else {
-                            calculatedOffSet =
-                                recalculateOffset(diffResistance, interval)
+                            calculatedOffSet = recalculateOffset(diffResistance, interval)
                         }
                     } else {
                         var stopSection: Int

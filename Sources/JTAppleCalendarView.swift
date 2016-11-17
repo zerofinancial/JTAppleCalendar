@@ -130,45 +130,6 @@ open class JTAppleCalendarView: UIView {
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         setMinVisibleDate()
     }
-    
-    public func setMinVisibleDate() {
-        
-        let visibleItems: [UICollectionViewLayoutAttributes] = direction == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()
-        
-        var cells: [IndexPath:UICollectionElementCategory] = [:]
-        var headers: [IndexPath:UICollectionElementCategory] = [:]
-        for item in visibleItems {
-            if item.representedElementCategory == .cell {
-                cells[item.indexPath] = item.representedElementCategory
-            } else {
-                headers[item.indexPath] = item.representedElementCategory
-            }
-        }
-        
-        let sortedVisibleIndices: [IndexPath] = visibleItems.map { $0.indexPath }.sorted()
-        let visibleDateInto = dateSegmentInfoFrom(visible: sortedVisibleIndices)
-        var minIndex: [IndexPath] = []
-        
-        if let firstDateIndex = visibleDateInto.indateIndexes.first {
-            minIndex.append(firstDateIndex)
-        }
-        if let firstDateIndex = visibleDateInto.monthDateIndexes.first {
-            minIndex.append(firstDateIndex)
-        }
-        if let firstDateIndex = visibleDateInto.outdateIndexes.first {
-            minIndex.append(firstDateIndex)
-        }
-        
-        guard let minIndexValue = minIndex.min() else {
-            return
-        }
-        
-        if let aMinHead = headers[minIndexValue] {
-            lastIndexOffset = (minIndexValue, aMinHead)
-        } else if let aMinCell = cells[minIndexValue] {
-            lastIndexOffset = (minIndexValue, aMinCell)
-        }
-    }
 
     /// The frame rectangle which defines the view's location and size in
     /// its superview coordinate system.
@@ -198,11 +159,6 @@ open class JTAppleCalendarView: UIView {
     var delayedExecutionClosure: [(() -> Void)] = []
     var lastSize = CGSize.zero
     var finalLoadable: Bool?
-
-    var currentSectionPage: Int {
-        return calendarViewLayout
-            .sectionFromRectOffset(calendarView.contentOffset)
-    }
 
     var startDateCache: Date {
         get {
@@ -636,10 +592,6 @@ open class JTAppleCalendarView: UIView {
                         if let validCompletionHandler = completionHandler {
                             validCompletionHandler()
                         }
-//                        self.calendarView.scrollToItem(
-//                        at: IndexPath(item: 0, section:0),
-//                        at: .left, animated: false)
-//                        scrollToDate(self.startOfMonthCache)
                     } else {
                         if let validCompletionHandler = completionHandler {
                             self.delayedExecutionClosure
@@ -966,12 +918,8 @@ extension JTAppleCalendarView {
                 if self.selectedDates.count == 1 {
                     return .full
                 }
-                let left = self.theSelectedIndexPaths
-                    .contains(IndexPath(item: indexPath.item - 1,
-                                        section: indexPath.section))
-                let right = self.theSelectedIndexPaths
-                    .contains(IndexPath(item: indexPath.item + 1,
-                                        section: indexPath.section))
+                let left = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item - 1, section: indexPath.section))
+                let right = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item + 1, section: indexPath.section))
                 if left == right {
                     if left == false {
                         return .full
@@ -1016,8 +964,7 @@ extension JTAppleCalendarView {
         }
     }
 
-    func addCellToSelectedSetIfUnselected(_ indexPath: IndexPath,
-                                          date: Date) {
+    func addCellToSelectedSetIfUnselected(_ indexPath: IndexPath, date: Date) {
         if self.theSelectedIndexPaths.contains(indexPath) == false {
             self.theSelectedIndexPaths.append(indexPath)
             self.theSelectedDates.append(date)
@@ -1031,8 +978,7 @@ extension JTAppleCalendarView {
         }
     }
 
-    func deselectCounterPartCellIndexPath(_ indexPath: IndexPath,
-                        date: Date, dateOwner: DateOwner) -> IndexPath? {
+    func deselectCounterPartCellIndexPath(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
         if let counterPartCellIndexPath =
             indexPathOfdateCellCounterPart(date, indexPath: indexPath,
                                            dateOwner: dateOwner) {
@@ -1042,15 +988,13 @@ extension JTAppleCalendarView {
         return nil
     }
 
-    func selectCounterPartCellIndexPathIfExists(_ indexPath: IndexPath,
-                            date: Date, dateOwner: DateOwner) -> IndexPath? {
+    func selectCounterPartCellIndexPathIfExists(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
         if let counterPartCellIndexPath =
-                indexPathOfdateCellCounterPart(date, indexPath: indexPath,
-                                               dateOwner: dateOwner) {
-            let dateComps = calendar
-                .dateComponents([.month, .day, .year], from: date)
-            guard let counterpartDate = calendar
-                .date(from: dateComps) else { return nil }
+                indexPathOfdateCellCounterPart(date, indexPath: indexPath, dateOwner: dateOwner) {
+            let dateComps = calendar.dateComponents([.month, .day, .year], from: date)
+            guard let counterpartDate = calendar.date(from: dateComps) else {
+                return nil
+            }
             addCellToSelectedSetIfUnselected(counterPartCellIndexPath,
                                              date: counterpartDate)
             return counterPartCellIndexPath
@@ -1065,23 +1009,20 @@ extension JTAppleCalendarView {
             }
             let monthData = monthInfo[monthIndex]
             
-            guard let
-                monthDataMapSection = monthData.sectionIndexMaps[section],
+            guard
+                let monthDataMapSection = monthData.sectionIndexMaps[section],
                 let indices = monthData.boundaryIndicesFor(section: monthDataMapSection) else {
                     return nil
             }
             let startIndexPath = IndexPath(item: indices.startIndex, section: section)
             let endIndexPath = IndexPath(item: indices.endIndex, section: section)
-            guard let
-                startDate = dateOwnerInfoFromPath(startIndexPath)?.date,
+            guard
+                let startDate = dateOwnerInfoFromPath(startIndexPath)?.date,
                 let endDate = dateOwnerInfoFromPath(endIndexPath)?.date else {
                     return nil
             }
-            if let monthDate = calendar.date(byAdding: .month,
-                                             value: monthIndex,
-                                             to: startDateCache) {
-                let monthNumber = calendar.dateComponents([.month],
-                                                          from: monthDate)
+            if let monthDate = calendar.date(byAdding: .month, value: monthIndex, to: startDateCache) {
+                let monthNumber = calendar.dateComponents([.month], from: monthDate)
                 let numberOfRowsForSection =
                     monthData.numberOfRows(for: section,
                                            developerSetRows: numberOfRows())
@@ -1091,8 +1032,54 @@ extension JTAppleCalendarView {
             }
             return nil
     }
+    
+    public func setMinVisibleDate() {
+        let minIndices = minimumVisibleIndexPaths()
+        switch (minIndices.headerIndex, minIndices.cellIndex) {
+        case (.some(let path), nil):
+            lastIndexOffset = (path, UICollectionElementCategory.supplementaryView)
+        case (nil, .some(let path)):
+            lastIndexOffset = (path, UICollectionElementCategory.cell)
+        case (.some(let hPath), (.some(let cPath))):
+            if hPath <= cPath {
+                lastIndexOffset = (hPath, UICollectionElementCategory.supplementaryView)
+            } else {
+                lastIndexOffset = (cPath, UICollectionElementCategory.cell)
+            }
+        default:
+            break
+        }
+    }
+    
+    // This function ignores decoration views
+    func minimumVisibleIndexPaths() -> (cellIndex:IndexPath?, headerIndex: IndexPath?) {
+        let visibleItems: [UICollectionViewLayoutAttributes] = direction == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()
+        
+        var cells: [IndexPath] = []
+        var headers: [IndexPath] = []
+        for item in visibleItems {
+            if item.representedElementCategory == .cell {
+                cells.append(item.indexPath)
+            } else {
+                headers.append(item.indexPath)
+            }
+        }
+        return (cells.min(), headers.min())
+    }
 
-
+    var currentSectionPage: Int {
+        return calendarViewLayout.sectionFromRectOffset(calendarView.contentOffset)
+    }
+    
+    func currentSectionPageX() {
+        
+    }
+    
+    func currentmonth() {
+        let allVisibleDates = visibleDates()
+        
+        
+    }
     
     func visibleElements(excludeHeaders: Bool? = nil) -> [UICollectionViewLayoutAttributes] {
         let rect = CGRect(x: calendarView.contentOffset.x + 1, y: calendarView.contentOffset.y + 1, width: calendarView.frame.width - 2, height: calendarView.frame.height - 2)
@@ -1147,10 +1134,8 @@ extension JTAppleCalendarView {
             offSet = monthData.preDates
         default:
             offSet = 0
-            let currentSectionIndexMap =
-                monthData.sectionIndexMaps[indexPath.section]!
-            numberOfDaysToAddToOffset =
-                monthData.sections[0..<currentSectionIndexMap].reduce(0, +)
+            let currentSectionIndexMap = monthData.sectionIndexMaps[indexPath.section]!
+            numberOfDaysToAddToOffset = monthData.sections[0..<currentSectionIndexMap].reduce(0, +)
             numberOfDaysToAddToOffset -= monthData.preDates
         }
                                                         

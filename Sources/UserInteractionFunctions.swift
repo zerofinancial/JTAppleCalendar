@@ -18,11 +18,9 @@ extension JTAppleCalendarView {
     ///     - CellState: The state of the found cell
     public func cellStatusForDate(at row: Int, column: Int) -> CellState? {
         let convertedRow = (row * maxNumberOfDaysInWeek) + column
-        let indexPathToFind =
-            IndexPath(item: convertedRow, section: currentSectionPage)
+        let indexPathToFind = IndexPath(item: convertedRow, section: currentSectionPage)
         if let date = dateOwnerInfoFromPath(indexPathToFind) {
-            let stateOfCell =
-                cellStateFromIndexPath(indexPathToFind, withDateInfo: date)
+            let stateOfCell = cellStateFromIndexPath(indexPathToFind, withDateInfo: date)
             return stateOfCell
         }
         return nil
@@ -411,15 +409,18 @@ extension JTAppleCalendarView {
     /// - Parameter completionHandler: A completion handler that
     ///   will be executed at the end of the scroll animation
     public func scrollToNextSegment(_ triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (() -> Void)? = nil) {
-            let page = currentSectionPage + 1
-            if page < monthInfo.count {
-                scrollToSection(
-                    page,
-                    triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                    animateScroll: animateScroll,
-                    completionHandler: completionHandler
-                )
-            }
+        
+        // 1st determine where you are
+        
+        let page = currentSectionPage + 1
+        if page < monthInfo.count {
+            scrollToSection(
+                page,
+                triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+                animateScroll: animateScroll,
+                completionHandler: completionHandler
+            )
+        }
     }
 
     /// Scrolls the calendar view to the previous section view. It will
