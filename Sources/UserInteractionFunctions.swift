@@ -20,7 +20,7 @@ extension JTAppleCalendarView {
         let convertedRow = (row * maxNumberOfDaysInWeek) + column
         let indexPathToFind =
             IndexPath(item: convertedRow, section: currentSectionPage)
-        if let date = dateInfoFromPath(indexPathToFind) {
+        if let date = dateOwnerInfoFromPath(indexPathToFind) {
             let stateOfCell =
                 cellStateFromIndexPath(indexPathToFind, withDateInfo: date)
             return stateOfCell
@@ -55,55 +55,32 @@ extension JTAppleCalendarView {
         }
         return nil
     }
-
-    /// Returns the visible dates of the calendar.
-    /// - returns:
-    ///     - DateSegmentInfo
-    public func visibleDates()-> DateSegmentInfo {
-        let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [])
-        
-        if !calendarIsAlreadyLoaded {
-            return emptySegment
-        }
-        let rect = CGRect(x: calendarView.contentOffset.x + 1, y: calendarView.contentOffset.y + 1, width: calendarView.frame.width - 2, height: calendarView.frame.height - 2)
-        guard let attributes = calendarViewLayout.layoutAttributesForElements(in: rect), attributes.count > 0 else {
-            return emptySegment
-        }
-        
-        let indexPaths: [IndexPath] = Array(Set(attributes.map { $0.indexPath })).sorted()
-        
-        var inDates   = [Date]()
-        var monthDates = [Date]()
-        var outDates  = [Date]()
-        
-        for indexPath in indexPaths {
-            let info = dateInfoFromPath(indexPath)
-            
-            if let validInfo = info  {
-                switch validInfo.owner {
-                case .thisMonth:
-                    monthDates.append(validInfo.date)
-                case .previousMonthWithinBoundary, .previousMonthOutsideBoundary:
-                    inDates.append(validInfo.date)
-                default:
-                    outDates.append(validInfo.date)
-                }
-            }
-        }
-        
-        let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates)
-        return retval
+    
+    /// Deselect all selected dates
+    public func deselectAllDates(triggerSelectionDelegate: Bool = true) {
+        selectDates(selectedDates,
+                    triggerSelectionDelegate: triggerSelectionDelegate)
     }
     
-    public func visibleDates(_ completionHandler: @escaping (_ dateSegmentInfo: DateSegmentInfo) ->()) {
-        if !calendarIsAlreadyLoaded {
-            delayedExecutionClosure.append {
-                self.visibleDates(completionHandler)
-            }
-            return
+    /// Generates a range of dates from from a startDate to an
+    /// endDate you provide
+    /// Parameter startDate: Start date to generate dates from
+    /// Parameter endDate: End date to generate dates to
+    /// returns:
+    ///     - An array of the successfully generated dates
+    public func generateDateRange(from startDate: Date,
+                                  to endDate: Date) -> [Date] {
+        if startDate > endDate {
+            return []
         }
-        let retval = visibleDates()
-        completionHandler(retval)
+        var returnDates: [Date] = []
+        var currentDate = startDate
+        repeat {
+            returnDates.append(currentDate)
+            currentDate = calendar.startOfDay(for: calendar.date(
+                byAdding: .day, value: 1, to: currentDate)!)
+        } while currentDate <= endDate
+        return returnDates
     }
 
     /// Let's the calendar know which cell xib to
@@ -197,14 +174,6 @@ extension JTAppleCalendarView {
         }
     }
 
-    /// Unregister previously registered headers
-    public func unregisterHeaders() {
-        registeredHeaderViews.removeAll()
-        // remove the already registered xib
-        // files if the user re-registers again.
-        layoutNeedsUpdating = true
-    }
-
     /// Reloads the data on the calendar view. Scroll delegates are not
     //  triggered with this function.
     /// - Parameter date: An anchordate that the calendar will
@@ -265,11 +234,6 @@ extension JTAppleCalendarView {
         selectDates(generateDateRange(from: startDate, to: endDate),
                     triggerSelectionDelegate: triggerSelectionDelegate,
                     keepSelectionIfMultiSelectionAllowed: keepSelectionIfMultiSelectionAllowed)
-    }
-
-    public func deselectAllDates(triggerSelectionDelegate: Bool = true) {
-        selectDates(selectedDates,
-                    triggerSelectionDelegate: triggerSelectionDelegate)
     }
 
     /// Select a date-cells
@@ -609,26 +573,40 @@ extension JTAppleCalendarView {
                 completionHandler: completionHandler
         )
     }
-
-    /// Generates a range of dates from from a startDate to an
-    /// endDate you provide
-    /// Parameter startDate: Start date to generate dates from
-    /// Parameter endDate: End date to generate dates to
-    /// returns:
-    ///     - An array of the successfully generated dates
-    public func generateDateRange(from startDate: Date,
-                                  to endDate: Date) -> [Date] {
-        if startDate > endDate {
-            return []
-        }
-        var returnDates: [Date] = []
-        var currentDate = startDate
-        repeat {
-            returnDates.append(currentDate)
-            currentDate = calendar.startOfDay(for: calendar.date(
-                byAdding: .day, value: 1, to: currentDate)!)
-        } while currentDate <= endDate
-        return returnDates
+    
+    /// Unregister previously registered headers
+    public func unregisterHeaders() {
+        registeredHeaderViews.removeAll()
+        // remove the already registered xib
+        // files if the user re-registers again.
+        layoutNeedsUpdating = true
     }
-
+    
+    /// Returns the visible dates of the calendar.
+    /// - returns:
+    ///     - DateSegmentInfo
+    public func visibleDates()-> DateSegmentInfo {
+        let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [], indateIndexes: [], monthDateIndexes: [], outdateIndexes: [])
+        
+        if !calendarIsAlreadyLoaded {
+            return emptySegment
+        }
+        
+        let cellAttributes = visibleElements()
+        let indexPaths: [IndexPath] = cellAttributes.map { $0.indexPath }.sorted()
+        return dateSegmentInfoFrom(visible: indexPaths)
+    }
+    /// Returns the visible dates of the calendar.
+    /// - returns:
+    ///     - DateSegmentInfo
+    public func visibleDates(_ completionHandler: @escaping (_ dateSegmentInfo: DateSegmentInfo) ->()) {
+        if !calendarIsAlreadyLoaded {
+            delayedExecutionClosure.append {
+                self.visibleDates(completionHandler)
+            }
+            return
+        }
+        let retval = visibleDates()
+        completionHandler(retval)
+    }
 }

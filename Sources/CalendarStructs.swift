@@ -325,4 +325,8 @@ public struct DateSegmentInfo {
     public let monthDates: [Date]
     /// Visible post-dates
     public let outdates: [Date]
+    
+    internal let indateIndexes: [IndexPath]
+    internal let monthDateIndexes: [IndexPath]
+    internal let outdateIndexes: [IndexPath]
 }

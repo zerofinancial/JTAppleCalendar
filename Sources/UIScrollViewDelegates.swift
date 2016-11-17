@@ -7,7 +7,6 @@
 //
 
 extension JTAppleCalendarView: UIScrollViewDelegate {
-
     /// Inform the scrollViewDidEndDecelerating
     /// function that scrolling just occurred
     public func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {

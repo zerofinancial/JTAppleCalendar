@@ -491,6 +491,22 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     ///   upper-left corner of the visible content
     /// - returns: The content offset that you want to use instead
     open override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+        if let lastOffsetIndex = delegate.lastIndexOffset {
+            delegate.lastIndexOffset = nil
+
+            switch lastOffsetIndex.1 {
+            case .supplementaryView:
+                if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: lastOffsetIndex.0) {
+                    return scrollDirection == .horizontal ? CGPoint(x: headerAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: headerAttr.frame.origin.y)
+                }
+            case .cell:
+                if let cellAttr = layoutAttributesForItem(at: lastOffsetIndex.0) {
+                    return  scrollDirection == .horizontal ? CGPoint(x: cellAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: cellAttr.frame.origin.y)
+                }
+            default:
+                break
+            }
+        }
         return proposedContentOffset
     }
 

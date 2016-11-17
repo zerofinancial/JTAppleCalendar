@@ -124,13 +124,57 @@ open class JTAppleCalendarView: UIView {
     override open func layoutSubviews() {
         self.frame = super.frame
     }
+    
+    var lastIndexOffset: (IndexPath, UICollectionElementCategory)?
+    
+    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        setMinVisibleDate()
+    }
+    
+    public func setMinVisibleDate() {
+        
+        let visibleItems: [UICollectionViewLayoutAttributes] = direction == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()
+        
+        var cells: [IndexPath:UICollectionElementCategory] = [:]
+        var headers: [IndexPath:UICollectionElementCategory] = [:]
+        for item in visibleItems {
+            if item.representedElementCategory == .cell {
+                cells[item.indexPath] = item.representedElementCategory
+            } else {
+                headers[item.indexPath] = item.representedElementCategory
+            }
+        }
+        
+        let sortedVisibleIndices: [IndexPath] = visibleItems.map { $0.indexPath }.sorted()
+        let visibleDateInto = dateSegmentInfoFrom(visible: sortedVisibleIndices)
+        var minIndex: [IndexPath] = []
+        
+        if let firstDateIndex = visibleDateInto.indateIndexes.first {
+            minIndex.append(firstDateIndex)
+        }
+        if let firstDateIndex = visibleDateInto.monthDateIndexes.first {
+            minIndex.append(firstDateIndex)
+        }
+        if let firstDateIndex = visibleDateInto.outdateIndexes.first {
+            minIndex.append(firstDateIndex)
+        }
+        
+        guard let minIndexValue = minIndex.min() else {
+            return
+        }
+        
+        if let aMinHead = headers[minIndexValue] {
+            lastIndexOffset = (minIndexValue, aMinHead)
+        } else if let aMinCell = cells[minIndexValue] {
+            lastIndexOffset = (minIndexValue, aMinCell)
+        }
+    }
 
     /// The frame rectangle which defines the view's location and size in
     /// its superview coordinate system.
     override open var frame: CGRect {
         didSet {
-            calendarView.frame = CGRect(x: 0, y: 0, width: self.frame.width,
-                                        height: self.frame.height)
+            calendarView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
             updateLayoutItemSize()
             if calendarViewLayout.itemSize != lastSize {
                 lastSize = calendarViewLayout.itemSize
@@ -142,9 +186,7 @@ open class JTAppleCalendarView: UIView {
                             self.executeDelayedTasks()
                         }
                     }
-//                    delayRunOnMainThread(0) {
-                        self.reloadData(completionHandler: anInitialCompletionHandler)
-//                    }
+                    self.reloadData(completionHandler: anInitialCompletionHandler)
                 }
             }
         }
@@ -541,7 +583,7 @@ open class JTAppleCalendarView: UIView {
             }
         }
     }
-
+    
     func reloadData(checkDelegateDataSource check: Bool,
                     withAnchorDate anchorDate: Date? = nil,
                     withAnimation animation: Bool = false,
@@ -679,7 +721,7 @@ open class JTAppleCalendarView: UIView {
             }
         }
         for path in indexPathsToReselect {
-            if let date = dateInfoFromPath(path)?.date {
+            if let date = dateOwnerInfoFromPath(path)?.date {
                 newDates.append(date)
             }
         }
@@ -811,7 +853,7 @@ extension JTAppleCalendarView {
         if scrollInProgress {
             return
         }
-        if let date = dateInfoFromPath(IndexPath( item: maxNumberOfDaysInWeek - 1, section: section))?.date {
+        if let date = dateOwnerInfoFromPath(IndexPath( item: maxNumberOfDaysInWeek - 1, section: section))?.date {
             let recalcDate = Date.startOfMonth(for: date, using: calendar)!
             self.scrollToDate(recalcDate,
                               triggerScrollToDateDelegate:
@@ -893,7 +935,7 @@ extension JTAppleCalendarView {
         if let nonNilDateInfo = info {
             validDateInfo = nonNilDateInfo
         } else {
-            guard let newDateInfo = dateInfoFromPath(indexPath) else {
+            guard let newDateInfo = dateOwnerInfoFromPath(indexPath) else {
                 developerError(string: "Error this should not be nil. " +
                     "Contact developer Jay on github by opening a request")
                 return CellState(isSelected: false,
@@ -1031,8 +1073,8 @@ extension JTAppleCalendarView {
             let startIndexPath = IndexPath(item: indices.startIndex, section: section)
             let endIndexPath = IndexPath(item: indices.endIndex, section: section)
             guard let
-                startDate = dateInfoFromPath(startIndexPath)?.date,
-                let endDate = dateInfoFromPath(endIndexPath)?.date else {
+                startDate = dateOwnerInfoFromPath(startIndexPath)?.date,
+                let endDate = dateOwnerInfoFromPath(endIndexPath)?.date else {
                     return nil
             }
             if let monthDate = calendar.date(byAdding: .month,
@@ -1050,7 +1092,49 @@ extension JTAppleCalendarView {
             return nil
     }
 
-    func dateInfoFromPath(_ indexPath: IndexPath) -> (date: Date, owner: DateOwner)? { // Returns nil if date is out of scope
+
+    
+    func visibleElements(excludeHeaders: Bool? = nil) -> [UICollectionViewLayoutAttributes] {
+        let rect = CGRect(x: calendarView.contentOffset.x + 1, y: calendarView.contentOffset.y + 1, width: calendarView.frame.width - 2, height: calendarView.frame.height - 2)
+        guard let attributes = calendarViewLayout.layoutAttributesForElements(in: rect), attributes.count > 0 else {
+            return []
+        }
+        if excludeHeaders == true {
+            return attributes.filter { $0.representedElementKind != UICollectionElementKindSectionHeader }
+        }
+        return attributes
+    }
+    
+    func dateSegmentInfoFrom(visible indexPaths: [IndexPath]) -> DateSegmentInfo {
+        var inDates   = [Date]()
+        var monthDates = [Date]()
+        var outDates  = [Date]()
+        var inDateIndexes   = [IndexPath]()
+        var monthDateIndexes = [IndexPath]()
+        var outDateIndexes  = [IndexPath]()
+        
+        for indexPath in indexPaths {
+            let info = dateOwnerInfoFromPath(indexPath)
+            if let validInfo = info  {
+                switch validInfo.owner {
+                case .thisMonth:
+                    monthDates.append(validInfo.date)
+                    monthDateIndexes.append(indexPath)
+                case .previousMonthWithinBoundary, .previousMonthOutsideBoundary:
+                    inDates.append(validInfo.date)
+                    inDateIndexes.append(indexPath)
+                default:
+                    outDateIndexes.append(indexPath)
+                    outDates.append(validInfo.date)
+                }
+            }
+        }
+        
+        let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates, indateIndexes: inDateIndexes, monthDateIndexes: monthDateIndexes, outdateIndexes: outDateIndexes)
+        return retval
+    }
+    
+    func dateOwnerInfoFromPath(_ indexPath: IndexPath) -> (date: Date, owner: DateOwner)? { // Returns nil if date is out of scope
         guard let monthIndex = monthMap[indexPath.section] else {
             return nil
         }

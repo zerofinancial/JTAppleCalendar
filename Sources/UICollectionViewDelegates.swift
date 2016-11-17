@@ -123,7 +123,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         if let
             delegate = self.delegate,
-            let infoOfDateUserSelected = dateInfoFromPath(indexPath),
+            let infoOfDateUserSelected = dateOwnerInfoFromPath(indexPath),
             let cell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell, cellWasNotDisabledOrHiddenByTheUser(cell) {
             let cellState = cellStateFromIndexPath(indexPath,
                 withDateInfo: infoOfDateUserSelected)
@@ -149,7 +149,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     func internalCollectionView(_ collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: IndexPath, indexPathsToReload: [IndexPath] = []) {
             if let
                 delegate = self.delegate,
-                let dateInfoDeselectedByUser = dateInfoFromPath(indexPath) {
+                let dateInfoDeselectedByUser = dateOwnerInfoFromPath(indexPath) {
                 // Update model
                 deleteCellFromSelectedSetIfSelected(indexPath)
                 var pathsToReload = indexPathsToReload
@@ -186,7 +186,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         shouldDeselectItemAt indexPath: IndexPath) -> Bool {
             if let
                 delegate = self.delegate,
-                let infoOfDateDeSelectedByUser = dateInfoFromPath(indexPath),
+                let infoOfDateDeSelectedByUser = dateOwnerInfoFromPath(indexPath),
                 let cell = collectionView
                     .cellForItem(at: indexPath) as? JTAppleDayCell,
                 cellWasNotDisabledOrHiddenByTheUser(cell) {
@@ -210,6 +210,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // index paths to be reloaded should be index
         // to the left and right of the selected index
+        print(indexPath)
         let indexPathsToBeReloaded = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : [IndexPath]()
         internalCollectionView(collectionView,
                                didSelectItemAtIndexPath: indexPath,
@@ -218,7 +219,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
 
     func internalCollectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath, indexPathsToReload: [IndexPath] = []) {
         guard let delegate = self.delegate,
-            let infoOfDateSelectedByUser = dateInfoFromPath(indexPath) else {
+            let infoOfDateSelectedByUser = dateOwnerInfoFromPath(indexPath) else {
                 return
         }
         // Update model
