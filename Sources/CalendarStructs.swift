@@ -103,27 +103,29 @@ public struct ConfigurationParameters {
 struct CalendarData {
     var months: [Month]
     var totalSections: Int
-    var monthMap: [Int: Int]
+    var sectionToMonthMap: [Int: Int]
     var totalDays: Int
 }
 
-struct Month {
+public struct Month {
 
-    // Start index day for the month.
-    // The start is total number of days of previous months
+    /// Start index day for the month.
+    /// The start is total number of days of previous months
     let startDayIndex: Int
 
-    // Start cell index for the month.
-    // The start is total number of cells of previous months
+    /// Start cell index for the month.
+    /// The start is total number of cells of previous months
     let startCellIndex: Int
 
-    // The total number of items in this array are the total number
-    // of sections. The actual number is the number of items in each section
+    /// The total number of items in this array are the total number
+    /// of sections. The actual number is the number of items in each section
     let sections: [Int]
 
-    let preDates: Int
+    /// Number of inDates for this month
+    let inDates: Int
 
-    let postDates: Int
+    /// Number of outDates for this month
+    let outDates: Int
 
     // Maps a section to the index in the total number of sections
     let sectionIndexMaps: [Int: Int]
@@ -134,7 +136,7 @@ struct Month {
     // Return the total number of days for the represented month
     var numberOfDaysInMonth: Int {
         get {
-            return numberOfDaysInMonthGrid - preDates - postDates
+            return numberOfDaysInMonthGrid - inDates - outDates
         }
     }
 
@@ -150,27 +152,44 @@ struct Month {
         return sectionIndexMaps.keys.min()!
     }
 
+//    func firstIndexPathForExternal(section: Int) -> IndexPath? {
+//        guard let internalSection = sectionIndexMaps[section] else {
+//            return nil
+//        }
+//        if internalSection == 0 {
+//            // Then we need to consider predates
+//            return indexPath(forDay: 1 - inDates)
+//        } else {
+//            let startDay = startDayFor(section: internalSection)!
+//            let path = indexPath(forDay: startDay)
+//            return path
+//        }
+//    }
     // Return the section in which a day is contained
     func indexPath(forDay number: Int) -> IndexPath? {
-        var variableNumber = number
+        let sectionInfo = sectionFor(day: number)
+        let externalSection = sectionInfo.externalSection
+        let internalSection = sectionInfo.internalSection
+        let dateOfStartIndex = sections[0..<internalSection].reduce(0, +) - inDates + 1
+        let itemIndex = number - dateOfStartIndex
+
+        return IndexPath(item: itemIndex, section: externalSection)
+    }
+    
+    private func sectionFor(day: Int) -> (externalSection: Int, internalSection: Int) {
+        var variableNumber = day
         let possibleSection = sections.index {
-            let retval = variableNumber + preDates <= $0
+            let retval = variableNumber + inDates <= $0
             variableNumber -= $0
             return retval
             }!
-        let theSection = sectionIndexMaps.key(for: possibleSection)!
-
-        let dateOfStartIndex =
-            sections[0..<possibleSection].reduce(0, +) - preDates + 1
-        let itemIndex = number - dateOfStartIndex
-
-        return IndexPath(item: itemIndex, section: theSection)
+        return (sectionIndexMaps.key(for: possibleSection)!, possibleSection)
     }
 
     // Return the number of rows for a section in the month
     func numberOfRows(for section: Int, developerSetRows: Int) -> Int {
         var retval: Int
-        guard let  theSection = sectionIndexMaps[section] else {
+        guard let theSection = sectionIndexMaps[section] else {
             return 0
         }
         let fullRows = rows / developerSetRows
@@ -199,15 +218,37 @@ struct Month {
     }
     
     func boundaryIndicesFor(section: Int) -> (startIndex: Int, endIndex: Int)? {
-        if !(0...sections.count ~=  section) {
+        // Check internal sections to see
+        if !(0..<sections.count ~=  section) {
             return nil
         }
-        let startIndex = section == 0 ? preDates : 0
+        let startIndex = section == 0 ? inDates : 0
         var endIndex =  sections[section] - 1
         if section + 1  == sections.count {
-            endIndex -= postDates
+            endIndex -= inDates + 1
         }
         return (startIndex: startIndex, endIndex: endIndex)
+    }
+    
+    func startDayFor(section: Int) -> Int? {
+        var retval: Int?
+        
+        if !(0..<sections.count ~= section)  {
+            return nil
+        }
+        if section == 0 {
+            retval = 1
+        } else {
+            var diff: Int = 0
+            for (index, _) in sections.enumerated() {
+                guard let bounds = boundaryIndicesFor(section: index), index < section else {
+                    break
+                }
+                diff += bounds.endIndex - bounds.startIndex + 1
+            }
+            retval = diff + 1
+        }
+        return retval
     }
 }
 
@@ -301,8 +342,8 @@ struct JTAppleDateConfigGenerator {
                         startDayIndex: startIndexForMonth,
                         startCellIndex: startCellIndexForMonth,
                         sections: sectionsForTheMonth,
-                        preDates: numberOfPreDatesForThisMonth,
-                        postDates: numberOfPostDatesForThisMonth,
+                        inDates: numberOfPreDatesForThisMonth,
+                        outDates: numberOfPostDatesForThisMonth,
                         sectionIndexMaps: sectionIndexMaps,
                         rows: numberOfRowsToGenerateForCurrentMonth
                     ))

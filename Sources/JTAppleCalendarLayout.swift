@@ -281,7 +281,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         let monthIndex = monthMap[indexPath.section]!
         let numberOfDays = numberOfDaysInSection(monthIndex)
         // return nil on invalid range
-        if !(0...maxSections ~= indexPath.section) || !(0...numberOfDays  ~= indexPath.item) {
+        if !(0...maxSections ~= indexPath.section) || !(0...numberOfDays  ~= indexPath.item) { // JT101 look at the ranges
             return nil
         }
         let attr = UICollectionViewLayoutAttributes(forCellWith: indexPath)
@@ -438,11 +438,11 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     func sizeOfContentForSection(_ section: Int) -> CGFloat {
         return sizeOfSection(section)
     }
-
-    func sectionFromRectOffset(_ offset: CGPoint) -> Int {
-        let theOffet = scrollDirection == .horizontal ? offset.x : offset.y
-        return sectionFromOffset(theOffet)
-    }
+    
+//    func sectionFromRectOffset(_ offset: CGPoint) -> Int {
+//        let theOffet = scrollDirection == .horizontal ? offset.x : offset.y
+//        return sectionFromOffset(theOffet)
+//    }
 
     func sectionFromOffset(_ theOffSet: CGFloat) -> Int {
         var val: Int = 0
