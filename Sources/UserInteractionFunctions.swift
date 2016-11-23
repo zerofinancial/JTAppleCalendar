@@ -537,7 +537,6 @@ extension JTAppleCalendarView {
                       triggerScrollToDateDelegate: Bool = true,
                       isAnimationEnabled: Bool,
                       position: UICollectionViewScrollPosition? = .left,
-                      scrollAsBlockUnit: Bool? = false,
                       completionHandler: (() -> Void)?) {
         
         if scrollInProgress {
