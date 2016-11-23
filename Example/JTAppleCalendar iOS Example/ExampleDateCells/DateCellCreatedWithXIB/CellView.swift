@@ -110,13 +110,6 @@ class CellView: JTAppleDayCellView {
                 selectedView.isHidden = true
             }
         }
-        
-        if cellState.selectedPosition() == .middle {
-            selectedView.backgroundColor = UIColor.yellow
-        } else {
-            selectedView.backgroundColor = UIColor(colorWithHexValue: 0xEAA263)
-        }
-        
     }
 }
 
