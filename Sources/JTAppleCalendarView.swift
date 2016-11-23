@@ -229,6 +229,9 @@ open class JTAppleCalendarView: UIView {
     open var cellInset: CGPoint = CGPoint(x: 3, y: 3)
     var cellViewSource: JTAppleCalendarViewSource!
     var registeredHeaderViews: [JTAppleCalendarViewSource] = []
+    var thereAreHeaders: Bool {
+        return registeredHeaderViews.count > 0
+    }
 
     /// Enable or disable swipe scrolling of the calendar with this variable
     open var scrollEnabled: Bool = true {
@@ -388,44 +391,42 @@ open class JTAppleCalendarView: UIView {
             }
         }
     }
-    func scrollTo(rect: CGRect, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, completionHandler: (() -> Void)?) {
-        
-//        if scrollInProgress {
-//            return
-//        }
-//        if let date = dateOwnerInfoFromPath(IndexPath( item: maxNumberOfDaysInWeek - 1, section: section))?.date {
-//            let recalcDate = Date.startOfMonth(for: date, using: calendar)!
-//            self.scrollToDate(recalcDate,
-//                              triggerScrollToDateDelegate:
-//                triggerScrollToDateDelegate,
-//                              animateScroll: animateScroll,
-//                              preferredScrollPosition: nil,
-//                              completionHandler: completionHandler)
-//        }
-//
-//        
-        
-        if let validCompletionHandler = completionHandler {
-            self.delayedExecutionClosure.append(validCompletionHandler)
-        }
-        calendarView.scrollRectToVisible(rect, animated: isAnimationEnabled)
-        if isAnimationEnabled {
-            if calendarOffsetIsAlreadyAtScrollPosition(forOffset: rect.origin) {
-                self.scrollViewDidEndScrollingAnimation(self.calendarView)
-                self.scrollInProgress = false
-                return
-            }
-        }
-    }
     
-    func rectForItemAt(indexPath: IndexPath) -> CGRect? {
-        var retval: CGRect?
-        if let frame = self.calendarView.layoutAttributesForItem(at: indexPath)?.frame {
-            retval = CGRect(x: frame.origin.x,
-                            y: frame.origin.y,
-                            width: calendarView.frame.width,
-                            height: calendarView.frame.height)
+    func targetRectForItemAt(indexPath: IndexPath) -> CGRect? {
+        
+        guard let targetCellFrame = self.calendarView.layoutAttributesForItem(at: indexPath)?.frame else {
+            return nil
         }
+        
+        var theTargetContentOffset: CGFloat = 0
+        if direction == .horizontal {
+            theTargetContentOffset = targetCellFrame.origin.x
+        } else {
+            theTargetContentOffset = targetCellFrame.origin.y
+        }
+        
+        var retval: CGRect?
+        
+        var fixedScrollSize: CGFloat = 0
+        switch scrollingMode {
+        case .stopAtEachSection, .stopAtEachCalendarFrameWidth:
+            if self.direction == .horizontal || (self.direction == .vertical && !thereAreHeaders) {
+                // Horizontal has a fixed width.
+                // Vertical with no header has fixed height
+                fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
+            } else {
+                print("")
+            }
+        case .stopAtEach(customInterval: let customVal):
+            fixedScrollSize = customVal
+        default:
+            break
+        }
+        
+        let section = CGFloat(Int(theTargetContentOffset / fixedScrollSize))
+        let destinationRectOffset = fixedScrollSize * section
+        retval = CGRect(x: destinationRectOffset, y: 0, width: calendarView.frame.width, height: calendarView.frame.height)
+        
         return retval
     }
 
@@ -514,7 +515,7 @@ open class JTAppleCalendarView: UIView {
                                  triggerScrollToDateDelegate: Bool = false,
                                  withAnimation animation: Bool = true,
                                  completionHandler: (() -> Void)? = nil) {
-        if registeredHeaderViews.count < 1 {
+        if !thereAreHeaders {
             return
         }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
@@ -570,18 +571,18 @@ open class JTAppleCalendarView: UIView {
         }
         delayRunOnMainThread(0.0) {
             let scrollToDate = { (date: Date) -> Void in
-                if self.registeredHeaderViews.count < 1 {
-                    self.scrollToDate(date,
-                                      triggerScrollToDateDelegate: false,
-                                      animateScroll: animation,
-                                      completionHandler: completionHandler)
-                } else {
+                if self.thereAreHeaders {
                     self.scrollToHeaderForDate(
                         date,
                         triggerScrollToDateDelegate: false,
                         withAnimation: animation,
-                        completionHandler: completionHandler
-                    )
+                        completionHandler: completionHandler)
+                    
+                } else {
+                    self.scrollToDate(date,
+                                      triggerScrollToDateDelegate: false,
+                                      animateScroll: animation,
+                                      completionHandler: completionHandler)
                 }
             }
             if let validAnchorDate = anchorDate {
@@ -601,15 +602,13 @@ open class JTAppleCalendarView: UIView {
                         }
                     } else {
                         if let validCompletionHandler = completionHandler {
-                            self.delayedExecutionClosure
-                                .append(validCompletionHandler)
+                            self.delayedExecutionClosure.append(validCompletionHandler)
                         }
                     }
                 } else {
                     if let validCompletionHandler = completionHandler {
                         if self.scrollInProgress {
-                            self.delayedExecutionClosure
-                                .append(validCompletionHandler)
+                            self.delayedExecutionClosure.append(validCompletionHandler)
                         } else {
                             validCompletionHandler()
                         }
@@ -690,7 +689,7 @@ open class JTAppleCalendarView: UIView {
 
     func calendarViewHeaderSizeForSection(_ section: Int) -> CGSize {
         var retval = CGSize.zero
-        if registeredHeaderViews.count > 0 {
+        if thereAreHeaders {
             if
                 let validDate = monthInfoFromSection(section),
                 let size = delegate?.calendar(self, sectionHeaderSizeFor: validDate.range, belongingTo: validDate.month) {

@@ -6,6 +6,11 @@
 //
 //
 
+
+/// Describes a scroll destination
+public enum SegmentDestination {
+    case next, previous, start, end
+}
 /// Describes the types of out-date cells to be generated.
 public enum OutDateCellGeneration {
     /// tillEndOfRow will generate dates till it reaches the end of a row.

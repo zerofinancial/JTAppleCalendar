@@ -41,7 +41,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
     var strictBoundaryRulesShouldApply: Bool {
         get {
-            return (delegate.registeredHeaderViews.count > 0 || delegate.hasStrictBoundaries()) && isPreparing
+            return (thereAreHeaders || delegate.hasStrictBoundaries()) && isPreparing
         }
     }
     var thereAreHeaders: Bool {
@@ -415,13 +415,10 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     func sizeOfSection(_ section: Int) -> CGFloat {
         switch scrollDirection {
         case .horizontal:
-            return cellCache[section]![0].frame.width *
-                CGFloat(maxNumberOfDaysInWeek)
+            return cellCache[section]![0].frame.width * CGFloat(maxNumberOfDaysInWeek)
         case .vertical:
-            let headerSizeOfSection = headerCache.count > 0 ?
-                headerCache[section]!.frame.height : 0
-            return cellCache[section]![0].frame.height *
-                CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
+            let headerSizeOfSection = headerCache.count > 0 ? headerCache[section]!.frame.height : 0
+            return cellCache[section]![0].frame.height * CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
         }
     }
 

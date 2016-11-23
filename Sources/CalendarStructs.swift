@@ -230,26 +230,26 @@ public struct Month {
         return (startIndex: startIndex, endIndex: endIndex)
     }
     
-    func startDayFor(section: Int) -> Int? {
-        var retval: Int?
-        
-        if !(0..<sections.count ~= section)  {
-            return nil
-        }
-        if section == 0 {
-            retval = 1
-        } else {
-            var diff: Int = 0
-            for (index, _) in sections.enumerated() {
-                guard let bounds = boundaryIndicesFor(section: index), index < section else {
-                    break
-                }
-                diff += bounds.endIndex - bounds.startIndex + 1
-            }
-            retval = diff + 1
-        }
-        return retval
-    }
+//    func startDayFor(section: Int) -> Int? {
+//        var retval: Int?
+//        
+//        if !(0..<sections.count ~= section)  {
+//            return nil
+//        }
+//        if section == 0 {
+//            retval = 1
+//        } else {
+//            var diff: Int = 0
+//            for (index, _) in sections.enumerated() {
+//                guard let bounds = boundaryIndicesFor(section: index), index < section else {
+//                    break
+//                }
+//                diff += bounds.endIndex - bounds.startIndex + 1
+//            }
+//            retval = diff + 1
+//        }
+//        return retval
+//    }
 }
 
 
@@ -279,11 +279,8 @@ struct JTAppleDateConfigGenerator {
                 return ([], [:], 0, 0 )
             }
             for monthIndex in 0 ..< numberOfMonths {
-                if let currentMonth = parameters.calendar.date(byAdding: .month,
-                                                    value: monthIndex,
-                                                    to: parameters.startDate) {
-                    var numberOfDaysInMonthVariable = parameters.calendar.range(
-                        of: .day, in: .month, for: currentMonth)!.count
+                if let currentMonth = parameters.calendar.date(byAdding: .month, value: monthIndex, to: parameters.startDate) {
+                    var numberOfDaysInMonthVariable = parameters.calendar.range(of: .day, in: .month, for: currentMonth)!.count
                     let numberOfDaysInMonthFixed = numberOfDaysInMonthVariable
                     var numberOfRowsToGenerateForCurrentMonth = 0
                     var numberOfPreDatesForThisMonth = 0
@@ -307,8 +304,8 @@ struct JTAppleDateConfigGenerator {
                     let postGeneration = nonNilDelegate.postDatesAreGenerated()
                     switch postGeneration {
                     case .tillEndOfGrid, .tillEndOfRow:
-                        numberOfPostDatesForThisMonth = maxNumberOfDaysInWeek * numberOfRowsToGenerateForCurrentMonth -
-                            (numberOfDaysInMonthFixed + numberOfPreDatesForThisMonth)
+                        numberOfPostDatesForThisMonth =
+                            maxNumberOfDaysInWeek * numberOfRowsToGenerateForCurrentMonth - (numberOfDaysInMonthFixed + numberOfPreDatesForThisMonth)
                         numberOfDaysInMonthVariable += numberOfPostDatesForThisMonth
                     default:
                         break
@@ -322,20 +319,14 @@ struct JTAppleDateConfigGenerator {
                         }
                         monthIndexMap[section] = monthIndex
                         sectionIndexMaps[section] = index
-                        var numberOfDaysInCurrentSection =
-                            numberOfRowsPerSectionThatUserWants *
-                            maxNumberOfDaysInWeek
-                        if numberOfDaysInCurrentSection >
-                            numberOfDaysInMonthVariable {
-                                numberOfDaysInCurrentSection =
-                                    numberOfDaysInMonthVariable
-                                // assert(false)
+                        var numberOfDaysInCurrentSection = numberOfRowsPerSectionThatUserWants * maxNumberOfDaysInWeek
+                        if numberOfDaysInCurrentSection > numberOfDaysInMonthVariable {
+                            numberOfDaysInCurrentSection = numberOfDaysInMonthVariable
+                            // assert(false)
                         }
                         totalDays += numberOfDaysInCurrentSection
-                        sectionsForTheMonth
-                            .append(numberOfDaysInCurrentSection)
-                        numberOfDaysInMonthVariable -=
-                            numberOfDaysInCurrentSection
+                        sectionsForTheMonth.append(numberOfDaysInCurrentSection)
+                        numberOfDaysInMonthVariable -= numberOfDaysInCurrentSection
                         section += 1
                     }
                     monthArray.append(Month(
@@ -348,9 +339,7 @@ struct JTAppleDateConfigGenerator {
                         rows: numberOfRowsToGenerateForCurrentMonth
                     ))
                     startIndexForMonth += numberOfDaysInMonthFixed
-                    startCellIndexForMonth += numberOfDaysInMonthFixed +
-                        numberOfPreDatesForThisMonth +
-                    numberOfPostDatesForThisMonth
+                    startCellIndexForMonth += numberOfDaysInMonthFixed + numberOfPreDatesForThisMonth + numberOfPostDatesForThisMonth
                 }
             }
             return (monthArray, monthIndexMap, section, totalDays)

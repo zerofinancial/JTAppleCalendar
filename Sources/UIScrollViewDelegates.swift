@@ -34,14 +34,12 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             contentOffset = scrollView.contentOffset.x
             theTargetContentOffset = targetContentOffset.pointee.x
             directionVelocity = velocity.x
-            contentSizeEndOffset =
-                scrollView.contentSize.width - scrollView.frame.width
+            contentSizeEndOffset = scrollView.contentSize.width - scrollView.frame.width
         } else {
             contentOffset = scrollView.contentOffset.y
             theTargetContentOffset = targetContentOffset.pointee.y
             directionVelocity = velocity.y
-            contentSizeEndOffset =
-                scrollView.contentSize.height - scrollView.frame.height
+            contentSizeEndOffset = scrollView.contentSize.height - scrollView.frame.height
         }
         let isScrollingForward = {
             return directionVelocity > 0 ||  contentOffset > self.lastSavedContentOffset
@@ -66,8 +64,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             }
         }
 
-        let calculatedCurrentFixedContentOffsetFrom = {
-            (interval: CGFloat) -> CGFloat in
+        let calculatedCurrentFixedContentOffsetFrom = {(interval: CGFloat) -> CGFloat in
             if isScrollingForward() {
                 return ceil(contentOffset / interval) * interval
             } else {
@@ -78,15 +75,11 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         let recalculateOffset = {
             (diff: CGFloat, interval: CGFloat) -> CGFloat in
             if isScrollingForward() {
-                let recalcOffsetAfterResistanceApplied =
-                    theTargetContentOffset - diff
-                return ceil(recalcOffsetAfterResistanceApplied /
-                    interval) * interval
+                let recalcOffsetAfterResistanceApplied = theTargetContentOffset - diff
+                return ceil(recalcOffsetAfterResistanceApplied / interval) * interval
             } else {
-                let recalcOffsetAfterResistanceApplied =
-                    theTargetContentOffset + diff
-                return floor(recalcOffsetAfterResistanceApplied /
-                    interval) * interval
+                let recalcOffsetAfterResistanceApplied = theTargetContentOffset + diff
+                return floor(recalcOffsetAfterResistanceApplied / interval) * interval
             }
         }
 
@@ -114,15 +107,11 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             break
         case .stopAtEachSection:
             var calculatedOffSet: CGFloat = 0
-            if self.direction == .horizontal ||
-                (self.direction == .vertical && self.registeredHeaderViews.count < 1) {
-                        // Horizontal has a fixed width.
-                        // Vertical with no header has fixed height
-                        let interval = calendarLayout
-                            .sizeOfContentForSection(theCurrentSection)
-                        calculatedOffSet =
-                            calculatedCurrentFixedContentOffsetFrom(
-                                interval)
+            if self.direction == .horizontal || (self.direction == .vertical && !thereAreHeaders) {
+                // Horizontal has a fixed width.
+                // Vertical with no header has fixed height
+                let interval = calendarLayout.sizeOfContentForSection(theCurrentSection)
+                calculatedOffSet = calculatedCurrentFixedContentOffsetFrom(interval)
             } else {
                 // Vertical with headers have variable heights.
                 // It needs to be calculated
@@ -191,7 +180,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                             } else {
                                 calculatedOffSet = attrib.frame.origin.y
                             }
-                    } else if registeredHeaderViews.count > 0,
+                    } else if thereAreHeaders,
                         let attrib = self.calendarView.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: attribPath) {
                         // change the final value to the end of the header
                         if isScrollingForward() {

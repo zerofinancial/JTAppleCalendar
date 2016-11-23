@@ -389,73 +389,72 @@ extension JTAppleCalendarView {
         }
     }
 
-    /// Scrolls the calendar view to the next section view. It will
-    // execute a completion handler at the end of scroll animation
-    // if provided.
-    /// - Paramater animateScroll: Bool indicating if animation
-    ///   should be enabled
-    /// - Parameter triggerScrollToDateDelegate:
-    ///   Trigger delegate if set to true
-    /// - Parameter completionHandler: A completion handler that
-    ///   will be executed at the end of the scroll animation
-    public func scrollToNextSegment(_ triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (() -> Void)? = nil) {
-        guard let section = currentSection(), section + 1 < monthInfo.count else {
-            return
+    /// Scrolls the calendar view to the next section view. It will execute a completion handler at the end of scroll animation if provided.
+    /// - Paramater direction: Indicates a direction to scroll
+    /// - Paramater animateScroll: Bool indicating if animation should be enabled
+    /// - Parameter triggerScrollToDateDelegate: trigger delegate if set to true
+    /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
+    public func scrollToSegment(_ destination: SegmentDestination, triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (() -> Void)? = nil) {
+        if !calendarIsAlreadyLoaded {
+            delayedExecutionClosure.append {
+                self.scrollToSegment(destination, triggerScrollToDateDelegate: triggerScrollToDateDelegate, animateScroll: animateScroll, completionHandler: completionHandler)
+            }
+        }
+        var xOffset: CGFloat = 0
+        var yOffset: CGFloat = 0
+        
+        let fixedScrollSize: CGFloat
+        if direction == .horizontal {
+            if thereAreHeaders || cachedConfiguration.generateOutDates == .tillEndOfGrid {
+                fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
+            } else {
+                fixedScrollSize = calendarView.frame.width
+            }
+            xOffset = calendarView.contentOffset.x
+            let section = CGFloat(Int(xOffset / fixedScrollSize))
+            xOffset = (fixedScrollSize * section)
+            switch destination {
+            case .next:
+                xOffset += fixedScrollSize
+            case .previous:
+                xOffset -= fixedScrollSize
+            case .end:
+                xOffset = calendarView.contentSize.width - calendarView.frame.width
+            case .start:
+                xOffset = 0
+            }
+        } else {
+            if thereAreHeaders {
+                guard let section = currentSection() else {
+                    return
+                }
+                if (destination == .next && section + 1 >= numberOfSections(in: calendarView)) ||
+                    destination == .previous && section - 1 < 0 ||
+                    numberOfSections(in: calendarView) < 0 {
+                    return
+                }
+                
+                switch destination {
+                case .next:
+                    scrollToHeaderInSection(section + 1)
+                case .previous:
+                    scrollToHeaderInSection(section - 1)
+                case .start:
+                    scrollToHeaderInSection(0)
+                case .end:
+                    scrollToHeaderInSection(numberOfSections(in: calendarView) - 1)
+                }
+                return
+            } else {
+                yOffset = calendarView.contentOffset.y
+                fixedScrollSize = calendarView.frame.height
+                let section = CGFloat(Int(yOffset / fixedScrollSize))
+                yOffset = (fixedScrollSize * section) + fixedScrollSize
+            }
         }
         
-//        if self.direction == .vertical &&
-//            self.registeredHeaderViews.count > 0 {
-//            self.scrollToHeaderInSection(indexPath.section,
-//                                         triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-//                                         withAnimation: isAnimationEnabled,
-//                                         completionHandler: completionHandler)
-//        }
-
-        scrollToSection(section + 1,
-                        triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                        animateScroll: animateScroll,
-                        scrollAsBlockUnit: true,
-                        completionHandler: completionHandler)
-    }
-    
-    /// Scrolls the calendar view to the previous section view. It will
-    /// execute a completion handler at the end of scroll animation if
-    /// provided.
-    /// - Parameter triggerScrollToDateDelegate: Trigger delegate if set
-    ///   to true
-    /// - Paramater animateScroll: Bool indicating if animation should
-    ///   be enabled
-    /// - Parameter completionHandler: A completion handler that will be
-    ///   executed at the end of the scroll animation
-    public func scrollToPreviousSegment(_ triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (() -> Void)? = nil) {
-        guard let section = currentSection(), section - 1 > -1 else {
-            return
-        }
-        scrollToSection(section - 1,
-                        triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                        animateScroll: animateScroll,
-                        scrollAsBlockUnit: true,
-                        completionHandler: completionHandler)
-    }
-    
-    func scrollToSection(_ section: Int,
-                         triggerScrollToDateDelegate: Bool = false,
-                         animateScroll: Bool = true,
-                         scrollAsBlockUnit: Bool? = false,
-        completionHandler: (() -> Void)? = nil) {
-        if scrollInProgress { return }
-//        guard let monthIndexOfNextSection = monthMap[section], monthIndexOfNextSection < monthInfo.count else {
-//            return
-//        }
-//        let month = monthInfo[monthIndexOfNextSection]
-//        guard let indexPath = month.firstIndexPathForExternal(section: section) else { return }
-        let indexPath = IndexPath(item: 0, section: section)
-        handleScroll(indexPath: indexPath,
-                     triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                     isAnimationEnabled: animateScroll,
-                     position: direction == .horizontal ? .left : .top,
-                     scrollAsBlockUnit: scrollAsBlockUnit,
-                     completionHandler: completionHandler)
+        let rect = CGRect(x: xOffset, y: yOffset, width: calendarView.frame.width, height: calendarView.frame.height)
+        scrollTo(rect: rect, triggerScrollToDateDelegate: triggerScrollToDateDelegate, isAnimationEnabled: true, completionHandler: completionHandler)
     }
 
     /// Scrolls the calendar view to the start of a section view containing a specified date.
@@ -471,11 +470,12 @@ extension JTAppleCalendarView {
                              preferredScrollPosition: UICollectionViewScrollPosition? = nil,
                              completionHandler: (() -> Void)? = nil) {
         if !calendarIsAlreadyLoaded {
-            delayedExecutionClosure.append {self.scrollToDate(date,
-                                                              triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                                                              animateScroll: animateScroll,
-                                                              preferredScrollPosition: preferredScrollPosition,
-                                                              completionHandler: completionHandler)
+            delayedExecutionClosure.append {
+                self.scrollToDate(date,
+                                  triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+                                  animateScroll: animateScroll,
+                                  preferredScrollPosition: preferredScrollPosition,
+                                  completionHandler: completionHandler)
             }
             return
         }
@@ -483,118 +483,79 @@ extension JTAppleCalendarView {
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
-        scrollInProgress = true
         delayRunOnMainThread(0.0, closure: {
             // This part should be inside the mainRunLoop
             if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) {
-                self.scrollInProgress = false
                 return
             }
             let retrievedPathsFromDates = self.pathsFromDates([date])
-            if retrievedPathsFromDates.count > 0 {
-                let sectionIndexPath =  self.pathsFromDates([date])[0]
-                var position: UICollectionViewScrollPosition = self.direction == .horizontal ? .left : .top
-                if !self.scrollingMode.pagingIsEnabled() {
-                    if let validPosition = preferredScrollPosition {
-                        if self.direction == .horizontal {
-                            if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
-                                position = validPosition
-                            }
-                        } else {
-                            if validPosition == .top || validPosition == .bottom || validPosition == .centeredVertically {
-                                position = validPosition
-                            }
+            guard retrievedPathsFromDates.count > 0 else {
+                return
+            }
+            let sectionIndexPath =  self.pathsFromDates([date])[0]
+            var position: UICollectionViewScrollPosition = self.direction == .horizontal ? .left : .top
+            if !self.scrollingMode.pagingIsEnabled() {
+                if let validPosition = preferredScrollPosition {
+                    if self.direction == .horizontal {
+                        if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
+                            position = validPosition
+                        }
+                    } else {
+                        if validPosition == .top || validPosition == .bottom || validPosition == .centeredVertically {
+                            position = validPosition
                         }
                     }
                 }
-                
-                let scrollAsBlockUnit: Bool
-                switch self.scrollingMode {
-                case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-                    scrollAsBlockUnit = true
-                default:
-                    scrollAsBlockUnit = false
-                }
-                
-                self.handleScroll(indexPath: sectionIndexPath,
-                             triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                             isAnimationEnabled: animateScroll,
-                             position: position,
-                             scrollAsBlockUnit: scrollAsBlockUnit,
-                             completionHandler: completionHandler)
-            } else {
-                self.scrollInProgress = false
             }
+            
+            var rect: CGRect?
+            switch self.scrollingMode {
+            case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
+                rect = self.targetRectForItemAt(indexPath: sectionIndexPath)
+            default:
+                break
+            }
+            self.handleScroll(indexPath: sectionIndexPath,
+                              rect: rect,
+                              triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+                              isAnimationEnabled: animateScroll,
+                              position: position,
+                              completionHandler: completionHandler)
+
         })
     }
     
-    func handleScroll(indexPath: IndexPath,
+    func scrollTo(rect: CGRect, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, completionHandler: (() -> Void)?) {
+        if let validCompletionHandler = completionHandler {
+            self.delayedExecutionClosure.append(validCompletionHandler)
+        }
+        calendarView.scrollRectToVisible(rect, animated: isAnimationEnabled)
+    }
+    
+    func handleScroll(indexPath: IndexPath? = nil,
+                      rect: CGRect? = nil,
                       triggerScrollToDateDelegate: Bool = true,
                       isAnimationEnabled: Bool,
-                      position: UICollectionViewScrollPosition,
+                      position: UICollectionViewScrollPosition? = .left,
                       scrollAsBlockUnit: Bool? = false,
                       completionHandler: (() -> Void)?) {
         
-        let scrollParameters = (
-            scrollAsBlockUnit!,
-            self.registeredHeaderViews.count > 0,
-            self.hasStrictBoundaries() || self.registeredHeaderViews.count > 0,
-            self.direction,
-            cachedConfiguration.generateOutDates == .tillEndOfRow || cachedConfiguration.generateOutDates == .tillEndOfGrid
-        )
-        switch scrollParameters {
-        case (true, true, _,.vertical, _):
-            self.scrollToHeaderInSection(indexPath.section,
-                                         triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                                         withAnimation: isAnimationEnabled,
-                                         completionHandler: completionHandler)
+        if scrollInProgress {
             return
-        case (true, _, let hasStrictBoundary,.vertical, let hasEndPadding),
-             (true, _, let hasStrictBoundary, .horizontal, let hasEndPadding):
-            if hasStrictBoundary || hasEndPadding {
-                let indexPath = IndexPath(item: 0, section: indexPath.section)
-                self.scrollTo(indexPath: indexPath, isAnimationEnabled: isAnimationEnabled, position: position, completionHandler: completionHandler)
-            } else {
-                print("We need to do some exra calculations")
-            }
-        case (false, _, _, _, _):
-            self.scrollTo(indexPath: indexPath, isAnimationEnabled: isAnimationEnabled, position: position, completionHandler: completionHandler)
-        default:
-            break
         }
-
         
-//        if self.scrollingMode.pagingIsEnabled() || scrollAsBlockUnit == true {
-//            if self.registeredHeaderViews.count > 0 {
-//                // If both paging and header is on, then scroll to the actual date
-//                // If direction is vertical and user has a custom
-//                // size that is at least the size of the collectionview.
-//                // If this check is not done, it will scroll to
-//                // header, and have white space at bottom because
-//                // view is smaller due to small custom user itemSize
-//                if self.direction == .vertical {
-//                    self.scrollToHeaderInSection(indexPath.section,
-//                                                 triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-//                                                 withAnimation: isAnimationEnabled,
-//                                                 completionHandler: completionHandler)
-//                    return
-//                } else {
-//                    let indexPath = IndexPath(item: 0, section: indexPath.section)
-//                    self.scrollTo(indexPath: indexPath, isAnimationEnabled: isAnimationEnabled, position: position, completionHandler: completionHandler)
-//                }
-//            } else {
-//                // If paging or blockMovement is on and header is off,
-//                // then scroll to the start date in section
-//                
-//                if let rect = self.rectForItemAt(indexPath: indexPath) {
-//                    self.scrollTo(rect: rect, isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
-//                }
-//            }
-//        } else {
-//            // If paging is off, then scroll to the
-//            // actual date in the section
-//            self.scrollTo(indexPath: indexPath, isAnimationEnabled: isAnimationEnabled, position: position, completionHandler: completionHandler)
-//        }
+        // Rect takes preference
+        if let validRect = rect {
+            scrollInProgress = true
+            scrollTo(rect: validRect, isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
+        } else {
+            guard let validIndexPath = indexPath else {
+                return
+            }
+            let validPosition = position ?? .left
+            scrollInProgress = true
+            self.scrollTo(indexPath: validIndexPath, isAnimationEnabled: isAnimationEnabled, position: validPosition, completionHandler: completionHandler)
+        }
         
         // Jt101 put this into a function to reduce code between
         // this and the scroll to header function
@@ -604,8 +565,8 @@ extension JTAppleCalendarView {
             }
             self.scrollInProgress = false
         })
-
     }
+    
 
     /// Scrolls the calendar view to the start of a section view header.
     // If the calendar has no headers registered, then this function does
