@@ -133,7 +133,6 @@ class ViewController: UIViewController {
 
 
         calendarView.cellInset = CGPoint(x: 0, y: 0)
-//        calendarView.allowsMultipleSelection = true
 
         calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
@@ -173,7 +172,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func next(_ sender: UIButton) {
-        self.calendarView.scrollToNextSegment {
+        self.calendarView.scrollToSegment(.next) {
             self.calendarView.visibleDates({ (visibleDates: DateSegmentInfo) in
                 self.setupViewsOfCalendar(from: visibleDates)
             })
@@ -181,7 +180,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func previous(_ sender: UIButton) {
-        self.calendarView.scrollToPreviousSegment {
+        self.calendarView.scrollToSegment(.previous) {
             self.calendarView.visibleDates({ (visibleDates: DateSegmentInfo) in
                 self.setupViewsOfCalendar(from: visibleDates)
             })
@@ -208,8 +207,8 @@ class ViewController: UIViewController {
 // MARK : JTAppleCalendarDelegate
 extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-        let startDate = formatter.date(from: "2016 10 01")!
-        let endDate = formatter.date(from: "2016 12 01")!
+        let startDate = formatter.date(from: "2016 03 01")!
+        let endDate = formatter.date(from: "2020 12 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
@@ -218,6 +217,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
                                                  generateInDates: generateInDates,
                                                  generateOutDates: generateOutDates,
                                                  firstDayOfWeek: firstDayOfWeek)
+        
         return parameters
     }
 
