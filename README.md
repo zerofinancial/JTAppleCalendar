@@ -1,4 +1,4 @@
-[![jtapplecalendarnewlogo](https://cloud.githubusercontent.com/assets/2439146/20639387/f7e3acb0-b376-11e6-9d2d-db4819e38c59.png)](https://github.com/patchthecode/JTAppleCalendar)
+[![jtapplecalendarnewlogo](https://cloud.githubusercontent.com/assets/2439146/20656424/a1c98c8e-b4e1-11e6-9833-5fa6430f5a8c.png)](https://github.com/patchthecode/JTAppleCalendar)
 
 [![Tutorial](https://img.shields.io/badge/Tutorials-patchthecode.github.io-blue.svg)](https://patchthecode.github.io/) [![CI Status](http://img.shields.io/travis/patchthecode/JTAppleCalendar.svg?style=flat)](https://travis-ci.org/patchthecode/JTAppleCalendar) [![Version](https://img.shields.io/cocoapods/v/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Platform](https://img.shields.io/cocoapods/p/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![License](https://img.shields.io/cocoapods/l/JTAppleCalendar.svg?style=flat)](http://cocoapods.org/pods/JTAppleCalendar) [![](https://www.paypalobjects.com/webstatic/en_US/btn/btn_donate_74x21.png)](https://github.com/patchthecode/JTAppleCalendar/wiki/Support)
 
@@ -11,7 +11,6 @@
    <a href="https://github.com/patchthecode/JTAppleCalendar/issues/2">More Images</a>
 </p>
 
-### 100% Customizable
 ### Tutorials located @ [patchthecode.github.io](https://patchthecode.github.io/)
 
 ## Features
