@@ -25,11 +25,11 @@ func delayRunOnGlobalThread(_ delay: Double,
 
 extension Date {
     static func startOfMonth(for date: Date, using calendar: Calendar) -> Date? {
-        let dayOneComponents = calendar.dateComponents([.era, .year, .month], from: date)
+        let dayOneComponents = calendar.dateComponents([.era, .year, .month, .day, .hour], from: date)
         return calendar.date(from: dayOneComponents)
     }
     static func endOfMonth(for date: Date, using calendar: Calendar) -> Date? {
-        var lastDayComponents = calendar.dateComponents([.era, .year, .month], from: date)
+        var lastDayComponents = calendar.dateComponents([.era, .year, .month, .day, .hour], from: date)
         lastDayComponents.month = lastDayComponents.month! + 1
         lastDayComponents.day = 0
         return calendar.date(from: lastDayComponents)
