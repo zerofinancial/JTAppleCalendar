@@ -28,8 +28,7 @@ extension JTAppleReusableViewProtocol {
         switch cellSource {
         case let .fromXib(xibName, bundle):
             let bundleToUse = bundle ?? Bundle.main
-            let viewObject = bundleToUse
-                .loadNibNamed(xibName, owner: self, options: [:])
+            let viewObject = bundleToUse.loadNibNamed(xibName, owner: self, options: [:])
             guard let view = viewObject?[0] as? ViewType else {
                 print("xib: \(xibName) file class does not conform to the JTAppleViewProtocol")
                 assert(false)

@@ -210,7 +210,6 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // index paths to be reloaded should be index
         // to the left and right of the selected index
-        print(indexPath)
         let indexPathsToBeReloaded = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : [IndexPath]()
         internalCollectionView(collectionView,
                                didSelectItemAtIndexPath: indexPath,
