@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 6.x Releases
-- `6.0.x` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)
+- `6.0.x` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
 #### 5.x Releases
@@ -25,8 +25,12 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.0.3](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.3)
+- [Fixed wrong date bug](https://github.com/patchthecode/JTAppleCalendar/issues/210)
+- Fixed Scrolling issues with new segment code
+
 ## [6.0.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.2)
-- FIxed error: [Cells are not updated properly because of pre-fetching](https://github.com/patchthecode/JTAppleCalendar/issues/196)
+- Fixed error: [Cells are not updated properly because of pre-fetching](https://github.com/patchthecode/JTAppleCalendar/issues/196)
 - New Feature: Gesture functionality added
 - Fixed error: [Fix for vertical direction](https://github.com/patchthecode/JTAppleCalendar/commit/4d48c594e00864dbe470dc64dbfd2e8790dbe783)
 - Fixed error: [Vertical cell size](https://github.com/patchthecode/JTAppleCalendar/commit/8e85b784bfe5ff8669157f42aee17aaee99a9429)
