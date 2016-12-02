@@ -6,6 +6,7 @@
 //  Copyright © 2016 OS-Tech. All rights reserved.
 //
 
+/// Methods in this class are meant to be overridden and will be called by its collection view to gather layout information.
 open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtocol {
     let errorDelta: CGFloat = 0.0000001
     var itemSize: CGSize = CGSize.zero
@@ -264,8 +265,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
 
     /// Returns the layout attributes for the item at the specified index
-    // path. A layout attributes object containing the information to apply
-    // to the item’s cell.
+    /// path. A layout attributes object containing the information to apply
+    /// to the item’s cell.
     override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
             // If this index is already cached, then return it else,
             // apply a new layout attribut to it

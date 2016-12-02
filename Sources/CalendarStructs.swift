@@ -107,6 +107,7 @@ struct CalendarData {
     var totalDays: Int
 }
 
+/// Defines a month structure.
 public struct Month {
 
     /// Start index day for the month.
