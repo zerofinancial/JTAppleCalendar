@@ -502,8 +502,8 @@ open class JTAppleCalendarView: UIView {
         case .saturday: firstDayCalValue = 8
         default: firstDayCalValue = 7
         }
-        var firstWeekdayOfMonthIndex =
-            calendar.component(.weekday, from: date)
+
+        var firstWeekdayOfMonthIndex = calendar.component(.weekday, from: date)
         firstWeekdayOfMonthIndex -= 1
         // firstWeekdayOfMonthIndex should be 0-Indexed
         // push it modularly so that we take it back one day so that the
