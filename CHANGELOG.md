@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 6.x Releases
-- `6.0.x` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)
+- `6.0.x` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
 #### 5.x Releases
@@ -25,6 +25,9 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.0.4](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.4)
+- [Fixed wrong date bug](https://github.com/patchthecode/JTAppleCalendar/commit/1689586c70e2fbd9785794c4fc8c5f094403e98f)
+
 ## [6.0.3](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.3)
 - [Fixed wrong date bug](https://github.com/patchthecode/JTAppleCalendar/issues/210)
 - Fixed Scrolling issues with new segment code
