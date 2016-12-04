@@ -939,6 +939,11 @@ extension JTAppleCalendarView {
         if indexPaths.count < 1 {
             return
         }
+        
+        // Before reloading, set the proposal path, 
+        // so that in the even targetContentOffset gets called. We know the path
+        setMinVisibleDate()
+        
         UICollectionView.performWithoutAnimation {
             self.calendarView.performBatchUpdates({
                 self.calendarView.reloadItems(at: indexPaths)
