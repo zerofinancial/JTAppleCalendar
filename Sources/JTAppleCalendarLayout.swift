@@ -489,23 +489,42 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     ///   upper-left corner of the visible content
     /// - returns: The content offset that you want to use instead
     open override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+        var retval = proposedContentOffset
         if let lastOffsetIndex = delegate.lastIndexOffset {
             delegate.lastIndexOffset = nil
 
             switch lastOffsetIndex.1 {
             case .supplementaryView:
                 if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: lastOffsetIndex.0) {
-                    return scrollDirection == .horizontal ? CGPoint(x: headerAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: headerAttr.frame.origin.y)
+                    retval = scrollDirection == .horizontal ? CGPoint(x: headerAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: headerAttr.frame.origin.y)
                 }
             case .cell:
                 if let cellAttr = layoutAttributesForItem(at: lastOffsetIndex.0) {
-                    return  scrollDirection == .horizontal ? CGPoint(x: cellAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: cellAttr.frame.origin.y)
+                    retval = scrollDirection == .horizontal ? CGPoint(x: cellAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: cellAttr.frame.origin.y)
                 }
             default:
                 break
             }
+            
+            // Floating point issues. number could appear the same, but are not.
+            // thereby causing UIScollView to think it has scrolled
+            let retvalOffset: CGFloat
+            let calendarOffset: CGFloat
+            
+            switch scrollDirection {
+                case .horizontal:
+                    retvalOffset = retval.x
+                    calendarOffset = collectionView!.contentOffset.x
+                case .vertical:
+                    retvalOffset = retval.y
+                    calendarOffset = collectionView!.contentOffset.y
+            }
+            
+            if  abs(retvalOffset - calendarOffset) < errorDelta {
+                retval = collectionView!.contentOffset
+            }
         }
-        return proposedContentOffset
+        return retval
     }
 
     func clearCache() {
