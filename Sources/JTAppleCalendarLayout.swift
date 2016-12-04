@@ -373,10 +373,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 }
 
                 let currentMonth = monthData[monthMap[indexPath.section]!]
-                size.height =
-                    (collectionView!.frame.height - headerSize.height) /
-                    CGFloat(currentMonth.maxNumberOfRowsForFull(
-                        developerSetRows: numberOfRows))
+                size.height = (collectionView!.frame.height - headerSize.height) / CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows))
                 currentCell = (section: indexPath.section, itemSize: size)
             }
         } else {
