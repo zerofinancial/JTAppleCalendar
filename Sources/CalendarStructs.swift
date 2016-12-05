@@ -337,7 +337,7 @@ struct JTAppleDateConfigGenerator {
             return (monthArray, monthIndexMap, section, totalDays)
     }
     
-    func numberOfPreDatesForMonth(_ date: Date, firstDayOfWeek: DaysOfWeek, calendar: Calendar) -> Int {
+    private func numberOfPreDatesForMonth(_ date: Date, firstDayOfWeek: DaysOfWeek, calendar: Calendar) -> Int {
         let firstDayCalValue: Int
         switch firstDayOfWeek {
         case .monday: firstDayCalValue = 6
