@@ -127,7 +127,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             let cell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell, cellWasNotDisabledOrHiddenByTheUser(cell) {
             let cellState = cellStateFromIndexPath(indexPath,
                 withDateInfo: infoOfDateUserSelected)
-            return delegate.calendar(self, canSelectDate: infoOfDateUserSelected.date, cell: cell.view!, cellState: cellState)
+            return delegate.calendar(self, shouldSelectDate: infoOfDateUserSelected.date, cell: cell.view!, cellState: cellState)
         }
         return false
     }
@@ -192,12 +192,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 cellWasNotDisabledOrHiddenByTheUser(cell) {
                 let cellState = cellStateFromIndexPath(indexPath,
                     withDateInfo: infoOfDateDeSelectedByUser)
-                return delegate.calendar(
-                    self,
-                    canDeselectDate: infoOfDateDeSelectedByUser.date,
-                    cell: cell.view!,
-                    cellState: cellState
-                )
+                return delegate.calendar(self, shouldDeselectDate: infoOfDateDeSelectedByUser.date, cell: cell.view!, cellState: cellState)
             }
             return false
     }

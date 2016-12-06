@@ -9,11 +9,11 @@
 /// Default delegate functions
 public extension JTAppleCalendarViewDelegate {
 
-    func calendar(_ calendar: JTAppleCalendarView, canSelectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool {
+    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool {
         return true
     }
 
-    func calendar(_ calendar: JTAppleCalendarView, canDeselectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool {
+    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool {
         return true
     }
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {}
@@ -61,7 +61,7 @@ public protocol JTAppleCalendarViewDelegate: class {
     ///     - cell: The date-cell view. This can be customized at this point.
     ///     - cellState: The month the date-cell belongs to.
     /// - returns: A Bool value indicating if the operation can be done.
-    func calendar(_ calendar: JTAppleCalendarView, canSelectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool
+    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool
 
     /// Asks the delegate if de-selecting the
     /// date-cell with a specified date is allowed
@@ -71,7 +71,7 @@ public protocol JTAppleCalendarViewDelegate: class {
     ///     - cell: The date-cell view. This can be customized at this point.
     ///     - cellState: The month the date-cell belongs to.
     /// - returns: A Bool value indicating if the operation can be done.
-    func calendar(_ calendar: JTAppleCalendarView, canDeselectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool
+    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool
 
     /// Tells the delegate that a date-cell with a specified date was selected
     /// - Parameters:
