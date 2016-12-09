@@ -108,7 +108,7 @@ struct CalendarData {
 }
 
 /// Defines a month structure.
-public struct Month {
+struct Month {
 
     /// Start index day for the month.
     /// The start is total number of days of previous months
@@ -135,17 +135,13 @@ public struct Month {
     let rows: Int
 
     // Return the total number of days for the represented month
-    var numberOfDaysInMonth: Int {
-        get {
-            return numberOfDaysInMonthGrid - inDates - outDates
-        }
-    }
+    var numberOfDaysInMonth: Int
 
     // Return the total number of day cells
     // to generate for the represented month
     var numberOfDaysInMonthGrid: Int {
         get {
-            return sections.reduce(0, +)
+            return numberOfDaysInMonth + inDates + outDates
         }
     }
 
@@ -269,6 +265,8 @@ struct JTAppleDateConfigGenerator {
             let numberOfRowsPerSectionThatUserWants = parameters.numberOfRows
             // Section represents # of months. section is used as an offset
             // to determine which month to calculate
+            
+            
 
             for monthIndex in 0 ..< numberOfMonths {
                 if let currentMonthDate = parameters.calendar.date(byAdding: .month, value: monthIndex, to: parameters.startDate) {
@@ -328,7 +326,8 @@ struct JTAppleDateConfigGenerator {
                         inDates: numberOfPreDatesForThisMonth,
                         outDates: numberOfPostDatesForThisMonth,
                         sectionIndexMaps: sectionIndexMaps,
-                        rows: numberOfRowsToGenerateForCurrentMonth
+                        rows: numberOfRowsToGenerateForCurrentMonth,
+                        numberOfDaysInMonth: numberOfDaysInMonthFixed
                     ))
                     startIndexForMonth += numberOfDaysInMonthFixed
                     startCellIndexForMonth += numberOfDaysInMonthFixed + numberOfPreDatesForThisMonth + numberOfPostDatesForThisMonth
