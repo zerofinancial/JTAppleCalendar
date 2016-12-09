@@ -108,8 +108,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
 
     /// Asks your data source object for the number of items in the
     /// specified section. The number of rows in section.
-    public func collectionView(_ collectionView: UICollectionView,
-                               numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let count =  calendarViewLayout.cellCache[section]?.count else {
                 developerError(string: "cellCacheSection does not exist.")
                 return 0

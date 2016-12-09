@@ -483,6 +483,50 @@ extension JTAppleCalendarView {
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
+        
+        func handleScroll(indexPath: IndexPath? = nil,
+                          rect: CGRect? = nil,
+                          triggerScrollToDateDelegate: Bool = true,
+                          isAnimationEnabled: Bool,
+                          position: UICollectionViewScrollPosition? = .left,
+                          completionHandler: (() -> Void)?) {
+            
+            if scrollInProgress {
+                return
+            }
+            
+            // Rect takes preference
+            if let validRect = rect {
+                scrollInProgress = true
+                scrollTo(rect: validRect, isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
+            } else {
+                guard let validIndexPath = indexPath else {
+                    return
+                }
+                
+                if thereAreHeaders && direction == .vertical {
+                    scrollToHeaderInSection(validIndexPath.section,
+                                            triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+                                            withAnimation: isAnimationEnabled,
+                                            completionHandler: completionHandler)
+                    return
+                } else {
+                    let validPosition = position ?? .left
+                    scrollInProgress = true
+                    self.scrollTo(indexPath: validIndexPath, isAnimationEnabled: isAnimationEnabled, position: validPosition, completionHandler: completionHandler)
+                }
+            }
+            
+            // Jt101 put this into a function to reduce code between
+            // this and the scroll to header function
+            delayRunOnMainThread(0.0, closure: {
+                if !isAnimationEnabled {
+                    self.scrollViewDidEndScrollingAnimation(self.calendarView)
+                }
+                self.scrollInProgress = false
+            })
+        }
+        
         delayRunOnMainThread(0.0, closure: {
             // This part should be inside the mainRunLoop
             if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) {
@@ -511,11 +555,13 @@ extension JTAppleCalendarView {
             var rect: CGRect?
             switch self.scrollingMode {
             case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-                rect = self.targetRectForItemAt(indexPath: sectionIndexPath)
+                if self.direction == .horizontal || (self.direction == .vertical && !self.thereAreHeaders) {
+                    rect = self.targetRectForItemAt(indexPath: sectionIndexPath)
+                }
             default:
                 break
             }
-            self.handleScroll(indexPath: sectionIndexPath,
+            handleScroll(indexPath: sectionIndexPath,
                               rect: rect,
                               triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                               isAnimationEnabled: animateScroll,
@@ -531,41 +577,6 @@ extension JTAppleCalendarView {
         }
         calendarView.scrollRectToVisible(rect, animated: isAnimationEnabled)
     }
-    
-    func handleScroll(indexPath: IndexPath? = nil,
-                      rect: CGRect? = nil,
-                      triggerScrollToDateDelegate: Bool = true,
-                      isAnimationEnabled: Bool,
-                      position: UICollectionViewScrollPosition? = .left,
-                      completionHandler: (() -> Void)?) {
-        
-        if scrollInProgress {
-            return
-        }
-        
-        // Rect takes preference
-        if let validRect = rect {
-            scrollInProgress = true
-            scrollTo(rect: validRect, isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
-        } else {
-            guard let validIndexPath = indexPath else {
-                return
-            }
-            let validPosition = position ?? .left
-            scrollInProgress = true
-            self.scrollTo(indexPath: validIndexPath, isAnimationEnabled: isAnimationEnabled, position: validPosition, completionHandler: completionHandler)
-        }
-        
-        // Jt101 put this into a function to reduce code between
-        // this and the scroll to header function
-        delayRunOnMainThread(0.0, closure: {
-            if !isAnimationEnabled {
-                self.scrollViewDidEndScrollingAnimation(self.calendarView)
-            }
-            self.scrollInProgress = false
-        })
-    }
-    
 
     /// Scrolls the calendar view to the start of a section view header.
     // If the calendar has no headers registered, then this function does

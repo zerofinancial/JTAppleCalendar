@@ -396,7 +396,8 @@ open class JTAppleCalendarView: UIView {
                 // Vertical with no header has fixed height
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             } else {
-                print("")
+                // JT101 will remodel this code. Just a quick fix 
+                fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             }
         case .stopAtEach(customInterval: let customVal):
             fixedScrollSize = customVal
@@ -406,7 +407,14 @@ open class JTAppleCalendarView: UIView {
         
         let section = CGFloat(Int(theTargetContentOffset / fixedScrollSize))
         let destinationRectOffset = fixedScrollSize * section
-        retval = CGRect(x: destinationRectOffset, y: 0, width: calendarView.frame.width, height: calendarView.frame.height)
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        if direction == .horizontal {
+            x = destinationRectOffset
+        } else {
+            y = destinationRectOffset
+        }
+        retval = CGRect(x: x, y: y, width: calendarView.frame.width, height: calendarView.frame.height)
         
         return retval
     }
