@@ -3,7 +3,8 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 6.x Releases
-- `6.0.x` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)|[6.0.5](#605)
+- `6.1.0` Releases - [6.1.0](#610)
+- `6.0.0` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)|[6.0.5](#605)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
 #### 5.x Releases
@@ -25,16 +26,23 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.1.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.0)
+- [Fixed error introduced in last version - scroll To date broke](https://github.com/patchthecode/JTAppleCalendar/issues/223)
+- Performance updates
+  - Updated by [JayT](https://github.com/patchthecode).
+
 ## [6.0.5](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.5)
 - [Floating point error fix](https://github.com/patchthecode/JTAppleCalendar/issues/211)
-
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [6.0.4](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.4)
 - [Fixed wrong date bug](https://github.com/patchthecode/JTAppleCalendar/commit/1689586c70e2fbd9785794c4fc8c5f094403e98f)
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [6.0.3](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.3)
 - [Fixed wrong date bug](https://github.com/patchthecode/JTAppleCalendar/issues/210)
 - Fixed Scrolling issues with new segment code
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [6.0.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.2)
 - Fixed error: [Cells are not updated properly because of pre-fetching](https://github.com/patchthecode/JTAppleCalendar/issues/196)
@@ -42,6 +50,7 @@ All notable changes to this project will be documented in this file.
 - Fixed error: [Fix for vertical direction](https://github.com/patchthecode/JTAppleCalendar/commit/4d48c594e00864dbe470dc64dbfd2e8790dbe783)
 - Fixed error: [Vertical cell size](https://github.com/patchthecode/JTAppleCalendar/commit/8e85b784bfe5ff8669157f42aee17aaee99a9429)
 - Fixed error: [Reload data completionhandler does not work when view is first loaded](https://github.com/patchthecode/JTAppleCalendar/commit/da0a0ad9b22b6e50fa2feec644afaa6902ad4a5e)
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [6.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.1)
 - Fixed error: [Left over artifacts](https://github.com/patchthecode/JTAppleCalendar/commit/f5be1e1c281cb08337ede276403311b3ee4a4e9f)
@@ -49,18 +58,22 @@ All notable changes to this project will be documented in this file.
 - Update: [Changed variable names for consistency](https://github.com/patchthecode/JTAppleCalendar/commit/3eca0fddc79a6425c146b65aabd2ff31b0c0d05d)
 - Update: [Added functionality to flip calendar horizontally for ethnic calendars](https://github.com/patchthecode/JTAppleCalendar/commit/a991b898a2ce5bc3a678bcf0b43a8e381e56a840)
 - Update: `ConfigureCaneldar` function signature has changed. 
-- Fixed error: [XCode 8.1 has a bug](https://github.com/patchthecode/JTAppleCalendar/commit/97363897006877b62ebfb357cb98160a1b5b291b). So a work around was implemented 
+- Fixed error: [XCode 8.1 has a bug](https://github.com/patchthecode/JTAppleCalendar/commit/97363897006877b62ebfb357cb98160a1b5b291b). So a work around was implemented
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [6.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.0)
 - Added functionality to get dateCell by CGPoint
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [6.0.0-beta.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.0.0-beta.1)
 - Made function names more standardised
 - Added ability enable/disable in-dates/out-dates generation
 - Added ability to choose buldle for xib files
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [5.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/5.0.1)
 - Bug Fix: [Crash on negative scroll in vertical mode](https://github.com/patchthecode/JTAppleCalendar/issues/115)
+  - Updated by [JayT](https://github.com/patchthecode).
 
 ## [5.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/5.0.0)
 - Bug Fix: [Double calling of delegate method on finger lift](https://github.com/patchthecode/JTAppleCalendar/issues/102)
