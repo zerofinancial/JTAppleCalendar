@@ -601,17 +601,13 @@ open class JTAppleCalendarView: UIView {
             // Jt101 do a check in each var to see if
             // user has bad star/end dates
             let newStartOfMonth =
-                Date.startOfMonth(for: newDateBoundary.startDate,
-                                  using: calendar)
+                calendar.startOfMonth(for: newDateBoundary.startDate)
             let newEndOfMonth =
-                Date.endOfMonth(for: newDateBoundary.endDate,
-                                using: calendar)
+                calendar.endOfMonth(for: newDateBoundary.endDate)
             let oldStartOfMonth =
-                Date.startOfMonth(for: startDateCache,
-                                  using: calendar)
+                calendar.startOfMonth(for: startDateCache)
             let oldEndOfMonth =
-                Date.endOfMonth(for: endDateCache,
-                                using: calendar)
+                calendar.endOfMonth(for: endDateCache)
             if newStartOfMonth != oldStartOfMonth ||
                 newEndOfMonth != oldEndOfMonth ||
                 newDateBoundary.calendar != cachedConfiguration.calendar ||
@@ -716,7 +712,7 @@ extension JTAppleCalendarView {
                 }
                 guard
                     let prevMonth = calendar.date(byAdding: .month, value: -1, to: date),
-                    let lastDayOfPrevMonth = Date.endOfMonth(for: prevMonth, using: calendar) else {
+                    let lastDayOfPrevMonth = calendar.endOfMonth(for: prevMonth) else {
                         assert(false, "Error generating date in indexPathOfdateCellCounterPart(). Contact the developer on github")
                         return retval
                 }
@@ -752,7 +748,7 @@ extension JTAppleCalendarView {
                     return retval
                 } // If there are no predates for the following month,
                   // then there are no counterpart dates
-                let lastDateOfCurrentMonth = Date.endOfMonth(for: date, using: calendar)!
+                let lastDateOfCurrentMonth = calendar.endOfMonth(for: date)!
                 let lastDay = calendar.component(.day,
                                                  from: lastDateOfCurrentMonth)
                 let section = followingMonthInfo.startSection
@@ -783,8 +779,8 @@ extension JTAppleCalendarView {
             cachedConfiguration = validConfig
             
             if let
-                startMonth = Date.startOfMonth(for: validConfig.startDate, using: calendar),
-                let endMonth = Date.endOfMonth(for: validConfig.endDate, using: calendar) {
+                startMonth = calendar.startOfMonth(for: validConfig.startDate),
+                let endMonth = calendar.endOfMonth(for: validConfig.endDate) {
                 startOfMonthCache = startMonth
                 endOfMonthCache   = endMonth
                 // Create the parameters for the date format generator

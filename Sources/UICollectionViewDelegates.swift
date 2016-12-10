@@ -237,12 +237,6 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 self.batchReloadIndexPaths(pathsToReload)
             }
         }
-        delegate.calendar(
-            self,
-            didSelectDate: infoOfDateSelectedByUser.date,
-            cell: selectedCell?.view,
-            cellState: cellState
-        )
+        delegate.calendar(self, didSelectDate: infoOfDateSelectedByUser.date, cell: selectedCell?.view, cellState: cellState)
     }
-
 }
