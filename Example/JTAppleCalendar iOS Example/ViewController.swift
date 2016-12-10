@@ -31,6 +31,12 @@ class ViewController: UIViewController {
     let disabledColor = UIColor.lightGray
     let enabledColor = UIColor.blue
     let dateCellSize: CGFloat? = nil
+    
+    let red = UIColor.red
+    let white = UIColor.white
+    let black = UIColor.black
+    let gray = UIColor.gray
+    let shade = UIColor(colorWithHexValue: 0x4E4E4E)
 
     @IBAction func changeToRow(_ sender: UIButton) {
         numberOfRows = Int(sender.title(for: .normal)!)!
@@ -113,12 +119,23 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        testCalendar = Calendar(identifier: .gregorian)
+//        testCalendar.locale = Locale(identifier: "en_PH")
+//        let timeZone = TimeZone(identifier: "Asia/Manila")!
+//        testCalendar.timeZone = timeZone
+        
+
         formatter.dateFormat = "yyyy MM dd"
+        formatter.timeZone = testCalendar.timeZone
+        formatter.locale = testCalendar.locale
 
         // Setting up your dataSource and delegate is manditory
         // ___________________________________________________________________
         calendarView.delegate = self
         calendarView.dataSource = self
+        calendarView.direction = .vertical
+//        calendarView.itemSize = 20
         
         // ___________________________________________________________________
         // Registering your cells is manditory
@@ -131,12 +148,17 @@ class ViewController: UIViewController {
         // ___________________________________________________________________
         calendarView.registerHeaderView(xibFileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
 
+        calendarView.scrollingMode = .stopAtEachSection
 
         calendarView.cellInset = CGPoint(x: 0, y: 0)
 
         calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
 
     @IBAction func selectDate(_ sender: AnyObject?) {
@@ -187,10 +209,6 @@ class ViewController: UIViewController {
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-
     func setupViewsOfCalendar(from visibleDates: DateSegmentInfo) {
         guard let startDate = visibleDates.monthDates.first else {
             return
@@ -201,14 +219,45 @@ class ViewController: UIViewController {
         let year = testCalendar.component(.year, from: startDate)
         monthLabel.text = monthName + " " + String(year)
     }
-
+    
+    // Function to handle the text color of the calendar
+    func handleCellTextColor(view: JTAppleDayCellView?, cellState: CellState) {
+        
+        guard let myCustomCell = view as? CellView  else {
+            return
+        }
+        
+        if cellState.isSelected {
+            myCustomCell.dayLabel.textColor = white
+        } else {
+            if cellState.dateBelongsTo == .thisMonth {
+                myCustomCell.dayLabel.textColor = black
+            } else {
+                myCustomCell.dayLabel.textColor = gray
+            }
+        }
+    }
+    
+    // Function to handle the calendar selection
+    func handleCellSelection(view: JTAppleDayCellView?, cellState: CellState) {
+        guard let myCustomCell = view as? CellView  else {
+            return
+        }
+        if cellState.isSelected {
+            myCustomCell.selectedView.layer.cornerRadius =  15
+            myCustomCell.selectedView.isHidden = false
+        } else {
+            myCustomCell.selectedView.isHidden = true
+        }
+    }
 }
 
 // MARK : JTAppleCalendarDelegate
 extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-        let startDate = formatter.date(from: "2016 03 01")!
-        let endDate = formatter.date(from: "2020 12 01")!
+
+        let startDate = formatter.date(from: "2016 12 01")!
+        let endDate = formatter.date(from: "2026 10 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
@@ -222,35 +271,41 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     }
 
     func calendar(_ calendar: JTAppleCalendarView, willDisplayCell cell: JTAppleDayCellView, date: Date, cellState: CellState) {
-        (cell as? CellView)?.setupCellBeforeDisplay(cellState, date: date)
+        
+        let myCustomCell = cell as! CellView
+        myCustomCell.dayLabel.text = cellState.text
+        
+        if testCalendar.isDateInToday(date) {
+            myCustomCell.backgroundColor = red
+        } else {
+            myCustomCell.backgroundColor = shade
+        }
+        
+        handleCellSelection(view: cell, cellState: cellState)
+        handleCellTextColor(view: cell, cellState: cellState)
     }
 
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
-        (cell as? CellView)?.cellSelectionChanged(cellState)
+        handleCellSelection(view: cell, cellState: cellState)
+        handleCellTextColor(view: cell, cellState: cellState)
     }
 
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
-        (cell as? CellView)?.cellSelectionChanged(cellState)
-        print(date, cellState.text)
-    }
-
-    
-    // NOTICE: this function is not needed for iOS 10. It will not be called
-    func calendar(_ calendar: JTAppleCalendarView, willResetCell cell: JTAppleDayCellView) {
-        (cell as? CellView)?.selectedView.isHidden = true
+        handleCellSelection(view: cell, cellState: cellState)
+        handleCellTextColor(view: cell, cellState: cellState)
+        
+        print(formatter.string(from: date))
     }
 
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
         self.setupViewsOfCalendar(from: visibleDates)
     }
 
-    func calendar(_ calendar: JTAppleCalendarView,
-        sectionHeaderIdentifierFor range: (start: Date, end: Date),
-        belongingTo month: Int) -> String {
-            if month % 2 > 0 {
-                return "WhiteSectionHeaderView"
-            }
-            return "PinkSectionHeaderView"
+    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderIdentifierFor range: (start: Date, end: Date), belongingTo month: Int) -> String {
+        if month % 2 > 0 {
+            return "WhiteSectionHeaderView"
+        }
+        return "PinkSectionHeaderView"
     }
 
     func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize {
@@ -272,12 +327,4 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
             headerCell?.title.text = "In any color or size you want"
         }
     }
-
-}
-
-func delayRunOnMainThread(_ delay: Double, closure: @escaping () -> ()) {
-    DispatchQueue.main.asyncAfter(
-        deadline: DispatchTime.now() +
-            Double(Int64(delay * Double(NSEC_PER_SEC))) /
-            Double(NSEC_PER_SEC), execute: closure)
 }
