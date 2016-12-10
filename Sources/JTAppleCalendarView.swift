@@ -91,11 +91,9 @@ open class JTAppleCalendarView: UIView {
     var scrollInProgress = false
     var calendarViewLayout: JTAppleCalendarLayout {
         get {
-            guard let layout = calendarView.collectionViewLayout as?
-                JTAppleCalendarLayout else {
-                    developerError(string: "Calendar layout is not of type " +
-                        "`JTAppleCalendarLayout`.")
-                    return JTAppleCalendarLayout(withDelegate: self)
+            guard let layout = calendarView.collectionViewLayout as? JTAppleCalendarLayout else {
+                developerError(string: "Calendar layout is not of type JTAppleCalendarLayout.")
+                return JTAppleCalendarLayout(withDelegate: self)
             }
             return layout
         }
@@ -1081,6 +1079,10 @@ extension JTAppleCalendarView {
         
         let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates, indateIndexes: inDateIndexes, monthDateIndexes: monthDateIndexes, outdateIndexes: outDateIndexes)
         return retval
+    }
+    
+    open func kkk() {
+        calendarView.insertItems(at: [IndexPath(item: 0, section: 0)])
     }
 
     func dateOwnerInfoFromPath(_ indexPath: IndexPath) -> (date: Date, owner: DateOwner)? { // Returns nil if date is out of scope

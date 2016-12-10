@@ -110,10 +110,9 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// specified section. The number of rows in section.
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let count =  calendarViewLayout.cellCache[section]?.count else {
-                developerError(string: "cellCacheSection does not exist.")
-                return 0
+            developerError(string: "cellCacheSection does not exist.")
+            return 0
         }
-
         return count
     }
 
@@ -183,14 +182,11 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// true if the item should be deselected or false if it should not.
     public func collectionView(_ collectionView: UICollectionView,
         shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-            if let
-                delegate = self.delegate,
+            if
+                let delegate = self.delegate,
                 let infoOfDateDeSelectedByUser = dateOwnerInfoFromPath(indexPath),
-                let cell = collectionView
-                    .cellForItem(at: indexPath) as? JTAppleDayCell,
-                cellWasNotDisabledOrHiddenByTheUser(cell) {
-                let cellState = cellStateFromIndexPath(indexPath,
-                    withDateInfo: infoOfDateDeSelectedByUser)
+                let cell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell, cellWasNotDisabledOrHiddenByTheUser(cell) {
+                    let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDateDeSelectedByUser)
                 return delegate.calendar(self, shouldDeselectDate: infoOfDateDeSelectedByUser.date, cell: cell.view!, cellState: cellState)
             }
             return false

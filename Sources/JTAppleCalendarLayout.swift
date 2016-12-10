@@ -91,8 +91,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         var section = 0
         var totalDayCounter = 0
         var headerGuide = 0
-        let fullSection = numberOfRows * 7
+        let fullSection = numberOfRows * maxNumberOfDaysInWeek
         var extra = 0
+        
         for aMonth in monthData {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
@@ -117,7 +118,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
 
                         if strictBoundaryRulesShouldApply {
                             headerGuide += 1
-                            if numberOfDaysInCurrentSection - 1 == item || headerGuide % 7 == 0 {
+                            if numberOfDaysInCurrentSection - 1 == item || headerGuide % maxNumberOfDaysInWeek == 0 {
                                 // We are at the last item in the section
                                 // && if we have headers
                                 headerGuide = 0
@@ -130,7 +131,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                             if totalDayCounter % fullSection == 0 { // If you have a full section
                                 xCellOffset = 0
                                 yCellOffset = 0
-                                contentWidth += attribute.frame.width * 7 
+                                contentWidth += attribute.frame.width * 7
                                 stride = contentWidth
                                 sectionSize.append(contentWidth)
                             } else {
@@ -139,7 +140,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                                     sectionSize.append(contentWidth)
                                 }
                                 
-                                if totalDayCounter % 7 == 0 {
+                                if totalDayCounter % maxNumberOfDaysInWeek == 0 {
                                     xCellOffset = 0
                                     yCellOffset += attribute.frame.height
                                 }
@@ -152,7 +153,6 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 if strictBoundaryRulesShouldApply {
                     sectionSize.append(contentWidth)
                     stride = sectionSize[section]
-                    
                 }
                 section += 1
             }
@@ -188,7 +188,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                         xCellOffset += attribute.frame.width
                         if strictBoundaryRulesShouldApply {
                             headerGuide += 1
-                            if headerGuide % 7 == 0 || numberOfDaysInCurrentSection - 1 == item {
+                            if headerGuide % maxNumberOfDaysInWeek == 0 || numberOfDaysInCurrentSection - 1 == item {
                                 // We are at the last item in the
                                 // section && if we have headers
                                 headerGuide = 0
@@ -198,7 +198,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                             }
                         } else {
                             totalDayCounter += 1
-                            if totalDayCounter % 7 == 0 {
+                            if totalDayCounter % maxNumberOfDaysInWeek == 0 {
                                 xCellOffset = 0
                                 yCellOffset += attribute.frame.height
                                 contentHeight += attribute.frame.height
