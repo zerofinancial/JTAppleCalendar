@@ -310,14 +310,14 @@
 		6B60DF0C1D5BE834009174A2 /* JTAppleCalendar iOS Example */ = {
 			isa = PBXGroup;
 			children = (
+				6B60DF0F1D5BE834009174A2 /* ViewController.swift */,
+				6B60DF111D5BE834009174A2 /* Main.storyboard */,
 				6B60DF331D5BF589009174A2 /* ExampleDateCells */,
 				6B60DF3C1D5BF5F2009174A2 /* ExampleSectionHeaders */,
 				6B4025F01DFB8CB80083E6AE /* Animation */,
 				6B4025F51DFB8E090083E6AE /* Extensions */,
-				6B60DF0D1D5BE834009174A2 /* AppDelegate.swift */,
-				6B60DF0F1D5BE834009174A2 /* ViewController.swift */,
-				6B60DF111D5BE834009174A2 /* Main.storyboard */,
 				6B60DF141D5BE834009174A2 /* Assets.xcassets */,
+				6B60DF0D1D5BE834009174A2 /* AppDelegate.swift */,
 				6B60DF161D5BE834009174A2 /* LaunchScreen.storyboard */,
 				6B60DF191D5BE834009174A2 /* Info.plist */,
 			);
