@@ -221,7 +221,13 @@ open class JTAppleCalendarView: UIView {
 
     /// Cell inset padding for the x and y axis
     /// of every date-cell on the calendar view.
-    open var cellInset: CGPoint = CGPoint(x: 3, y: 3)
+    open var cellInset: CGPoint = CGPoint(x: 3, y: 3) {
+        didSet {
+            // to handle https://github.com/patchthecode/JTAppleCalendar/issues/26
+            if cellInset.x == 0 { cellInset.x = -0.1 }
+            if cellInset.y == 0 { cellInset.y = -0.1 }
+        }
+    }
     var cellViewSource: JTAppleCalendarViewSource!
     var registeredHeaderViews: [JTAppleCalendarViewSource] = []
     var thereAreHeaders: Bool {
@@ -497,7 +503,6 @@ open class JTAppleCalendarView: UIView {
                                                    animated: animation)
                 if !animation {
                     self.scrollViewDidEndScrollingAnimation(self.calendarView)
-                    self.scrollInProgress = false
                 } else {
                     // If the scroll is set to animate, and the target
                     // content offset is already on the screen, then the
@@ -506,9 +511,9 @@ open class JTAppleCalendarView: UIView {
                     // let's force a scroll so the delegate MUST get caalled
                     if self.calendarOffsetIsAlreadyAtScrollPosition(forOffset: topOfHeader) {
                         self.scrollViewDidEndScrollingAnimation(self.calendarView)
-                        self.scrollInProgress = false
                     }
                 }
+                self.scrollInProgress = false
             }
         }
     }

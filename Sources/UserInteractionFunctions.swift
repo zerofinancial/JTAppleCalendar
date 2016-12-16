@@ -394,7 +394,7 @@ extension JTAppleCalendarView {
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
     /// - Parameter triggerScrollToDateDelegate: trigger delegate if set to true
     /// - Parameter completionHandler: A completion handler that will be executed at the end of the scroll animation
-    public func scrollToSegment(_ destination: SegmentDestination, triggerScrollToDateDelegate: Bool = false, animateScroll: Bool = true, completionHandler: (() -> Void)? = nil) {
+    public func scrollToSegment(_ destination: SegmentDestination, triggerScrollToDateDelegate: Bool = true, animateScroll: Bool = true, completionHandler: (() -> Void)? = nil) {
         if !calendarIsAlreadyLoaded {
             delayedExecutionClosure.append {
                 self.scrollToSegment(destination, triggerScrollToDateDelegate: triggerScrollToDateDelegate, animateScroll: animateScroll, completionHandler: completionHandler)
@@ -575,7 +575,9 @@ extension JTAppleCalendarView {
         if let validCompletionHandler = completionHandler {
             self.delayedExecutionClosure.append(validCompletionHandler)
         }
+        self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         calendarView.scrollRectToVisible(rect, animated: isAnimationEnabled)
+        scrollInProgress = false
     }
 
     /// Scrolls the calendar view to the start of a section view header.
@@ -583,8 +585,7 @@ extension JTAppleCalendarView {
     // nothing
     /// - Paramater date: The calendar view will scroll to the header of
     // a this provided date
-    public func scrollToHeaderForDate(
-        _ date: Date, triggerScrollToDateDelegate: Bool = false,
+    public func scrollToHeaderForDate(_ date: Date, triggerScrollToDateDelegate: Bool = false,
         withAnimation animation: Bool = false,
         completionHandler: (() -> Void)? = nil) {
             let path = pathsFromDates([date])
