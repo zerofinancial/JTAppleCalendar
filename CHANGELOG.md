@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 ## [6.1.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.0)
+- [Fixed error - triggerScrollToDateDelegate was not called](https://github.com/patchthecode/JTAppleCalendar/issues/235)
 - [Fixed error introduced in last version - scroll To date broke](https://github.com/patchthecode/JTAppleCalendar/issues/223)
 - Performance updates
 - Behavior change - [Library will now honour time zones based on Calenda() instance](https://github.com/patchthecode/JTAppleCalendar/issues/222)
