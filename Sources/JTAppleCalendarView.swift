@@ -22,13 +22,20 @@ open class JTAppleCalendarView: UIView {
 
     /// Configures the behavior of the scrolling mode of the calendar
     public enum ScrollingMode {
-        case stopAtEachCalendarFrameWidth,
-        stopAtEachSection,
-        stopAtEach(customInterval: CGFloat),
-        nonStopToSection(withResistance: CGFloat),
-        nonStopToCell(withResistance: CGFloat),
-        nonStopTo(customInterval: CGFloat, withResistance: CGFloat),
-        none
+        /// stopAtEachCalendarFrameWidth - non-continuous scrolling that will stop at each frame width
+        case stopAtEachCalendarFrameWidth
+        /// stopAtEachSection - non-continuous scrolling that will stop at each section
+        case stopAtEachSection
+        /// stopAtEach - non-continuous scrolling that will stop at each custom interval
+        case stopAtEach(customInterval: CGFloat)
+        /// nonStopToSection - continuous scrolling that will stop at a section
+        case nonStopToSection(withResistance: CGFloat)
+        /// nonStopToCell - continuous scrolling that will stop at a cell
+        case nonStopToCell(withResistance: CGFloat)
+        /// nonStopTo - continuous scrolling that will stop at acustom interval
+        case nonStopTo(customInterval: CGFloat, withResistance: CGFloat)
+        /// none - continuous scrolling that will eventually stop at a point
+        case none
 
         func pagingIsEnabled() -> Bool {
             switch self {
@@ -1084,10 +1091,6 @@ extension JTAppleCalendarView {
         
         let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates, indateIndexes: inDateIndexes, monthDateIndexes: monthDateIndexes, outdateIndexes: outDateIndexes)
         return retval
-    }
-    
-    open func kkk() {
-        calendarView.insertItems(at: [IndexPath(item: 0, section: 0)])
     }
 
     func dateOwnerInfoFromPath(_ indexPath: IndexPath) -> (date: Date, owner: DateOwner)? { // Returns nil if date is out of scope

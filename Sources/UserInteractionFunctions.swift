@@ -581,10 +581,9 @@ extension JTAppleCalendarView {
     }
 
     /// Scrolls the calendar view to the start of a section view header.
-    // If the calendar has no headers registered, then this function does
-    // nothing
+    /// If the calendar has no headers registered, then this function does nothing
     /// - Paramater date: The calendar view will scroll to the header of
-    // a this provided date
+    /// a this provided date
     public func scrollToHeaderForDate(_ date: Date, triggerScrollToDateDelegate: Bool = false,
         withAnimation animation: Bool = false,
         completionHandler: (() -> Void)? = nil) {

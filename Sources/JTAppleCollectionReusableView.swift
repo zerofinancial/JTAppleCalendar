@@ -8,6 +8,7 @@
 
 /// The header view class of the calendar
 open class JTAppleCollectionReusableView: UICollectionReusableView, JTAppleReusableViewProtocol {
+    /// Header view to be customized
     var view: JTAppleHeaderView?
     
     func update() {

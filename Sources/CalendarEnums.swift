@@ -9,7 +9,14 @@
 
 /// Describes a scroll destination
 public enum SegmentDestination {
-    case next, previous, start, end
+    /// next the destination is the following segment
+    case next
+    /// previous the destination is the previous segment
+    case previous
+    /// start the destination is the start segment
+    case start
+    /// end the destination is the end segment
+    case end
 }
 /// Describes the types of out-date cells to be generated.
 public enum OutDateCellGeneration {
@@ -30,7 +37,10 @@ public enum InDateCellGeneration {
 /// Describes the calendar reading direction
 /// Useful for regions that read text from right to left
 public enum ReadingOrientation {
-    case rightToLeft, leftToRight
+    /// Reading orientation is from right to left
+    case rightToLeft
+    /// Reading orientation is from left to right
+    case leftToRight
 }
 
 /// Describes which month owns the date
