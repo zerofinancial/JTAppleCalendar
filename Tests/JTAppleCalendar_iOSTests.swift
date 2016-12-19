@@ -6,10 +6,10 @@
 //
 //
 
- import XCTest // 121
- @testable import JTAppleCalendar
+import XCTest
+@testable import JTAppleCalendar
 
- class JTAppleCalendar_iOSTests: XCTestCase {
+class JTAppleCalendar_tvOSTests: XCTestCase {
     let calendarView = JTAppleCalendarView()
     let formatter: DateFormatter = {
         let aFormatter = DateFormatter()
@@ -76,7 +76,7 @@
         assert(val.monthMap[70] == 23, "Last val should be 23")
         assert(val.totalSections  == 71, "There should be 71 sections")
     }
-    func testLayoutGeneratorOnDefaultss() {
+    func testLayoutGeneratorOnDefaultsFirst() {
         let params = ConfigurationParameters(startDate: startDate, endDate: endDate)
         let layoutGenerator = JTAppleDateConfigGenerator()
         let val = layoutGenerator.setupMonthInfoDataForStartAndEndDate(params)
@@ -88,7 +88,7 @@
         assert(val.totalDays == 42 * 24 , "Total month cells should be 1008")
     }
     
-    func testLayoutGeneratorOnThreeRows() {
+    func testLayoutGeneratorOnThreeRowFirst() {
         let params = ConfigurationParameters(startDate: startDate, endDate: endDate, numberOfRows: 3)
         let layoutGenerator = JTAppleDateConfigGenerator()
         let val = layoutGenerator.setupMonthInfoDataForStartAndEndDate(params)
@@ -97,7 +97,7 @@
         assert(val.monthMap[22] == 11, "Index 22 should be 11")
         assert(val.monthMap[23] == 11, "Index 22 should be 11")
     }
-    func testLayoutGeneratorOnTwoRows() {
+    func testLayoutGeneratorOnTwoRowFirst() {
         let params = ConfigurationParameters(startDate: startDate, endDate: endDate, numberOfRows: 2)
         let layoutGenerator = JTAppleDateConfigGenerator()
         let val = layoutGenerator.setupMonthInfoDataForStartAndEndDate(params)
@@ -105,7 +105,7 @@
         assert(val.monthMap[71] == 23, "Last val should be 23")
         assert(val.totalSections  == 72, "There should be 72 sections")
     }
-    func testLayoutGeneratorWithOffInAndOffOuts() {
+    func testLayoutGeneratorWithOffInAndOffOutFirst() {
         let params = ConfigurationParameters(startDate: startDate, endDate: endDate, numberOfRows: 2, generateInDates: .off, generateOutDates: .off)
         let layoutGenerator = JTAppleDateConfigGenerator()
         let val = layoutGenerator.setupMonthInfoDataForStartAndEndDate(params)
@@ -113,7 +113,7 @@
         assert(val.monthMap[70] == 23, "Last val should be 23")
         assert(val.totalSections  == 71, "There should be 71 sections")
     }
-    func testConfigurationParametersDefaultBehaviors() {
+    func testConfigurationParametersDefaultBehaviorFirst() {
         print("testing default parameters")
         var params = ConfigurationParameters(startDate: Date(), endDate: Date())
         assert(params.generateInDates == .forAllMonths,   "All months should be default")
@@ -125,7 +125,7 @@
         assert(params.numberOfRows == 1, "Rows should be 1")
         assert(params.hasStrictBoundaries == false, "strict should be false")
     }
-    func testConfigurationParametersDefaultBehaviorss() {
+    func testConfigurationParametersDefaultBehaviorsFirst() {
         print("testing default parameters")
         var params = ConfigurationParameters(startDate: Date(), endDate: Date())
         assert(params.generateInDates == .forAllMonths,   "All months should be default")
@@ -137,7 +137,7 @@
         assert(params.numberOfRows == 1, "Rows should be 1")
         assert(params.hasStrictBoundaries == false, "strict should be false")
     }
-    func testConfigurationParametersDefaultBehaviorsss() {
+    func testConfigurationParametersDefaultBehaviorssFirst() {
         print("testing default parameters")
         var params = ConfigurationParameters(startDate: Date(), endDate: Date())
         assert(params.generateInDates == .forAllMonths,   "All months should be default")
