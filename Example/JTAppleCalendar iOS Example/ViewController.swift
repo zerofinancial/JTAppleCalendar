@@ -120,12 +120,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        testCalendar = Calendar(identifier: .gregorian)
-//        testCalendar.locale = Locale(identifier: "en_PH")
-//        let timeZone = TimeZone(identifier: "Asia/Manila")!
-//        testCalendar.timeZone = timeZone
-        
-
         formatter.dateFormat = "yyyy MM dd"
         formatter.timeZone = testCalendar.timeZone
         formatter.locale = testCalendar.locale
@@ -134,8 +128,7 @@ class ViewController: UIViewController {
         // ___________________________________________________________________
         calendarView.delegate = self
         calendarView.dataSource = self
-        calendarView.direction = .vertical
-//        calendarView.itemSize = 20
+
         
         // ___________________________________________________________________
         // Registering your cells is manditory
@@ -143,12 +136,10 @@ class ViewController: UIViewController {
         calendarView.registerCellViewXib(file: "CellView")
         
         // ___________________________________________________________________
-        // Registering your cells is optional
-        
-        // ___________________________________________________________________
+        // Registering header cells is optional
         calendarView.registerHeaderView(xibFileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
-
-        calendarView.scrollingMode = .stopAtEachSection
+        // ___________________________________________________________________
+        
 
         calendarView.cellInset = CGPoint(x: 0, y: 0)
 
@@ -299,6 +290,10 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
 
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
         self.setupViewsOfCalendar(from: visibleDates)
+    }
+    
+    func scrollDidEndDecelerating(for calendar: JTAppleCalendarView) {
+        self.setupViewsOfCalendar(from: calendarView.visibleDates())
     }
 
     func calendar(_ calendar: JTAppleCalendarView, sectionHeaderIdentifierFor range: (start: Date, end: Date), belongingTo month: Int) -> String {
