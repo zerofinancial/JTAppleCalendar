@@ -59,8 +59,7 @@ extension JTAppleCalendarView {
     
     /// Deselect all selected dates
     public func deselectAllDates(triggerSelectionDelegate: Bool = true) {
-        selectDates(selectedDates,
-                    triggerSelectionDelegate: triggerSelectionDelegate)
+        selectDates(selectedDates, triggerSelectionDelegate: triggerSelectionDelegate)
     }
     
     /// Generates a range of dates from from a startDate to an
@@ -69,8 +68,7 @@ extension JTAppleCalendarView {
     /// Parameter endDate: End date to generate dates to
     /// returns:
     ///     - An array of the successfully generated dates
-    public func generateDateRange(from startDate: Date,
-                                  to endDate: Date) -> [Date] {
+    public func generateDateRange(from startDate: Date, to endDate: Date) -> [Date] {
         if startDate > endDate {
             return []
         }
