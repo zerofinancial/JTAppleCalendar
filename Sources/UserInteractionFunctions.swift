@@ -59,7 +59,12 @@ extension JTAppleCalendarView {
     
     /// Deselect all selected dates
     public func deselectAllDates(triggerSelectionDelegate: Bool = true) {
-        selectDates(selectedDates, triggerSelectionDelegate: triggerSelectionDelegate)
+        if allowsMultipleSelection {
+            selectDates(selectedDates, triggerSelectionDelegate: triggerSelectionDelegate)
+        } else {
+            guard let path = pathsFromDates(selectedDates).first else { return }
+            collectionView(calendarView, didDeselectItemAt: path)
+        }
     }
     
     /// Generates a range of dates from from a startDate to an
