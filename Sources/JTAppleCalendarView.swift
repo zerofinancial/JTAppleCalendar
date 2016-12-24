@@ -870,6 +870,8 @@ extension JTAppleCalendarView {
         
         
         let rangePosition = { () -> SelectionRangePosition in
+            if !self.theSelectedIndexPaths.contains(indexPath) { return .none }
+            if self.selectedDates.count == 1 { return .full }
             let leftContainsPathBoolean = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item - 1, section: indexPath.section))
             let rightContainsPathBoolean = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item + 1, section: indexPath.section))
             let position: SelectionRangePosition
