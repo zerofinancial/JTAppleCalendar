@@ -31,6 +31,7 @@ class JTAppleCalendar_iOSTests: XCTestCase {
         calendarView.scrollingMode = .none
         calendarView.allowsMultipleSelection = true
         calendarView.cellInset = CGPoint.zero
+        calendarView.rangeSelectionWillBeUsed = true
         
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
 
@@ -45,9 +46,20 @@ class JTAppleCalendar_iOSTests: XCTestCase {
         
         controller.selectDates(fromDate: startDate, toDate: endDate)
         
-        XCTAssertEqual(controller.fromDateSelectedPosition, SelectionRangePosition.left)
-        XCTAssertEqual(controller.toDateSelectedPosition, SelectionRangePosition.right)
-        XCTAssertEqual(controller.middlePositionsCount, 9)
+        // Testing the count
+        XCTAssertEqual(controller.calendarView.selectedDates.count, 11)
+        
+        // Testing the positions
+        for (index, date) in controller.calendarView.selectedDates.enumerated() {
+            switch index {
+            case 0:
+                XCTAssertEqual(calendarView.cellStatus(for: date)!.selectedPosition(), .left)
+            case 10:
+                XCTAssertEqual(calendarView.cellStatus(for: date)!.selectedPosition(), .right)
+            default:
+                XCTAssertEqual(calendarView.cellStatus(for: date)!.selectedPosition(), .middle)
+            }
+        }
     }
     
     func testConfigurationParametersDefaultBehavior() {
@@ -201,15 +213,4 @@ extension CalendarViewTestingController: JTAppleCalendarViewDataSource {
     }
 }
 
-extension CalendarViewTestingController: JTAppleCalendarViewDelegate {
-    public func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
-        let selectedPosition = cellState.selectedPosition()
-        if date == fromDate {
-            fromDateSelectedPosition = selectedPosition
-        } else if date == toDate {
-            toDateSelectedPosition = selectedPosition
-        } else if selectedPosition == .middle {
-            middlePositionsCount += 1
-        }
-    }
-}
+extension CalendarViewTestingController: JTAppleCalendarViewDelegate { }
