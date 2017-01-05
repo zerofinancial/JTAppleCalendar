@@ -288,8 +288,9 @@ open class JTAppleCalendarView: UIView {
     fileprivate func updateLayoutItemSize() {
         if dataSource == nil {
             return
-        } // If the delegate is not set yet, then return, becaus
-          // edelegate methods will be called on the layout
+        }
+        // If the delegate is not set yet, then return, 
+        // because delegate methods will be called on the layout
         let layout = calendarViewLayout
 
         // Invalidate the layout
@@ -610,14 +611,10 @@ open class JTAppleCalendarView: UIView {
             newDateBoundary = dataSource?.configureCalendar(self) {
             // Jt101 do a check in each var to see if
             // user has bad star/end dates
-            let newStartOfMonth =
-                calendar.startOfMonth(for: newDateBoundary.startDate)
-            let newEndOfMonth =
-                calendar.endOfMonth(for: newDateBoundary.endDate)
-            let oldStartOfMonth =
-                calendar.startOfMonth(for: startDateCache)
-            let oldEndOfMonth =
-                calendar.endOfMonth(for: endDateCache)
+            let newStartOfMonth = calendar.startOfMonth(for: newDateBoundary.startDate)
+            let newEndOfMonth   = calendar.endOfMonth(for: newDateBoundary.endDate)
+            let oldStartOfMonth = calendar.startOfMonth(for: startDateCache)
+            let oldEndOfMonth   = calendar.endOfMonth(for: endDateCache)
             if newStartOfMonth != oldStartOfMonth ||
                 newEndOfMonth != oldEndOfMonth ||
                 newDateBoundary.calendar != cachedConfiguration.calendar ||
@@ -781,7 +778,7 @@ extension JTAppleCalendarView {
         if let validConfig = dataSource?.configureCalendar(self) {
             let comparison = validConfig.calendar.compare(validConfig.startDate, to: validConfig.endDate, toGranularity: .nanosecond)
             if comparison == ComparisonResult.orderedDescending {
-                assert(false, "Error, your start date cannot be " + "greater than your end date\n")
+                assert(false, "Error, your start date cannot be greater than your end date\n")
                 return (CalendarData(months: [], totalSections: 0, sectionToMonthMap: [:], totalDays: 0))
             }
             
@@ -1021,29 +1018,10 @@ extension JTAppleCalendarView {
         return ((cells.min(), cellState), headers.min())
     }
 
-//    func currentSection() -> Int? {
-//        return calendarViewLayout.sectionFromRectOffset(calendarView.contentOffset)
-//    }
     /// Retrieves the current section
     public func currentSection() -> Int? {
         return minimumVisibleIndexPaths().cellInfo.indexPath?.section
     }
-
-//    func currentDate() -> CellState? {
-//        let minCell = minimumVisibleIndexPaths()
-//        return minCell.cellInfo.state
-//    }
-    
-    
-//    public func currentMonth(for date: Date) -> Month? {
-//        let periodApart = calendar.dateComponents([.month], from: startOfMonthCache, to: date)
-//        let monthSectionIndex = periodApart.month!
-//        return monthInfo[monthSectionIndex]
-//    }
-    
-//    func dateFrom(month: Month) -> Date? {
-//        return calendar.date(byAdding: .day, value: month.startDayIndex, to: startDateCache)
-//    }
     
     func visibleElements(excludeHeaders: Bool? = false, from rect: CGRect? = nil) -> [UICollectionViewLayoutAttributes] {
         let aRect = rect ?? CGRect(x: calendarView.contentOffset.x + 1, y: calendarView.contentOffset.y + 1, width: calendarView.frame.width - 2, height: calendarView.frame.height - 2)
