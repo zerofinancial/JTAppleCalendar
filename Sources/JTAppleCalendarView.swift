@@ -891,7 +891,7 @@ extension JTAppleCalendarView {
                 return self.monthInfoFromSection(indexPath.section)!
             },
             selectedPosition: rangePosition,
-            cell: { return cell?.view }
+            cell: { return cell }
         )
         return cellState
     }

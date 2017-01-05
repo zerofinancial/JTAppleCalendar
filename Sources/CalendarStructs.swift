@@ -43,7 +43,7 @@ public struct CellState {
     public let selectedPosition: () -> SelectionRangePosition
     /// returns the cell frame.
     /// Useful if you wish to display something at the cell's frame/position
-    public var cell: () -> JTAppleDayCellView?
+    public var cell: () -> JTAppleDayCell?
 }
 
 /// Defines the parameters which configures the calendar.
