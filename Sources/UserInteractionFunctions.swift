@@ -52,7 +52,8 @@ extension JTAppleCalendarView {
     ///     - CellState: The state of the found cell
     public func cellStatus(at point: CGPoint) -> CellState? {
         if let indexPath = calendarView.indexPathForItem(at: point) {
-            return cellStateFromIndexPath(indexPath)
+            let cell = calendarView.cellForItem(at: indexPath) as? JTAppleDayCell
+            return cellStateFromIndexPath(indexPath, cell: cell)
         }
         return nil
     }

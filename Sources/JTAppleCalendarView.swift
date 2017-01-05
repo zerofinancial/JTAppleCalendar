@@ -882,7 +882,6 @@ extension JTAppleCalendarView {
             }
             return position
         }
-        
         let cellState = CellState(
             isSelected: theSelectedIndexPaths.contains(indexPath),
             text: cellText,
@@ -895,7 +894,7 @@ extension JTAppleCalendarView {
                 return self.monthInfoFromSection(indexPath.section)!
             },
             selectedPosition: rangePosition,
-            cell: {return cell}
+            cell: { return cell?.view }
         )
         return cellState
     }
