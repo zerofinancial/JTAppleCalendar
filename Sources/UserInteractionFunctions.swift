@@ -503,7 +503,7 @@ extension JTAppleCalendarView {
             // Rect takes preference
             if let validRect = rect {
                 scrollInProgress = true
-                scrollTo(rect: validRect, isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
+                scrollTo(rect: validRect, triggerScrollToDateDelegate: triggerScrollToDateDelegate, isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
             } else {
                 guard let validIndexPath = indexPath else {
                     return
