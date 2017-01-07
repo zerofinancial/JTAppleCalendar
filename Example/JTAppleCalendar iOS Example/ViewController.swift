@@ -27,6 +27,7 @@ class ViewController: UIViewController {
     var testCalendar = Calendar.current
     var generateInDates: InDateCellGeneration = .forAllMonths
     var generateOutDates: OutDateCellGeneration = .tillEndOfGrid
+    var hasStrictBoundaries = true
     let firstDayOfWeek: DaysOfWeek = .sunday
     let disabledColor = UIColor.lightGray
     let enabledColor = UIColor.blue
@@ -54,14 +55,24 @@ class ViewController: UIViewController {
         }
         sender.tintColor = enabledColor
 
-        if sender.title(for: .normal)! == "HorizontalCalendar" {
+        if sender.title(for: .normal)! == "Horizontal" {
             calendarView.direction = .horizontal
         } else {
             calendarView.direction = .vertical
         }
         calendarView.reloadData()
     }
-
+    
+    @IBAction func toggleStrictBoundary(sender: UIButton) {
+        hasStrictBoundaries = !hasStrictBoundaries
+        if hasStrictBoundaries {
+            sender.tintColor = enabledColor
+        } else {
+            sender.tintColor = disabledColor
+        }
+        calendarView.reloadData()
+    }
+    
     @IBAction func headers(_ sender: UIButton) {
         for aButton in headers {
             aButton.tintColor = disabledColor
@@ -231,9 +242,7 @@ class ViewController: UIViewController {
     
     // Function to handle the calendar selection
     func handleCellSelection(view: JTAppleDayCellView?, cellState: CellState) {
-        guard let myCustomCell = view as? CellView  else {
-            return
-        }
+        guard let myCustomCell = view as? CellView  else {return }
         if cellState.isSelected {
             myCustomCell.selectedView.layer.cornerRadius =  15
             myCustomCell.selectedView.isHidden = false
@@ -246,9 +255,9 @@ class ViewController: UIViewController {
 // MARK : JTAppleCalendarDelegate
 extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-
-        let startDate = formatter.date(from: "2016 12 01")!
-        let endDate = formatter.date(from: "2026 10 01")!
+        
+        let startDate = formatter.date(from: "2015 02 01")!
+        let endDate = formatter.date(from: "2016 12 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
@@ -256,7 +265,8 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
                                                  calendar: testCalendar,
                                                  generateInDates: generateInDates,
                                                  generateOutDates: generateOutDates,
-                                                 firstDayOfWeek: firstDayOfWeek)
+                                                 firstDayOfWeek: firstDayOfWeek,
+                                                 hasStrictBoundaries: hasStrictBoundaries)
         
         return parameters
     }
@@ -284,10 +294,8 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
         handleCellSelection(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
-        
-        print(formatter.string(from: date))
     }
-
+    
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
         self.setupViewsOfCalendar(from: visibleDates)
     }

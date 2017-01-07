@@ -621,7 +621,8 @@ open class JTAppleCalendarView: UIView {
                 newDateBoundary.numberOfRows != cachedConfiguration.numberOfRows ||
                 newDateBoundary.generateInDates != cachedConfiguration.generateInDates ||
                 newDateBoundary.generateOutDates != cachedConfiguration.generateOutDates ||
-                newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek {
+                newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek ||
+                newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries {
                         setupMonthInfoAndMap()
                         layoutNeedsUpdating = true
             }
