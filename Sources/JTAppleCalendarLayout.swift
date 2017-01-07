@@ -377,33 +377,20 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 currentCell = (section: indexPath.section, itemSize: size)
             }
         } else {
-        // Get header size if it alrady cached
+            // Get header size if it alrady cached
             var headerSize =  CGSize.zero
             if strictBoundaryRulesShouldApply {
                 headerSize = cachedHeaderSizeForSection(indexPath.section)
             }
             var height: CGFloat = 0
-//            let totalNumberOfRows = monthData[monthMap[indexPath.section]!].rows
             let currentMonth = monthData[monthMap[indexPath.section]!]
-//            let monthSection = currentMonth.sectionIndexMaps[indexPath.section]!
-//            let numberOfSections = CGFloat(totalNumberOfRows) / CGFloat(numberOfRows)
-//            let fullSections =  Int(numberOfSections)
-            let numberOfRowsForSection: Int
-            if scrollDirection == .horizontal {
-                if strictBoundaryRulesShouldApply {
-                    numberOfRowsForSection = currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)
-                } else {
-                    numberOfRowsForSection = numberOfRows
-                }
-                height = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
+            var numberOfRowsForSection: Int = 0
+            if strictBoundaryRulesShouldApply {
+                numberOfRowsForSection = currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)
             } else {
-//                if monthSection + 1 <= fullSections || !strictBoundaryRulesShouldApply {
-//                    numberOfRowsForSection = numberOfRows
-//                } else {
-//                    numberOfRowsForSection = totalNumberOfRows - (monthSection * numberOfRows)
-//                }
-                height = (collectionView!.frame.height - headerSize.height) / CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)) //CGFloat(numberOfRowsForSection)
+                numberOfRowsForSection = numberOfRows
             }
+            height = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
             size        = CGSize(width: itemSize.width, height: height)
             currentCell = (section: indexPath.section, itemSize: size)
         }
