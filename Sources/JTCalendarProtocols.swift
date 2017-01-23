@@ -8,28 +8,17 @@
 
 /// Default delegate functions
 public extension JTAppleCalendarViewDelegate {
-
-    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool {
-        return true
-    }
-
-    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool {
-        return true
-    }
+    func calendar(_ calendar: JTAppleCalendarView, shouldJoinRangeFor date: Date) -> Bool { return true }
+    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool { return true }
+    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool { return true }
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {}
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {}
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {}
     func calendar(_ calendar: JTAppleCalendarView, willDisplayCell cell: JTAppleDayCellView, date: Date, cellState: CellState) {}
     func calendar(_ calendar: JTAppleCalendarView, willResetCell cell: JTAppleDayCellView) {}
     func calendar(_ calendar: JTAppleCalendarView, willDisplaySectionHeader header: JTAppleHeaderView, range: (start: Date, end: Date), identifier: String) {}
-    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderIdentifierFor range: (start: Date, end: Date), belongingTo month: Int) -> String {
-        return ""
-    }
-
-    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize {
-        return CGSize.zero
-    }
-    
+    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderIdentifierFor range: (start: Date, end: Date), belongingTo month: Int) -> String { return "" }
+    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize { return CGSize.zero }
     func scrollDidEndDecelerating(for calendar: JTAppleCalendarView) {}
 }
 
@@ -53,6 +42,8 @@ public protocol JTAppleCalendarViewDataSource: class {
 /// JTAppleCalendarViewDelegate protocol Optional methods of the protocol
 /// allow the delegate to manage selections, and configure the cells
 public protocol JTAppleCalendarViewDelegate: class {
+    func calendar(_ calendar: JTAppleCalendarView, shouldJoinRangeFor date: Date) -> Bool
+    
     /// Asks the delegate if selecting the date-cell with a specified date is
     /// allowed
     /// - Parameters:

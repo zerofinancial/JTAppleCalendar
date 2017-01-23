@@ -226,6 +226,9 @@ open class JTAppleCalendarView: UIView {
         return collectionView(calendarView, numberOfItemsInSection: section)
     }
 
+    /// Section spacing of the calendar view.
+    open var sectionSpacing: CGFloat = 0
+    
     /// Cell inset padding for the x and y axis
     /// of every date-cell on the calendar view.
     open var cellInset: CGPoint = CGPoint(x: 3, y: 3) {
@@ -851,7 +854,7 @@ extension JTAppleCalendarView {
                                  row: {return 0},
                                  column: {return 0},
                                  dateSection: {
-                                    return (range: (Date(), Date()), month: 0, rowsForSection: 0)
+                                    return (range: (Date(), Date()), month: 0, rowCount: 0)
                                  },
                                  selectedPosition: {return .left},
                                  cell: {return nil})
@@ -872,12 +875,19 @@ extension JTAppleCalendarView {
             if self.selectedDates.count == 1 { return .full }
             let selectedIndicesContainsPreviousPath = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item - 1, section: indexPath.section))
             let selectedIndicesContainsFollowingPath = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item + 1, section: indexPath.section))
-            let position: SelectionRangePosition
+            var position: SelectionRangePosition
             if selectedIndicesContainsPreviousPath == selectedIndicesContainsFollowingPath {
                 position = selectedIndicesContainsPreviousPath == false ? .full : .middle
             } else {
                 position = selectedIndicesContainsPreviousPath == false ? .left : .right
             }
+            
+            if position != .full {
+                if !(self.delegate?.calendar(self, shouldJoinRangeFor: date) ?? true) {
+                    position = .full
+                }
+            }
+            
             return position
         }
         let cellState = CellState(
@@ -949,7 +959,7 @@ extension JTAppleCalendarView {
         return nil
     }
 
-    func monthInfoFromSection(_ section: Int) -> (range: (start: Date, end: Date), month: Int, rowsForSection: Int)? {
+    func monthInfoFromSection(_ section: Int) -> (range: (start: Date, end: Date), month: Int, rowCount: Int)? {
             guard let monthIndex = monthMap[section] else {
                 return nil
             }
@@ -969,12 +979,8 @@ extension JTAppleCalendarView {
             }
             if let monthDate = calendar.date(byAdding: .month, value: monthIndex, to: startDateCache) {
                 let monthNumber = calendar.dateComponents([.month], from: monthDate)
-                let numberOfRowsForSection =
-                    monthData.numberOfRows(for: section,
-                                           developerSetRows: numberOfRows())
-                return ((startDate, endDate),
-                        monthNumber.month!,
-                        numberOfRowsForSection)
+                let numberOfRowsForSection = monthData.numberOfRows(for: section, developerSetRows: numberOfRows())
+                return ((startDate, endDate), monthNumber.month!, numberOfRowsForSection)
             }
             return nil
     }
