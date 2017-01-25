@@ -882,12 +882,6 @@ extension JTAppleCalendarView {
                 position = selectedIndicesContainsPreviousPath == false ? .left : .right
             }
             
-            if position != .full {
-                if !(self.delegate?.calendar(self, shouldJoinRangeFor: date) ?? true) {
-                    position = .full
-                }
-            }
-            
             return position
         }
         let cellState = CellState(

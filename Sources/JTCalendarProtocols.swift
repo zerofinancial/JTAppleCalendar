@@ -8,7 +8,6 @@
 
 /// Default delegate functions
 public extension JTAppleCalendarViewDelegate {
-    func calendar(_ calendar: JTAppleCalendarView, shouldJoinRangeFor date: Date) -> Bool { return true }
     func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool { return true }
     func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date, cell: JTAppleDayCellView, cellState: CellState) -> Bool { return true }
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {}
@@ -42,8 +41,6 @@ public protocol JTAppleCalendarViewDataSource: class {
 /// JTAppleCalendarViewDelegate protocol Optional methods of the protocol
 /// allow the delegate to manage selections, and configure the cells
 public protocol JTAppleCalendarViewDelegate: class {
-    func calendar(_ calendar: JTAppleCalendarView, shouldJoinRangeFor date: Date) -> Bool
-    
     /// Asks the delegate if selecting the date-cell with a specified date is
     /// allowed
     /// - Parameters:
