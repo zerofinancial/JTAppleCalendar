@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 6.x Releases
-- `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#6.1.1)
+- `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#6.1.1)|[6.1.2](#6.1.2)
 - `6.0.0` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)|[6.0.5](#605)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
