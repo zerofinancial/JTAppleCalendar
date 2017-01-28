@@ -31,8 +31,10 @@ All notable changes to this project will be documented in this file.
 - Fixed error - Introduced in last version. DidScroll delegate was not being called.
 - Fixed error - Vertical calendar was not being displayed correctly in some configurations.
   - Updated by [JayT](https://github.com/patchthecode).
+
 ## [6.1.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.1)
 - Documentation updates
+
 ## [6.1.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.0)
 - [Fixed error - triggerScrollToDateDelegate was not called](https://github.com/patchthecode/JTAppleCalendar/issues/235)
 - [Fixed error introduced in last version - scroll To date broke](https://github.com/patchthecode/JTAppleCalendar/issues/223)
