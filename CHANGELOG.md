@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 6.x Releases
-- `6.1.0` Releases - [6.1.0](#610)
+- `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#6.1.1)
 - `6.0.0` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)|[6.0.5](#605)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
@@ -26,6 +26,13 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.1.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.2)
+- Fixed error - deselect all dates should work as expected
+- Fixed error - Introduced in last version. DidScroll delegate was not being called.
+- Fixed error - Vertical calendar was not being displayed correctly in some configurations.
+  - Updated by [JayT](https://github.com/patchthecode).
+## [6.1.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.1)
+- Documentation updates
 ## [6.1.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.0)
 - [Fixed error - triggerScrollToDateDelegate was not called](https://github.com/patchthecode/JTAppleCalendar/issues/235)
 - [Fixed error introduced in last version - scroll To date broke](https://github.com/patchthecode/JTAppleCalendar/issues/223)
