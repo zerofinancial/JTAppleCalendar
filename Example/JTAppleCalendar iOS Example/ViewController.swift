@@ -46,7 +46,7 @@ class ViewController: UIViewController {
             aButton.tintColor = disabledColor
         }
         sender.tintColor = enabledColor
-        calendarView.reloadData()
+        calendarView.reloadData()        
     }
 
     @IBAction func changeDirection(_ sender: UIButton) {
@@ -56,9 +56,9 @@ class ViewController: UIViewController {
         sender.tintColor = enabledColor
 
         if sender.title(for: .normal)! == "Horizontal" {
-            calendarView.direction = .horizontal
+            calendarView.scrollDirection = .horizontal
         } else {
-            calendarView.direction = .vertical
+            calendarView.scrollDirection = .vertical
         }
         calendarView.reloadData()
     }

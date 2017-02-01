@@ -272,7 +272,7 @@ open class JTAppleCalendarView: UIView {
 
     lazy var calendarView: UICollectionView = {
         let layout = JTAppleCalendarLayout(withDelegate: self)
-        layout.scrollDirection = self.direction
+        layout.scrollDirection = self.scrollDirection
         
         let cv = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         cv.dataSource = self
@@ -304,7 +304,7 @@ open class JTAppleCalendarView: UIView {
         var width: CGFloat = self.calendarView.bounds.size.width / CGFloat(maxNumberOfDaysInWeek)
 
         if let userSetItemSize = self.itemSize {
-            if direction == .vertical {
+            if scrollDirection == .vertical {
                 height = userSetItemSize
             } else {
                 width = userSetItemSize
@@ -401,12 +401,12 @@ open class JTAppleCalendarView: UIView {
             return nil
         }
         
-        let theTargetContentOffset: CGFloat = direction == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
+        let theTargetContentOffset: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
         var fixedScrollSize: CGFloat = 0
         var retval: CGRect?
         switch scrollingMode {
         case .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-            if self.direction == .horizontal || (self.direction == .vertical && !thereAreHeaders) {
+            if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !thereAreHeaders) {
                 // Horizontal has a fixed width.
                 // Vertical with no header has fixed height
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
@@ -424,7 +424,7 @@ open class JTAppleCalendarView: UIView {
         let destinationRectOffset = fixedScrollSize * section
         var x: CGFloat = 0
         var y: CGFloat = 0
-        if direction == .horizontal {
+        if scrollDirection == .horizontal {
             x = destinationRectOffset
         } else {
             y = destinationRectOffset
@@ -441,10 +441,10 @@ open class JTAppleCalendarView: UIView {
         // didFinishScrollingAnimation
         // delegate will not get called. Once animation is on let's
         // force a scroll so the delegate MUST get caalled
-        let theOffset = direction == .horizontal ? offset.x : offset.y
-        let divValue = direction == .horizontal ? calendarView.frame.width : calendarView.frame.height
+        let theOffset = scrollDirection == .horizontal ? offset.x : offset.y
+        let divValue = scrollDirection == .horizontal ? calendarView.frame.width : calendarView.frame.height
         let sectionForOffset = Int(theOffset / divValue)
-        let calendarCurrentOffset = direction == .horizontal ? calendarView.contentOffset.x : calendarView.contentOffset.y
+        let calendarCurrentOffset = scrollDirection == .horizontal ? calendarView.contentOffset.x : calendarView.contentOffset.y
         if calendarCurrentOffset == theOffset ||
             (scrollingMode.pagingIsEnabled() &&
                 (sectionForOffset ==  currentSection())) {
@@ -462,7 +462,7 @@ open class JTAppleCalendarView: UIView {
         if let attributes = self.calendarView.layoutAttributesForItem(at: indexPath) {
             let layoutOffset: CGFloat
             let calendarOffset: CGFloat
-            if direction == .horizontal {
+            if scrollDirection == .horizontal {
                 layoutOffset = attributes.frame.origin.x
                 calendarOffset = calendarView.contentOffset.x
             } else {
@@ -999,7 +999,7 @@ extension JTAppleCalendarView {
     
     // This function ignores decoration views //JT101 for setting proposal
     func minimumVisibleIndexPaths() -> (cellInfo:(indexPath: IndexPath?, state: CellState?), headerIndex: IndexPath?) {
-        let visibleItems: [UICollectionViewLayoutAttributes] = direction == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()
+        let visibleItems: [UICollectionViewLayoutAttributes] = scrollDirection == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()
         
         var cells: [IndexPath] = []
         var headers: [IndexPath] = []

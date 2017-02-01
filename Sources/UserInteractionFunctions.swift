@@ -409,7 +409,7 @@ extension JTAppleCalendarView {
         var yOffset: CGFloat = 0
         
         let fixedScrollSize: CGFloat
-        if direction == .horizontal {
+        if scrollDirection == .horizontal {
             if thereAreHeaders || cachedConfiguration.generateOutDates == .tillEndOfGrid {
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             } else {
@@ -509,7 +509,7 @@ extension JTAppleCalendarView {
                     return
                 }
                 
-                if thereAreHeaders && direction == .vertical {
+                if thereAreHeaders && scrollDirection == .vertical {
                     scrollToHeaderInSection(validIndexPath.section,
                                             triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                             withAnimation: isAnimationEnabled,
@@ -542,10 +542,10 @@ extension JTAppleCalendarView {
                 return
             }
             let sectionIndexPath =  self.pathsFromDates([date])[0]
-            var position: UICollectionViewScrollPosition = self.direction == .horizontal ? .left : .top
+            var position: UICollectionViewScrollPosition = self.scrollDirection == .horizontal ? .left : .top
             if !self.scrollingMode.pagingIsEnabled() {
                 if let validPosition = preferredScrollPosition {
-                    if self.direction == .horizontal {
+                    if self.scrollDirection == .horizontal {
                         if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
                             position = validPosition
                         }
@@ -560,7 +560,7 @@ extension JTAppleCalendarView {
             var rect: CGRect?
             switch self.scrollingMode {
             case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-                if self.direction == .horizontal || (self.direction == .vertical && !self.thereAreHeaders) {
+                if self.scrollDirection == .horizontal || (self.scrollDirection == .vertical && !self.thereAreHeaders) {
                     rect = self.targetRectForItemAt(indexPath: sectionIndexPath)
                 }
             default:
