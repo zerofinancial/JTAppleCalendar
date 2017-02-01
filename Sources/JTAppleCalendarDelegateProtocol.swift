@@ -15,6 +15,7 @@ protocol JTAppleCalendarDelegateProtocol: class {
     var monthMap: [Int: Int] {get set}
     var totalDays: Int {get}
     var lastIndexOffset: (IndexPath, UICollectionElementCategory)? {get set}
+    var allowsDateCellStretching: Bool {get set}
     
     func numberOfRows() -> Int
     func hasStrictBoundaries() -> Bool

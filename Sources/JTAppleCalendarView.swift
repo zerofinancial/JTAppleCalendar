@@ -63,21 +63,25 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    /// Enables and disables animations when scrolling to and from date-cells
-    open var animationsEnabled = true
-
     /// The scroll direction of the sections in JTAppleCalendar.
-    open var direction: UICollectionViewScrollDirection = .horizontal {
+    open var scrollDirection: UICollectionViewScrollDirection = .horizontal {
         didSet {
-            if oldValue == direction {
+            if oldValue == scrollDirection {
                 return
             }
-            calendarViewLayout.scrollDirection = direction
+            calendarViewLayout.scrollDirection = scrollDirection
             updateLayoutItemSize()
             layoutNeedsUpdating = true
         }
     }
 
+    /// Enables/Disables the stretching of date cells. When enabled cells will stretch to fit the width of a month in case of a <= 5 row month.
+    open var allowsDateCellStretching = true {
+        didSet {
+            layoutNeedsUpdating = true
+        }
+    }
+    
     /// Enables/Disables multiple selection on JTAppleCalendar
     open var allowsMultipleSelection: Bool = false {
         didSet {
