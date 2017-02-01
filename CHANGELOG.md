@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 6.x Releases
-- `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)
+- `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)|[6.1.3](#613)
 - `6.0.0` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)|[6.0.5](#605)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
@@ -26,6 +26,10 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.1.3](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.3)
+- Fixed error - [Last saved offset fixed programatically](https://github.com/patchthecode/JTAppleCalendar/pull/276) - by [KyleConway](https://github.com/KyleConway)
+- Fixed error - [visibleDates() function should exclude headers](https://github.com/patchthecode/JTAppleCalendar/pull/278) - by [KyleConway](https://github.com/KyleConway)
+
 ## [6.1.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.2)
 - Fixed error - deselect all dates should work as expected
 - Fixed error - Introduced in last version. DidScroll delegate was not being called.
