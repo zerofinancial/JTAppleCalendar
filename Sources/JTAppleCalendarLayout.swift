@@ -43,7 +43,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
     var thereAreHeaders: Bool {
         get {
-            return delegate.registeredHeaderViews.count > 0
+            return !delegate.registeredHeaderViews.isEmpty
         }
     }
     
@@ -59,6 +59,26 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     init(withDelegate delegate: JTAppleCalendarDelegateProtocol) {
         super.init()
         self.delegate = delegate
+    }
+    
+    func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath? {
+        switch direction {
+        case .next:
+            let lastIndexPath = cellCache[section]?.last?.indexPath
+            if lastIndexPath?.section == section && lastIndexPath?.item == item {
+                return cellCache[section + 1]?.first?.indexPath
+            } else {
+                return cellCache[section]?[item + 1].indexPath
+            }
+        case .previous:
+            if item < 1 {
+                return cellCache[section - 1]?.last?.indexPath
+            } else {
+                return cellCache[section]?[item - 1].indexPath
+            }
+        default:
+            return nil
+        }
     }
 
     /// Tells the layout object to update the current layout.
@@ -232,7 +252,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         var missCount = 0
         for sectionIndex in startSectionIndex..<cellCache.count {
             if let validSection = cellCache[sectionIndex],
-                validSection.count > 0 {
+                !validSection.isEmpty {
                     // Add header view attributes
                     if thereAreHeaders {
                         if headerCache[sectionIndex]!.frame.intersects(rect) {
@@ -353,7 +373,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             cachedCell.section == indexPath.section {
             
             if !strictBoundaryRulesShouldApply, scrollDirection == .horizontal,
-                cellCache.count > 0 {
+                !cellCache.isEmpty {
                 return cellCache[0]?[0].size ?? CGSize.zero
             } else {
                 return cachedCell.itemSize
@@ -407,7 +427,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         case .horizontal:
             return cellCache[section]![0].frame.width * CGFloat(maxNumberOfDaysInWeek)
         case .vertical:
-            let headerSizeOfSection = headerCache.count > 0 ? headerCache[section]!.frame.height : 0
+            let headerSizeOfSection = !headerCache.isEmpty ? headerCache[section]!.frame.height : 0
             return cellCache[section]![0].frame.height * CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
         }
     }

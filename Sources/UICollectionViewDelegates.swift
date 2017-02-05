@@ -139,8 +139,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// deselects an item in the collection view.
     /// It does not call this method when you programmatically deselect items.
     public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        let indexPathsToReload = rangeSelectionWillBeUsed ?
-        validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
+        let indexPathsToReload = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
         if
             let delegate = self.delegate,
             let dateInfoDeselectedByUser = dateOwnerInfoFromPath(indexPath) {

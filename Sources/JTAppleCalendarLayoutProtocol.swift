@@ -19,4 +19,5 @@ protocol JTAppleCalendarLayoutProtocol: class {
     func sizeOfContentForSection(_ section: Int) -> CGFloat
     func clearCache()
     func prepare()
+    func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath?
 }

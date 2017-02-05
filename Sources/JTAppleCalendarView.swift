@@ -245,7 +245,7 @@ open class JTAppleCalendarView: UIView {
     var cellViewSource: JTAppleCalendarViewSource!
     var registeredHeaderViews: [JTAppleCalendarViewSource] = []
     var thereAreHeaders: Bool {
-        return registeredHeaderViews.count > 0
+        return !registeredHeaderViews.isEmpty
     }
 
     /// Enable or disable swipe scrolling of the calendar with this variable
@@ -372,15 +372,15 @@ open class JTAppleCalendarView: UIView {
     }
 
     func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> [IndexPath] {
-        var retval = [IndexPath]()
-        if let validForwardIndex = calendarView.layoutAttributesForItem(at: IndexPath(item: indexPath.item + 1, section: indexPath.section)),
-            theSelectedIndexPaths.contains(validForwardIndex.indexPath) {
-                retval.append(validForwardIndex.indexPath)
+        var retval: [IndexPath] = []
+        if let validForwardIndex = calendarViewLayout.indexPath(direction: .next, of: indexPath.section, item: indexPath.item),
+            theSelectedIndexPaths.contains(validForwardIndex) {
+            retval.append(validForwardIndex)
         }
-        let previousItemIndex = IndexPath(item: indexPath.item - 1, section: indexPath.section)
         if
-            let validBackwardIndex = calendarView.collectionViewLayout.layoutAttributesForItem(at: previousItemIndex), theSelectedIndexPaths.contains(validBackwardIndex.indexPath) {
-                retval.append(validBackwardIndex.indexPath)
+            let validBackwardIndex = calendarViewLayout.indexPath(direction: .previous, of: indexPath.section, item: indexPath.item),
+            theSelectedIndexPaths.contains(validBackwardIndex) {
+            retval.append(validBackwardIndex)
         }
         return retval
     }
@@ -649,7 +649,7 @@ open class JTAppleCalendarView: UIView {
             let path = pathsFromDates([date])
             indexPathsToReselect.append(contentsOf: path)
             if
-                path.count > 0,
+                !path.isEmpty,
                 let possibleCounterPartDateIndex =
                 indexPathOfdateCellCounterPart(date, indexPath: path[0],
                                         dateOwner: DateOwner.thisMonth) {
@@ -695,7 +695,7 @@ extension JTAppleCalendarView {
             // to either a previous of following month
             // Get the indexPath of the counterpartCell
             let counterPathIndex = pathsFromDates([date])
-            if counterPathIndex.count > 0 {
+            if !counterPathIndex.isEmpty {
                 retval = counterPathIndex[0]
             }
         } else {
@@ -734,7 +734,7 @@ extension JTAppleCalendarView {
 
                 let indexPathOfLastDayOfPreviousMonth =
                     pathsFromDates([lastDayOfPrevMonth])
-                if indexPathOfLastDayOfPreviousMonth.count < 1 {
+                if indexPathOfLastDayOfPreviousMonth.isEmpty {
                     print("out of range error in " +
                         "indexPathOfdateCellCounterPart() upper. " +
                         "This should not happen. Contact developer on github")
@@ -877,8 +877,16 @@ extension JTAppleCalendarView {
         let rangePosition = { () -> SelectionRangePosition in
             if !self.theSelectedIndexPaths.contains(indexPath) { return .none }
             if self.selectedDates.count == 1 { return .full }
-            let selectedIndicesContainsPreviousPath = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item - 1, section: indexPath.section))
-            let selectedIndicesContainsFollowingPath = self.theSelectedIndexPaths.contains(IndexPath(item: indexPath.item + 1, section: indexPath.section))
+            
+            guard
+                let nextIndexPath = self.calendarViewLayout.indexPath(direction: .next, of: indexPath.section, item: indexPath.item),
+                let previousIndexPath = self.calendarViewLayout.indexPath(direction: .previous, of: indexPath.section, item: indexPath.item) else {
+                    return .full
+            }
+            
+            let selectedIndicesContainsPreviousPath = self.theSelectedIndexPaths.contains(previousIndexPath)
+            let selectedIndicesContainsFollowingPath = self.theSelectedIndexPaths.contains(nextIndexPath)
+
             var position: SelectionRangePosition
             if selectedIndicesContainsPreviousPath == selectedIndicesContainsFollowingPath {
                 position = selectedIndicesContainsPreviousPath == false ? .full : .middle
@@ -906,13 +914,7 @@ extension JTAppleCalendarView {
     }
 
     func batchReloadIndexPaths(_ indexPaths: [IndexPath]) {
-        if indexPaths.count < 1 {
-            return
-        }
-        
-        // Before reloading, set the proposal path, 
-        // so that in the even targetContentOffset gets called. We know the path
-        setMinVisibleDate()
+        if indexPaths.isEmpty { return }
         
         UICollectionView.performWithoutAnimation {
             self.calendarView.performBatchUpdates({
@@ -1030,7 +1032,7 @@ extension JTAppleCalendarView {
     
     func visibleElements(excludeHeaders: Bool? = false, from rect: CGRect? = nil) -> [UICollectionViewLayoutAttributes] {
         let aRect = rect ?? CGRect(x: calendarView.contentOffset.x + 1, y: calendarView.contentOffset.y + 1, width: calendarView.frame.width - 2, height: calendarView.frame.height - 2)
-        guard let attributes = calendarViewLayout.layoutAttributesForElements(in: aRect), attributes.count > 0 else {
+        guard let attributes = calendarViewLayout.layoutAttributesForElements(in: aRect), !attributes.isEmpty else {
             return []
         }
         if excludeHeaders == true {
