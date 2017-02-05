@@ -100,8 +100,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             setTargetContentOffset(calculatedOffset)
         case .stopAtEachCalendarFrameWidth:
             #if os(tvOS)
-                let interval = self.direction == .horizontal ?
-                    scrollView.frame.width : scrollView.frame.height
+                let interval = self.scrollDirection == .horizontal ? scrollView.frame.width : scrollView.frame.height
                 let calculatedOffset =
                     calculatedCurrentFixedContentOffsetFrom(interval)
                 setTargetContentOffset(calculatedOffset)
