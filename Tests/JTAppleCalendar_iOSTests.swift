@@ -27,7 +27,7 @@ class JTAppleCalendar_iOSTests: XCTestCase {
     
     func testRangePositionOnProgrammaticDateSelection() {
         let calendarView = JTAppleCalendarView()
-        calendarView.direction = .vertical
+        calendarView.scrollDirection = .vertical
         calendarView.scrollingMode = .none
         calendarView.allowsMultipleSelection = true
         calendarView.cellInset = CGPoint.zero
