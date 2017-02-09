@@ -4,7 +4,7 @@
 
 #### Q: How will my calendar dateCells look with this library?
 **A**: However you want it to look.
-
+### Tutorials now @ [patchthecode.github.io](https://patchthecode.github.io/)
 
 <p align="center">
    <a href="https://github.com/patchthecode/JTAppleCalendar/issues/2">
@@ -15,7 +15,6 @@
    <a href="https://github.com/patchthecode/JTAppleCalendar/issues/2">More Images</a>
 </p>
 
-### Tutorials located @ [patchthecode.github.io](https://patchthecode.github.io/)
 
 ## Features
 ---
