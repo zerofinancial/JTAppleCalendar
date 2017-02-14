@@ -396,7 +396,7 @@ extension JTAppleCalendarView {
         // Reload to call itemAtIndexPath
         if triggerSelectionDelegate == false &&
             !allIndexPathsToReload.isEmpty {
-                delayRunOnMainThread(0.0) {
+                DispatchQueue.main.async {
                     self.batchReloadIndexPaths(allIndexPathsToReload)
                 }
         }
@@ -532,15 +532,15 @@ extension JTAppleCalendarView {
             
             // Jt101 put this into a function to reduce code between
             // this and the scroll to header function
-            delayRunOnMainThread(0.0, closure: {
+            DispatchQueue.main.async {
                 if !isAnimationEnabled {
                     self.scrollViewDidEndScrollingAnimation(self.calendarView)
                 }
                 self.scrollInProgress = false
-            })
+            }
         }
         
-        delayRunOnMainThread(0.0, closure: {
+        DispatchQueue.main.async {
             // This part should be inside the mainRunLoop
             if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) {
                 return
@@ -579,7 +579,7 @@ extension JTAppleCalendarView {
                               position: position,
                               completionHandler: completionHandler)
 
-        })
+        }
     }
     
     func scrollTo(rect: CGRect, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, completionHandler: (() -> Void)?) {

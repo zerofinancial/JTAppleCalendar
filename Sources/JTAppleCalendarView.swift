@@ -506,7 +506,7 @@ open class JTAppleCalendarView: UIView {
         }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         let indexPath = IndexPath(item: 0, section: section)
-        delayRunOnMainThread(0.0) {
+        DispatchQueue.main.async {
             if let attributes = self.calendarView.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) {
                 if let validHandler = completionHandler {
                     self.delayedExecutionClosure.append(validHandler)
@@ -554,7 +554,7 @@ open class JTAppleCalendarView: UIView {
         for indexPath in theSelectedIndexPaths {
             restoreSelectionStateForCellAtIndexPath(indexPath)
         }
-        delayRunOnMainThread(0.0) {
+        DispatchQueue.main.async {
             let scrollToDate = { (date: Date) -> Void in
                 if self.thereAreHeaders {
                     self.scrollToHeaderForDate(
@@ -867,8 +867,8 @@ extension JTAppleCalendarView {
         }
         let date = validDateInfo.date
         let dateBelongsTo = validDateInfo.owner
-        let currentDay = calendar.dateComponents([.day], from: date).day!
         
+        let currentDay = calendar.component(.day, from: date)
         let componentWeekDay = calendar.component(.weekday, from: date)
         let cellText = String(describing: currentDay)
         let dayOfWeek = DaysOfWeek(rawValue: componentWeekDay)!
@@ -1091,18 +1091,14 @@ extension JTAppleCalendarView {
         var dayIndex = 0
         var dateOwner: DateOwner = .thisMonth
         let date: Date?
-        var dateComponents = DateComponents()
         if indexPath.item >= offSet && indexPath.item + numberOfDaysToAddToOffset < monthData.numberOfDaysInMonth + offSet {
             // This is a month date
             dayIndex = monthData.startDayIndex + indexPath.item - offSet + numberOfDaysToAddToOffset
-            dateComponents.day = dayIndex
-            date = calendar.date(byAdding: dateComponents, to: startOfMonthCache)
-            dateOwner = .thisMonth
+            date = calendar.date(byAdding: .day, value: dayIndex, to: startOfMonthCache)
         } else if indexPath.item < offSet {
             // This is a preDate
             dayIndex = indexPath.item - offSet  + monthData.startDayIndex
-            dateComponents.day = dayIndex
-            date = calendar.date(byAdding: dateComponents, to: startOfMonthCache)
+            date = calendar.date(byAdding: .day, value: dayIndex, to: startOfMonthCache)
             if date! < startOfMonthCache {
                 dateOwner = .previousMonthOutsideBoundary
             } else {
@@ -1110,11 +1106,8 @@ extension JTAppleCalendarView {
             }
         } else {
             // This is a postDate
-            dayIndex =  monthData.startDayIndex - offSet +
-                indexPath.item + numberOfDaysToAddToOffset
-            dateComponents.day = dayIndex
-            date = calendar.date(byAdding: dateComponents,
-                                 to: startOfMonthCache)
+            dayIndex =  monthData.startDayIndex - offSet + indexPath.item + numberOfDaysToAddToOffset
+            date = calendar.date(byAdding: .day, value: dayIndex, to: startOfMonthCache)
             if date! > endOfMonthCache {
                 dateOwner = .followingMonthOutsideBoundary
             } else {

@@ -167,7 +167,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 }
             }
             if pathsToReload.count > 0 {
-                delayRunOnMainThread(0.0) {
+                DispatchQueue.main.async {
                     self.batchReloadIndexPaths(pathsToReload)
                 }
             }
@@ -233,7 +233,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             }
         }
         if pathsToReload.count > 0 {
-            delayRunOnMainThread(0.0) {
+            DispatchQueue.main.async {
                 self.batchReloadIndexPaths(pathsToReload)
             }
         }

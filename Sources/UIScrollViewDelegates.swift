@@ -204,11 +204,11 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         case .none: break
         }
         saveLastContentOffset(CGPoint(x: targetContentOffset.pointee.x, y: targetContentOffset.pointee.y))
-        delayRunOnMainThread(0.7) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
             self.calendarView.decelerationRate = cachedDecelerationRate
         }
         
-        delayRunOnMainThread(0.0) {
+        DispatchQueue.main.async {
             self.delegate?.scrollDidEndDecelerating(for: self)
         }
     }
