@@ -146,15 +146,9 @@ open class JTAppleCalendarView: UIView {
             updateLayoutItemSize()
             if calendarViewLayout.itemSize != lastSize {
                 lastSize = calendarViewLayout.itemSize
-                if delegate != nil {
-                    var anInitialCompletionHandler: (() -> Void)?
-                    if finalLoadable == nil { // This will only be set once
-                        finalLoadable = true
-                        anInitialCompletionHandler = {
-                            self.executeDelayedTasks()
-                        }
-                    }
-                    self.reloadData(completionHandler: anInitialCompletionHandler)
+                if finalLoadable == nil, delegate != nil { // This will only be set once
+                    finalLoadable = true
+                    self.reloadData() { self.executeDelayedTasks() }
                 }
             }
         }
@@ -650,9 +644,7 @@ open class JTAppleCalendarView: UIView {
             indexPathsToReselect.append(contentsOf: path)
             if
                 !path.isEmpty,
-                let possibleCounterPartDateIndex =
-                indexPathOfdateCellCounterPart(date, indexPath: path[0],
-                                        dateOwner: DateOwner.thisMonth) {
+                let possibleCounterPartDateIndex = indexPathOfdateCellCounterPart(date, indexPath: path[0], dateOwner: DateOwner.thisMonth) {
                 indexPathsToReselect.append(possibleCounterPartDateIndex)
             }
         }

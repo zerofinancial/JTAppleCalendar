@@ -167,9 +167,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 }
             }
             if pathsToReload.count > 0 {
-                DispatchQueue.main.async {
-                    self.batchReloadIndexPaths(pathsToReload)
-                }
+                self.batchReloadIndexPaths(pathsToReload)
             }
             delegate.calendar(self, didDeselectDate: dateInfoDeselectedByUser.date, cell: selectedCell?.view, cellState: cellState)
         }
@@ -233,9 +231,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             }
         }
         if pathsToReload.count > 0 {
-            DispatchQueue.main.async {
-                self.batchReloadIndexPaths(pathsToReload)
-            }
+            self.batchReloadIndexPaths(pathsToReload)
         }
         delegate.calendar(self, didSelectDate: infoOfDateSelectedByUser.date, cell: selectedCell?.view, cellState: cellState)
     }
