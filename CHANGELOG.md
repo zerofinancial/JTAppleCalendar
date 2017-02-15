@@ -27,6 +27,9 @@ All notable changes to this project will be documented in this file.
 
 ---
 ## [6.1.3](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.3)
+- Fixed - [Incorrect selected position](https://github.com/patchthecode/JTAppleCalendar/issues/280) when using range selection.
+- Behavior change - Changing the frame size no longer automatically reloads the calendar. This should explicitly be done by the developer.
+- Fixed error - [Reloading cells asynchronously](https://github.com/patchthecode/JTAppleCalendar/issues/304) which caused two errors [here](https://github.com/patchthecode/JTAppleCalendar/issues/304) and [here](https://github.com/patchthecode/JTAppleCalendar/issues/277) - JayT
 - Fixed error - [Last saved offset fixed programatically](https://github.com/patchthecode/JTAppleCalendar/pull/276) - by [KyleConway](https://github.com/KyleConway)
 - Fixed error - [visibleDates() function should exclude headers](https://github.com/patchthecode/JTAppleCalendar/pull/278) - by [KyleConway](https://github.com/KyleConway)
 
