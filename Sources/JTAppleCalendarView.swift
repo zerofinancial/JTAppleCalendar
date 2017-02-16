@@ -268,11 +268,11 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    lazy var calendarView: UICollectionView = {
+    lazy var calendarView: CustomCollectionView = {
         let layout = JTAppleCalendarLayout(withDelegate: self)
         layout.scrollDirection = self.scrollDirection
         
-        let cv = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        let cv = CustomCollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         cv.dataSource = self
         cv.delegate = self
         cv.decelerationRate = UIScrollViewDecelerationRateFast
@@ -531,68 +531,65 @@ open class JTAppleCalendarView: UIView {
                     withAnchorDate anchorDate: Date? = nil,
                     withAnimation animation: Bool = false,
                     completionHandler: (() -> Void)? = nil) {
-
+        
         // Reload the datasource
         if check {
             reloadDelegateDataSource()
         }
-        var layoutWasUpdated: Bool?
+        
         if layoutNeedsUpdating {
             self.configureChangeOfRows()
             self.layoutNeedsUpdating = false
-            layoutWasUpdated = true
         }
-        // Reload the data
-        self.calendarView.reloadData()
+        
         // Restore the selected index paths
-        for indexPath in theSelectedIndexPaths {
-            restoreSelectionStateForCellAtIndexPath(indexPath)
+        let restoreSelectedPaths = {
+            for indexPath in self.theSelectedIndexPaths {
+                self.restoreSelectionStateForCellAtIndexPath(indexPath)
+            }
         }
-        DispatchQueue.main.async {
-            let scrollToDate = { (date: Date) -> Void in
+        
+        if let validAnchorDate = anchorDate {
+            // If we have a valid anchor date, this means we want to
+            // scroll
+            // This scroll should happen after the reload above
+            calendarView.completionHandler = {
                 if self.thereAreHeaders {
                     self.scrollToHeaderForDate(
-                        date,
+                        validAnchorDate,
                         triggerScrollToDateDelegate: false,
                         withAnimation: animation,
                         completionHandler: completionHandler)
-                    
                 } else {
-                    self.scrollToDate(date,
+                    self.scrollToDate(validAnchorDate,
                                       triggerScrollToDateDelegate: false,
                                       animateScroll: animation,
                                       completionHandler: completionHandler)
                 }
+                
+                restoreSelectedPaths()
             }
-            if let validAnchorDate = anchorDate {
-                // If we have a valid anchor date, this means we want to
-                // scroll
-                // This scroll should happen after the reload above
-                scrollToDate(validAnchorDate)
+            calendarView.reloadData()
+        } else {
+            guard let validCompletionHandler = completionHandler else {
+                self.calendarView.completionHandler = restoreSelectedPaths
+                self.calendarView.reloadData()
+                return
+            }
+            if self.scrollInProgress {
+                self.delayedExecutionClosure.append({
+                    self.calendarView.completionHandler = {
+                        restoreSelectedPaths()
+                        validCompletionHandler()
+                    }
+                    self.calendarView.reloadData()
+                })
             } else {
-                if layoutWasUpdated == true {
-                    // This is a scroll done after a layout reset and dev
-                    // didnt set an anchor date. If a scroll is in progress,
-                    // then cancel this one and
-                    // allow it to take precedent
-                    if !self.scrollInProgress {
-                        if let validCompletionHandler = completionHandler {
-                            validCompletionHandler()
-                        }
-                    } else {
-                        if let validCompletionHandler = completionHandler {
-                            self.delayedExecutionClosure.append(validCompletionHandler)
-                        }
-                    }
-                } else {
-                    if let validCompletionHandler = completionHandler {
-                        if self.scrollInProgress {
-                            self.delayedExecutionClosure.append(validCompletionHandler)
-                        } else {
-                            validCompletionHandler()
-                        }
-                    }
+                self.calendarView.completionHandler = {
+                    restoreSelectedPaths()
+                    validCompletionHandler()
                 }
+                self.calendarView.reloadData()
             }
         }
     }
@@ -648,6 +645,7 @@ open class JTAppleCalendarView: UIView {
                 indexPathsToReselect.append(possibleCounterPartDateIndex)
             }
         }
+        
         for path in indexPathsToReselect {
             if let date = dateOwnerInfoFromPath(path)?.date {
                 newDates.append(date)
@@ -659,16 +657,14 @@ open class JTAppleCalendarView: UIView {
 
     func calendarViewHeaderSizeForSection(_ section: Int) -> CGSize {
         var retval = CGSize.zero
-        if thereAreHeaders {
-            if
-                let validDate = monthInfoFromSection(section),
-                let size = delegate?.calendar(self, sectionHeaderSizeFor: validDate.range, belongingTo: validDate.month) {
-                    retval = size
-            }
+        if
+            thereAreHeaders,
+            let validDate = monthInfoFromSection(section),
+            let size = delegate?.calendar(self, sectionHeaderSizeFor: validDate.range, belongingTo: validDate.month) {
+                retval = size
         }
         return retval
     }
-
 }
 
 extension JTAppleCalendarView {
