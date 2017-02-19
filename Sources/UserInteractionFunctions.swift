@@ -136,7 +136,7 @@ extension JTAppleCalendarView {
                                        withReuseIdentifier: headerViewXibName)
         }
     }
-
+    
     /// Register header views with the calender. This needs to be
     /// done before header views can be displayed
     /// - Parameter classStringNames: An array of class string names
@@ -151,12 +151,12 @@ extension JTAppleCalendarView {
             self.calendarView.register(
                 JTAppleCollectionReusableView.self,
                 forSupplementaryViewOfKind:
-                    UICollectionElementKindSectionHeader,
+                UICollectionElementKindSectionHeader,
                 withReuseIdentifier: headerViewClassName
             )
         }
     }
-
+    
     /// Register header views with the calender. This needs to be done
     /// before header views can be displayed
     /// - Parameter classTypeNames: An array of class types
@@ -169,12 +169,12 @@ extension JTAppleCalendarView {
             self.calendarView.register(
                 JTAppleCollectionReusableView.self,
                 forSupplementaryViewOfKind:
-                    UICollectionElementKindSectionHeader,
-                    withReuseIdentifier: aClass.description()
+                UICollectionElementKindSectionHeader,
+                withReuseIdentifier: aClass.description()
             )
         }
     }
-
+    
     /// Reloads the data on the calendar view. Scroll delegates are not
     //  triggered with this function.
     /// - Parameter date: An anchordate that the calendar will
@@ -185,18 +185,20 @@ extension JTAppleCalendarView {
     public func reloadData(withAnchor date: Date? = nil,
                            animation: Bool = false,
                            completionHandler: (() -> Void)? = nil) {
+        
         if !calendarIsAlreadyLoaded {
             if let validCompletionHandler = completionHandler {
                 delayedExecutionClosure.append(validCompletionHandler)
             }
             return
         }
+        
         reloadData(checkDelegateDataSource: true,
                    withAnchorDate: date,
                    withAnimation: animation,
                    completionHandler: completionHandler)
     }
-
+    
     /// Reload the date of specified date-cells on the calendar-view
     /// - Parameter dates: Date-cells with these specified
     ///                    dates will be reloaded
@@ -266,8 +268,7 @@ extension JTAppleCalendarView {
                 self.selectDates(
                     dates,
                     triggerSelectionDelegate: triggerSelectionDelegate,
-                    keepSelectionIfMultiSelectionAllowed:
-                        keepSelectionIfMultiSelectionAllowed
+                    keepSelectionIfMultiSelectionAllowed: keepSelectionIfMultiSelectionAllowed
                 )
             }
             return
@@ -284,7 +285,7 @@ extension JTAppleCalendarView {
                 allIndexPathsToReload.append(indexPath)
             } // To avoid adding the  same indexPath twice.
         }
-
+        
         let selectTheDate = {
             (indexPath: IndexPath, date: Date) -> Void in
             self.calendarView.selectItem(at: indexPath, animated: false, scrollPosition: [])
@@ -293,7 +294,6 @@ extension JTAppleCalendarView {
             // handle the reloading of view, else we will reload the data
             if triggerSelectionDelegate {
                 self.collectionView(self.calendarView, didSelectItemAt: indexPath)
-//                self.internalCollectionView(self.calendarView, didSelectItemAtIndexPath: indexPath)
             } else {
                 // Although we do not want the delegate triggered, we
                 // still want counterpart cells to be selected
@@ -314,28 +314,25 @@ extension JTAppleCalendarView {
             addToIndexSetToReload(oldIndexPath)
             if let index = self.theSelectedIndexPaths
                 .index(of: oldIndexPath) {
-                    let oldDate = self.theSelectedDates[index]
-                    self.calendarView.deselectItem(at: oldIndexPath,
-                                                   animated: false)
-                    self.theSelectedIndexPaths.remove(at: index)
-                    self.theSelectedDates.remove(at: index)
-                    // If delegate triggering is enabled, let the
-                    // delegate function handle the cell
-                    if triggerSelectionDelegate {
-                        self.collectionView(self.calendarView, didDeselectItemAt: oldIndexPath)
-//                        self.internalCollectionView(self.calendarView, didDeselectItemAtIndexPath: oldIndexPath)
-                    } else {
-                        // Although we do not want the delegate triggered,
-                        // we still want counterpart cells to be deselected
-                        let cellState =
-                            self.cellStateFromIndexPath(oldIndexPath)
-                                // , withDateInfo: oldDate)
-                        if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
-                            // If there was a counterpart cell then
-                            // it will also need to be reloaded
-                            addToIndexSetToReload(anUnselectedCounterPartIndexPath)
-                        }
+                let oldDate = self.theSelectedDates[index]
+                self.calendarView.deselectItem(at: oldIndexPath,
+                                               animated: false)
+                self.theSelectedIndexPaths.remove(at: index)
+                self.theSelectedDates.remove(at: index)
+                // If delegate triggering is enabled, let the
+                // delegate function handle the cell
+                if triggerSelectionDelegate {
+                    self.collectionView(self.calendarView, didDeselectItemAt: oldIndexPath)
+                } else {
+                    // Although we do not want the delegate triggered,
+                    // we still want counterpart cells to be deselected
+                    let cellState = self.cellStateFromIndexPath(oldIndexPath)
+                    if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
+                        // If there was a counterpart cell then
+                        // it will also need to be reloaded
+                        addToIndexSetToReload(anUnselectedCounterPartIndexPath)
                     }
+                }
             }
         }
         for date in validDatesToSelect {
@@ -372,12 +369,11 @@ extension JTAppleCalendarView {
                 // is enabled, then removed the selected dates from
                 // generated dates
                 if keepSelectionIfMultiSelectionAllowed {
-                    if selectedDates.contains(
-                        calendar.startOfDay(for: date)) {
-                            addToIndexSetToReload(sectionIndexPath)
-                            continue
-                            // Do not deselect or select the cell.
-                            // Just add it to be reloaded
+                    if selectedDates.contains(calendar.startOfDay(for: date)) {
+                        addToIndexSetToReload(sectionIndexPath)
+                        continue
+                        // Do not deselect or select the cell.
+                        // Just add it to be reloaded
                     }
                 }
                 if self.theSelectedIndexPaths.contains(sectionIndexPath) {
@@ -394,14 +390,14 @@ extension JTAppleCalendarView {
         // If triggering was false, although the selectDelegates weren't
         // called, we do want the cell refreshed.
         // Reload to call itemAtIndexPath
-        if triggerSelectionDelegate == false &&
+        if !triggerSelectionDelegate &&
             !allIndexPathsToReload.isEmpty {
-                DispatchQueue.main.async {
-                    self.batchReloadIndexPaths(allIndexPathsToReload)
-                }
+            let visiblePaths = calendarView.indexPathsForVisibleItems
+            self.batchReloadIndexPaths(allIndexPathsToReload.filter { visiblePaths.contains($0)})
+            
         }
     }
-
+    
     /// Scrolls the calendar view to the next section view. It will execute a completion handler at the end of scroll animation if provided.
     /// - Paramater direction: Indicates a direction to scroll
     /// - Paramater animateScroll: Bool indicating if animation should be enabled
@@ -492,7 +488,6 @@ extension JTAppleCalendarView {
             }
             return
         }
-
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
@@ -532,54 +527,48 @@ extension JTAppleCalendarView {
             
             // Jt101 put this into a function to reduce code between
             // this and the scroll to header function
-            DispatchQueue.main.async {
-                if !isAnimationEnabled {
-                    self.scrollViewDidEndScrollingAnimation(self.calendarView)
-                }
-                self.scrollInProgress = false
+            if !isAnimationEnabled {
+                self.scrollViewDidEndScrollingAnimation(self.calendarView)
             }
+            self.scrollInProgress = false
         }
         
-        DispatchQueue.main.async {
-            // This part should be inside the mainRunLoop
-            if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) {
-                return
-            }
-            let retrievedPathsFromDates = self.pathsFromDates([date])
-            guard !retrievedPathsFromDates.isEmpty else { return }
-            let sectionIndexPath =  self.pathsFromDates([date])[0]
-            var position: UICollectionViewScrollPosition = self.scrollDirection == .horizontal ? .left : .top
-            if !self.scrollingMode.pagingIsEnabled() {
-                if let validPosition = preferredScrollPosition {
-                    if self.scrollDirection == .horizontal {
-                        if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
-                            position = validPosition
-                        }
-                    } else {
-                        if validPosition == .top || validPosition == .bottom || validPosition == .centeredVertically {
-                            position = validPosition
-                        }
+        // This part should be inside the mainRunLoop
+        if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) {
+            return
+        }
+        let retrievedPathsFromDates = self.pathsFromDates([date])
+        guard !retrievedPathsFromDates.isEmpty else { return }
+        let sectionIndexPath =  self.pathsFromDates([date])[0]
+        var position: UICollectionViewScrollPosition = self.scrollDirection == .horizontal ? .left : .top
+        if !self.scrollingMode.pagingIsEnabled() {
+            if let validPosition = preferredScrollPosition {
+                if self.scrollDirection == .horizontal {
+                    if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
+                        position = validPosition
+                    }
+                } else {
+                    if validPosition == .top || validPosition == .bottom || validPosition == .centeredVertically {
+                        position = validPosition
                     }
                 }
             }
-            
-            var rect: CGRect?
-            switch self.scrollingMode {
-            case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-                if self.scrollDirection == .horizontal || (self.scrollDirection == .vertical && !self.thereAreHeaders) {
-                    rect = self.targetRectForItemAt(indexPath: sectionIndexPath)
-                }
-            default:
-                break
-            }
-            handleScroll(indexPath: sectionIndexPath,
-                              rect: rect,
-                              triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                              isAnimationEnabled: animateScroll,
-                              position: position,
-                              completionHandler: completionHandler)
-
         }
+        var rect: CGRect?
+        switch self.scrollingMode {
+        case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
+            if self.scrollDirection == .horizontal || (self.scrollDirection == .vertical && !self.thereAreHeaders) {
+                rect = self.targetRectForItemAt(indexPath: sectionIndexPath)
+            }
+        default:
+            break
+        }
+        handleScroll(indexPath: sectionIndexPath,
+                     rect: rect,
+                     triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+                     isAnimationEnabled: animateScroll,
+                     position: position,
+                     completionHandler: completionHandler)
     }
     
     func scrollTo(rect: CGRect, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, completionHandler: (() -> Void)?) {
@@ -587,25 +576,23 @@ extension JTAppleCalendarView {
             self.delayedExecutionClosure.append(validCompletionHandler)
         }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
-        calendarView.scrollRectToVisible(rect, animated: isAnimationEnabled)
-        scrollInProgress = false
+        self.calendarView.scrollRectToVisible(rect, animated: isAnimationEnabled)
+        self.scrollInProgress = false
     }
-
+    
     /// Scrolls the calendar view to the start of a section view header.
     /// If the calendar has no headers registered, then this function does nothing
     /// - Paramater date: The calendar view will scroll to the header of
     /// a this provided date
-    public func scrollToHeaderForDate(_ date: Date, triggerScrollToDateDelegate: Bool = false,
-        withAnimation animation: Bool = false,
-        completionHandler: (() -> Void)? = nil) {
-            let path = pathsFromDates([date])
-            // Return if date was incalid and no path was returned
-            if path.isEmpty { return }
-            scrollToHeaderInSection(
-                path[0].section,
-                triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                withAnimation: animation,
-                completionHandler: completionHandler
+    public func scrollToHeaderForDate(_ date: Date, triggerScrollToDateDelegate: Bool = false, withAnimation animation: Bool = false, completionHandler: (() -> Void)? = nil) {
+        let path = pathsFromDates([date])
+        // Return if date was incalid and no path was returned
+        if path.isEmpty { return }
+        scrollToHeaderInSection(
+            path[0].section,
+            triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+            withAnimation: animation,
+            completionHandler: completionHandler
         )
     }
     

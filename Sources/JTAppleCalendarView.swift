@@ -532,6 +532,8 @@ open class JTAppleCalendarView: UIView {
                     withAnimation animation: Bool = false,
                     completionHandler: (() -> Void)? = nil) {
         
+        self.layoutIfNeeded()
+        
         // Reload the datasource
         if check {
             reloadDelegateDataSource()
@@ -544,8 +546,11 @@ open class JTAppleCalendarView: UIView {
         
         // Restore the selected index paths
         let restoreSelectedPaths = {
-            for indexPath in self.theSelectedIndexPaths {
-                self.restoreSelectionStateForCellAtIndexPath(indexPath)
+            if !self.selectedDates.isEmpty {
+                let selectedDates = self.selectedDates
+                self.theSelectedIndexPaths.removeAll()
+                self.theSelectedDates.removeAll()
+                self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
             }
         }
         
