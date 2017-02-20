@@ -45,15 +45,6 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    var calendarIsAlreadyLoaded: Bool {
-        get {
-            if let alreadyLoaded = finalLoadable, alreadyLoaded {
-                return true
-            }
-            return false
-        }
-    }
-
     /// Configures the size of your date cells
     open var itemSize: CGFloat? {
         didSet {
@@ -145,8 +136,8 @@ open class JTAppleCalendarView: UIView {
             updateLayoutItemSize()
             if calendarViewLayout.itemSize != lastSize {
                 lastSize = calendarViewLayout.itemSize
-                if finalLoadable == nil, delegate != nil { // This will only be set once
-                    finalLoadable = true
+                if !calendarIsAlreadyLoaded, delegate != nil { // This will only be set once
+                    calendarIsAlreadyLoaded = true
                     self.reloadData() { self.executeDelayedTasks() }
                 }
             }
@@ -158,24 +149,18 @@ open class JTAppleCalendarView: UIView {
 
     var delayedExecutionClosure: [(() -> Void)] = []
     var lastSize = CGSize.zero
-    var finalLoadable: Bool?
+    var calendarIsAlreadyLoaded: Bool = false
 
     var startDateCache: Date {
-        get {
-            return cachedConfiguration.startDate
-        }
+        get { return cachedConfiguration.startDate }
     }
 
     var endDateCache: Date {
-        get {
-            return cachedConfiguration.endDate
-        }
+        get { return cachedConfiguration.endDate }
     }
 
     var calendar: Calendar {
-        get {
-            return cachedConfiguration.calendar
-        }
+        get { return cachedConfiguration.calendar }
     }
     // Configuration parameters from the dataSource
     var cachedConfiguration: ConfigurationParameters!
@@ -526,7 +511,7 @@ open class JTAppleCalendarView: UIView {
         }
     }
     
-    func reloadData(checkDelegateDataSource check: Bool,
+    func reloadData(checkDelegateDataSource shouldCheckDelegateDatasource: Bool,
                     withAnchorDate anchorDate: Date? = nil,
                     withAnimation animation: Bool = false,
                     completionHandler: (() -> Void)? = nil) {
@@ -534,17 +519,20 @@ open class JTAppleCalendarView: UIView {
         self.layoutIfNeeded()
         
         // Reload the datasource
-        if check {
+        if shouldCheckDelegateDatasource {
             reloadDelegateDataSource()
         }
         
         if layoutNeedsUpdating {
-            self.configureChangeOfRows()
-            self.layoutNeedsUpdating = false
+            setupMonthInfoAndMap()
+            calendarViewLayout.clearCache()
+            calendarViewLayout.prepare()
+            remapSelectedDatesWithCurrentLayout()
+            layoutNeedsUpdating = false
         }
         
         // Restore the selected index paths
-        let restoreSelectedPaths = {
+        let restoreSelectedPathsAfterReload = {
             if !self.selectedDates.isEmpty {
                 let selectedDates = self.selectedDates
                 self.theSelectedIndexPaths.removeAll()
@@ -571,26 +559,26 @@ open class JTAppleCalendarView: UIView {
                                       completionHandler: completionHandler)
                 }
                 
-                restoreSelectedPaths()
+                restoreSelectedPathsAfterReload()
             }
             calendarView.reloadData()
         } else {
             guard let validCompletionHandler = completionHandler else {
-                self.calendarView.completionHandler = restoreSelectedPaths
+                self.calendarView.completionHandler = restoreSelectedPathsAfterReload
                 self.calendarView.reloadData()
                 return
             }
             if self.scrollInProgress {
                 self.delayedExecutionClosure.append({
                     self.calendarView.completionHandler = {
-                        restoreSelectedPaths()
+                        restoreSelectedPathsAfterReload()
                         validCompletionHandler()
                     }
                     self.calendarView.reloadData()
                 })
             } else {
                 self.calendarView.completionHandler = {
-                    restoreSelectedPaths()
+                    restoreSelectedPathsAfterReload()
                     validCompletionHandler()
                 }
                 self.calendarView.reloadData()
@@ -625,20 +613,16 @@ open class JTAppleCalendarView: UIView {
                 newDateBoundary.generateOutDates != cachedConfiguration.generateOutDates ||
                 newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek ||
                 newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries {
-                        setupMonthInfoAndMap()
                         layoutNeedsUpdating = true
             }
         }
     }
 
-    func configureChangeOfRows() {
-        let layout = calendarViewLayout
-        layout.clearCache()
-        layout.prepare()
+    func remapSelectedDatesWithCurrentLayout() {
         // the selected dates and paths will be retained. Ones that
         // are not available on the new layout will be removed.
         var indexPathsToReselect = [IndexPath]()
-        var newDates = [Date]()
+        
         for date in selectedDates {
             // add the index paths of the new layout
             let path = pathsFromDates([date])
@@ -650,12 +634,8 @@ open class JTAppleCalendarView: UIView {
             }
         }
         
-        for path in indexPathsToReselect {
-            if let date = dateOwnerInfoFromPath(path)?.date {
-                newDates.append(date)
-            }
-        }
-        theSelectedDates = newDates
+
+        theSelectedDates = indexPathsToReselect.flatMap { return  dateOwnerInfoFromPath($0)?.date }
         theSelectedIndexPaths = indexPathsToReselect
     }
 
