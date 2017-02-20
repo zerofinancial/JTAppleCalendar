@@ -199,15 +199,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 return
         }
         
-        // If the date is not within valid boundaries, then exit
-        let components = calendar.dateComponents([.year, .month, .day], from: infoOfDateSelectedByUser.date)
-        guard
-            let firstDayOfDate = calendar.date(from: components),
-            firstDayOfDate >= startOfMonthCache! && firstDayOfDate <= endOfMonthCache! else {
-                return
-        }
-        
-        
+    
         // index paths to be reloaded should be index to the left and right of the selected index
         let indexPathsToReload = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
         
