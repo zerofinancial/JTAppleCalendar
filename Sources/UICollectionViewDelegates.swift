@@ -91,7 +91,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         }
         cell.setupView(cellViewSource, leftToRightOrientation: orientation)
         cell.updateCellView(cellInset.x, cellInsetY: cellInset.y)
-        cell.bounds.origin = CGPoint(x: 0, y: 0)
+//        cell.bounds.origin = CGPoint(x: 0, y: 0)
         let cellState = cellStateFromIndexPath(indexPath)
         delegate?.calendar(self, willDisplayCell:
             cell.view!, date: cellState.date, cellState: cellState)

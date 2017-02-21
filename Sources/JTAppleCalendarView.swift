@@ -123,8 +123,14 @@ open class JTAppleCalendarView: UIView {
     
     /// Informs when change in orientation
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        if calendarIsAlreadyLoaded {
-            setMinVisibleDate()
+        if previousTraitCollection != nil { orientationJustChanged = true }
+    }
+    
+    var orientationJustChanged = false {
+        didSet {
+            if orientationJustChanged && calendarIsAlreadyLoaded {
+                setMinVisibleDate()
+            }
         }
     }
 
@@ -139,8 +145,10 @@ open class JTAppleCalendarView: UIView {
                 if !calendarIsAlreadyLoaded, delegate != nil { // This will only be set once
                     calendarIsAlreadyLoaded = true
                     self.reloadData() { self.executeDelayedTasks() }
+                    return
                 }
             }
+            if orientationJustChanged { reloadData() }
         }
     }
 
@@ -529,10 +537,15 @@ open class JTAppleCalendarView: UIView {
             calendarViewLayout.prepare()
             remapSelectedDatesWithCurrentLayout()
             layoutNeedsUpdating = false
+            orientationJustChanged = false
         }
         
         // Restore the selected index paths
-        let restoreSelectedPathsAfterReload = {
+        let restoreAfterReload = {
+            // The bounds of visible cells might have shifted, so reset them
+            for cell in self.calendarView.visibleCells { cell.bounds.origin = CGPoint(x: 0, y: 0) }
+            
+            // Re-select the dates that were selected prior to the reload
             if !self.selectedDates.isEmpty {
                 let selectedDates = self.selectedDates
                 self.theSelectedIndexPaths.removeAll()
@@ -559,26 +572,26 @@ open class JTAppleCalendarView: UIView {
                                       completionHandler: completionHandler)
                 }
                 
-                restoreSelectedPathsAfterReload()
+                restoreAfterReload()
             }
             calendarView.reloadData()
         } else {
             guard let validCompletionHandler = completionHandler else {
-                self.calendarView.completionHandler = restoreSelectedPathsAfterReload
+                self.calendarView.completionHandler = restoreAfterReload
                 self.calendarView.reloadData()
                 return
             }
             if self.scrollInProgress {
                 self.delayedExecutionClosure.append({
                     self.calendarView.completionHandler = {
-                        restoreSelectedPathsAfterReload()
+                        restoreAfterReload()
                         validCompletionHandler()
                     }
                     self.calendarView.reloadData()
                 })
             } else {
                 self.calendarView.completionHandler = {
-                    restoreSelectedPathsAfterReload()
+                    restoreAfterReload()
                     validCompletionHandler()
                 }
                 self.calendarView.reloadData()
