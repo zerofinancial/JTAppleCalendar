@@ -899,12 +899,14 @@ extension JTAppleCalendarView {
     }
 
     func batchReloadIndexPaths(_ indexPaths: [IndexPath]) {
-        if indexPaths.isEmpty { return }
+        let visiblePaths = calendarView.indexPathsForVisibleItems
+        let pathsToReload = indexPaths.filter { visiblePaths.contains($0)}
+        if pathsToReload.isEmpty { return }
         
         UICollectionView.performWithoutAnimation {
             self.calendarView.performBatchUpdates({
-                self.calendarView.reloadItems(at: indexPaths)
-                }, completion: nil)
+                self.calendarView.reloadItems(at: pathsToReload)
+            }, completion: nil)
         }
     }
 
