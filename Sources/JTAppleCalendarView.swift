@@ -86,9 +86,9 @@ open class JTAppleCalendarView: UIView {
     /// refreshing of the date-cells both left and right of the cell you
     /// just selected.
     open var rangeSelectionWillBeUsed = false
+    // Keeps track of item size for a section. This is an optimization
     var lastSavedContentOffset: CGFloat = 0.0
     var triggerScrollToDateDelegate: Bool? = true
-    // Keeps track of item size for a section. This is an optimization
     var scrollInProgress = false
     var calendarViewLayout: JTAppleCalendarLayout {
         get {
@@ -125,6 +125,7 @@ open class JTAppleCalendarView: UIView {
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         if calendarIsAlreadyLoaded {
             setMinVisibleDate()
+            layoutNeedsUpdating = true
             reloadData()
         }
     }
@@ -297,7 +298,6 @@ open class JTAppleCalendarView: UIView {
         let size = CGSize(width: width, height: height)
 
         if lastSize != size {
-            layout.invalidateLayout()
             layoutNeedsUpdating = true
             layout.itemSize = size
         }
@@ -378,7 +378,7 @@ open class JTAppleCalendarView: UIView {
         }
     }
     
-    func targetRectForItemAt(indexPath: IndexPath) -> CGRect? {
+    func targetPointForItemAt(indexPath: IndexPath) -> CGPoint? {
         
         guard let targetCellFrame = self.calendarView.layoutAttributesForItem(at: indexPath)?.frame else {
             return nil
@@ -386,7 +386,6 @@ open class JTAppleCalendarView: UIView {
         
         let theTargetContentOffset: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
         var fixedScrollSize: CGFloat = 0
-        var retval: CGRect?
         switch scrollingMode {
         case .stopAtEachSection, .stopAtEachCalendarFrameWidth:
             if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !thereAreHeaders) {
@@ -394,7 +393,7 @@ open class JTAppleCalendarView: UIView {
                 // Vertical with no header has fixed height
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             } else {
-                // JT101 will remodel this code. Just a quick fix 
+                // JT101 will remodel this code. Just a quick fix
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             }
         case .stopAtEach(customInterval: let customVal):
@@ -404,17 +403,15 @@ open class JTAppleCalendarView: UIView {
         }
         
         let section = CGFloat(Int(theTargetContentOffset / fixedScrollSize))
-        let destinationRectOffset = fixedScrollSize * section
-        var x: CGFloat = 0
-        var y: CGFloat = 0
+        let destinationRectOffset = (fixedScrollSize * section) + 1
+        var x: CGFloat = 1
+        var y: CGFloat = 1
         if scrollDirection == .horizontal {
             x = destinationRectOffset
         } else {
             y = destinationRectOffset
         }
-        retval = CGRect(x: x, y: y, width: calendarView.frame.width, height: calendarView.frame.height)
-        
-        return retval
+        return CGPoint(x: x, y: y)
     }
 
     func calendarOffsetIsAlreadyAtScrollPosition(forOffset offset: CGPoint) -> Bool {
@@ -517,16 +514,18 @@ open class JTAppleCalendarView: UIView {
                     withAnimation animation: Bool = false,
                     completionHandler: (() -> Void)? = nil) {
         
-        self.setNeedsLayout()
+        
         
         // Reload the datasource
         if shouldCheckDelegateDatasource {
             reloadDelegateDataSource()
         }
         
+        self.layoutIfNeeded()
+        
         if layoutNeedsUpdating {
-            setupMonthInfoAndMap()
             calendarViewLayout.clearCache()
+            setupMonthInfoAndMap()
             calendarViewLayout.prepare()
             remapSelectedDatesWithCurrentLayout()
             layoutNeedsUpdating = false
