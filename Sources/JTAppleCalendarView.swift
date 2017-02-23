@@ -123,14 +123,9 @@ open class JTAppleCalendarView: UIView {
     
     /// Informs when change in orientation
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        if previousTraitCollection != nil { orientationJustChanged = true }
-    }
-    
-    var orientationJustChanged = false {
-        didSet {
-            if orientationJustChanged && calendarIsAlreadyLoaded {
-                setMinVisibleDate()
-            }
+        if calendarIsAlreadyLoaded {
+            setMinVisibleDate()
+            reloadData()
         }
     }
 
@@ -148,7 +143,6 @@ open class JTAppleCalendarView: UIView {
                     return
                 }
             }
-            if orientationJustChanged { reloadData() }
         }
     }
 
@@ -537,21 +531,26 @@ open class JTAppleCalendarView: UIView {
             calendarViewLayout.prepare()
             remapSelectedDatesWithCurrentLayout()
             layoutNeedsUpdating = false
-            orientationJustChanged = false
+        }
+        
+        // Re-select the dates that were selected prior to the reload
+        if !selectedDates.isEmpty {
+            let selectedDates = self.selectedDates
+            var pathsAndCounterPaths = self.pathsFromDates(selectedDates)
+            
+            for date in selectedDates {
+                if let counterPath = self.indexPathOfdateCellCounterPart(date, dateOwner: .thisMonth) {
+                    pathsAndCounterPaths.append(counterPath)
+                }
+            }
+            
+            self.theSelectedIndexPaths = pathsAndCounterPaths
         }
         
         // Restore the selected index paths
         let restoreAfterReload = {
             // The bounds of visible cells might have shifted, so reset them
             for cell in self.calendarView.visibleCells { cell.bounds.origin = CGPoint(x: 0, y: 0) }
-            
-            // Re-select the dates that were selected prior to the reload
-            if !self.selectedDates.isEmpty {
-                let selectedDates = self.selectedDates
-                self.theSelectedIndexPaths.removeAll()
-                self.theSelectedDates.removeAll()
-                self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
-            }
         }
         
         if let validAnchorDate = anchorDate {
