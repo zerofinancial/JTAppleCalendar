@@ -298,7 +298,6 @@ open class JTAppleCalendarView: UIView {
 
         if lastSize != size {
             layout.invalidateLayout()
-            layout.clearCache()
             layoutNeedsUpdating = true
             layout.itemSize = size
         }

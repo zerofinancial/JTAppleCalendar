@@ -14,7 +14,6 @@ class CustomCollectionView: UICollectionView {
         guard let completionHandler = completionHandler else { return }
         self.completionHandler = nil
         completionHandler()
-        
     }
 }
 
