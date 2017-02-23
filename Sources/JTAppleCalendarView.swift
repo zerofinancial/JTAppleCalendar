@@ -524,7 +524,7 @@ open class JTAppleCalendarView: UIView {
                     withAnimation animation: Bool = false,
                     completionHandler: (() -> Void)? = nil) {
         
-        self.layoutIfNeeded()
+        self.setNeedsLayout()
         
         // Reload the datasource
         if shouldCheckDelegateDatasource {
@@ -642,7 +642,7 @@ open class JTAppleCalendarView: UIView {
             indexPathsToReselect.append(contentsOf: path)
             if
                 !path.isEmpty,
-                let possibleCounterPartDateIndex = indexPathOfdateCellCounterPart(date, indexPath: path[0], dateOwner: DateOwner.thisMonth) {
+                let possibleCounterPartDateIndex = indexPathOfdateCellCounterPart(date, dateOwner: DateOwner.thisMonth) {
                 indexPathsToReselect.append(possibleCounterPartDateIndex)
             }
         }
@@ -667,7 +667,6 @@ open class JTAppleCalendarView: UIView {
 extension JTAppleCalendarView {
 
     func indexPathOfdateCellCounterPart(_ date: Date,
-                                        indexPath: IndexPath,
                                         dateOwner: DateOwner) -> IndexPath? {
         if (cachedConfiguration.generateInDates == .off ||
             cachedConfiguration.generateInDates == .forFirstMonthOnly) &&
@@ -926,7 +925,7 @@ extension JTAppleCalendarView {
 
     func deselectCounterPartCellIndexPath(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
         if let counterPartCellIndexPath =
-            indexPathOfdateCellCounterPart(date, indexPath: indexPath,
+            indexPathOfdateCellCounterPart(date,
                                            dateOwner: dateOwner) {
             deleteCellFromSelectedSetIfSelected(counterPartCellIndexPath)
             return counterPartCellIndexPath
@@ -935,7 +934,7 @@ extension JTAppleCalendarView {
     }
 
     func selectCounterPartCellIndexPathIfExists(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
-        if let counterPartCellIndexPath = indexPathOfdateCellCounterPart(date, indexPath: indexPath, dateOwner: dateOwner) {
+        if let counterPartCellIndexPath = indexPathOfdateCellCounterPart(date, dateOwner: dateOwner) {
             let dateComps = calendar.dateComponents([.month, .day, .year], from: date)
             guard let counterpartDate = calendar.date(from: dateComps) else {
                 return nil

@@ -212,7 +212,6 @@ extension JTAppleCalendarView {
                 if let validCounterPartCell =
                     indexPathOfdateCellCounterPart(
                         date,
-                        indexPath: aPath[0],
                         dateOwner: cellState.dateBelongsTo) {
                     paths.append(validCounterPartCell)
                 }
