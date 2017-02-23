@@ -54,12 +54,19 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
+    
+    
+    @available(*, deprecated: 6.1.2, message: "use 'scrollDirection' instead")
+    /// The scroll direction of the sections in JTAppleCalendar.
+    open var direction: UICollectionViewScrollDirection {
+        set { scrollDirection = direction }
+        get { return scrollDirection }
+    }
+    
     /// The scroll direction of the sections in JTAppleCalendar.
     open var scrollDirection: UICollectionViewScrollDirection = .horizontal {
         didSet {
-            if oldValue == scrollDirection {
-                return
-            }
+            if oldValue == scrollDirection { return }
             calendarViewLayout.scrollDirection = scrollDirection
             layoutNeedsUpdating = true
         }
