@@ -148,7 +148,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             var pathsToReload = indexPathsToReload
             let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell
             if selectedCell == nil {
-                pathsToReload.append(indexPath)
+                calendarView.reloadItems(at: [indexPath])
             }
             // Cell may be nil if user switches month sections
             // Although the cell may be nil, we still want to
