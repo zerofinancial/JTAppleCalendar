@@ -12,8 +12,9 @@ class CustomCollectionView: UICollectionView {
     override func layoutSubviews() {
         super.layoutSubviews()
         guard let completionHandler = completionHandler else { return }
-        completionHandler()
         self.completionHandler = nil
+        completionHandler()
+        
     }
 }
 
