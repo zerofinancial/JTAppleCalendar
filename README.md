@@ -53,7 +53,7 @@ platform :ios, '10.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'JTAppleCalendar', '~> 6.0'
+    pod 'JTAppleCalendar', '~> 6.1'
 end
 ```
 
