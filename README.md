@@ -83,7 +83,7 @@ If you're new to CocoaPods, simply search how to integrate Cocoapods into your p
 
 target 'test' do
   use_frameworks!
-  pod 'JTAppleCalendar', '~> 6.0'
+  pod 'JTAppleCalendar', '~> 6.1'
 end
 ```
 
@@ -103,7 +103,7 @@ $ brew install carthage
 To integrate JTAppleCalendar into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "patchthecode/JTAppleCalendar" ~> 6.0
+github "patchthecode/JTAppleCalendar" ~> 6.1
 ```
 
 Run `carthage update` to build the framework and drag the built `JTApplecalendar.framework` into your Xcode project.
