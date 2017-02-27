@@ -743,20 +743,18 @@ extension JTAppleCalendarView {
                 let monthSectionIndex = periodApart.month!
                 if monthSectionIndex + 1 >= monthInfo.count {
                     return retval
-                }// If there is no following months,
-                 // there are no counterpart dates
-
+                }
+                
+                // If there is no following months, there are no counterpart dates
                 let followingMonthInfo = monthInfo[monthSectionIndex + 1]
                 if followingMonthInfo.inDates < 1 {
                     return retval
-                } // If there are no predates for the following month,
-                  // then there are no counterpart dates
+                }
+                // If there are no predates for the following month then there are no counterpart dates
                 let lastDateOfCurrentMonth = calendar.endOfMonth(for: date)!
-                let lastDay = calendar.component(.day,
-                                                 from: lastDateOfCurrentMonth)
+                let lastDay = calendar.component(.day, from: lastDateOfCurrentMonth)
                 let section = followingMonthInfo.startSection
-                let index = dayIndex - lastDay +
-                    (followingMonthInfo.inDates - 1)
+                let index = dayIndex - lastDay + (followingMonthInfo.inDates - 1)
                 if index < 0 {
                     return retval
                 }
