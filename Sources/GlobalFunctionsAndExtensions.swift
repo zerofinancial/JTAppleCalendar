@@ -10,6 +10,7 @@ extension Calendar {
     static let formatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy MM dd"
+        dateFormatter.isLenient = true
         return dateFormatter
     }()
     
