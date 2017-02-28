@@ -415,8 +415,7 @@ extension JTAppleCalendarView {
             } else {
                 fixedScrollSize = calendarView.frame.width
             }
-            xOffset = calendarView.contentOffset.x
-            let section = CGFloat(Int(xOffset / fixedScrollSize))
+            let section = CGFloat(Int(calendarView.contentOffset.x / fixedScrollSize))
             xOffset = (fixedScrollSize * section)
             switch destination {
             case .next:
@@ -427,6 +426,12 @@ extension JTAppleCalendarView {
                 xOffset = calendarView.contentSize.width - calendarView.frame.width
             case .start:
                 xOffset = 0
+            }
+            
+            if xOffset <= 0 {
+                xOffset = 0
+            } else if xOffset >= calendarView.contentSize.width - calendarView.frame.width {
+                xOffset = calendarView.contentSize.width - calendarView.frame.width
             }
         } else {
             if thereAreHeaders {
@@ -451,10 +456,15 @@ extension JTAppleCalendarView {
                 }
                 return
             } else {
-                yOffset = calendarView.contentOffset.y
                 fixedScrollSize = calendarView.frame.height
-                let section = CGFloat(Int(yOffset / fixedScrollSize))
+                let section = CGFloat(Int(calendarView.contentOffset.y / fixedScrollSize))
                 yOffset = (fixedScrollSize * section) + fixedScrollSize
+            }
+            
+            if yOffset <= 0 {
+                yOffset = 0
+            } else if yOffset >= calendarView.contentSize.height - calendarView.frame.height {
+                yOffset = calendarView.contentSize.height - calendarView.frame.height
             }
         }
         
@@ -578,7 +588,7 @@ extension JTAppleCalendarView {
     }
     
     func scrollTo(rect: CGRect, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, completionHandler: (() -> Void)?) {
-        scrollTo(point: CGPoint(x: rect.origin.x, y: rect.origin.y), isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
+        scrollTo(point: CGPoint(x: rect.origin.x, y: rect.origin.y), triggerScrollToDateDelegate: triggerScrollToDateDelegate, isAnimationEnabled: isAnimationEnabled, completionHandler: completionHandler)
     }
     
     /// Scrolls the calendar view to the start of a section view header.

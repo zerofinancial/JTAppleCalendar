@@ -68,6 +68,7 @@ open class JTAppleCalendarView: UIView {
         didSet {
             if oldValue == scrollDirection { return }
             calendarViewLayout.scrollDirection = scrollDirection
+            updateLayoutItemSize()
             layoutNeedsUpdating = true
         }
     }
