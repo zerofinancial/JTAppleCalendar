@@ -198,7 +198,6 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 return
         }
         
-    
         // index paths to be reloaded should be index to the left and right of the selected index
         let indexPathsToReload = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
         

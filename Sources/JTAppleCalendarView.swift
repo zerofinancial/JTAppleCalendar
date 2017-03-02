@@ -550,13 +550,14 @@ open class JTAppleCalendarView: UIView {
                 }
             }
             
-            self.theSelectedIndexPaths = pathsAndCounterPaths
+            theSelectedIndexPaths = pathsAndCounterPaths
         }
         
         // Restore the selected index paths
         let restoreAfterReload = {
             // The bounds of visible cells might have shifted, so reset them
             for cell in self.calendarView.visibleCells { cell.bounds.origin = CGPoint(x: 0, y: 0) }
+            for indexPath in self.theSelectedIndexPaths { self.restoreSelectionStateForCellAtIndexPath(indexPath) }
         }
         
         if let validAnchorDate = anchorDate {
