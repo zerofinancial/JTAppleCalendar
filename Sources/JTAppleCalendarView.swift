@@ -411,9 +411,9 @@ open class JTAppleCalendarView: UIView {
         }
         
         let section = CGFloat(Int(theTargetContentOffset / fixedScrollSize))
-        let destinationRectOffset = (fixedScrollSize * section) + 1
-        var x: CGFloat = 1
-        var y: CGFloat = 1
+        let destinationRectOffset = (fixedScrollSize * section)
+        var x: CGFloat = 0
+        var y: CGFloat = 0
         if scrollDirection == .horizontal {
             x = destinationRectOffset
         } else {
