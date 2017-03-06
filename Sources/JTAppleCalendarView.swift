@@ -262,7 +262,7 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    weak var calendarView: CustomCollectionView!
+    var calendarView: CustomCollectionView!
     
 
     fileprivate func updateLayoutItemSize() {
