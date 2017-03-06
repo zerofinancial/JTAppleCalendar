@@ -83,8 +83,7 @@ open class JTAppleCalendarView: UIView {
     /// Enables/Disables multiple selection on JTAppleCalendar
     open var allowsMultipleSelection: Bool = false {
         didSet {
-            self.calendarView.allowsMultipleSelection =
-            allowsMultipleSelection
+            calendarView.allowsMultipleSelection = allowsMultipleSelection
         }
     }
 
@@ -124,7 +123,7 @@ open class JTAppleCalendarView: UIView {
 
     /// Lays out subviews.
     override open func layoutSubviews() {
-        self.frame = super.frame
+        frame = super.frame
     }
     
     var lastIndexOffset: (IndexPath, UICollectionElementCategory)?
@@ -142,13 +141,15 @@ open class JTAppleCalendarView: UIView {
     /// its superview coordinate system.
     override open var frame: CGRect {
         didSet {
-            calendarView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
+            calendarView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
             updateLayoutItemSize()
             if calendarViewLayout.itemSize != lastSize {
                 lastSize = calendarViewLayout.itemSize
                 if !calendarIsAlreadyLoaded, delegate != nil { // This will only be set once
                     calendarIsAlreadyLoaded = true
-                    self.reloadData() { self.executeDelayedTasks() }
+                    reloadData() {[unowned self] in
+                        self.executeDelayedTasks()
+                    }
                     return
                 }
             }
@@ -263,7 +264,7 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    lazy var calendarView: CustomCollectionView = {
+    lazy var calendarView: CustomCollectionView = {[unowned self] in
         let layout = JTAppleCalendarLayout(withDelegate: self)
         layout.scrollDirection = self.scrollDirection
         
@@ -292,11 +293,11 @@ open class JTAppleCalendarView: UIView {
         // Invalidate the layout
 
         // Default Item height
-        var height: CGFloat = (self.calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows)
+        var height: CGFloat = (calendarView.bounds.size.height - layout.headerReferenceSize.height) / CGFloat(cachedConfiguration.numberOfRows)
         // Default Item width
-        var width: CGFloat = self.calendarView.bounds.size.width / CGFloat(maxNumberOfDaysInWeek)
+        var width: CGFloat = calendarView.bounds.size.width / CGFloat(maxNumberOfDaysInWeek)
 
-        if let userSetItemSize = self.itemSize {
+        if let userSetItemSize = itemSize {
             if scrollDirection == .vertical {
                 height = userSetItemSize
             } else {
@@ -320,7 +321,7 @@ open class JTAppleCalendarView: UIView {
     /// view object with the specified frame rectangle.
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        self.initialSetup()
+        initialSetup()
     }
 
     func developerError(string: String) {
@@ -338,23 +339,19 @@ open class JTAppleCalendarView: UIView {
     /// Prepares the receiver for service after it has been loaded
     /// from an Interface Builder archive, or nib file.
     override open func awakeFromNib() {
-        self.initialSetup()
+        initialSetup()
     }
 
     // MARK: Setup
     func initialSetup() {
-        self.clipsToBounds = true
-        self.calendarView.register(JTAppleDayCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
-        self.addSubview(self.calendarView)
+        clipsToBounds = true
+        calendarView.register(JTAppleDayCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
+        addSubview(calendarView)
     }
 
     func restoreSelectionStateForCellAtIndexPath(_ indexPath: IndexPath) {
         if theSelectedIndexPaths.contains(indexPath) {
-            calendarView.selectItem(
-                at: indexPath,
-                animated: false,
-                scrollPosition: UICollectionViewScrollPosition()
-            )
+            calendarView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition())
         }
     }
 
@@ -374,29 +371,26 @@ open class JTAppleCalendarView: UIView {
     
     func scrollTo(indexPath: IndexPath, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, completionHandler: (() -> Void)?) {
         if let validCompletionHandler = completionHandler {
-            self.delayedExecutionClosure.append(validCompletionHandler)
+            delayedExecutionClosure.append(validCompletionHandler)
         }
-        self.calendarView.scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
+        calendarView.scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
         if isAnimationEnabled {
             if calendarOffsetIsAlreadyAtScrollPosition(forIndexPath: indexPath) {
-                self.scrollViewDidEndScrollingAnimation(self.calendarView)
-                self.scrollInProgress = false
+                scrollViewDidEndScrollingAnimation(calendarView)
+                scrollInProgress = false
                 return
             }
         }
     }
     
     func targetPointForItemAt(indexPath: IndexPath) -> CGPoint? {
-        
-        guard let targetCellFrame = self.calendarView.layoutAttributesForItem(at: indexPath)?.frame else {
-            return nil
-        }
+        guard let targetCellFrame = calendarView.layoutAttributesForItem(at: indexPath)?.frame else { return nil }
         
         let theTargetContentOffset: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
         var fixedScrollSize: CGFloat = 0
         switch scrollingMode {
         case .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-            if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !thereAreHeaders) {
+            if scrollDirection == .horizontal || (scrollDirection == .vertical && !thereAreHeaders) {
                 // Horizontal has a fixed width.
                 // Vertical with no header has fixed height
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
@@ -447,7 +441,7 @@ open class JTAppleCalendarView: UIView {
         // is already on the screen, then the didFinishScrollingAnimation
         // delegate will not get called. Once animation is on let's force
         // a scroll so the delegate MUST get caalled
-        if let attributes = self.calendarView.layoutAttributesForItem(at: indexPath) {
+        if let attributes = calendarView.layoutAttributesForItem(at: indexPath) {
             let layoutOffset: CGFloat
             let calendarOffset: CGFloat
             if scrollDirection == .horizontal {
@@ -466,15 +460,13 @@ open class JTAppleCalendarView: UIView {
     /// Changes the calendar reading direction
     public func changeVisibleDirection(to orientation: ReadingOrientation) {
         if !calendarIsAlreadyLoaded {
-            delayedExecutionClosure.append {
+            delayedExecutionClosure.append {[unowned self] in
                 self.changeVisibleDirection(to: orientation)
             }
             return
         }
         
-        if orientation == self.orientation {
-            return
-        }
+        if orientation == orientation { return }
         
         self.orientation = orientation
         calendarView.transform.a = orientation == .leftToRight ? 1 : -1
@@ -495,11 +487,9 @@ open class JTAppleCalendarView: UIView {
                 if let validHandler = completionHandler {
                     self.delayedExecutionClosure.append(validHandler)
                 }
-                let topOfHeader = CGPoint(x: attributes.frame.origin.x,
-                                          y: attributes.frame.origin.y)
+                let topOfHeader = CGPoint(x: attributes.frame.origin.x, y: attributes.frame.origin.y)
                 self.scrollInProgress = true
-                self.calendarView.setContentOffset(topOfHeader,
-                                                   animated: animation)
+                self.calendarView.setContentOffset(topOfHeader, animated: animation)
                 if !animation {
                     self.scrollViewDidEndScrollingAnimation(self.calendarView)
                 } else {
@@ -522,14 +512,12 @@ open class JTAppleCalendarView: UIView {
                     withAnimation animation: Bool = false,
                     completionHandler: (() -> Void)? = nil) {
         
-        
-        
         // Reload the datasource
         if shouldCheckDelegateDatasource {
             reloadDelegateDataSource()
         }
         
-        self.layoutIfNeeded()
+        layoutIfNeeded()
         
         if layoutNeedsUpdating {
             calendarViewLayout.clearCache()
@@ -542,10 +530,10 @@ open class JTAppleCalendarView: UIView {
         // Re-select the dates that were selected prior to the reload
         if !selectedDates.isEmpty {
             let selectedDates = self.selectedDates
-            var pathsAndCounterPaths = self.pathsFromDates(selectedDates)
+            var pathsAndCounterPaths = pathsFromDates(selectedDates)
             
             for date in selectedDates {
-                if let counterPath = self.indexPathOfdateCellCounterPart(date, dateOwner: .thisMonth) {
+                if let counterPath = indexPathOfdateCellCounterPart(date, dateOwner: .thisMonth) {
                     pathsAndCounterPaths.append(counterPath)
                 }
             }
@@ -554,7 +542,7 @@ open class JTAppleCalendarView: UIView {
         }
         
         // Restore the selected index paths
-        let restoreAfterReload = {
+        let restoreAfterReload = {[unowned self] in
             // The bounds of visible cells might have shifted, so reset them
             for cell in self.calendarView.visibleCells { cell.bounds.origin = CGPoint(x: 0, y: 0) }
             for indexPath in self.theSelectedIndexPaths { self.restoreSelectionStateForCellAtIndexPath(indexPath) }
@@ -564,7 +552,7 @@ open class JTAppleCalendarView: UIView {
             // If we have a valid anchor date, this means we want to
             // scroll
             // This scroll should happen after the reload above
-            calendarView.completionHandler = {
+            calendarView.completionHandler = {[unowned self] in
                 if self.thereAreHeaders {
                     self.scrollToHeaderForDate(
                         validAnchorDate,
@@ -583,24 +571,24 @@ open class JTAppleCalendarView: UIView {
             calendarView.reloadData()
         } else {
             guard let validCompletionHandler = completionHandler else {
-                self.calendarView.completionHandler = restoreAfterReload
-                self.calendarView.reloadData()
+                calendarView.completionHandler = restoreAfterReload
+                calendarView.reloadData()
                 return
             }
-            if self.scrollInProgress {
-                self.delayedExecutionClosure.append({
+            if scrollInProgress {
+                delayedExecutionClosure.append {[unowned self] in
                     self.calendarView.completionHandler = {
                         restoreAfterReload()
                         validCompletionHandler()
                     }
                     self.calendarView.reloadData()
-                })
+                }
             } else {
-                self.calendarView.completionHandler = {
+                calendarView.completionHandler = {
                     restoreAfterReload()
                     validCompletionHandler()
                 }
-                self.calendarView.reloadData()
+                calendarView.reloadData()
             }
         }
     }
@@ -907,23 +895,23 @@ extension JTAppleCalendarView {
         if pathsToReload.isEmpty { return }
         
         UICollectionView.performWithoutAnimation {
-            self.calendarView.performBatchUpdates({
+            self.calendarView.performBatchUpdates({[unowned self] in
                 self.calendarView.reloadItems(at: pathsToReload)
-            }, completion: nil)
+            })
         }
     }
 
     func addCellToSelectedSetIfUnselected(_ indexPath: IndexPath, date: Date) {
-        if self.theSelectedIndexPaths.contains(indexPath) == false {
-            self.theSelectedIndexPaths.append(indexPath)
-            self.theSelectedDates.append(date)
+        if theSelectedIndexPaths.contains(indexPath) == false {
+            theSelectedIndexPaths.append(indexPath)
+            theSelectedDates.append(date)
         }
     }
 
     func deleteCellFromSelectedSetIfSelected(_ indexPath: IndexPath) {
-        if let index = self.theSelectedIndexPaths.index(of: indexPath) {
-            self.theSelectedIndexPaths.remove(at: index)
-            self.theSelectedDates.remove(at: index)
+        if let index = theSelectedIndexPaths.index(of: indexPath) {
+            theSelectedIndexPaths.remove(at: index)
+            theSelectedDates.remove(at: index)
         }
     }
 
