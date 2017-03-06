@@ -178,8 +178,6 @@ extension JTAppleCalendarView {
     public func reloadData(withAnchor date: Date? = nil,
                            animation: Bool = false,
                            completionHandler: (() -> Void)? = nil) {
-        return
-        print("")
         
         if !calendarIsAlreadyLoaded {
             if let validCompletionHandler = completionHandler {
