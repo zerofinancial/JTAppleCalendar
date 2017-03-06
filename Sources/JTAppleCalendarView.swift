@@ -141,6 +141,7 @@ open class JTAppleCalendarView: UIView {
     /// its superview coordinate system.
     override open var frame: CGRect {
         didSet {
+            if !initialSetupIsComplete { return }
             calendarView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
             updateLayoutItemSize()
             if calendarViewLayout.itemSize != lastSize {
@@ -193,10 +194,7 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    lazy var theData: CalendarData = {
-        [weak self] in
-        return self!.setupMonthInfoDataForStartAndEndDate()
-    }()
+    var theData: CalendarData!
 
     var monthInfo: [Month] {
         get { return theData.months }
@@ -264,23 +262,8 @@ open class JTAppleCalendarView: UIView {
         }
     }
 
-    lazy var calendarView: CustomCollectionView = {[unowned self] in
-        let layout = JTAppleCalendarLayout(withDelegate: self)
-        layout.scrollDirection = self.scrollDirection
-        
-        let cv = CustomCollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-        cv.dataSource = self
-        cv.delegate = self
-        cv.decelerationRate = UIScrollViewDecelerationRateFast
-        cv.backgroundColor = UIColor.clear
-        cv.showsHorizontalScrollIndicator = false
-        cv.showsVerticalScrollIndicator = false
-        cv.allowsMultipleSelection = false
-        #if os(iOS)
-            cv.isPagingEnabled = true
-        #endif
-        return cv
-    }()
+    weak var calendarView: CustomCollectionView!
+    
 
     fileprivate func updateLayoutItemSize() {
         if dataSource == nil {
@@ -342,11 +325,29 @@ open class JTAppleCalendarView: UIView {
         initialSetup()
     }
 
+    var initialSetupIsComplete = false
+    
     // MARK: Setup
     func initialSetup() {
         clipsToBounds = true
+        let cv = CustomCollectionView(frame: frame, collectionViewLayout: JTAppleCalendarLayout(withDelegate: self))
+        calendarView = cv
+        calendarView.dataSource = self
+        calendarView.delegate = self
+        calendarView.decelerationRate = UIScrollViewDecelerationRateFast
+        calendarView.backgroundColor = UIColor.clear
+        calendarView.showsHorizontalScrollIndicator = false
+        calendarView.showsVerticalScrollIndicator = false
+        calendarView.allowsMultipleSelection = false
+        #if os(iOS)
+            calendarView.isPagingEnabled = true
+        #endif
+    
         calendarView.register(JTAppleDayCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         addSubview(calendarView)
+        initialSetupIsComplete = true
+        let x = frame
+        frame = x
     }
 
     func restoreSelectionStateForCellAtIndexPath(_ indexPath: IndexPath) {
@@ -642,7 +643,7 @@ open class JTAppleCalendarView: UIView {
         }
         
 
-        theSelectedDates = indexPathsToReselect.flatMap { return  dateOwnerInfoFromPath($0)?.date }
+        theSelectedDates = indexPathsToReselect.flatMap { return dateOwnerInfoFromPath($0)?.date }
         theSelectedIndexPaths = indexPathsToReselect
     }
 

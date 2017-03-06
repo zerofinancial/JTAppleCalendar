@@ -56,8 +56,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var yCellOffset: CGFloat = 0
     var daysInSection: [Int: Int] = [:] // temporary caching
     
-    init(withDelegate delegate: JTAppleCalendarDelegateProtocol) {
-        self.delegate = delegate
+    init(withDelegate delegates: JTAppleCalendarDelegateProtocol) {
+        delegate = delegates
         super.init()
         
     }
