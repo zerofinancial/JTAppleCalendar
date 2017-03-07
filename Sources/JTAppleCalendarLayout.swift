@@ -47,7 +47,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         }
     }
     
-    unowned var delegate: JTAppleCalendarDelegateProtocol
+    weak var delegate: JTAppleCalendarDelegateProtocol!
     var currentHeader: (section: Int, size: CGSize)? // Tracks the current header size
     var currentCell: (section: Int, itemSize: CGSize)? // Tracks the current cell size
     var contentHeight: CGFloat = 0 // Content height of calendarView
@@ -57,8 +57,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var daysInSection: [Int: Int] = [:] // temporary caching
     
     init(withDelegate delegates: JTAppleCalendarDelegateProtocol) {
-        delegate = delegates
         super.init()
+        delegate = delegates
         
     }
     
