@@ -67,9 +67,7 @@ open class JTAppleCalendarView: UICollectionView {
 
     /// Enables/Disables the stretching of date cells. When enabled cells will stretch to fit the width of a month in case of a <= 5 row month.
     open var allowsDateCellStretching = true {
-        didSet {
-            layoutNeedsUpdating = true
-        }
+        didSet { layoutNeedsUpdating = true }
     }
     
 
@@ -297,8 +295,6 @@ open class JTAppleCalendarView: UICollectionView {
         scrollDirection = newLayout.scrollDirection
         
         transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
-        
-        
         
         dataSource = self
         delegate = self

@@ -428,8 +428,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 size.width = itemSize.width
                 var headerSize =  CGSize.zero
                 if strictBoundaryRulesShouldApply {
-                    headerSize =
-                        cachedHeaderSizeForSection(section)
+                    headerSize = cachedHeaderSizeForSection(section)
                 }
 
                 let currentMonth = delegate.monthInfo[monthMap[section]!]
@@ -455,7 +454,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             } else {
                 numberOfRowsForSection = maxNumberOfRowsPerMonth
             }
-            height = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
+            height      = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
             size        = (width: itemSize.width, height: height)
             currentCell = (section: section, width: size.width, height: size.height)
         }
