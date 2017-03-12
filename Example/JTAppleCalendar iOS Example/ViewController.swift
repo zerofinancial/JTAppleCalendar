@@ -57,7 +57,7 @@ class ViewController: UIViewController {
 
         if sender.title(for: .normal)! == "Horizontal" {
             calendarView.scrollDirection = .horizontal
-            calendarView.itemSize = nil
+            calendarView.itemSize = 0
         } else {
             calendarView.scrollDirection = .vertical
             calendarView.itemSize = 25

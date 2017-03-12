@@ -461,6 +461,11 @@
                                                         <outlet property="title" destination="ZeE-2j-jod" id="jh4-r9-dhD"/>
                                                     </connections>
                                                 </collectionReusableView>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="itemSize">
+                                                        <real key="value" value="0.0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <outlet property="ibDataSource" destination="BYZ-38-t0r" id="ey5-Fd-hYO"/>
                                                     <outlet property="ibDelegate" destination="BYZ-38-t0r" id="Vd4-9s-tNo"/>
