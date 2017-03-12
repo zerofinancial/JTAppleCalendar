@@ -19,6 +19,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
     var isPreparing = false
     var stride: CGFloat = 0
+    var cellInset = CGPoint(x: 0, y: 0)
     
     var maxSections: Int {
         get {
@@ -296,8 +297,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             // If this index is already cached, then return it else,
             // apply a new layout attribut to it
         if let alreadyCachedCellAttrib = cellAttributeFor(indexPath.item, section: indexPath.section) {
-                return alreadyCachedCellAttrib
-            }
+            return alreadyCachedCellAttrib
+        }
         return nil//deterimeToApplyAttribs(indexPath.item, section: indexPath.section)
     }
     
@@ -312,13 +313,18 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         return retval
     }
     func cellAttributeFor(_ item: Int, section: Int) -> UICollectionViewLayoutAttributes? {
-        if let alreadyCachedCellAttrib = cellCache[section],
+        if
+            let alreadyCachedCellAttrib = cellCache[section],
             item < alreadyCachedCellAttrib.count,
             item >= 0 {
-                let cachedValue = alreadyCachedCellAttrib[item]
-                let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
-                attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
-                return attrib
+            
+            let cachedValue = alreadyCachedCellAttrib[item]
+            let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
+            attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
+            if cellInset.x != 0 || cellInset.y != 0 {
+                attrib.frame = attrib.frame.insetBy(dx: cellInset.x, dy: cellInset.y )
+            }
+            return attrib
         }
         return nil
     }
@@ -327,26 +333,11 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         let monthIndex = monthMap[section]!
         let numberOfDays = numberOfDaysInSection(monthIndex)
         // return nil on invalid range
-        if !(0...maxSections ~= section) || !(0...numberOfDays  ~= item) { // JT101 look at the ranges
-            return nil
-        }
-//        let attr = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+        if !(0...maxSections ~= section) || !(0...numberOfDays  ~= item) { return nil }
         
         let size = sizeForitemAtIndexPath(item, section: section)
         return (item, section, xCellOffset + stride, yCellOffset, size.width, size.height)
-        
-//        return applyLayoutAttributes(item, section: section)
     }
-    
-    
-//    func applyLayoutAttributes(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat) {
-//        if attributes.representedElementKind != nil {
-//            return
-//        }
-        // Calculate the item size
-        
-//    }
-
     
     func determineToApplySupplementaryAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
         var retval: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)?

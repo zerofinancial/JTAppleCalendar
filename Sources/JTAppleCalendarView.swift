@@ -191,6 +191,14 @@ open class JTAppleCalendarView: UICollectionView {
             return Array(Set(theSelectedDates)).sorted()
         }
     }
+    
+    @IBInspectable open var cellInset: CGPoint = CGPoint(x: 0, y: 0) {
+        didSet {
+            if !initIsComplete { return }
+            calendarViewLayout.cellInset = cellInset
+            layoutNeedsUpdating = true
+        }
+    }
 
     lazy var theData: CalendarData = {
         [weak self] in
@@ -291,6 +299,7 @@ open class JTAppleCalendarView: UICollectionView {
         let oldLayout = collectionViewLayout
         let newLayout = JTAppleCalendarLayout(withDelegate: self)
         newLayout.scrollDirection = (oldLayout as? UICollectionViewFlowLayout)?.scrollDirection ?? .horizontal
+        newLayout.cellInset = cellInset
         collectionViewLayout = newLayout
         scrollDirection = newLayout.scrollDirection
         
