@@ -44,9 +44,10 @@ open class JTAppleCalendarView: UICollectionView {
     }
 
     /// Configures the size of your date cells
-     open var itemSize: CGFloat? {
+    @IBInspectable open var itemSize: CGFloat = 0 {
         didSet { updateLayoutItemSize() }
     }
+    
 
     // Subclasses cannot use this function
     @available(*, unavailable, message: "Use the reload() function instead")
@@ -254,11 +255,11 @@ open class JTAppleCalendarView: UICollectionView {
         // Default Item width
         var width: CGFloat = bounds.size.width / CGFloat(maxNumberOfDaysInWeek)
 
-        if let userSetItemSize = self.itemSize {
+        if itemSize != 0 {
             if scrollDirection == .vertical {
-                height = userSetItemSize
+                height = itemSize
             } else {
-                width = userSetItemSize
+                width = itemSize
             }
         }
         

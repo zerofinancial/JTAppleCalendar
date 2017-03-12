@@ -420,7 +420,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         }
 
         var size: (width: CGFloat, height: CGFloat) = (0, 0)
-        if let _ = delegate.itemSize {
+        if delegate.itemSize != 0 {
             if scrollDirection == .vertical {
                 size.width = itemSize.width
                 size.height = itemSize.height

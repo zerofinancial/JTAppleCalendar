@@ -9,7 +9,7 @@
 
 protocol JTAppleCalendarDelegateProtocol: class {
     var firstCalendarReloadIsComplete: Bool {get set}
-    var itemSize: CGFloat? {get set}
+    var itemSize: CGFloat {get set}
     var registeredHeaderViews: [String:Any] {get set}
     var cachedConfiguration: ConfigurationParameters! {get set}
     var monthInfo: [Month] {get set}
