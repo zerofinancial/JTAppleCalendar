@@ -8,7 +8,7 @@
 
 import JTAppleCalendar
 
-class CodeWhiteSectionHeaderView: JTAppleHeaderView {
+class CodeWhiteSectionHeaderView: JTAppleCollectionReusableView {
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
 

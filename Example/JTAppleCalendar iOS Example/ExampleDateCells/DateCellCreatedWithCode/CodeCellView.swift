@@ -9,7 +9,7 @@
 import UIKit
 import JTAppleCalendar
 
-class CodeCellView: JTAppleDayCellView {
+class CodeCellView: JTAppleCell {
     let bgColor = UIColor.red
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.

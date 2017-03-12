@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var monthLabel: UILabel!
 
     @IBOutlet var numbers: [UIButton]!
-    @IBOutlet var headers: [UIButton]!
+    @IBOutlet var headerss: [UIButton]!
     @IBOutlet var directions: [UIButton]!
     @IBOutlet var outDates: [UIButton]!
     @IBOutlet var inDates: [UIButton]!
@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     var generateInDates: InDateCellGeneration = .forAllMonths
     var generateOutDates: OutDateCellGeneration = .tillEndOfGrid
     var hasStrictBoundaries = true
-    let firstDayOfWeek: DaysOfWeek = .sunday
+    let firstDayOfWeek: DaysOfWeek = .monday
     let disabledColor = UIColor.lightGray
     let enabledColor = UIColor.blue
     let dateCellSize: CGFloat? = nil
@@ -46,7 +46,7 @@ class ViewController: UIViewController {
             aButton.tintColor = disabledColor
         }
         sender.tintColor = enabledColor
-        calendarView.reloadData()        
+        calendarView.reloadData()
     }
 
     @IBAction func changeDirection(_ sender: UIButton) {
@@ -57,8 +57,10 @@ class ViewController: UIViewController {
 
         if sender.title(for: .normal)! == "Horizontal" {
             calendarView.scrollDirection = .horizontal
+            calendarView.itemSize = nil
         } else {
             calendarView.scrollDirection = .vertical
+            calendarView.itemSize = 25
         }
         calendarView.reloadData()
     }
@@ -74,16 +76,16 @@ class ViewController: UIViewController {
     }
     
     @IBAction func headers(_ sender: UIButton) {
-        for aButton in headers {
+        for aButton in headerss {
             aButton.tintColor = disabledColor
         }
         sender.tintColor = enabledColor
-
         if sender.title(for: .normal)! == "HeadersOn" {
-            calendarView.registerHeaderView(xibFileNames:
-                ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
+            calendarView.register(nib: UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main), forHeaderViewWithReuseIdentifier: "PinkSectionHeaderView")
+            calendarView.register(nib: UINib(nibName: "WhiteSectionHeaderView", bundle: Bundle.main), forHeaderViewWithReuseIdentifier: "WhiteSectionHeaderView")
         } else {
-            calendarView.unregisterHeaders()
+            calendarView.register(nib: nil, forHeaderViewWithReuseIdentifier: "PinkSectionHeaderView")
+            calendarView.register(nib: nil, forHeaderViewWithReuseIdentifier: "WhiteSectionHeaderView")
         }
         calendarView.reloadData()
     }
@@ -131,33 +133,66 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        formatter.dateFormat = "yyyy MM dd"
-        formatter.timeZone = testCalendar.timeZone
-        formatter.locale = testCalendar.locale
-
-        // Setting up your dataSource and delegate is manditory
-        // ___________________________________________________________________
-        calendarView.delegate = self
-        calendarView.dataSource = self
-
         
-        // ___________________________________________________________________
-        // Registering your cells is manditory
-        // ___________________________________________________________________
-        calendarView.registerCellViewXib(file: "CellView")
         
+        
+//        testCalendar = Calendar(identifier: .gregorian)
+//        let timeZone = TimeZone(identifier: "Asia/Amman")!
+//        testCalendar.timeZone = timeZone
+//        
+//        let locale = Locale(identifier: "ar_JO")
+//        testCalendar.locale = locale
+//        calendarView.allowsMultipleSelection = true
+
+//        calendarView.calendarDataSource = self
+//        calendarView.calendarDelegate = self
         // ___________________________________________________________________
         // Registering header cells is optional
-        calendarView.registerHeaderView(xibFileNames: ["PinkSectionHeaderView", "WhiteSectionHeaderView"])
-        // ___________________________________________________________________
+        calendarView.register(nib: UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main), forHeaderViewWithReuseIdentifier: "PinkSectionHeaderView")
+
         
-
-        calendarView.cellInset = CGPoint(x: 0, y: 0)
-
-        calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
+//        let panGensture = UILongPressGestureRecognizer(target: self, action: #selector(didStartRangeSelecting(gesture:)))
+//        panGensture.minimumPressDuration = 0.5
+//        calendarView.addGestureRecognizer(panGensture)
+//        calendarView.rangeSelectionWillBeUsed = true
+//        
+        self.calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
+        
+        
     }
+    
+    var rangeSelectedDates: [Date] = []
+    func didStartRangeSelecting(gesture: UILongPressGestureRecognizer) {
+        let point = gesture.location(in: gesture.view!)
+        rangeSelectedDates = calendarView.selectedDates
+        if let cellState = calendarView.cellStatus(at: point) {
+            let date = cellState.date
+            if !calendarView.selectedDates.contains(date) {
+                let dateRange = calendarView.generateDateRange(from: calendarView.selectedDates.first ?? date, to: date)
+                for aDate in dateRange {
+                    if !rangeSelectedDates.contains(aDate) {
+                        rangeSelectedDates.append(aDate)
+                    }
+                }
+                calendarView.selectDates(from: rangeSelectedDates.first!, to: date, keepSelectionIfMultiSelectionAllowed: true)
+            } else {
+                let indexOfNewlySelectedDate = rangeSelectedDates.index(of: date)! + 1
+                let lastIndex = rangeSelectedDates.endIndex
+                let followingDay = testCalendar.date(byAdding: .day, value: 1, to: date)!
+                calendarView.selectDates(from: followingDay, to: rangeSelectedDates.last!, keepSelectionIfMultiSelectionAllowed: false)
+                rangeSelectedDates.removeSubrange(indexOfNewlySelectedDate..<lastIndex)
+            }
+        }
+        
+        if gesture.state == .ended {
+            rangeSelectedDates.removeAll()
+        }
+    }
+    
+    
+
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -180,6 +215,8 @@ class ViewController: UIViewController {
         for date in calendarView.selectedDates {
             print(formatter.string(from: date))
         }
+        
+        
     }
 
     @IBAction func resize(_ sender: UIButton) {
@@ -189,10 +226,12 @@ class ViewController: UIViewController {
             width: calendarView.frame.width,
             height: calendarView.frame.height - 50
         )
+        calendarView.reloadData()
     }
 
     @IBAction func reloadCalendar(_ sender: UIButton) {
         calendarView.reloadData()
+        
     }
 
     @IBAction func next(_ sender: UIButton) {
@@ -222,9 +261,13 @@ class ViewController: UIViewController {
         monthLabel.text = monthName + " " + String(year)
     }
     
+    func handleCellConfiguration(cell: JTAppleCell?, cellState: CellState) {
+        handleCellSelection(view: cell, cellState: cellState)
+        handleCellTextColor(view: cell, cellState: cellState)
+    }
+    
     // Function to handle the text color of the calendar
-    func handleCellTextColor(view: JTAppleDayCellView?, cellState: CellState) {
-        
+    func handleCellTextColor(view: JTAppleCell?, cellState: CellState) {
         guard let myCustomCell = view as? CellView  else {
             return
         }
@@ -241,10 +284,23 @@ class ViewController: UIViewController {
     }
     
     // Function to handle the calendar selection
-    func handleCellSelection(view: JTAppleDayCellView?, cellState: CellState) {
-        guard let myCustomCell = view as? CellView  else {return }
+    func handleCellSelection(view: JTAppleCell?, cellState: CellState) {
+        guard let myCustomCell = view as? CellView else {return }
+//        switch cellState.selectedPosition() {
+//        case .full:
+//            myCustomCell.backgroundColor = .green
+//        case .left:
+//            myCustomCell.backgroundColor = .yellow
+//        case .right:
+//            myCustomCell.backgroundColor = .red
+//        case .middle:
+//            myCustomCell.backgroundColor = .blue
+//        case .none:
+//            myCustomCell.backgroundColor = nil
+//        }
+        
         if cellState.isSelected {
-            myCustomCell.selectedView.layer.cornerRadius =  15
+            myCustomCell.selectedView.layer.cornerRadius =  13
             myCustomCell.selectedView.isHidden = false
         } else {
             myCustomCell.selectedView.isHidden = true
@@ -256,8 +312,13 @@ class ViewController: UIViewController {
 extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
         
-        let startDate = formatter.date(from: "2015 02 01")!
-        let endDate = formatter.date(from: "2016 12 01")!
+        formatter.dateFormat = "yyyy MM dd"
+        formatter.timeZone = testCalendar.timeZone
+        formatter.locale = testCalendar.locale
+        
+        
+        let startDate = formatter.date(from: "2017 01 01")!
+        let endDate = formatter.date(from: "2025 01 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
@@ -267,33 +328,29 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
                                                  generateOutDates: generateOutDates,
                                                  firstDayOfWeek: firstDayOfWeek,
                                                  hasStrictBoundaries: hasStrictBoundaries)
-        
         return parameters
     }
-
-    func calendar(_ calendar: JTAppleCalendarView, willDisplayCell cell: JTAppleDayCellView, date: Date, cellState: CellState) {
+    
+    public func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
+        let myCustomCell = calendar.dequeueJTAppleReusableCell(withReuseIdentifier: "CellView", for: indexPath) as! CellView
         
-        let myCustomCell = cell as! CellView
         myCustomCell.dayLabel.text = cellState.text
-        
         if testCalendar.isDateInToday(date) {
             myCustomCell.backgroundColor = red
         } else {
-            myCustomCell.backgroundColor = shade
+            myCustomCell.backgroundColor = white
         }
         
-        handleCellSelection(view: cell, cellState: cellState)
-        handleCellTextColor(view: cell, cellState: cellState)
+        handleCellConfiguration(cell: myCustomCell, cellState: cellState)
+        return myCustomCell
     }
 
-    func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
-        handleCellSelection(view: cell, cellState: cellState)
-        handleCellTextColor(view: cell, cellState: cellState)
+    func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+        handleCellConfiguration(cell: cell, cellState: cellState)
     }
 
-    func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState) {
-        handleCellSelection(view: cell, cellState: cellState)
-        handleCellTextColor(view: cell, cellState: cellState)
+    func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+        handleCellConfiguration(cell: cell, cellState: cellState)
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
@@ -303,12 +360,20 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     func scrollDidEndDecelerating(for calendar: JTAppleCalendarView) {
         self.setupViewsOfCalendar(from: calendarView.visibleDates())
     }
-
-    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderIdentifierFor range: (start: Date, end: Date), belongingTo month: Int) -> String {
+    
+    func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
+        let date = range.start
+        let month = testCalendar.component(.month, from: date)
+        
+        let header: JTAppleCollectionReusableView
         if month % 2 > 0 {
-            return "WhiteSectionHeaderView"
+            header = calendar.dequeueJTAppleReusableHeader(withReuseIdentifier: "WhiteSectionHeaderView", for: indexPath)
+            (header as! WhiteSectionHeaderView).title.text = formatter.string(from: date)
+        } else {
+            header = calendar.dequeueJTAppleReusableHeader(withReuseIdentifier: "PinkSectionHeaderView", for: indexPath)
+            (header as! PinkSectionHeaderView).title.text = formatter.string(from: date)
         }
-        return "PinkSectionHeaderView"
+        return header
     }
 
     func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize {
@@ -317,17 +382,6 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         } else {
             // Yes you can have different size headers
             return CGSize(width: 200, height: 100)
-        }
-    }
-
-    func calendar(_ calendar: JTAppleCalendarView, willDisplaySectionHeader header: JTAppleHeaderView, range: (start: Date, end: Date), identifier: String) {
-        switch identifier {
-        case "WhiteSectionHeaderView":
-            let headerCell = header as? WhiteSectionHeaderView
-            headerCell?.title.text = "Design multiple headers"
-        default:
-            let headerCell = header as? PinkSectionHeaderView
-            headerCell?.title.text = "In any color or size you want"
         }
     }
 }

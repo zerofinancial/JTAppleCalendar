@@ -42,7 +42,7 @@ public struct CellState {
     public let selectedPosition: () -> SelectionRangePosition
     /// returns the cell frame.
     /// Useful if you wish to display something at the cell's frame/position
-    public var cell: () -> JTAppleDayCell?
+    public var cell: () -> JTAppleCell?
 }
 
 /// Defines the parameters which configures the calendar.
@@ -161,6 +161,7 @@ struct Month {
 //            return path
 //        }
 //    }
+    
     // Return the section in which a day is contained
     func indexPath(forDay number: Int) -> IndexPath? {
         let sectionInfo = sectionFor(day: number)

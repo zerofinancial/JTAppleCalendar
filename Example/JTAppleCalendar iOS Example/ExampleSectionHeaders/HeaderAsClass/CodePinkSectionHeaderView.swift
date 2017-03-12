@@ -8,7 +8,7 @@
 
 import JTAppleCalendar
 
-class CodePinkSectionHeaderView: JTAppleHeaderView {
+class CodePinkSectionHeaderView: JTAppleCollectionReusableView {
 
      override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()!

@@ -65,9 +65,3 @@ public enum DaysOfWeek: Int {
     /// Days of the week.
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 }
-
-enum JTAppleCalendarViewSource {
-    case fromXib(String, Bundle?)
-    case fromType(AnyClass)
-    case fromClassName(String, Bundle?)
-}

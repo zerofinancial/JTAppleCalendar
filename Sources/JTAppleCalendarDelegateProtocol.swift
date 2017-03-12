@@ -8,8 +8,9 @@
 
 
 protocol JTAppleCalendarDelegateProtocol: class {
+    var firstCalendarReloadIsComplete: Bool {get set}
     var itemSize: CGFloat? {get set}
-    var registeredHeaderViews: [JTAppleCalendarViewSource] {get set}
+    var registeredHeaderViews: [String:Any] {get set}
     var cachedConfiguration: ConfigurationParameters! {get set}
     var monthInfo: [Month] {get set}
     var monthMap: [Int: Int] {get set}
@@ -26,7 +27,6 @@ protocol JTAppleCalendarDelegateProtocol: class {
 }
 
 extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
-
     func cachedDate() -> (start: Date, end: Date, calendar: Calendar) {
         return (start: startDateCache,
                 end: endDateCache,

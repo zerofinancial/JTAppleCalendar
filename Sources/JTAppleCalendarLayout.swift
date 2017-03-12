@@ -13,10 +13,10 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var headerReferenceSize: CGSize = CGSize.zero
     var scrollDirection: UICollectionViewScrollDirection = .horizontal
     var maxMissCount: Int = 0
-    var cellCache: [Int: [UICollectionViewLayoutAttributes]] = [:]
-    var headerCache: [Int: UICollectionViewLayoutAttributes] = [:]
+    var cellCache: [Int: [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]] = [:]
+    var headerCache: [Int: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)] = [:]
     var sectionSize: [CGFloat] = []
-    var lastWrittenCellAttribute: UICollectionViewLayoutAttributes?
+    var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
     var isPreparing = false
     var stride: CGFloat = 0
     
@@ -48,51 +48,53 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
     
     weak var delegate: JTAppleCalendarDelegateProtocol!
+    
     var currentHeader: (section: Int, size: CGSize)? // Tracks the current header size
-    var currentCell: (section: Int, itemSize: CGSize)? // Tracks the current cell size
+    var currentCell: (section: Int, width: CGFloat, height: CGFloat)? // Tracks the current cell size
     var contentHeight: CGFloat = 0 // Content height of calendarView
     var contentWidth: CGFloat = 0 // Content wifth of calendarView
     var xCellOffset: CGFloat = 0
     var yCellOffset: CGFloat = 0
     var daysInSection: [Int: Int] = [:] // temporary caching
     
-    init(withDelegate delegates: JTAppleCalendarDelegateProtocol) {
-        super.init()
-        delegate = delegates
-        
-    }
+    var testVal: CGFloat = 0
     
-    /// Returns an object initialized from data in a given unarchiver.
-    /// self, initialized using the data in decoder.
-    required public init?(coder aDecoder: NSCoder) {
-        self.delegate = aDecoder.value(forKey: "delegate") as! JTAppleCalendarDelegateProtocol
-        super.init(coder: aDecoder)
+    init(withDelegate delegate: JTAppleCalendarDelegateProtocol) {
+        super.init()
+        self.delegate = delegate
     }
-
     
     func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath? {
+        var retval: IndexPath?
         switch direction {
         case .next:
-            let lastIndexPath = cellCache[section]?.last?.indexPath
-            if lastIndexPath?.section == section && lastIndexPath?.item == item {
-                return cellCache[section + 1]?.first?.indexPath
+            if let data = cellCache[section]?.last, data.1 == section, data.0 == item {
+                retval = IndexPath(item: data.0, section: data.1)
             } else {
-                return cellCache[section]?[item + 1].indexPath
+                if let data = cellCache[section]?[item + 1] {
+                    retval = IndexPath(item: data.0, section: data.1)
+                }
             }
         case .previous:
             if item < 1 {
-                return cellCache[section - 1]?.last?.indexPath
+                if let data = cellCache[section - 1]?.last {
+                    retval = IndexPath(item: data.0, section: data.1)
+                }
             } else {
-                return cellCache[section]?[item - 1].indexPath
+                if let data = cellCache[section]?[item - 1] {
+                    retval = IndexPath(item: data.0, section: data.1)
+                }
             }
         default:
-            return nil
+            break
         }
+        
+        return retval
     }
 
     /// Tells the layout object to update the current layout.
     open override func prepare() {
-        if !cellCache.isEmpty {
+        if !cellCache.isEmpty || !delegate.firstCalendarReloadIsComplete {
             return
         }
         isPreparing = true
@@ -111,12 +113,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         daysInSection.removeAll() // Clear chache
         isPreparing = false
     }
-
-    var testVal: CGFloat = 0
     
     func horizontalStuff() {
-        
-        
         var section = 0
         var totalDayCounter = 0
         var headerGuide = 0
@@ -126,24 +124,22 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         for aMonth in delegate.monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
-                let sectionIndexPath = IndexPath(item: 0, section: section)
-                if let aHeaderAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: sectionIndexPath) {
+                if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: section) {
                         headerCache[section] = aHeaderAttr
                         if strictBoundaryRulesShouldApply {
-                            contentWidth += aHeaderAttr.frame.width + testVal
-                            yCellOffset = aHeaderAttr.frame.height
+                            contentWidth += aHeaderAttr.4 + testVal
+                            yCellOffset = aHeaderAttr.5
                         }
                     }
                 // Generate and cache the cells
                 for item in 0..<numberOfDaysInCurrentSection {
-                    let indexPath = IndexPath(item: item, section: section)
-                    if let attribute = deterimeToApplyAttribs(at: indexPath) {
+                    if let attribute = determineToApplyAttribs(item, section: section) {
                         if cellCache[section] == nil {
                             cellCache[section] = []
                         }
                         cellCache[section]!.append(attribute)
                         lastWrittenCellAttribute = attribute
-                        xCellOffset += attribute.frame.width
+                        xCellOffset += attribute.4
 
                         if strictBoundaryRulesShouldApply {
                             headerGuide += 1
@@ -152,7 +148,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                                 // && if we have headers
                                 headerGuide = 0
                                 xCellOffset = 0
-                                yCellOffset += attribute.frame.height
+                                yCellOffset += attribute.5
                             }
                         } else {
                             totalDayCounter += 1
@@ -160,18 +156,18 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                             if totalDayCounter % fullSection == 0 { // If you have a full section
                                 xCellOffset = 0
                                 yCellOffset = 0
-                                contentWidth += attribute.frame.width * 7
+                                contentWidth += attribute.4 * 7
                                 stride = contentWidth
                                 sectionSize.append(contentWidth)
                             } else {
                                 if totalDayCounter >= delegate.totalDays {
-                                    contentWidth += attribute.frame.width * 7
+                                    contentWidth += attribute.4 * 7
                                     sectionSize.append(contentWidth)
                                 }
                                 
                                 if totalDayCounter % maxNumberOfDaysInWeek == 0 {
                                     xCellOffset = 0
-                                    yCellOffset += attribute.frame.height
+                                    yCellOffset += attribute.5
                                 }
                             }
                         }
@@ -186,7 +182,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 section += 1
             }
         }
-        contentHeight = collectionView!.bounds.size.height
+        contentHeight = self.collectionView!.bounds.size.height
     }
 
     func verticalStuff() {
@@ -196,25 +192,22 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         for aMonth in delegate.monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
-                let sectionIndexPath = IndexPath(item: 0, section: section)
                 if strictBoundaryRulesShouldApply {
-                    if let aHeaderAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: sectionIndexPath) {
+                    if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: section) {
                         headerCache[section] = aHeaderAttr
-                        yCellOffset += aHeaderAttr.frame.height
-                        contentHeight += aHeaderAttr.frame.height
+                        yCellOffset += aHeaderAttr.5
+                        contentHeight += aHeaderAttr.5
                     }
                 }
                 // Generate and cache the cells
                 for item in 0..<numberOfDaysInCurrentSection {
-                    let indexPath = IndexPath(item: item, section: section)
-
-                    if let attribute = deterimeToApplyAttribs(at: indexPath) {
+                    if let attribute = determineToApplyAttribs(item, section: section) {
                         if cellCache[section] == nil {
                             cellCache[section] = []
                         }
                         cellCache[section]!.append(attribute)
                         lastWrittenCellAttribute = attribute
-                        xCellOffset += attribute.frame.width
+                        xCellOffset += attribute.4
                         if strictBoundaryRulesShouldApply {
                             headerGuide += 1
                             if headerGuide % maxNumberOfDaysInWeek == 0 || numberOfDaysInCurrentSection - 1 == item {
@@ -222,17 +215,17 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                                 // section && if we have headers
                                 headerGuide = 0
                                 xCellOffset = 0
-                                yCellOffset += attribute.frame.height
-                                contentHeight += attribute.frame.height
+                                yCellOffset += attribute.5
+                                contentHeight += attribute.5
                             }
                         } else {
                             totalDayCounter += 1
                             if totalDayCounter % maxNumberOfDaysInWeek == 0 {
                                 xCellOffset = 0
-                                yCellOffset += attribute.frame.height
-                                contentHeight += attribute.frame.height
+                                yCellOffset += attribute.5
+                                contentHeight += attribute.5
                             } else if totalDayCounter == delegate.totalDays {
-                                contentHeight += attribute.frame.height
+                                contentHeight += attribute.5
                             }
                         }
                     }
@@ -242,7 +235,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 section += 1
             }
         }
-        contentWidth = collectionView!.bounds.size.width
+        contentWidth = self.collectionView!.bounds.size.width
     }
 
     /// Returns the width and height of the collection view’s contents.
@@ -260,34 +253,37 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         var beganIntercepting = false
         var missCount = 0
         for sectionIndex in startSectionIndex..<cellCache.count {
-            if let validSection = cellCache[sectionIndex],
-                !validSection.isEmpty {
-                    // Add header view attributes
-                    if thereAreHeaders {
-                        if headerCache[sectionIndex]!.frame.intersects(rect) {
-                            attributes.append(headerCache[sectionIndex]!)
+            if let validSection = cellCache[sectionIndex], !validSection.isEmpty {
+                // Add header view attributes
+                if thereAreHeaders {
+                    let data = headerCache[sectionIndex]!
+
+                    if CGRect(x: data.2, y: data.3, width: data.4, height: data.5).intersects(rect) {
+                        let attrib = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: IndexPath(item: data.0, section: data.1))
+                        attributes.append(attrib!)
+                    }
+                }
+                for val in validSection {
+                    if CGRect(x: val.2, y: val.3, width: val.4, height: val.5).intersects(rect) {
+                        missCount = 0
+                        beganIntercepting = true
+                        let attrib = layoutAttributesForItem(at: IndexPath(item: val.0, section: val.1))
+                        attributes.append(attrib!)
+                    } else {
+                        missCount += 1
+                        // If there are at least 8 misses in a row
+                        // since intercepting began, then this
+                        // section has no more interceptions.
+                        // So break
+                        if missCount > maxMissCount &&
+                            beganIntercepting {
+                            break
                         }
                     }
-                    for val in validSection {
-                        if val.frame.intersects(rect) {
-                            missCount = 0
-                            beganIntercepting = true
-                            attributes.append(val)
-                        } else {
-                            missCount += 1
-                            // If there are at least 8 misses in a row
-                            // since intercepting began, then this
-                            // section has no more interceptions.
-                            // So break
-                            if missCount > maxMissCount &&
-                                beganIntercepting {
-                                break
-                            }
-                        }
-                    }
-                    if missCount > maxMissCount && beganIntercepting {
-                        break
-                    }// Also break from outter loop
+                }
+                if missCount > maxMissCount && beganIntercepting {
+                    break
+                }// Also break from outter loop
             }
         }
         return attributes
@@ -299,61 +295,90 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
             // If this index is already cached, then return it else,
             // apply a new layout attribut to it
-            if let alreadyCachedCellAttrib = cellCache[indexPath.section],
-                indexPath.item < alreadyCachedCellAttrib.count,
-                indexPath.item >= 0 {
-                    return alreadyCachedCellAttrib[indexPath.item]
+        if let alreadyCachedCellAttrib = cellAttributeFor(indexPath.item, section: indexPath.section) {
+                return alreadyCachedCellAttrib
             }
-            return deterimeToApplyAttribs(at: indexPath)
+        return nil//deterimeToApplyAttribs(indexPath.item, section: indexPath.section)
+    }
+    
+    func supplementaryAttributeFor(item: Int, section: Int, elementKind: String) -> UICollectionViewLayoutAttributes? {
+        var retval: UICollectionViewLayoutAttributes?
+        if let cachedData = headerCache[section] {
+            
+            let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, with: IndexPath(item: item, section: section))
+            attributes.frame = CGRect(x: cachedData.2, y: cachedData.3, width: cachedData.4, height: cachedData.5)
+            retval = attributes
+        }
+        return retval
+    }
+    func cellAttributeFor(_ item: Int, section: Int) -> UICollectionViewLayoutAttributes? {
+        if let alreadyCachedCellAttrib = cellCache[section],
+            item < alreadyCachedCellAttrib.count,
+            item >= 0 {
+                let cachedValue = alreadyCachedCellAttrib[item]
+                let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
+                attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
+                return attrib
+        }
+        return nil
     }
 
-    func deterimeToApplyAttribs(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        let monthIndex = monthMap[indexPath.section]!
+    func determineToApplyAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
+        let monthIndex = monthMap[section]!
         let numberOfDays = numberOfDaysInSection(monthIndex)
         // return nil on invalid range
-        if !(0...maxSections ~= indexPath.section) || !(0...numberOfDays  ~= indexPath.item) { // JT101 look at the ranges
+        if !(0...maxSections ~= section) || !(0...numberOfDays  ~= item) { // JT101 look at the ranges
             return nil
         }
-        let attr = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-        applyLayoutAttributes(attr)
-        return attr
+//        let attr = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+        
+        let size = sizeForitemAtIndexPath(item, section: section)
+        return (item, section, xCellOffset + stride, yCellOffset, size.width, size.height)
+        
+//        return applyLayoutAttributes(item, section: section)
     }
+    
+    
+//    func applyLayoutAttributes(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat) {
+//        if attributes.representedElementKind != nil {
+//            return
+//        }
+        // Calculate the item size
+        
+//    }
 
-    /// Returns the layout attributes for the specified supplementary view.
-    open override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, with: indexPath)
-        if let alreadyCachedHeaderAttrib = headerCache[indexPath.section] {
-            return alreadyCachedHeaderAttrib
-        }
-
-        let headerSize = cachedHeaderSizeForSection(indexPath.section)
-
+    
+    func determineToApplySupplementaryAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
+        var retval: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)?
+        
+        let headerSize = cachedHeaderSizeForSection(section)
+        
         switch scrollDirection {
         case .horizontal:
-            let modifiedSize = sizeForitemAtIndexPath(indexPath)
-            attributes.frame = CGRect(x: contentWidth, y: 0, width: modifiedSize.width * 7, height: headerSize.height)
+            let modifiedSize = sizeForitemAtIndexPath(item, section: section)
+            retval = (item, section, contentWidth, 0, modifiedSize.width * 7, headerSize.height)
         case .vertical:
             // Use the calculaed header size and force the width
             // of the header to take up 7 columns
             // We cache the header here so we dont call the
             // delegate so much
-
-            let modifiedSize = CGSize(width: collectionView!.frame.width, height: headerSize.height)
-            attributes.frame = CGRect(x: 0, y: yCellOffset, width: modifiedSize.width, height: modifiedSize.height)
+            
+            let modifiedSize = (width: collectionView!.frame.width, height: headerSize.height)
+            retval = (item, section, 0, yCellOffset, modifiedSize.width, modifiedSize.height)
         }
-        if attributes.frame == CGRect.zero {
+        if retval?.4 == 0, retval?.5 == 0 {
             return nil
         }
-        return attributes
+        return retval
     }
-
-    func applyLayoutAttributes(_ attributes: UICollectionViewLayoutAttributes) {
-        if attributes.representedElementKind != nil {
-            return
+    
+    /// Returns the layout attributes for the specified supplementary view.
+    open override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        if let alreadyCachedHeaderAttrib = supplementaryAttributeFor(item: indexPath.item, section: indexPath.section, elementKind: elementKind) {
+            return alreadyCachedHeaderAttrib
         }
-        // Calculate the item size
-        let size = sizeForitemAtIndexPath(attributes.indexPath)
-        attributes.frame = CGRect(x: xCellOffset + stride, y: yCellOffset, width: size.width, height: size.height)
+        
+        return nil
     }
 
     func numberOfDaysInSection(_ index: Int) -> Int {
@@ -377,43 +402,49 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         return headerSize
     }
 
-    func sizeForitemAtIndexPath(_ indexPath: IndexPath) -> CGSize {
+    func sizeForitemAtIndexPath(_ item: Int, section: Int) -> (width: CGFloat, height: CGFloat) {
         if let cachedCell  = currentCell,
-            cachedCell.section == indexPath.section {
+            cachedCell.section == section {
             
             if !strictBoundaryRulesShouldApply, scrollDirection == .horizontal,
                 !cellCache.isEmpty {
-                return cellCache[0]?[0].size ?? CGSize.zero
+                
+                if let x = cellCache[0]?[0] {
+                    return (x.4, x.5)
+                } else {
+                    return (0, 0)
+                }
             } else {
-                return cachedCell.itemSize
+                return (cachedCell.width, cachedCell.height)
             }
         }
 
-        var size: CGSize = CGSize.zero
+        var size: (width: CGFloat, height: CGFloat) = (0, 0)
         if let _ = delegate.itemSize {
             if scrollDirection == .vertical {
-                size = itemSize
+                size.width = itemSize.width
+                size.height = itemSize.height
             } else {
                 size.width = itemSize.width
                 var headerSize =  CGSize.zero
                 if strictBoundaryRulesShouldApply {
                     headerSize =
-                        cachedHeaderSizeForSection(indexPath.section)
+                        cachedHeaderSizeForSection(section)
                 }
 
-                let currentMonth = delegate.monthInfo[monthMap[indexPath.section]!]
+                let currentMonth = delegate.monthInfo[monthMap[section]!]
                 let recalculatedNumOfRows = delegate.allowsDateCellStretching ? CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)) : CGFloat(maxNumberOfRowsPerMonth)
                 size.height = (collectionView!.frame.height - headerSize.height) / recalculatedNumOfRows
-                currentCell = (section: indexPath.section, itemSize: size)
+                currentCell = (section: section, width: size.width, height: size.height)
             }
         } else {
             // Get header size if it alrady cached
             var headerSize =  CGSize.zero
             if strictBoundaryRulesShouldApply {
-                headerSize = cachedHeaderSizeForSection(indexPath.section)
+                headerSize = cachedHeaderSizeForSection(section)
             }
             var height: CGFloat = 0
-            let currentMonth = delegate.monthInfo[monthMap[indexPath.section]!]
+            let currentMonth = delegate.monthInfo[monthMap[section]!]
             let numberOfRowsForSection: Int
             if delegate.allowsDateCellStretching {
                 if strictBoundaryRulesShouldApply {
@@ -425,8 +456,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 numberOfRowsForSection = maxNumberOfRowsPerMonth
             }
             height = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
-            size        = CGSize(width: itemSize.width, height: height)
-            currentCell = (section: indexPath.section, itemSize: size)
+            size        = (width: itemSize.width, height: height)
+            currentCell = (section: section, width: size.width, height: size.height)
         }
         return size
     }
@@ -434,10 +465,10 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     func sizeOfSection(_ section: Int) -> CGFloat {
         switch scrollDirection {
         case .horizontal:
-            return cellCache[section]![0].frame.width * CGFloat(maxNumberOfDaysInWeek)
+            return cellCache[section]![0].4 * CGFloat(maxNumberOfDaysInWeek)
         case .vertical:
-            let headerSizeOfSection = !headerCache.isEmpty ? headerCache[section]!.frame.height : 0
-            return cellCache[section]![0].frame.height * CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
+            let headerSizeOfSection = !headerCache.isEmpty ? headerCache[section]!.5 : 0
+            return cellCache[section]![0].5 * CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
         }
     }
 
@@ -494,7 +525,16 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         }
         return midIndex
     }
-    
+
+    /// Returns an object initialized from data in a given unarchiver.
+    /// self, initialized using the data in decoder.
+    required public init?(coder aDecoder: NSCoder) {
+        delegate = aDecoder.value(forKey: "delegate") as! JTAppleCalendarDelegateProtocol
+        cellCache = aDecoder.value(forKey: "delegate") as! [Int : [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]]
+        headerCache = aDecoder.value(forKey: "delegate") as! [Int : (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]
+        super.init(coder: aDecoder)
+    }
+
     /// Returns the content offset to use after an animation
     /// layout update or change.
     /// - Parameter proposedContentOffset: The proposed point for the
