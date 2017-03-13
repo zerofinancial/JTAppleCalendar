@@ -18,5 +18,12 @@ open class JTAppleCell: UICollectionViewCell {
 	required public init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 	}
+    
+    open override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        self.contentView.frame = self.bounds
+        self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
 
 }
