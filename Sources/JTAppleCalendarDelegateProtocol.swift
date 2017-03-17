@@ -8,7 +8,7 @@
 
 
 protocol JTAppleCalendarDelegateProtocol: class {
-    var firstCalendarReloadIsComplete: Bool {get set}
+    var isCalendarLayoutLoaded: Bool {get}
     var itemSize: CGFloat {get set}
     var registeredHeaderViews: [String:Any] {get set}
     var cachedConfiguration: ConfigurationParameters! {get set}
@@ -24,6 +24,8 @@ protocol JTAppleCalendarDelegateProtocol: class {
     func numberOfMonthsInCalendar() -> Int
     func referenceSizeForHeaderInSection(_ section: Int) -> CGSize
     func rowsAreStatic() -> Bool
+    
+    func targetPointForItemAt(indexPath: IndexPath) -> CGPoint?
 }
 
 extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
@@ -36,19 +38,19 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
     func hasStrictBoundaries() -> Bool {
         return cachedConfiguration.hasStrictBoundaries
     }
-
+    
     func numberOfRows() -> Int {
         return cachedConfiguration.numberOfRows
     }
-
+    
     func numberOfMonthsInCalendar() -> Int {
         return numberOfMonths
     }
-
+    
     func referenceSizeForHeaderInSection(_ section: Int) -> CGSize {
         return calendarViewHeaderSizeForSection(section)
     }
-
+    
     func rowsAreStatic() -> Bool {
         // jt101 is the inDateCellGeneration check needed? because tillEndOfGrid will always compenste
         return cachedConfiguration.generateInDates != .off && cachedConfiguration.generateOutDates == .tillEndOfGrid

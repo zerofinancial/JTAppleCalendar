@@ -8,9 +8,11 @@
 
 
 protocol JTAppleCalendarLayoutProtocol: class {
+    var shouldClearCacheOnInvalidate: Bool {get set}
+    var allowsDateCellStretching: Bool {get set}
+    var itemSizeWasSet: Bool {get set}
     var itemSize: CGSize {get set}
     var cellInset: CGPoint {get set}
-    var headerReferenceSize: CGSize {get set}
     var scrollDirection: UICollectionViewScrollDirection {get set}
     var cellCache: [Int: [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]] {get set}
     var headerCache: [Int: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)] {get set}

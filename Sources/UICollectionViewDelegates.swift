@@ -13,11 +13,11 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         guard
             let validDate = monthInfoFromSection(indexPath.section),
             let delegate = calendarDelegate else {
-            developerError(string: "Either date could not be generated or delegate was nil")
-            assert(false, "Date could not be generated for section. This is a bug. Contact the developer")
-            return UICollectionReusableView()
+                developerError(string: "Either date could not be generated or delegate was nil")
+                assert(false, "Date could not be generated for section. This is a bug. Contact the developer")
+                return UICollectionReusableView()
         }
-
+        
         let headerView = delegate.calendar(self, headerViewForDateRange: validDate.range, at: indexPath)
         headerView.transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
         return headerView
@@ -30,21 +30,20 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             developerError(string: "Cell was not of type JTAppleCell")
             return UICollectionViewCell()
         }
-        
         restoreSelectionStateForCellAtIndexPath(indexPath)
         let cellState = cellStateFromIndexPath(indexPath)
         let configuredCell = delegate.calendar(self, cellForItemAt: cellState.date, cellState: cellState, indexPath: indexPath)
         configuredCell.transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
         return configuredCell
     }
-
+    
     /// Asks your data sourceobject for the number of sections in
     /// the collection view. The number of sections in collectionView.
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return monthMap.count
     }
-
-
+    
+    
     /// Asks your data source object for the number of items in the
     /// specified section. The number of rows in section.
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -55,7 +54,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         }
         return count
     }
-
+    
     /// Asks the delegate if the specified item should be selected.
     /// true if the item should be selected or false if it should not.
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
@@ -64,16 +63,16 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             let infoOfDateUserSelected = dateOwnerInfoFromPath(indexPath),
             let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell, cellWasNotDisabledOrHiddenByTheUser(cell) {
             let cellState = cellStateFromIndexPath(indexPath,
-                withDateInfo: infoOfDateUserSelected)
+                                                   withDateInfo: infoOfDateUserSelected)
             return delegate.calendar(self, shouldSelectDate: infoOfDateUserSelected.date, cell: cell, cellState: cellState)
         }
         return false
     }
-
+    
     func cellWasNotDisabledOrHiddenByTheUser(_ cell: JTAppleCell) -> Bool {
         return cell.isHidden == false && cell.isUserInteractionEnabled == true
     }
-
+    
     /// Tells the delegate that the item at the specified path was deselected.
     /// The collection view calls this method when the user successfully
     /// deselects an item in the collection view.
@@ -109,20 +108,20 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             delegate.calendar(self, didDeselectDate: dateInfoDeselectedByUser.date, cell: selectedCell, cellState: cellState)
         }
     }
-
+    
     /// Asks the delegate if the specified item should be deselected.
     /// true if the item should be deselected or false if it should not.
     public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-            if
-                let delegate = calendarDelegate,
-                let infoOfDateDeSelectedByUser = dateOwnerInfoFromPath(indexPath),
-                let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell, cellWasNotDisabledOrHiddenByTheUser(cell) {
-                    let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDateDeSelectedByUser)
-                return delegate.calendar(self, shouldDeselectDate: infoOfDateDeSelectedByUser.date, cell: cell, cellState: cellState)
-            }
-            return false
+        if
+            let delegate = calendarDelegate,
+            let infoOfDateDeSelectedByUser = dateOwnerInfoFromPath(indexPath),
+            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell, cellWasNotDisabledOrHiddenByTheUser(cell) {
+            let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDateDeSelectedByUser)
+            return delegate.calendar(self, shouldDeselectDate: infoOfDateDeSelectedByUser.date, cell: cell, cellState: cellState)
+        }
+        return false
     }
-
+    
     /// Tells the delegate that the item at the specified index
     /// path was selected. The collection view calls this method when the
     /// user successfully selects an item in the collection view.
