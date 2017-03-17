@@ -81,11 +81,15 @@ class ViewController: UIViewController {
         }
         sender.tintColor = enabledColor
         if sender.title(for: .normal)! == "HeadersOn" {
-            calendarView.register(nib: UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main), forHeaderViewWithReuseIdentifier: "PinkSectionHeaderView")
-            calendarView.register(nib: UINib(nibName: "WhiteSectionHeaderView", bundle: Bundle.main), forHeaderViewWithReuseIdentifier: "WhiteSectionHeaderView")
+            calendarView.register(UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main),
+                                  forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                                  withReuseIdentifier: "PinkSectionHeaderView")
+            calendarView.register(UINib(nibName: "WhiteSectionHeaderView", bundle: Bundle.main),
+                                  forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                                  withReuseIdentifier: "WhiteSectionHeaderView")
+            
+
         } else {
-            calendarView.register(nib: nil, forHeaderViewWithReuseIdentifier: "PinkSectionHeaderView")
-            calendarView.register(nib: nil, forHeaderViewWithReuseIdentifier: "WhiteSectionHeaderView")
         }
         calendarView.reloadData()
     }
@@ -142,25 +146,30 @@ class ViewController: UIViewController {
 //        
 //        let locale = Locale(identifier: "ar_JO")
 //        testCalendar.locale = locale
-//        calendarView.allowsMultipleSelection = true
 
 //        calendarView.calendarDataSource = self
 //        calendarView.calendarDelegate = self
         // ___________________________________________________________________
         // Registering header cells is optional
-        calendarView.register(nib: UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main), forHeaderViewWithReuseIdentifier: "PinkSectionHeaderView")
-
+        
+        calendarView.register(UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main),
+                              forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                              withReuseIdentifier: "PinkSectionHeaderView")
+        
         
 //        let panGensture = UILongPressGestureRecognizer(target: self, action: #selector(didStartRangeSelecting(gesture:)))
 //        panGensture.minimumPressDuration = 0.5
 //        calendarView.addGestureRecognizer(panGensture)
 //        calendarView.rangeSelectionWillBeUsed = true
-//        
-        self.calendarView.visibleDates { (visibleDates: DateSegmentInfo) in
+        
+        self.calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
-        
-        
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        calendarView.viewWillTransition(to: size, with: coordinator)
     }
     
     var rangeSelectedDates: [Date] = []
