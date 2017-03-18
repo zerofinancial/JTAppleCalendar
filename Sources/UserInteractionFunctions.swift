@@ -57,6 +57,7 @@ extension JTAppleCalendarView {
     }
     
     /// Deselect all selected dates
+    /// - Parameter: this funciton triggers a delegate call by default. Set this to false if you do not want this
     public func deselectAllDates(triggerSelectionDelegate: Bool = true) {
         deselect(dates: selectedDates, triggerSelectionDelegate: triggerSelectionDelegate)
     }
@@ -310,23 +311,22 @@ extension JTAppleCalendarView {
                 // If multiple selection is on. Multiple selection behaves differently to singleselection.
                 // It behaves like a toggle. unless keepSelectionIfMultiSelectionAllowed is true.
                 // If user wants to force selection if multiselection is enabled, then removed the selected dates from generated dates
-                if keepSelectionIfMultiSelectionAllowed {
-                    if selectedDates.contains(calendar.startOfDay(for: date)) {
-                        // Do not deselect or select the cell.
-                        if allIndexPathsToReload.contains(sectionIndexPath) { continue }
-                        // Just add it to be reloaded
-                        allIndexPathsToReload.append(sectionIndexPath)
-                    }
-                }
-                if self.theSelectedIndexPaths.contains(sectionIndexPath) {
-                    // If this cell is already selected, then deselect it
-                    let pathsToReload = deselectDate(oldIndexPath: sectionIndexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                    allIndexPathsToReload.append(contentsOf: pathsToReload)
+                if keepSelectionIfMultiSelectionAllowed, selectedDates.contains(calendar.startOfDay(for: date)) {
+                    // Do not deselect or select the cell.
+                    if allIndexPathsToReload.contains(sectionIndexPath) { continue }
+                    // Just add it to be reloaded
+                    allIndexPathsToReload.append(sectionIndexPath)
                 } else {
-                    // Add new selections
-                    // Must be added here. If added in delegate didSelectItemAtIndexPath
-                    let pathsToReload = selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                    allIndexPathsToReload.append(contentsOf: pathsToReload)
+                    if self.theSelectedIndexPaths.contains(sectionIndexPath) {
+                        // If this cell is already selected, then deselect it
+                        let pathsToReload = self.deselectDate(oldIndexPath: sectionIndexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
+                        allIndexPathsToReload.append(contentsOf: pathsToReload)
+                    } else {
+                        // Add new selections
+                        // Must be added here. If added in delegate didSelectItemAtIndexPath
+                        let pathsToReload = self.selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
+                        allIndexPathsToReload.append(contentsOf: pathsToReload)
+                    }
                 }
             }
         }
