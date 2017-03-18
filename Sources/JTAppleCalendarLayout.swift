@@ -43,6 +43,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var xCellOffset: CGFloat = 0
     var yCellOffset: CGFloat = 0
     var daysInSection: [Int: Int] = [:] // temporary caching
+    var monthInfo: [Month] = []
     
     var testVal: CGFloat = 0
     
@@ -79,6 +80,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         headerSizes = delegate.sizesForMonthSection()
         numberOfRows = delegate.cachedConfiguration.numberOfRows
         monthMap = delegate.monthMap
+        allowsDateCellStretching = delegate.allowsDateCellStretching
+        monthInfo = delegate.monthInfo
+        scrollDirection = delegate.scrollDirection
         maxMissCount = scrollDirection == .horizontal ? maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
     }
     
@@ -117,7 +121,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         let fullSection = numberOfRows * maxNumberOfDaysInWeek
         var extra = 0
         
-        for aMonth in delegate.monthInfo {
+        for aMonth in monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
                 if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: section) {
@@ -185,7 +189,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         var section = 0
         var totalDayCounter = 0
         var headerGuide = 0
-        for aMonth in delegate.monthInfo {
+        for aMonth in monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
                 if strictBoundaryRulesShouldApply {
@@ -372,7 +376,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         if let days = daysInSection[index] {
             return days
         }
-        let days = delegate.monthInfo[index].numberOfDaysInMonthGrid
+        let days = monthInfo[index].numberOfDaysInMonthGrid
         daysInSection[index] = days
         return days
     }
@@ -390,7 +394,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             retval = height
         } else {
             let monthIndex = monthMap[section]!
-            let monthName = delegate.monthInfo[monthIndex].name
+            let monthName = monthInfo[monthIndex].name
             if let height = headerSizes[monthName] {
                 retval = height
             } else if let height = headerSizes["default"] {
@@ -425,8 +429,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             } else {
                 size.width = itemSize.width
                 let headerHeight =  strictBoundaryRulesShouldApply ? cachedHeaderHeightForSection(section) : 0
-                let currentMonth = delegate.monthInfo[monthMap[section]!]
-                let recalculatedNumOfRows = delegate.allowsDateCellStretching ? CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)) : CGFloat(maxNumberOfRowsPerMonth)
+                let currentMonth = monthInfo[monthMap[section]!]
+                let recalculatedNumOfRows = allowsDateCellStretching ? CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)) : CGFloat(maxNumberOfRowsPerMonth)
                 size.height = (collectionView!.frame.height - headerHeight) / recalculatedNumOfRows
                 currentCell = (section: section, width: size.width, height: size.height)
             }
@@ -434,9 +438,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             // Get header size if it already cached
             let headerHeight =  strictBoundaryRulesShouldApply ? cachedHeaderHeightForSection(section) : 0
             var height: CGFloat = 0
-            let currentMonth = delegate.monthInfo[monthMap[section]!]
+            let currentMonth = monthInfo[monthMap[section]!]
             let numberOfRowsForSection: Int
-            if delegate.allowsDateCellStretching {
+            if allowsDateCellStretching {
                 if strictBoundaryRulesShouldApply {
                     numberOfRowsForSection = currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)
                 } else {
@@ -454,7 +458,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     
     func numberOfRowsForMonth(_ index: Int) -> Int {
         let monthIndex = monthMap[index]!
-        return delegate.monthInfo[monthIndex].rows
+        return monthInfo[monthIndex].rows
     }
     
     func startIndexFrom(rectOrigin offset: CGPoint) -> Int {

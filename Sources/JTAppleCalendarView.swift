@@ -61,7 +61,6 @@ open class JTAppleCalendarView: UICollectionView {
     open var scrollDirection: UICollectionViewScrollDirection! {
         didSet {
             if oldValue == scrollDirection { return }
-            calendarViewLayout.scrollDirection = scrollDirection
             calendarViewLayout.invalidateLayout()
         }
     }
@@ -69,7 +68,6 @@ open class JTAppleCalendarView: UICollectionView {
     /// Enables/Disables the stretching of date cells. When enabled cells will stretch to fit the width of a month in case of a <= 5 row month.
     open var allowsDateCellStretching = true {
         didSet {
-            calendarViewLayout.allowsDateCellStretching = allowsDateCellStretching
             calendarViewLayout.invalidateLayout()
         }
     }
@@ -645,11 +643,13 @@ extension JTAppleCalendarView {
         return data
     }
     
-    func sizesForMonthSection() -> [AnyHashable:CGFloat]? {
+    func sizesForMonthSection() -> [AnyHashable:CGFloat] {
         var retval: [AnyHashable:CGFloat] = [:]
-        let headerSizes = (calendarDelegate?.calendarSizeForMonths(self))!
-        
-        if headerSizes.defaultSize == 0 { return nil }
+        guard
+            let headerSizes = calendarDelegate?.calendarSizeForMonths(self),
+            headerSizes.defaultSize > 0 else {
+                return retval
+        }
         
         // Build the default
         retval["default"] = headerSizes.defaultSize
