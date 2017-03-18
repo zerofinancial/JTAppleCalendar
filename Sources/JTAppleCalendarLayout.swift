@@ -20,18 +20,18 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var headerCache: [Int: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)] = [:]
     var sectionSize: [CGFloat] = []
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
-
+    var isPreparing = true
     var stride: CGFloat = 0
     var cellInset = CGPoint(x: 0, y: 0)
     var headerSizes: [AnyHashable:CGFloat]?
     
-    var isCalendarLayoutLoaded: Bool {
-        return !cellCache.isEmpty
+    var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
+    var layoutIsReadyToBePrepared: Bool {
+        return !(!cellCache.isEmpty  || collectionView!.frame.width == 0 || collectionView!.frame.height == 0)
     }
-    
     var monthMap: [Int: Int] = [:]
     var numberOfRows: Int = 0
-    var strictBoundaryRulesShouldApply = true
+    var strictBoundaryRulesShouldApply: Bool = false
     var thereAreHeaders: Bool { return headerSizes != nil }
     
     weak var delegate: JTAppleCalendarDelegateProtocol!
@@ -52,12 +52,12 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
     /// Tells the layout object to update the current layout.
     open override func prepare() {
-        if !cellCache.isEmpty  || collectionView!.frame.width == 0 || collectionView!.frame.height == 0 {
+        if !layoutIsReadyToBePrepared {
             return
         }
         
         setupDataFromDelegate()
-        
+        updateLayoutItemSize()
         
         if scrollDirection == .vertical {
             verticalStuff()
@@ -75,11 +75,11 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     
     func setupDataFromDelegate() {
         // get information from the delegate
+        strictBoundaryRulesShouldApply = thereAreHeaders || delegate.cachedConfiguration.hasStrictBoundaries
         headerSizes = delegate.sizesForMonthSection()
         numberOfRows = delegate.cachedConfiguration.numberOfRows
-        strictBoundaryRulesShouldApply = thereAreHeaders || delegate.cachedConfiguration.hasStrictBoundaries
         monthMap = delegate.monthMap
-        updateLayoutItemSize()
+        maxMissCount = scrollDirection == .horizontal ? maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
     }
     
     func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath? {

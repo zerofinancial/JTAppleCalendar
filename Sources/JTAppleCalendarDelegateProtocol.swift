@@ -34,9 +34,6 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
                 calendar: calendar)
     }
     
-
-    
-    
     func numberOfMonthsInCalendar() -> Int {
         return numberOfMonths
     }
