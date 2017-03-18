@@ -84,7 +84,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             // Update model
             deleteCellFromSelectedSetIfSelected(indexPath)
             let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-            var indexPathsToReload = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
+            var indexPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
             indexPathsToReload.append(indexPath)
             // Cell may be nil if user switches month sections
             // Although the cell may be nil, we still want to
@@ -98,7 +98,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 // then we need to inform the delegate
                 if !indexPathsToReload.contains(unselectedCounterPartIndexPath) {
                     indexPathsToReload.append(unselectedCounterPartIndexPath)
-                    let counterPathsToReload = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: unselectedCounterPartIndexPath) : []
+                    let counterPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: unselectedCounterPartIndexPath) : []
                     indexPathsToReload.append(contentsOf: counterPathsToReload)
                 }
             }
@@ -135,7 +135,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         }
         
         // index paths to be reloaded should be index to the left and right of the selected index
-        let indexPathsToReload = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
+        let indexPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
         
         // Update model
         addCellToSelectedSetIfUnselected(indexPath, date: infoOfDateSelectedByUser.date)
@@ -150,7 +150,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             // then we need to inform the delegate
             if !pathsToReload.contains(selectedCounterPartIndexPath) {
                 pathsToReload.append(selectedCounterPartIndexPath)
-                let counterPathsToReload = rangeSelectionWillBeUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath) : []
+                let counterPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath) : []
                 pathsToReload.append(contentsOf: counterPathsToReload)
             }
         }

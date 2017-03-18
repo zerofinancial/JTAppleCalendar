@@ -91,7 +91,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     
     /// Tells the layout object to update the current layout.
     open override func prepare() {
-        if !cellCache.isEmpty {
+        if !cellCache.isEmpty  || collectionView!.frame.width == 0 || collectionView!.frame.height == 0 {
             return
         }
         

@@ -80,7 +80,11 @@ open class JTAppleCalendarView: UICollectionView {
     /// then whenever you click on a datecell, you may notice a very fast
     /// refreshing of the date-cells both left and right of the cell you
     /// just selected.
-    @IBInspectable open var rangeSelectionWillBeUsed: Bool = false
+    @IBInspectable open var isRangeSelectionUsed: Bool = false {
+        didSet {
+            if isRangeSelectionUsed { allowsMultipleSelection = true }
+        }
+    }
     // Keeps track of item size for a section. This is an optimization
     var lastSavedContentOffset: CGFloat = 0.0
     var triggerScrollToDateDelegate: Bool? = true
