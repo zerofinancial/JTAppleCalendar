@@ -10,7 +10,6 @@
 protocol JTAppleCalendarDelegateProtocol: class {
     var isCalendarLayoutLoaded: Bool {get}
     var itemSize: CGFloat {get set}
-    var registeredHeaderViews: [String:Any] {get set}
     var cachedConfiguration: ConfigurationParameters! {get set}
     var monthInfo: [Month] {get set}
     var monthMap: [Int: Int] {get set}
@@ -18,14 +17,14 @@ protocol JTAppleCalendarDelegateProtocol: class {
     var lastIndexOffset: (IndexPath, UICollectionElementCategory)? {get set}
     var allowsDateCellStretching: Bool {get set}
     
-    func numberOfRows() -> Int
-    func hasStrictBoundaries() -> Bool
     func cachedDate() -> (start: Date, end: Date, calendar: Calendar)
     func numberOfMonthsInCalendar() -> Int
-    func referenceSizeForHeaderInSection(_ section: Int) -> CGSize
     func rowsAreStatic() -> Bool
+    func sizesForMonthSection() -> [AnyHashable:CGFloat]?
     
     func targetPointForItemAt(indexPath: IndexPath) -> CGPoint?
+    func pathsFromDates(_ dates: [Date]) -> [IndexPath]
+
 }
 
 extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
@@ -35,21 +34,19 @@ extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol {
                 calendar: calendar)
     }
     
-    func hasStrictBoundaries() -> Bool {
-        return cachedConfiguration.hasStrictBoundaries
-    }
+
     
-    func numberOfRows() -> Int {
-        return cachedConfiguration.numberOfRows
-    }
     
     func numberOfMonthsInCalendar() -> Int {
         return numberOfMonths
     }
-    
-    func referenceSizeForHeaderInSection(_ section: Int) -> CGSize {
-        return calendarViewHeaderSizeForSection(section)
+    func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize {
+        return calendarDelegate!.calendarSizeForMonths(self)
     }
+    
+//    func referenceSizeForHeaderInSection(_ section: Int) -> CGSize {
+//        return calendarViewHeaderSizeForSection(section)
+//    }
     
     func rowsAreStatic() -> Bool {
         // jt101 is the inDateCellGeneration check needed? because tillEndOfGrid will always compenste

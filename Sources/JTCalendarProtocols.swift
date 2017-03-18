@@ -13,9 +13,13 @@ public extension JTAppleCalendarViewDelegate {
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {}
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {}
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {}
-    func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView { return JTAppleCollectionReusableView() }
-    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize { return CGSize.zero }
+    func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
+        assert(false, "You have implemted a header size function, but forgot to implement the `headerViewForDateRange` function")
+        return JTAppleCollectionReusableView()
+    }
+    func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize { return MonthSize(defaultSize: 0) }
     func scrollDidEndDecelerating(for calendar: JTAppleCalendarView) {}
+    
 }
 
 /// The JTAppleCalendarViewDataSource protocol is adopted by an
@@ -101,7 +105,7 @@ public protocol JTAppleCalendarViewDelegate: class {
     /// - Returns:
     ///   CGSize: Provide the size for the header
     ///           you wish to show for this date
-    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize
+//    func calendar(_ calendar: JTAppleCalendarView, sectionHea derSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize
     
     /// Tells the delegate that the JTAppleCalendar is about to
     /// display a header. This is the point of customization for your headers
@@ -113,4 +117,6 @@ public protocol JTAppleCalendarViewDelegate: class {
     
     /// Informs the delegate that the user just lifted their finger from swiping the calendar
     func scrollDidEndDecelerating(for calendar: JTAppleCalendarView)
+    
+    func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize
 }

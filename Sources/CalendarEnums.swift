@@ -52,6 +52,10 @@ public enum DateOwner: Int {
         followingMonthWithinBoundary,
         followingMonthOutsideBoundary
 }
+/// Months of the year
+public enum MonthsOfYear: Int {
+    case jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
+}
 
 /// Selection position of a range-selected date cell
 public enum SelectionRangePosition: Int {

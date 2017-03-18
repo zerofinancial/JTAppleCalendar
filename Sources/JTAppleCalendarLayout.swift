@@ -20,29 +20,19 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var headerCache: [Int: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)] = [:]
     var sectionSize: [CGFloat] = []
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
-    var isPreparing = false
+
     var stride: CGFloat = 0
     var cellInset = CGPoint(x: 0, y: 0)
+    var headerSizes: [AnyHashable:CGFloat]?
     
     var isCalendarLayoutLoaded: Bool {
         return !cellCache.isEmpty
     }
-    var maxSections: Int {
-        return monthMap.count
-    }
     
-    var monthMap: [Int: Int] {
-        return delegate.monthMap
-    }
-    var numberOfRows: Int {
-        return delegate.numberOfRows()
-    }
-    var strictBoundaryRulesShouldApply: Bool {
-        return (thereAreHeaders || delegate.hasStrictBoundaries()) && isPreparing
-    }
-    var thereAreHeaders: Bool {
-        return !delegate.registeredHeaderViews.isEmpty
-    }
+    var monthMap: [Int: Int] = [:]
+    var numberOfRows: Int = 0
+    var strictBoundaryRulesShouldApply = true
+    var thereAreHeaders: Bool { return headerSizes != nil }
     
     weak var delegate: JTAppleCalendarDelegateProtocol!
     
@@ -59,6 +49,37 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     init(withDelegate delegate: JTAppleCalendarDelegateProtocol) {
         super.init()
         self.delegate = delegate
+    }
+    /// Tells the layout object to update the current layout.
+    open override func prepare() {
+        if !cellCache.isEmpty  || collectionView!.frame.width == 0 || collectionView!.frame.height == 0 {
+            return
+        }
+        
+        setupDataFromDelegate()
+        
+        
+        if scrollDirection == .vertical {
+            verticalStuff()
+        } else {
+            horizontalStuff()
+        }
+        
+        // Get rid of header data if dev didnt register headers.
+        // The were used for calculation but are not needed to be displayed
+        if !thereAreHeaders {
+            headerCache.removeAll()
+        }
+        daysInSection.removeAll() // Clear chache
+    }
+    
+    func setupDataFromDelegate() {
+        // get information from the delegate
+        headerSizes = delegate.sizesForMonthSection()
+        numberOfRows = delegate.cachedConfiguration.numberOfRows
+        strictBoundaryRulesShouldApply = thereAreHeaders || delegate.cachedConfiguration.hasStrictBoundaries
+        monthMap = delegate.monthMap
+        updateLayoutItemSize()
     }
     
     func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath? {
@@ -87,31 +108,6 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         }
         
         return retval
-    }
-    
-    /// Tells the layout object to update the current layout.
-    open override func prepare() {
-        if !cellCache.isEmpty  || collectionView!.frame.width == 0 || collectionView!.frame.height == 0 {
-            return
-        }
-        
-        updateLayoutItemSize()
-        
-        isPreparing = true
-        maxMissCount = scrollDirection == .horizontal ? maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
-        if scrollDirection == .vertical {
-            verticalStuff()
-        } else {
-            horizontalStuff()
-        }
-        
-        // Get rid of header data if dev didnt register headers.
-        // The were used for calculation but are not needed to be displayed
-        if !thereAreHeaders {
-            headerCache.removeAll()
-        }
-        daysInSection.removeAll() // Clear chache
-        isPreparing = false
     }
     
     func horizontalStuff() {
@@ -275,15 +271,15 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                         // since intercepting began, then this
                         // section has no more interceptions.
                         // So break
-                        if missCount > maxMissCount &&
-                            beganIntercepting {
+                        if missCount > maxMissCount && beganIntercepting {
                             break
                         }
                     }
                 }
                 if missCount > maxMissCount && beganIntercepting {
+                    // Also break from outter loop
                     break
-                }// Also break from outter loop
+                }
             }
         }
         return attributes
@@ -333,7 +329,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         let monthIndex = monthMap[section]!
         let numberOfDays = numberOfDaysInSection(monthIndex)
         // return nil on invalid range
-        if !(0...maxSections ~= section) || !(0...numberOfDays  ~= item) { return nil }
+        if !(0...monthMap.count ~= section) || !(0...numberOfDays  ~= item) { return nil }
         
         let size = sizeForitemAtIndexPath(item, section: section)
         return (item, section, xCellOffset + stride, yCellOffset, size.width, size.height)
@@ -342,19 +338,19 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     func determineToApplySupplementaryAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
         var retval: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)?
         
-        let headerSize = cachedHeaderSizeForSection(section)
+        let headerHeight = cachedHeaderHeightForSection(section)
         
         switch scrollDirection {
         case .horizontal:
             let modifiedSize = sizeForitemAtIndexPath(item, section: section)
-            retval = (item, section, contentWidth, 0, modifiedSize.width * 7, headerSize.height)
+            retval = (item, section, contentWidth, 0, modifiedSize.width * 7, headerHeight)
         case .vertical:
             // Use the calculaed header size and force the width
             // of the header to take up 7 columns
             // We cache the header here so we dont call the
             // delegate so much
             
-            let modifiedSize = (width: collectionView!.frame.width, height: headerSize.height)
+            let modifiedSize = (width: collectionView!.frame.width, height: headerHeight)
             retval = (item, section, 0, yCellOffset, modifiedSize.width, modifiedSize.height)
         }
         if retval?.4 == 0, retval?.5 == 0 {
@@ -381,16 +377,28 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         return days
     }
     
-    func cachedHeaderSizeForSection(_ section: Int) -> CGSize {
-        // We cache the header here so we dont call the delegate so much
-        var headerSize = CGSize.zero
-        if let cachedHeader  = currentHeader, cachedHeader.section == section {
-            headerSize = cachedHeader.size
+    func cachedHeaderHeightForSection(_ section: Int) -> CGFloat {
+        var retval: CGFloat = 0
+        // We look for most specific to less specific
+        // Section = specific dates
+        // Months = generic months
+        // Default = final resort
+        
+        guard let headerSizes = headerSizes else { return retval }
+        
+        if let height = headerSizes[section] {
+            retval = height
         } else {
-            headerSize = delegate.referenceSizeForHeaderInSection(section)
-            currentHeader = (section, headerSize)
+            let monthIndex = monthMap[section]!
+            let monthName = delegate.monthInfo[monthIndex].name
+            if let height = headerSizes[monthName] {
+                retval = height
+            } else if let height = headerSizes["default"] {
+                retval = height
+            }
         }
-        return headerSize
+
+        return retval
     }
     
     func sizeForitemAtIndexPath(_ item: Int, section: Int) -> (width: CGFloat, height: CGFloat) {
@@ -416,15 +424,15 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 size.height = itemSize.height
             } else {
                 size.width = itemSize.width
-                let headerSize =  strictBoundaryRulesShouldApply ? cachedHeaderSizeForSection(section) : CGSize.zero
+                let headerHeight =  strictBoundaryRulesShouldApply ? cachedHeaderHeightForSection(section) : 0
                 let currentMonth = delegate.monthInfo[monthMap[section]!]
                 let recalculatedNumOfRows = delegate.allowsDateCellStretching ? CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)) : CGFloat(maxNumberOfRowsPerMonth)
-                size.height = (collectionView!.frame.height - headerSize.height) / recalculatedNumOfRows
+                size.height = (collectionView!.frame.height - headerHeight) / recalculatedNumOfRows
                 currentCell = (section: section, width: size.width, height: size.height)
             }
         } else {
-            // Get header size if it alrady cached
-            let headerSize =  strictBoundaryRulesShouldApply ? cachedHeaderSizeForSection(section) : CGSize.zero
+            // Get header size if it already cached
+            let headerHeight =  strictBoundaryRulesShouldApply ? cachedHeaderHeightForSection(section) : 0
             var height: CGFloat = 0
             let currentMonth = delegate.monthInfo[monthMap[section]!]
             let numberOfRowsForSection: Int
@@ -437,21 +445,11 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             } else {
                 numberOfRowsForSection = maxNumberOfRowsPerMonth
             }
-            height      = (collectionView!.frame.height - headerSize.height) / CGFloat(numberOfRowsForSection)
+            height      = (collectionView!.frame.height - headerHeight) / CGFloat(numberOfRowsForSection)
             size.height = height
             currentCell = (section: section, width: size.width, height: size.height)
         }
         return size
-    }
-    
-    func sizeOfSection(_ section: Int) -> CGFloat {
-        switch scrollDirection {
-        case .horizontal:
-            return cellCache[section]![0].4 * CGFloat(maxNumberOfDaysInWeek)
-        case .vertical:
-            let headerSizeOfSection = !headerCache.isEmpty ? headerCache[section]!.5 : 0
-            return cellCache[section]![0].5 * CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
-        }
     }
     
     func numberOfRowsForMonth(_ index: Int) -> Int {
@@ -465,7 +463,13 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
     
     func sizeOfContentForSection(_ section: Int) -> CGFloat {
-        return sizeOfSection(section)
+        switch scrollDirection {
+        case .horizontal:
+            return cellCache[section]![0].4 * CGFloat(maxNumberOfDaysInWeek)
+        case .vertical:
+            let headerSizeOfSection = !headerCache.isEmpty ? headerCache[section]!.5 : 0
+            return cellCache[section]![0].5 * CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
+        }
     }
     
     //    func sectionFromRectOffset(_ offset: CGPoint) -> Int {
@@ -514,6 +518,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         delegate = aDecoder.value(forKey: "delegate") as! JTAppleCalendarDelegateProtocol
         cellCache = aDecoder.value(forKey: "delegate") as! [Int : [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]]
         headerCache = aDecoder.value(forKey: "delegate") as! [Int : (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]
+        headerSizes = aDecoder.value(forKey: "delegate") as? [AnyHashable:CGFloat]
         super.init(coder: aDecoder)
     }
     
@@ -581,10 +586,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 height = delegate.itemSize
             }
         }
-        
-        print("collectionViewSize ->> \(collectionView!.frame.size)")
-        
+
         itemSize = CGSize(width: width, height: height)
+//        print("collectionViewSize ->> \(collectionView!.frame.size)")
     }
     
     

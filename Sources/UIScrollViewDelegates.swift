@@ -105,7 +105,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             break
         case .stopAtEachSection:
             var calculatedOffSet: CGFloat = 0
-            if scrollDirection == .horizontal || (scrollDirection == .vertical && !thereAreHeaders) {
+            if scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
                 // Horizontal has a fixed width.
                 // Vertical with no header has fixed height
                 let interval = calendarLayout.sizeOfContentForSection(theCurrentSection)
@@ -178,7 +178,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                         } else {
                             calculatedOffSet = attrib.frame.origin.y
                         }
-                    } else if thereAreHeaders,
+                    } else if calendarViewLayout.thereAreHeaders,
                         let attrib = layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: attribPath) { // JT101 this was changed
                         // change the final value to the end of the header
                         if isScrollingForward() {

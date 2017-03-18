@@ -95,27 +95,15 @@ extension JTAppleCalendarView {
     /// For now, the calendar only supports: 'UICollectionElementKindSectionHeader' for the forSupplementaryViewOfKind(parameter)
     open override func register(_ viewClass: AnyClass?, forSupplementaryViewOfKind elementKind: String, withReuseIdentifier identifier: String) {
         super.register(viewClass, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: identifier)
-        updateHeaders(with: identifier, value: viewClass)
     }
     
     /// Registers a class for use in creating supplementary views for the collection view.
     /// For now, the calendar only supports: 'UICollectionElementKindSectionHeader' for the forSupplementaryViewOfKind(parameter)
     open override func register(_ nib: UINib?, forSupplementaryViewOfKind kind: String, withReuseIdentifier identifier: String) {
         super.register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: identifier)
-        updateHeaders(with: identifier, value: nib)
     }
     
-    private func updateHeaders(with id: String, value: Any?) {
-        calendarViewLayout.invalidateLayout()
-        guard let value = value else {
-            registeredHeaderViews.removeValue(forKey: id)
-            return
-        }
-        registeredHeaderViews.updateValue(value, forKey: id)
-    }
-    
-    
-    public func dequeueJTAppleReusableHeader(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCollectionReusableView {
+    public func dequeueJTAppleReusableSupplementaryView(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCollectionReusableView {
         guard let headerView = dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader,
                                                                 withReuseIdentifier: identifier,
                                                                 for: indexPath) as? JTAppleCollectionReusableView else {
@@ -154,7 +142,7 @@ extension JTAppleCalendarView {
         if layoutNeedsUpdating {
             calendarViewLayout.invalidateLayout()
             setupMonthInfoAndMap()
-            
+
             self.theSelectedIndexPaths = []
             self.theSelectedDates = []
         }
@@ -169,7 +157,7 @@ extension JTAppleCalendarView {
             // scroll
             // This scroll should happen after the reload above
             delayedExecutionClosure.append{[unowned self] in
-                if self.thereAreHeaders {
+                if self.calendarViewLayout.thereAreHeaders {
                     self.scrollToHeaderForDate(
                         validAnchorDate,
                         triggerScrollToDateDelegate: false,
@@ -212,7 +200,7 @@ extension JTAppleCalendarView {
                 paths.append(aPath[0])
                 let cellState = cellStateFromIndexPath(aPath[0])
                 if let validCounterPartCell =
-                    indexPathOfdateCellCounterPart(
+                    indexPathOfdateCellCounterPath(
                         date,
                         dateOwner: cellState.dateBelongsTo) {
                     paths.append(validCounterPartCell)
@@ -354,7 +342,7 @@ extension JTAppleCalendarView {
         
         let fixedScrollSize: CGFloat
         if scrollDirection == .horizontal {
-            if thereAreHeaders || cachedConfiguration.generateOutDates == .tillEndOfGrid {
+            if calendarViewLayout.thereAreHeaders || cachedConfiguration.generateOutDates == .tillEndOfGrid {
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             } else {
                 fixedScrollSize = frame.width
@@ -378,7 +366,7 @@ extension JTAppleCalendarView {
                 xOffset = contentSize.width - frame.width
             }
         } else {
-            if thereAreHeaders {
+            if calendarViewLayout.thereAreHeaders {
                 guard let section = currentSection() else {
                     return
                 }
@@ -462,7 +450,7 @@ extension JTAppleCalendarView {
                     return
                 }
                 
-                if thereAreHeaders && scrollDirection == .vertical {
+                if calendarViewLayout.thereAreHeaders && scrollDirection == .vertical {
                     scrollToHeaderInSection(validIndexPath.section,
                                             triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                             withAnimation: isAnimationEnabled,
@@ -507,7 +495,7 @@ extension JTAppleCalendarView {
         var point: CGPoint?
         switch self.scrollingMode {
         case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-            if self.scrollDirection == .horizontal || (self.scrollDirection == .vertical && !self.thereAreHeaders) {
+            if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
                 point = self.targetPointForItemAt(indexPath: sectionIndexPath)
             }
         default:

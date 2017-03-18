@@ -134,7 +134,6 @@ open class JTAppleCalendarView: UICollectionView {
         theData = setupMonthInfoDataForStartAndEndDate()
     }
     
-    var registeredHeaderViews: [String: Any] = [:]
     var lastIndexOffset: (IndexPath, UICollectionElementCategory)?
     var initIsComplete = false
     
@@ -225,11 +224,6 @@ open class JTAppleCalendarView: UICollectionView {
     
     /// Section spacing of the calendar view.
     open var sectionSpacing: CGFloat = 0
-    
-    var thereAreHeaders: Bool {
-        return !registeredHeaderViews.isEmpty
-    }
-    
     
     /// Configure the scrolling behavior
     open var scrollingMode: ScrollingMode = .stopAtEachCalendarFrameWidth {
@@ -336,7 +330,7 @@ open class JTAppleCalendarView: UICollectionView {
         var fixedScrollSize: CGFloat = 0
         switch scrollingMode {
         case .stopAtEachSection, .stopAtEachCalendarFrameWidth:
-            if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !thereAreHeaders) {
+            if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
                 // Horizontal has a fixed width.
                 // Vertical with no header has fixed height
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
@@ -406,7 +400,7 @@ open class JTAppleCalendarView: UICollectionView {
                                  triggerScrollToDateDelegate: Bool = false,
                                  withAnimation animation: Bool = true,
                                  completionHandler: (() -> Void)? = nil) {
-        if !thereAreHeaders {
+        if !calendarViewLayout.thereAreHeaders {
             return
         }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
@@ -489,7 +483,7 @@ open class JTAppleCalendarView: UICollectionView {
             // Get the new counter Paths
             var newCounterPaths: [IndexPath] = []
             for date in selectedDates {
-                if let counterPath = self.indexPathOfdateCellCounterPart(date, dateOwner: .thisMonth) {
+                if let counterPath = self.indexPathOfdateCellCounterPath(date, dateOwner: .thisMonth) {
                     newCounterPaths.append(counterPath)
                 }
             }
@@ -514,22 +508,11 @@ open class JTAppleCalendarView: UICollectionView {
             selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition() )
         }
     }
-    
-    func calendarViewHeaderSizeForSection(_ section: Int) -> CGSize {
-        var retval = CGSize.zero
-        if
-            thereAreHeaders,
-            let validDate = monthInfoFromSection(section),
-            let size = calendarDelegate?.calendar(self, sectionHeaderSizeFor: validDate.range, belongingTo: validDate.month) {
-            retval = size
-        }
-        return retval
-    }
 }
 
 extension JTAppleCalendarView {
     
-    func indexPathOfdateCellCounterPart(_ date: Date,
+    func indexPathOfdateCellCounterPath(_ date: Date,
                                         dateOwner: DateOwner) -> IndexPath? {
         if (cachedConfiguration.generateInDates == .off ||
             cachedConfiguration.generateInDates == .forFirstMonthOnly) &&
@@ -575,13 +558,13 @@ extension JTAppleCalendarView {
                 guard
                     let prevMonth = calendar.date(byAdding: .month, value: -1, to: date),
                     let lastDayOfPrevMonth = calendar.endOfMonth(for: prevMonth) else {
-                        assert(false, "Error generating date in indexPathOfdateCellCounterPart(). Contact the developer on github")
+                        assert(false, "Error generating date in indexPathOfdateCellCounterPath(). Contact the developer on github")
                         return retval
                 }
                 
                 let indexPathOfLastDayOfPreviousMonth = pathsFromDates([lastDayOfPrevMonth])
                 if indexPathOfLastDayOfPreviousMonth.isEmpty {
-                    print("out of range error in indexPathOfdateCellCounterPart() upper. This should not happen. Contact developer on github")
+                    print("out of range error in indexPathOfdateCellCounterPath() upper. This should not happen. Contact developer on github")
                     return retval
                 }
                 let lastDayIndexPath = indexPathOfLastDayOfPreviousMonth[0]
@@ -660,6 +643,37 @@ extension JTAppleCalendarView {
         }
         let data = CalendarData(months: months, totalSections: totalSections, sectionToMonthMap: monthMap, totalDays: totalDays)
         return data
+    }
+    
+    func sizesForMonthSection() -> [AnyHashable:CGFloat]? {
+        var retval: [AnyHashable:CGFloat] = [:]
+        let headerSizes = (calendarDelegate?.calendarSizeForMonths(self))!
+        
+        if headerSizes.defaultSize == 0 { return nil }
+        
+        // Build the default
+        retval["default"] = headerSizes.defaultSize
+        
+        // Build the every-month data
+        if let allMonths = headerSizes.months {
+            for (size, months) in allMonths {
+                for month in months {
+                    assert(retval[month] == nil, "You have duplicated months. Please revise your month size data.")
+                    retval[month] = size
+                }
+            }
+        }
+        
+        // Build the specific month data
+        if let specificSections = headerSizes.dates {
+            for (size, dateArray) in specificSections {
+                let paths = pathsFromDates(dateArray)
+                for path in paths {
+                    retval[path.section] = size
+                }
+            }
+        }
+        return retval
     }
     
     func pathsFromDates(_ dates: [Date]) -> [IndexPath] {
@@ -855,7 +869,7 @@ extension JTAppleCalendarView {
     
     func deselectCounterPartCellIndexPath(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
         if let counterPartCellIndexPath =
-            indexPathOfdateCellCounterPart(date,
+            indexPathOfdateCellCounterPath(date,
                                            dateOwner: dateOwner) {
             deleteCellFromSelectedSetIfSelected(counterPartCellIndexPath)
             return counterPartCellIndexPath
@@ -864,7 +878,7 @@ extension JTAppleCalendarView {
     }
     
     func selectCounterPartCellIndexPathIfExists(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
-        if let counterPartCellIndexPath = indexPathOfdateCellCounterPart(date, dateOwner: dateOwner) {
+        if let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) {
             let dateComps = calendar.dateComponents([.month, .day, .year], from: date)
             guard let counterpartDate = calendar.date(from: dateComps) else {
                 return nil
@@ -895,7 +909,7 @@ extension JTAppleCalendarView {
         }
         if let monthDate = calendar.date(byAdding: .month, value: monthIndex, to: startDateCache) {
             let monthNumber = calendar.dateComponents([.month], from: monthDate)
-            let numberOfRowsForSection = monthData.numberOfRows(for: section, developerSetRows: numberOfRows())
+            let numberOfRowsForSection = monthData.numberOfRows(for: section, developerSetRows: cachedConfiguration.numberOfRows)
             return ((startDate, endDate), monthNumber.month!, numberOfRowsForSection)
         }
         return nil
