@@ -137,8 +137,8 @@ extension JTAppleCalendarView {
             return
         }
 
-        let layoutNeedsUpdating = reloadDelegateDataSource()
         let selectedDates = self.selectedDates
+        let layoutNeedsUpdating = reloadDelegateDataSource()
         if layoutNeedsUpdating {
             calendarViewLayout.invalidateLayout()
             setupMonthInfoAndMap()

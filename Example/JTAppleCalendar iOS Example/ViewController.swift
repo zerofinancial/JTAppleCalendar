@@ -32,6 +32,7 @@ class ViewController: UIViewController {
     let disabledColor = UIColor.lightGray
     let enabledColor = UIColor.blue
     let dateCellSize: CGFloat? = nil
+    var monthSize: MonthSize? = MonthSize(defaultSize: 50, months: [75: [.feb, .apr]])
     
     let red = UIColor.red
     let white = UIColor.white
@@ -80,16 +81,11 @@ class ViewController: UIViewController {
             aButton.tintColor = disabledColor
         }
         sender.tintColor = enabledColor
-        if sender.title(for: .normal)! == "HeadersOn" {
-            calendarView.register(UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main),
-                                  forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
-                                  withReuseIdentifier: "PinkSectionHeaderView")
-            calendarView.register(UINib(nibName: "WhiteSectionHeaderView", bundle: Bundle.main),
-                                  forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
-                                  withReuseIdentifier: "WhiteSectionHeaderView")
-            
 
+        if sender.title(for: .normal)! == "HeadersOn" {
+            monthSize = MonthSize(defaultSize: 50, months: [75: [.feb, .apr]])
         } else {
+            monthSize = nil
         }
         calendarView.reloadData()
     }
@@ -155,7 +151,7 @@ class ViewController: UIViewController {
         calendarView.register(UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main),
                               forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
                               withReuseIdentifier: "PinkSectionHeaderView")
-        
+//
         
 //        let panGensture = UILongPressGestureRecognizer(target: self, action: #selector(didStartRangeSelecting(gesture:)))
 //        panGensture.minimumPressDuration = 0.5
@@ -376,21 +372,16 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         
         let header: JTAppleCollectionReusableView
         if month % 2 > 0 {
-            header = calendar.dequeueJTAppleReusableHeader(withReuseIdentifier: "WhiteSectionHeaderView", for: indexPath)
+            header = calendar.dequeueJTAppleReusableSupplementaryView(withReuseIdentifier: "WhiteSectionHeaderView", for: indexPath)
             (header as! WhiteSectionHeaderView).title.text = formatter.string(from: date)
         } else {
-            header = calendar.dequeueJTAppleReusableHeader(withReuseIdentifier: "PinkSectionHeaderView", for: indexPath)
+            header = calendar.dequeueJTAppleReusableSupplementaryView(withReuseIdentifier: "PinkSectionHeaderView", for: indexPath)
             (header as! PinkSectionHeaderView).title.text = formatter.string(from: date)
         }
         return header
     }
-
-    func calendar(_ calendar: JTAppleCalendarView, sectionHeaderSizeFor range: (start: Date, end: Date), belongingTo month: Int) -> CGSize {
-        if month % 2 > 0 {
-            return CGSize(width: 200, height: 50)
-        } else {
-            // Yes you can have different size headers
-            return CGSize(width: 200, height: 100)
-        }
+    
+    func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {
+        return monthSize
     }
 }

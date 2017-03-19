@@ -465,6 +465,9 @@
                                                     <userDefinedRuntimeAttribute type="number" keyPath="itemSize">
                                                         <real key="value" value="0.0"/>
                                                     </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="point" keyPath="cellInset">
+                                                        <point key="value" x="3" y="3"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <outlet property="ibDataSource" destination="BYZ-38-t0r" id="ey5-Fd-hYO"/>

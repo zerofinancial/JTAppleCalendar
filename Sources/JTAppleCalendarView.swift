@@ -207,6 +207,8 @@ open class JTAppleCalendarView: UICollectionView {
         set { theData.months = monthInfo }
     }
     
+    var lastMonthSize: [AnyHashable:CGFloat]?
+    
     var monthMap: [Int: Int] {
         get { return theData.sectionToMonthMap }
         set { theData.sectionToMonthMap = monthMap }
@@ -456,6 +458,7 @@ open class JTAppleCalendarView: UICollectionView {
             let newEndOfMonth   = calendar.endOfMonth(for: newDateBoundary.endDate)
             let oldStartOfMonth = calendar.startOfMonth(for: startDateCache)
             let oldEndOfMonth   = calendar.endOfMonth(for: endDateCache)
+            let newLastMonth    = sizesForMonthSection()
             if newStartOfMonth != oldStartOfMonth ||
                 newEndOfMonth != oldEndOfMonth ||
                 newDateBoundary.calendar != cachedConfiguration.calendar ||
@@ -463,10 +466,14 @@ open class JTAppleCalendarView: UICollectionView {
                 newDateBoundary.generateInDates != cachedConfiguration.generateInDates ||
                 newDateBoundary.generateOutDates != cachedConfiguration.generateOutDates ||
                 newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek ||
-                newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries {
+                newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries ||
+                (lastMonthSize == nil && newLastMonth == [:]) ||
+                newLastMonth != lastMonthSize ?? [:] {
+                lastMonthSize = newLastMonth
                 retval = true
             }
         }
+        
         return retval
     }
     

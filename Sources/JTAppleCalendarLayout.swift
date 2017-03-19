@@ -23,7 +23,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var isPreparing = true
     var stride: CGFloat = 0
     var cellInset = CGPoint(x: 0, y: 0)
-    var headerSizes: [AnyHashable:CGFloat]?
+    var headerSizes: [AnyHashable:CGFloat] = [:]
     
     var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
     var layoutIsReadyToBePrepared: Bool {
@@ -32,7 +32,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var monthMap: [Int: Int] = [:]
     var numberOfRows: Int = 0
     var strictBoundaryRulesShouldApply: Bool = false
-    var thereAreHeaders: Bool { return headerSizes != nil }
+    var thereAreHeaders: Bool { return !headerSizes.isEmpty }
     
     weak var delegate: JTAppleCalendarDelegateProtocol!
     
@@ -388,8 +388,6 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         // Months = generic months
         // Default = final resort
         
-        guard let headerSizes = headerSizes else { return retval }
-        
         if let height = headerSizes[section] {
             retval = height
         } else {
@@ -522,7 +520,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         delegate = aDecoder.value(forKey: "delegate") as! JTAppleCalendarDelegateProtocol
         cellCache = aDecoder.value(forKey: "delegate") as! [Int : [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]]
         headerCache = aDecoder.value(forKey: "delegate") as! [Int : (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]
-        headerSizes = aDecoder.value(forKey: "delegate") as? [AnyHashable:CGFloat]
+        headerSizes = aDecoder.value(forKey: "delegate") as! [AnyHashable:CGFloat]
         super.init(coder: aDecoder)
     }
     
