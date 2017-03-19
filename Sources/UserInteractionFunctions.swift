@@ -130,7 +130,7 @@ extension JTAppleCalendarView {
     /// - Parameter completionHandler: This closure will run after
     ///                                the reload is complete
     public func reloadData(with anchorDate: Date? = nil, animation: Bool = false, completionHandler: (() -> Void)? = nil) {
-        if functionIsUnsafeSafeToRun {
+        if isScrollInProgress || isReloadDataInProgress {
             delayedExecutionClosure.append {[unowned self] in
                 self.reloadData(with: anchorDate, animation: animation, completionHandler: completionHandler)
             }
