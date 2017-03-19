@@ -321,8 +321,12 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             
             let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
             attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
-            if cellInset.x != 0 || cellInset.y != 0 {
-                attrib.frame = attrib.frame.insetBy(dx: cellInset.x, dy: cellInset.y )
+            if cellInset.x > -1, cellInset.y > -1 {
+                var frame = attrib.frame.insetBy(dx: cellInset.x, dy: cellInset.y)
+                if frame == .null {
+                    frame = attrib.frame.insetBy(dx: 0, dy: 0)
+                }
+                attrib.frame = frame
             }
             return attrib
         }
