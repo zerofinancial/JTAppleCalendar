@@ -23,6 +23,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var isPreparing = true
     var stride: CGFloat = 0
     var cellInset = CGPoint(x: 0, y: 0)
+    var sectionInset = CGPoint(x: 0, y: 0)
     var headerSizes: [AnyHashable:CGFloat] = [:]
     
     var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
@@ -40,7 +41,11 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var currentCell: (section: Int, width: CGFloat, height: CGFloat)? // Tracks the current cell size
     var contentHeight: CGFloat = 0 // Content height of calendarView
     var contentWidth: CGFloat = 0 // Content wifth of calendarView
-    var xCellOffset: CGFloat = 0
+    var xCellOffset: CGFloat = 0 {
+        didSet {
+            print(xCellOffset)
+        }
+    }
     var yCellOffset: CGFloat = 0
     var daysInSection: [Int: Int] = [:] // temporary caching
     var monthInfo: [Month] = []
@@ -97,6 +102,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         monthInfo = delegate.monthInfo
         scrollDirection = delegate.scrollDirection
         maxMissCount = scrollDirection == .horizontal ? maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
+        cellInset = delegate.cellInset
+        sectionInset = delegate.sectionInset
         itemSize = updatedLayoutItemSize
     }
     
@@ -128,12 +135,19 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         return retval
     }
     var testVal: CGFloat = 0
+    var rsi: CGFloat = 30
+    
     func horizontalStuff() {
         var section = 0
         var totalDayCounter = 0
         var headerGuide = 0
         let fullSection = numberOfRows * maxNumberOfDaysInWeek
         var extra = 0
+        
+        
+        xCellOffset = sectionInset.x
+        let endSeparator = sectionInset.x * 2
+        
         
         for aMonth in monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
@@ -161,14 +175,14 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                                 // We are at the last item in the section
                                 // && if we have headers
                                 headerGuide = 0
-                                xCellOffset = 0
+                                xCellOffset = sectionInset.x
                                 yCellOffset += attribute.5
                             }
                         } else {
                             totalDayCounter += 1
                             extra += 1
                             if totalDayCounter % fullSection == 0 { // If you have a full section
-                                xCellOffset = 0
+                                xCellOffset = sectionInset.x
                                 yCellOffset = 0
                                 contentWidth += attribute.4 * 7
                                 stride = contentWidth
@@ -180,7 +194,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                                 }
                                 
                                 if totalDayCounter % maxNumberOfDaysInWeek == 0 {
-                                    xCellOffset = 0
+                                    xCellOffset = sectionInset.x
                                     yCellOffset += attribute.5
                                 }
                             }
@@ -188,7 +202,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                     }
                 }
                 // Save the content size for each section
-                
+                contentWidth += endSeparator
                 if strictBoundaryRulesShouldApply {
                     sectionSize.append(contentWidth)
                     stride = sectionSize[section]
@@ -365,7 +379,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         switch scrollDirection {
         case .horizontal:
             let modifiedSize = sizeForitemAtIndexPath(item, section: section)
-            retval = (item, section, contentWidth, 0, modifiedSize.width * 7, headerHeight)
+            retval = (item, section, contentWidth + sectionInset.x, 0, modifiedSize.width * 7, headerHeight)
         case .vertical:
             // Use the calculaed header size and force the width
             // of the header to take up 7 columns
@@ -437,8 +451,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 return (cachedCell.width, cachedCell.height)
             }
         }
-        
-        var size: (width: CGFloat, height: CGFloat) = (itemSize.width, itemSize.height)
+        let width = itemSize.width - ((sectionInset.x / 7) * 2)
+        var size: (width: CGFloat, height: CGFloat) = (/*itemSize.*/width, itemSize.height)
         if itemSizeWasSet {
             if scrollDirection == .vertical {
                 size.height = itemSize.height

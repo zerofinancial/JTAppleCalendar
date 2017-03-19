@@ -17,6 +17,8 @@ protocol JTAppleCalendarDelegateProtocol: class {
     var totalDays: Int {get}
     var lastIndexOffset: (IndexPath, UICollectionElementCategory)? {get set}
     var allowsDateCellStretching: Bool {get set}
+    var cellInset: CGPoint {get set}
+    var sectionInset: CGPoint {get set}
     
     func sizesForMonthSection() -> [AnyHashable:CGFloat]
     

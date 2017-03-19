@@ -137,6 +137,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     
     
+    
     /// Notifies the container that the size of its view is about to change.
     open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { (context) -> Void in
@@ -188,11 +189,16 @@ open class JTAppleCalendarView: UICollectionView {
             return Array(Set(theSelectedDates)).sorted()
         }
     }
-    
+    @IBInspectable open var sectionInset: CGPoint = CGPoint(x: 0, y: 0) {
+        didSet {
+            if !initIsComplete { return }
+            calendarViewLayout.invalidateLayout()
+        }
+        
+    }
     @IBInspectable open var cellInset: CGPoint = CGPoint(x: 0, y: 0) {
         didSet {
             if !initIsComplete { return }
-            calendarViewLayout.cellInset = cellInset
             calendarViewLayout.invalidateLayout()
         }
     }

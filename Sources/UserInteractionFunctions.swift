@@ -103,7 +103,7 @@ extension JTAppleCalendarView {
         super.register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: identifier)
     }
     
-    public func dequeueJTAppleReusableSupplementaryView(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCollectionReusableView {
+    public func dequeueReusableJTAppleSupplementaryView(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCollectionReusableView {
         guard let headerView = dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader,
                                                                 withReuseIdentifier: identifier,
                                                                 for: indexPath) as? JTAppleCollectionReusableView else {
@@ -113,7 +113,7 @@ extension JTAppleCalendarView {
         return headerView
     }
     
-    public func dequeueJTAppleReusableCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCell {
+    public func JTApple(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCell {
         guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleCell else {
             developerError(string: "Error initializing Cell View with identifier: '\(identifier)'")
             return JTAppleCell()

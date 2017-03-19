@@ -133,6 +133,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        calendarView.itemSize = CGFloat(53.43 - 20)
+        
         
         
         
@@ -323,7 +325,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         
         
         let startDate = formatter.date(from: "2017 01 01")!
-        let endDate = formatter.date(from: "2025 01 01")!
+        let endDate = formatter.date(from: "2017 03 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
@@ -337,7 +339,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     }
     
     public func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
-        let myCustomCell = calendar.dequeueJTAppleReusableCell(withReuseIdentifier: "CellView", for: indexPath) as! CellView
+        let myCustomCell = calendar.JTApple(withReuseIdentifier: "CellView", for: indexPath) as! CellView
         
         myCustomCell.dayLabel.text = cellState.text
         if testCalendar.isDateInToday(date) {
@@ -372,10 +374,10 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         
         let header: JTAppleCollectionReusableView
         if month % 2 > 0 {
-            header = calendar.dequeueJTAppleReusableSupplementaryView(withReuseIdentifier: "WhiteSectionHeaderView", for: indexPath)
+            header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "WhiteSectionHeaderView", for: indexPath)
             (header as! WhiteSectionHeaderView).title.text = formatter.string(from: date)
         } else {
-            header = calendar.dequeueJTAppleReusableSupplementaryView(withReuseIdentifier: "PinkSectionHeaderView", for: indexPath)
+            header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "PinkSectionHeaderView", for: indexPath)
             (header as! PinkSectionHeaderView).title.text = formatter.string(from: date)
         }
         return header
