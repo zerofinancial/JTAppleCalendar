@@ -17,10 +17,10 @@ protocol JTAppleCalendarLayoutProtocol: class {
     var cellCache: [Int: [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]] {get set}
     var headerCache: [Int: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)] {get set}
     var sectionSize: [CGFloat] {get set}
+    var updatedLayoutItemSize: CGSize { get }
     func targetContentOffsetForProposedContentOffset(_ proposedContentOffset: CGPoint) -> CGPoint
     func sectionFromOffset(_ theOffSet: CGFloat) -> Int
     func sizeOfContentForSection(_ section: Int) -> CGFloat
-    func clearCache()
-    func prepare()
+    
     func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath?
 }

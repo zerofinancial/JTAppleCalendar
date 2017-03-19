@@ -45,7 +45,23 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var daysInSection: [Int: Int] = [:] // temporary caching
     var monthInfo: [Month] = []
     
-    var testVal: CGFloat = 0
+    var updatedLayoutItemSize: CGSize {
+        
+        // Default Item height and width
+        var height: CGFloat = collectionView!.bounds.size.height / CGFloat(delegate.cachedConfiguration.numberOfRows)
+        var width: CGFloat = collectionView!.bounds.size.width / CGFloat(maxNumberOfDaysInWeek)
+        
+        if itemSizeWasSet { // If delegate item size was set
+            if scrollDirection == .horizontal {
+                width = delegate.itemSize
+            } else {
+                height = delegate.itemSize
+            }
+        }
+        
+        return CGSize(width: width, height: height)
+    }
+
     
     init(withDelegate delegate: JTAppleCalendarDelegateProtocol) {
         super.init()
@@ -53,12 +69,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
     /// Tells the layout object to update the current layout.
     open override func prepare() {
-        if !layoutIsReadyToBePrepared {
-            return
-        }
+        if !layoutIsReadyToBePrepared { return }
         
         setupDataFromDelegate()
-        updateLayoutItemSize()
         
         if scrollDirection == .vertical {
             verticalStuff()
@@ -84,6 +97,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         monthInfo = delegate.monthInfo
         scrollDirection = delegate.scrollDirection
         maxMissCount = scrollDirection == .horizontal ? maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
+        itemSize = updatedLayoutItemSize
     }
     
     func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath? {
@@ -113,7 +127,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         
         return retval
     }
-    
+    var testVal: CGFloat = 0
     func horizontalStuff() {
         var section = 0
         var totalDayCounter = 0
@@ -578,25 +592,6 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             clearCache()
         }
     }
-
-    func updateLayoutItemSize() {
-        
-        // Default Item height and width
-        var height: CGFloat = collectionView!.bounds.size.height / CGFloat(delegate.cachedConfiguration.numberOfRows)
-        var width: CGFloat = collectionView!.bounds.size.width / CGFloat(maxNumberOfDaysInWeek)
-        
-        if itemSizeWasSet { // If delegate item size was set
-            if scrollDirection == .horizontal {
-                width = delegate.itemSize
-            } else {
-                height = delegate.itemSize
-            }
-        }
-
-        itemSize = CGSize(width: width, height: height)
-//        print("collectionViewSize ->> \(collectionView!.frame.size)")
-    }
-    
     
     func clearCache() {
         headerCache.removeAll()

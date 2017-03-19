@@ -468,7 +468,10 @@ open class JTAppleCalendarView: UICollectionView {
                 newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek ||
                 newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries ||
                 (lastMonthSize == nil && newLastMonth == [:]) ||
-                newLastMonth != lastMonthSize ?? [:] {
+                newLastMonth != lastMonthSize ?? [:] ||
+                calendarViewLayout.updatedLayoutItemSize != calendarViewLayout.itemSize {
+                
+                
                 lastMonthSize = newLastMonth
                 retval = true
             }
