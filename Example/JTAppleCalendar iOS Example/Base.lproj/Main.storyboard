@@ -387,11 +387,11 @@
                                                     <size key="itemSize" width="115" height="91"/>
                                                     <size key="headerReferenceSize" width="50" height="65"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                                    <inset key="sectionInset" minX="45" minY="40" maxX="45" maxY="40"/>
+                                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CellView" id="uEt-P7-rb4" customClass="CellView" customModule="JTAppleCalendar_iOS_Example" customModuleProvider="target">
-                                                        <rect key="frame" x="95" y="40" width="115" height="91"/>
+                                                        <rect key="frame" x="50" y="0.0" width="115" height="91"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                             <rect key="frame" x="0.0" y="0.0" width="115" height="91"/>
