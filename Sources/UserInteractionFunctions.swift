@@ -113,7 +113,15 @@ extension JTAppleCalendarView {
         return headerView
     }
     
-    public func JTApple(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCell {
+    public func registerDecorationView(nib: UINib?) {
+        calendarViewLayout.register(nib, forDecorationViewOfKind: decorationViewID)
+    }
+    public func register(viewClass className: AnyClass?, forDecorationViewOfKind kind: String) {
+        calendarViewLayout.register(className, forDecorationViewOfKind: decorationViewID)
+    }
+
+    
+    public func dequeueReusableJTAppleCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCell {
         guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleCell else {
             developerError(string: "Error initializing Cell View with identifier: '\(identifier)'")
             return JTAppleCell()

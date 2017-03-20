@@ -153,6 +153,9 @@ class ViewController: UIViewController {
         calendarView.register(UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main),
                               forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
                               withReuseIdentifier: "PinkSectionHeaderView")
+        
+//        calendarView.registerDecorationView(nib: UINib(nibName: "SectionDecorationView", bundle: Bundle.main))
+        
 //
         
 //        let panGensture = UILongPressGestureRecognizer(target: self, action: #selector(didStartRangeSelecting(gesture:)))
@@ -317,6 +320,7 @@ class ViewController: UIViewController {
 
 // MARK : JTAppleCalendarDelegate
 extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
+
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
         
         formatter.dateFormat = "yyyy MM dd"
@@ -339,7 +343,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     }
     
     public func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
-        let myCustomCell = calendar.JTApple(withReuseIdentifier: "CellView", for: indexPath) as! CellView
+        let myCustomCell = calendar.dequeueReusableCell(withReuseIdentifier: "CellView", for: indexPath) as! CellView
         
         myCustomCell.dayLabel.text = cellState.text
         if testCalendar.isDateInToday(date) {
@@ -381,6 +385,11 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
             (header as! PinkSectionHeaderView).title.text = formatter.string(from: date)
         }
         return header
+    }
+    
+    func sizeOfDecorationView(indexPath: IndexPath) -> CGRect {
+        let stride = calendarView.frame.width * CGFloat(indexPath.section)
+        return CGRect(x: stride + 5, y: 5, width: calendarView.frame.width - 10, height: calendarView.frame.height - 10)
     }
     
     func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {

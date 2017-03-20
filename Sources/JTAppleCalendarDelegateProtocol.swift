@@ -27,7 +27,7 @@ protocol JTAppleCalendarDelegateProtocol: class {
     
     func targetPointForItemAt(indexPath: IndexPath) -> CGPoint?
     func pathsFromDates(_ dates: [Date]) -> [IndexPath]
-
+    func sizeOfDecorationView(indexPath: IndexPath) -> CGRect
 }
 
 extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol { }

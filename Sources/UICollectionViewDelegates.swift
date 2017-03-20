@@ -159,4 +159,9 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         }
         delegate.calendar(self, didSelectDate: infoOfDateSelectedByUser.date, cell: selectedCell, cellState: cellState)
     }
+    
+    public func sizeOfDecorationView(indexPath: IndexPath) -> CGRect {
+        guard let size = calendarDelegate?.sizeOfDecorationView(indexPath: indexPath) else { return .zero }
+        return size
+    }
 }

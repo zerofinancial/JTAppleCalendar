@@ -35,6 +35,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var numberOfRows: Int = 0
     var strictBoundaryRulesShouldApply: Bool = false
     var thereAreHeaders: Bool { return !headerSizes.isEmpty }
+    var thereAreDecorationViews = false
     
     weak var delegate: JTAppleCalendarDelegateProtocol!
     
@@ -64,6 +65,16 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         }
         
         return CGSize(width: width, height: height)
+    }
+    
+    open override func register(_ nib: UINib?, forDecorationViewOfKind elementKind: String) {
+        super.register(nib, forDecorationViewOfKind: elementKind)
+        thereAreDecorationViews = true
+    }
+    
+    open override func register(_ viewClass: AnyClass?, forDecorationViewOfKind elementKind: String) {
+        super.register(viewClass, forDecorationViewOfKind: elementKind)
+        thereAreDecorationViews = true
     }
 
     
@@ -282,15 +293,21 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         var missCount = 0
         for sectionIndex in startSectionIndex..<cellCache.count {
             if let validSection = cellCache[sectionIndex], !validSection.isEmpty {
+                if thereAreDecorationViews {
+                    let attrib = layoutAttributesForDecorationView(ofKind: decorationViewID, at: IndexPath(item: 0, section: sectionIndex))!
+                    attributes.append(attrib)
+                }
+                
                 // Add header view attributes
                 if thereAreHeaders {
                     let data = headerCache[sectionIndex]!
-                    
+
                     if CGRect(x: data.2, y: data.3, width: data.4, height: data.5).intersects(rect) {
                         let attrib = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: IndexPath(item: data.0, section: data.1))
                         attributes.append(attrib!)
                     }
                 }
+                
                 for val in validSection {
                     if CGRect(x: val.2, y: val.3, width: val.4, height: val.5).intersects(rect) {
                         missCount = 0
@@ -314,6 +331,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 }
             }
         }
+
         return attributes
     }
     
@@ -394,6 +412,15 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         }
         return retval
     }
+    
+    open override func layoutAttributesForDecorationView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        let retval = UICollectionViewLayoutAttributes(forDecorationViewOfKind: decorationViewID, with: indexPath)
+        
+        retval.frame = delegate.sizeOfDecorationView(indexPath: indexPath)
+        
+        return retval
+    }
+    
     
     /// Returns the layout attributes for the specified supplementary view.
     open override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
