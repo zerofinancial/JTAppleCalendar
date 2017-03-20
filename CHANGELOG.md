@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
    - [Scroll to date can now be done with an offset](https://github.com/patchthecode/JTAppleCalendar/issues/332)
    - [Decoration-views added](https://github.com/patchthecode/JTAppleCalendar/issues/296). You can now design the calendar with whatever view you choose
    - Performance load time of dates has been decreased
+   - [Visible fixed](https://github.com/patchthecode/JTAppleCalendar/issues/263)
    
 
 ## [6.1.5](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.5)
