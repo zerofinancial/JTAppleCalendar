@@ -462,7 +462,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 let headerHeight =  strictBoundaryRulesShouldApply ? cachedHeaderHeightForSection(section) : 0
                 let currentMonth = monthInfo[monthMap[section]!]
                 let recalculatedNumOfRows = allowsDateCellStretching ? CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)) : CGFloat(maxNumberOfRowsPerMonth)
-                size.height = (collectionView!.frame.height - headerHeight) / recalculatedNumOfRows
+                size.height = (collectionView!.frame.height - headerHeight - sectionInset.top - sectionInset.bottom) / recalculatedNumOfRows
                 currentCell = (section: section, width: size.width, height: size.height)
             }
         } else {
