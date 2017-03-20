@@ -29,7 +29,7 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
-## [6.1.5](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.5)
+## [7.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.5)
 - Massive changes and minor bug fixes 
    - JTAppleCalendar is now a UICollectionView subclass and can be designed on interface builder.
    - Months sections distance is now configurable
