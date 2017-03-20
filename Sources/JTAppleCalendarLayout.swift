@@ -417,7 +417,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         let retval = UICollectionViewLayoutAttributes(forDecorationViewOfKind: decorationViewID, with: indexPath)
         
         retval.frame = delegate.sizeOfDecorationView(indexPath: indexPath)
-        
+        retval.zIndex = -1
         return retval
     }
     
