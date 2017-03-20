@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
+#### 7.x Releases
+- `7.0.0` Releases - [7.0.0](#700)
+
 #### 6.x Releases
 - `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)|[6.1.3](#613)|[6.1.4](#614)|[6.1.5](#615)
 - `6.0.0` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)|[6.0.5](#605)
@@ -26,6 +29,15 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [6.1.5](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.5)
+- Massive changes and minor bug fixes 
+   - JTAppleCalendar is now a UICollectionView subclass and can be designed on interface builder.
+   - Months sections distance is now configurable
+   - [Scroll to date can now be done with an offset](https://github.com/patchthecode/JTAppleCalendar/issues/332)
+   - [Decoration-views added](https://github.com/patchthecode/JTAppleCalendar/issues/296). You can now design the calendar with whatever view you choose
+   - Performance load time of dates has been decreased
+   
+
 ## [6.1.5](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.5)
 - Fixed - [Crash on reloading items](https://github.com/patchthecode/JTAppleCalendar/issues/327)
 
