@@ -43,16 +43,16 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     /// Configures the size of your date cells
-    @IBInspectable open var itemSize: CGFloat = 0 {
+    @IBInspectable open var cellSize: CGFloat = 0 {
         didSet {
-            if oldValue == itemSize { return }
+            if oldValue == cellSize { return }
             if scrollDirection == .horizontal {
-                calendarViewLayout.itemSize.width = itemSize
+                calendarViewLayout.cellSize.width = cellSize
             } else {
-                calendarViewLayout.itemSize.height = itemSize
+                calendarViewLayout.cellSize.height = cellSize
             }
             calendarViewLayout.invalidateLayout()
-            calendarViewLayout.itemSizeWasSet = itemSize == 0 ? false: true
+            calendarViewLayout.itemSizeWasSet = cellSize == 0 ? false: true
             
         }
     }
@@ -189,18 +189,21 @@ open class JTAppleCalendarView: UICollectionView {
             return Array(Set(theSelectedDates)).sorted()
         }
     }
-    @IBInspectable open var sectionInset: CGPoint = CGPoint(x: 0, y: 0) {
-        didSet {
-            if !initIsComplete { return }
-            calendarViewLayout.invalidateLayout()
-        }
+    func invalidateLayoutIfInitComplete() {
+        if !initIsComplete { return }
+        calendarViewLayout.invalidateLayout()
+    }
+    
+    open var sectionInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0) {
+        didSet { invalidateLayoutIfInitComplete() }
         
     }
-    @IBInspectable open var cellInset: CGPoint = CGPoint(x: 0, y: 0) {
-        didSet {
-            if !initIsComplete { return }
-            calendarViewLayout.invalidateLayout()
-        }
+    open var minimumInteritemSpacing: CGFloat = 0 {
+        didSet { invalidateLayoutIfInitComplete() }
+    }
+    
+    open var minimumLineSpacing: CGFloat = 0 {
+        didSet { invalidateLayoutIfInitComplete() }
     }
     
     lazy var theData: CalendarData = {
@@ -227,9 +230,6 @@ open class JTAppleCalendarView: UICollectionView {
     var totalDays: Int {
         get { return theData.totalDays }
     }
-    
-    /// Section spacing of the calendar view.
-    open var sectionSpacing: CGFloat = 0
     
     /// Configure the scrolling behavior
     open var scrollingMode: ScrollingMode = .stopAtEachCalendarFrameWidth {
@@ -276,9 +276,16 @@ open class JTAppleCalendarView: UICollectionView {
         let oldLayout = collectionViewLayout
         let newLayout = JTAppleCalendarLayout(withDelegate: self)
         newLayout.scrollDirection = (oldLayout as? UICollectionViewFlowLayout)?.scrollDirection ?? .horizontal
-        newLayout.cellInset = cellInset
+        newLayout.sectionInset = (oldLayout as? UICollectionViewFlowLayout)?.sectionInset ?? UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        newLayout.minimumInteritemSpacing = (oldLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing ?? 0
+        newLayout.minimumLineSpacing = (oldLayout as? UICollectionViewFlowLayout)?.minimumLineSpacing ?? 0
+        
         collectionViewLayout = newLayout
+        
         scrollDirection = newLayout.scrollDirection
+        sectionInset = newLayout.sectionInset
+        minimumLineSpacing = newLayout.minimumLineSpacing
+        minimumInteritemSpacing = newLayout.minimumInteritemSpacing
         
         
         transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
@@ -475,7 +482,7 @@ open class JTAppleCalendarView: UICollectionView {
                 newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries ||
                 (lastMonthSize == nil && newLastMonth == [:]) ||
                 newLastMonth != lastMonthSize ?? [:] ||
-                calendarViewLayout.updatedLayoutItemSize != calendarViewLayout.itemSize {
+                calendarViewLayout.updatedLayoutCellSize != calendarViewLayout.cellSize {
                 
                 
                 lastMonthSize = newLastMonth

@@ -58,10 +58,10 @@ class ViewController: UIViewController {
 
         if sender.title(for: .normal)! == "Horizontal" {
             calendarView.scrollDirection = .horizontal
-            calendarView.itemSize = 0
+            calendarView.cellSize = 0
         } else {
             calendarView.scrollDirection = .vertical
-            calendarView.itemSize = 25
+            calendarView.cellSize = 25
         }
         calendarView.reloadData()
     }

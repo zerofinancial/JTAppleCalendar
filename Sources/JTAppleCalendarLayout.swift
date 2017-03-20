@@ -12,7 +12,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var shouldClearCacheOnInvalidate = true
     let errorDelta: CGFloat = 0.0000001
     var allowsDateCellStretching = true
-    var itemSize: CGSize = CGSize.zero
+    var cellSize: CGSize = CGSize.zero
     var itemSizeWasSet: Bool = false
     var scrollDirection: UICollectionViewScrollDirection = .horizontal
     var maxMissCount: Int = 0
@@ -22,8 +22,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
     var isPreparing = true
     var stride: CGFloat = 0
-    var cellInset = CGPoint(x: 0, y: 0)
-    var sectionInset = CGPoint(x: 0, y: 0)
+    var minimumInteritemSpacing: CGFloat = 0
+    var minimumLineSpacing: CGFloat = 0
+    var sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     var headerSizes: [AnyHashable:CGFloat] = [:]
     
     var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
@@ -41,16 +42,14 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var currentCell: (section: Int, width: CGFloat, height: CGFloat)? // Tracks the current cell size
     var contentHeight: CGFloat = 0 // Content height of calendarView
     var contentWidth: CGFloat = 0 // Content wifth of calendarView
-    var xCellOffset: CGFloat = 0 {
-        didSet {
-            print(xCellOffset)
-        }
-    }
+    var xCellOffset: CGFloat = 0
     var yCellOffset: CGFloat = 0
+    var endSeparator: CGFloat = 0
+    
     var daysInSection: [Int: Int] = [:] // temporary caching
     var monthInfo: [Month] = []
     
-    var updatedLayoutItemSize: CGSize {
+    var updatedLayoutCellSize: CGSize {
         
         // Default Item height and width
         var height: CGFloat = collectionView!.bounds.size.height / CGFloat(delegate.cachedConfiguration.numberOfRows)
@@ -58,9 +57,9 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         
         if itemSizeWasSet { // If delegate item size was set
             if scrollDirection == .horizontal {
-                width = delegate.itemSize
+                width = delegate.cellSize
             } else {
-                height = delegate.itemSize
+                height = delegate.cellSize
             }
         }
         
@@ -102,9 +101,10 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         monthInfo = delegate.monthInfo
         scrollDirection = delegate.scrollDirection
         maxMissCount = scrollDirection == .horizontal ? maxNumberOfRowsPerMonth : maxNumberOfDaysInWeek
-        cellInset = delegate.cellInset
+        minimumInteritemSpacing = delegate.minimumInteritemSpacing
+        minimumLineSpacing = delegate.minimumLineSpacing
         sectionInset = delegate.sectionInset
-        itemSize = updatedLayoutItemSize
+        cellSize = updatedLayoutCellSize
     }
     
     func indexPath(direction: SegmentDestination, of section:Int, item: Int) -> IndexPath? {
@@ -145,8 +145,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         var extra = 0
         
         
-        xCellOffset = sectionInset.x
-        let endSeparator = sectionInset.x * 2
+        xCellOffset = sectionInset.left
+        endSeparator = sectionInset.left + sectionInset.right
         
         
         for aMonth in monthInfo {
@@ -175,14 +175,14 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                                 // We are at the last item in the section
                                 // && if we have headers
                                 headerGuide = 0
-                                xCellOffset = sectionInset.x
+                                xCellOffset = sectionInset.left
                                 yCellOffset += attribute.5
                             }
                         } else {
                             totalDayCounter += 1
                             extra += 1
                             if totalDayCounter % fullSection == 0 { // If you have a full section
-                                xCellOffset = sectionInset.x
+                                xCellOffset = sectionInset.left
                                 yCellOffset = 0
                                 contentWidth += attribute.4 * 7
                                 stride = contentWidth
@@ -194,7 +194,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                                 }
                                 
                                 if totalDayCounter % maxNumberOfDaysInWeek == 0 {
-                                    xCellOffset = sectionInset.x
+                                    xCellOffset = sectionInset.left
                                     yCellOffset += attribute.5
                                 }
                             }
@@ -349,8 +349,8 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             
             let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
             attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
-            if cellInset.x > -1, cellInset.y > -1 {
-                var frame = attrib.frame.insetBy(dx: cellInset.x, dy: cellInset.y)
+            if minimumInteritemSpacing > -1, minimumLineSpacing > -1 {
+                var frame = attrib.frame.insetBy(dx: minimumInteritemSpacing, dy: minimumLineSpacing)
                 if frame == .null {
                     frame = attrib.frame.insetBy(dx: 0, dy: 0)
                 }
@@ -368,7 +368,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         if !(0...monthMap.count ~= section) || !(0...numberOfDays  ~= item) { return nil }
         
         let size = sizeForitemAtIndexPath(item, section: section)
-        return (item, section, xCellOffset + stride, yCellOffset, size.width, size.height)
+        return (item, section, xCellOffset + stride, yCellOffset + sectionInset.top, size.width, size.height)
     }
     
     func determineToApplySupplementaryAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
@@ -379,7 +379,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         switch scrollDirection {
         case .horizontal:
             let modifiedSize = sizeForitemAtIndexPath(item, section: section)
-            retval = (item, section, contentWidth + sectionInset.x, 0, modifiedSize.width * 7, headerHeight)
+            retval = (item, section, contentWidth + sectionInset.left, sectionInset.top, modifiedSize.width * 7, headerHeight)
         case .vertical:
             // Use the calculaed header size and force the width
             // of the header to take up 7 columns
@@ -451,13 +451,14 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
                 return (cachedCell.width, cachedCell.height)
             }
         }
-        let width = itemSize.width - ((sectionInset.x / 7) * 2)
-        var size: (width: CGFloat, height: CGFloat) = (/*itemSize.*/width, itemSize.height)
+        let width = cellSize.width - ((sectionInset.left / 7) * 2)
+        
+        var size: (width: CGFloat, height: CGFloat) = (/*itemSize.*/width, cellSize.height)
         if itemSizeWasSet {
             if scrollDirection == .vertical {
-                size.height = itemSize.height
+                size.height = cellSize.height
             } else {
-                size.width = itemSize.width
+                size.width = cellSize.width
                 let headerHeight =  strictBoundaryRulesShouldApply ? cachedHeaderHeightForSection(section) : 0
                 let currentMonth = monthInfo[monthMap[section]!]
                 let recalculatedNumOfRows = allowsDateCellStretching ? CGFloat(currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)) : CGFloat(maxNumberOfRowsPerMonth)
@@ -479,7 +480,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
             } else {
                 numberOfRowsForSection = maxNumberOfRowsPerMonth
             }
-            height      = (collectionView!.frame.height - headerHeight) / CGFloat(numberOfRowsForSection)
+            height      = (collectionView!.frame.height - headerHeight - sectionInset.top - sectionInset.bottom) / CGFloat(numberOfRowsForSection)
             size.height = height > 0 ? height : 0
             currentCell = (section: section, width: size.width, height: size.height)
         }

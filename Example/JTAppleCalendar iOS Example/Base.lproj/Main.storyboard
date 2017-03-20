@@ -383,8 +383,7 @@
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rcm-BV-nfJ" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="298.5"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <inset key="scrollIndicatorInsets" minX="0.0" minY="30" maxX="0.0" maxY="0.0"/>
-                                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Rjk-DW-wpX">
+                                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="3" minimumInteritemSpacing="3" id="Rjk-DW-wpX">
                                                     <size key="itemSize" width="115" height="91"/>
                                                     <size key="headerReferenceSize" width="50" height="65"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -461,17 +460,6 @@
                                                         <outlet property="title" destination="ZeE-2j-jod" id="jh4-r9-dhD"/>
                                                     </connections>
                                                 </collectionReusableView>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="itemSize">
-                                                        <real key="value" value="0.0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="point" keyPath="cellInset">
-                                                        <point key="value" x="0.0" y="0.0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="point" keyPath="sectionInset">
-                                                        <point key="value" x="30" y="15"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <outlet property="ibDataSource" destination="BYZ-38-t0r" id="ey5-Fd-hYO"/>
                                                     <outlet property="ibDelegate" destination="BYZ-38-t0r" id="Vd4-9s-tNo"/>

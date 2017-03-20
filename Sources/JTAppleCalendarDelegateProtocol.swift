@@ -9,7 +9,7 @@
 
 protocol JTAppleCalendarDelegateProtocol: class {
     var isCalendarLayoutLoaded: Bool {get}
-    var itemSize: CGFloat {get set}
+    var cellSize: CGFloat {get set}
     var cachedConfiguration: ConfigurationParameters! {get set}
     var scrollDirection: UICollectionViewScrollDirection! {get set}
     var monthInfo: [Month] {get set}
@@ -17,8 +17,11 @@ protocol JTAppleCalendarDelegateProtocol: class {
     var totalDays: Int {get}
     var lastIndexOffset: (IndexPath, UICollectionElementCategory)? {get set}
     var allowsDateCellStretching: Bool {get set}
-    var cellInset: CGPoint {get set}
-    var sectionInset: CGPoint {get set}
+    
+    var sectionInset: UIEdgeInsets {get set}
+    var minimumInteritemSpacing: CGFloat  {get set}
+    var minimumLineSpacing: CGFloat {get set}
+
     
     func sizesForMonthSection() -> [AnyHashable:CGFloat]
     
