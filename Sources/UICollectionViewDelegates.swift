@@ -85,7 +85,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             deleteCellFromSelectedSetIfSelected(indexPath)
             let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
             var indexPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
-            indexPathsToReload.append(indexPath)
+            if selectedCell == nil { indexPathsToReload.append(indexPath) }
             // Cell may be nil if user switches month sections
             // Although the cell may be nil, we still want to
             // return the cellstate
