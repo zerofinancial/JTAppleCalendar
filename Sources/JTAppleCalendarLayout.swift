@@ -18,6 +18,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     var maxMissCount: Int = 0
     var cellCache: [Int: [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]] = [:]
     var headerCache: [Int: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)] = [:]
+    var decorationCache: [IndexPath:UICollectionViewLayoutAttributes] = [:]
     var sectionSize: [CGFloat] = []
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
     var isPreparing = true
@@ -414,8 +415,10 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
     }
     
     open override func layoutAttributesForDecorationView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        let retval = UICollectionViewLayoutAttributes(forDecorationViewOfKind: decorationViewID, with: indexPath)
+        if let alreadyCachedVal = decorationCache[indexPath] { return alreadyCachedVal }
         
+        let retval = UICollectionViewLayoutAttributes(forDecorationViewOfKind: decorationViewID, with: indexPath)
+        decorationCache[indexPath] = retval
         retval.frame = delegate.sizeOfDecorationView(indexPath: indexPath)
         retval.zIndex = -1
         return retval
@@ -639,6 +642,7 @@ open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutP
         headerCache.removeAll()
         cellCache.removeAll()
         sectionSize.removeAll()
+        decorationCache.removeAll()
         currentHeader = nil
         currentCell = nil
         lastWrittenCellAttribute = nil
