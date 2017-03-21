@@ -7,7 +7,7 @@
 //
 
 /// Methods in this class are meant to be overridden and will be called by its collection view to gather layout information.
-open class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtocol {
+class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtocol {
     
     var shouldClearCacheOnInvalidate = true
     let errorDelta: CGFloat = 0.0000001
