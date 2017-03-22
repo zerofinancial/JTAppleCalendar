@@ -852,8 +852,7 @@ extension JTAppleCalendarView {
     func deselectDate(oldIndexPath: IndexPath, shouldTriggerSelecteionDelegate: Bool) -> [IndexPath] {
         var allIndexPathsToReload: Set<IndexPath> = []
         
-        if let index = self.theSelectedIndexPaths
-            .index(of: oldIndexPath) {
+        if let index = self.theSelectedIndexPaths.index(of: oldIndexPath) {
             let oldDate = self.theSelectedDates[index]
             self.deselectItem(at: oldIndexPath, animated: false)
             self.theSelectedIndexPaths.remove(at: index)
@@ -865,6 +864,7 @@ extension JTAppleCalendarView {
             } else {
                 // Although we do not want the delegate triggered,
                 // we still want counterpart cells to be deselected
+                allIndexPathsToReload.insert(oldIndexPath)
                 let cellState = self.cellStateFromIndexPath(oldIndexPath)
                 if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
                     // If there was a counterpart cell then
@@ -892,9 +892,7 @@ extension JTAppleCalendarView {
     }
     
     func deselectCounterPartCellIndexPath(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
-        if let counterPartCellIndexPath =
-            indexPathOfdateCellCounterPath(date,
-                                           dateOwner: dateOwner) {
+        if let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) {
             deleteCellFromSelectedSetIfSelected(counterPartCellIndexPath)
             return counterPartCellIndexPath
         }
