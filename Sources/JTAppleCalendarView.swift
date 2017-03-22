@@ -79,7 +79,7 @@ open class JTAppleCalendarView: UICollectionView {
     /// then whenever you click on a datecell, you may notice a very fast
     /// refreshing of the date-cells both left and right of the cell you
     /// just selected.
-    @IBInspectable open var isRangeSelectionUsed: Bool = false {
+    open var isRangeSelectionUsed: Bool = false {
         didSet {
             if isRangeSelectionUsed { allowsMultipleSelection = true }
         }
