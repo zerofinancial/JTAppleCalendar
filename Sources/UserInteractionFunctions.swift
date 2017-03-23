@@ -157,7 +157,9 @@ extension JTAppleCalendarView {
         
         // Restore the selected index paths
         let restoreAfterReload = {
-            self.selectDates(selectedDates, triggerSelectionDelegate: false)
+            if layoutNeedsUpdating { // If layoutNeedsUpdating was false, layoutData would remain and re-selection wouldnt be needed
+                self.selectDates(selectedDates, triggerSelectionDelegate: false)
+            }
         }
         
         if let validAnchorDate = anchorDate {
@@ -218,8 +220,7 @@ extension JTAppleCalendarView {
         
         // Before reloading, set the proposal path,
         // so that in the event targetContentOffset gets called. We know the path
-        setMinVisibleDate()
-        
+        calendarViewLayout.setMinVisibleDate()
         batchReloadIndexPaths(paths)
     }
     
@@ -557,7 +558,7 @@ extension JTAppleCalendarView {
             return emptySegment
         }
         
-        let cellAttributes = visibleElements(excludeHeaders: true)
+        let cellAttributes = calendarViewLayout.visibleElements(excludeHeaders: true)
         let indexPaths: [IndexPath] = cellAttributes.map { $0.indexPath }.sorted()
         return dateSegmentInfoFrom(visible: indexPaths)
     }

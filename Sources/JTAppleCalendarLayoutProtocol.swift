@@ -12,6 +12,7 @@ protocol JTAppleCalendarLayoutProtocol: class {
     var allowsDateCellStretching: Bool {get set}
     var itemSizeWasSet: Bool {get set}
     var cellSize: CGSize {get set}
+    var focusIndexPath: (IndexPath, UICollectionElementCategory)? {get set}
     
     var minimumInteritemSpacing: CGFloat {get set}
     var minimumLineSpacing: CGFloat {get set}

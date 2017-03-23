@@ -105,7 +105,11 @@ open class JTAppleCalendarView: UICollectionView {
     
     
     /// The object that acts as the delegate of the calendar view.
-    weak open var calendarDelegate: JTAppleCalendarViewDelegate?
+    weak open var calendarDelegate: JTAppleCalendarViewDelegate? {
+        didSet {
+            lastMonthSize = sizesForMonthSection()
+        }
+    }
     
     /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
     /// Remove this extra property once Xcode gets fixed.
@@ -128,17 +132,12 @@ open class JTAppleCalendarView: UICollectionView {
         set { calendarDataSource = newValue as? JTAppleCalendarViewDataSource }
     }
     
-    
     func setupMonthInfoAndMap() {
         theData = setupMonthInfoDataForStartAndEndDate()
     }
     
-    var lastIndexOffset: (IndexPath, UICollectionElementCategory)?
     var initIsComplete = false
-    
-    
-    
-    
+
     /// Notifies the container that the size of its view is about to change.
     open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { (context) -> Void in
@@ -217,7 +216,7 @@ open class JTAppleCalendarView: UICollectionView {
         set { theData.months = monthInfo }
     }
     
-    var lastMonthSize: [AnyHashable:CGFloat]?
+    var lastMonthSize: [AnyHashable:CGFloat] = [:]
     
     var monthMap: [Int: Int] {
         get { return theData.sectionToMonthMap }
@@ -472,7 +471,7 @@ open class JTAppleCalendarView: UICollectionView {
             let newEndOfMonth   = calendar.endOfMonth(for: newDateBoundary.endDate)
             let oldStartOfMonth = calendar.startOfMonth(for: startDateCache)
             let oldEndOfMonth   = calendar.endOfMonth(for: endDateCache)
-            let newLastMonth    = sizesForMonthSection()
+            let newLastMonth  = sizesForMonthSection()
             if newStartOfMonth != oldStartOfMonth ||
                 newEndOfMonth != oldEndOfMonth ||
                 newDateBoundary.calendar != cachedConfiguration.calendar ||
@@ -481,13 +480,10 @@ open class JTAppleCalendarView: UICollectionView {
                 newDateBoundary.generateOutDates != cachedConfiguration.generateOutDates ||
                 newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek ||
                 newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries ||
-                (lastMonthSize == nil && newLastMonth == [:]) ||
-                newLastMonth != lastMonthSize ?? [:] ||
+                lastMonthSize != newLastMonth ||
                 calendarViewLayout.updatedLayoutCellSize != calendarViewLayout.cellSize {
-                
-                
-                lastMonthSize = newLastMonth
-                retval = true
+                    lastMonthSize = newLastMonth
+                    retval = true
             }
         }
         
@@ -937,61 +933,10 @@ extension JTAppleCalendarView {
         return nil
     }
     
-    func setMinVisibleDate() { // jt101 for setting proposal
-        let minIndices = minimumVisibleIndexPaths()
-        switch (minIndices.headerIndex, minIndices.cellInfo.indexPath) {
-        case (.some(let path), nil):
-            lastIndexOffset = (path, UICollectionElementCategory.supplementaryView)
-        case (nil, .some(let path)):
-            lastIndexOffset = (path, UICollectionElementCategory.cell)
-            print(path)
-        case (.some(let hPath), (.some(let cPath))):
-            if hPath <= cPath {
-                lastIndexOffset = (hPath, UICollectionElementCategory.supplementaryView)
-            } else {
-                lastIndexOffset = (cPath, UICollectionElementCategory.cell)
-            }
-        default:
-            break
-        }
-    }
-    
-    // This function ignores decoration views //JT101 for setting proposal
-    func minimumVisibleIndexPaths() -> (cellInfo:(indexPath: IndexPath?, state: CellState?), headerIndex: IndexPath?) {
-        let visibleItems: [UICollectionViewLayoutAttributes] = scrollDirection == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()
-        
-        var cells: [IndexPath] = []
-        var headers: [IndexPath] = []
-        for item in visibleItems {
-            if item.representedElementCategory == .cell {
-                cells.append(item.indexPath)
-            } else {
-                headers.append(item.indexPath)
-            }
-        }
-        
-        var cellState: CellState?
-        if let validMinCellIndex = cells.min() {
-            cellState = cellStateFromIndexPath(validMinCellIndex)
-        }
-        
-        return ((cells.min(), cellState), headers.min())
-    }
-    
     /// Retrieves the current section
     public func currentSection() -> Int? {
-        return minimumVisibleIndexPaths().cellInfo.indexPath?.section
-    }
-    
-    func visibleElements(excludeHeaders: Bool? = false, from rect: CGRect? = nil) -> [UICollectionViewLayoutAttributes] {
-        let aRect = rect ?? CGRect(x: contentOffset.x + 1, y: contentOffset.y + 1, width: frame.width - 2, height: frame.height - 2)
-        guard let attributes = calendarViewLayout.layoutAttributesForElements(in: aRect), !attributes.isEmpty else {
-            return []
-        }
-        if excludeHeaders == true {
-            return attributes.filter { $0.representedElementKind != UICollectionElementKindSectionHeader }
-        }
-        return attributes
+        let minVisiblePaths = calendarViewLayout.minimumVisibleIndexPaths()
+        return minVisiblePaths.cellIndex?.section
     }
     
     func dateSegmentInfoFrom(visible indexPaths: [IndexPath]) -> DateSegmentInfo {

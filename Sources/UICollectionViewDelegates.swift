@@ -84,26 +84,21 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             // Update model
             deleteCellFromSelectedSetIfSelected(indexPath)
             let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-            var indexPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
-            if selectedCell == nil { indexPathsToReload.append(indexPath) }
+            var indexPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)) : []
+            if selectedCell == nil { indexPathsToReload.insert(indexPath) }
             // Cell may be nil if user switches month sections
             // Although the cell may be nil, we still want to
             // return the cellstate
             let cellState = cellStateFromIndexPath(indexPath, withDateInfo: dateInfoDeselectedByUser, cell: selectedCell)
             let deselectedCell = deselectCounterPartCellIndexPath(indexPath, date: dateInfoDeselectedByUser.date, dateOwner: cellState.dateBelongsTo)
             if let unselectedCounterPartIndexPath = deselectedCell {
-                deleteCellFromSelectedSetIfSelected(
-                    unselectedCounterPartIndexPath)
-                // ONLY if the counterPart cell is visible,
-                // then we need to inform the delegate
-                if !indexPathsToReload.contains(unselectedCounterPartIndexPath) {
-                    indexPathsToReload.append(unselectedCounterPartIndexPath)
-                    let counterPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: unselectedCounterPartIndexPath) : []
-                    indexPathsToReload.append(contentsOf: counterPathsToReload)
-                }
+                deleteCellFromSelectedSetIfSelected(unselectedCounterPartIndexPath)
+                indexPathsToReload.insert(unselectedCounterPartIndexPath)
+                let counterPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: unselectedCounterPartIndexPath)) : []
+                indexPathsToReload.formUnion(counterPathsToReload)
             }
             if indexPathsToReload.count > 0 {
-                self.batchReloadIndexPaths(indexPathsToReload)
+                self.batchReloadIndexPaths(Array(indexPathsToReload))
             }
             delegate.calendar(self, didDeselectDate: dateInfoDeselectedByUser.date, cell: selectedCell, cellState: cellState)
         }
@@ -133,29 +128,24 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             let infoOfDateSelectedByUser = dateOwnerInfoFromPath(indexPath) else {
                 return
         }
-        
-        // index paths to be reloaded should be index to the left and right of the selected index
-        let indexPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
-        
+
         // Update model
         addCellToSelectedSetIfUnselected(indexPath, date: infoOfDateSelectedByUser.date)
         let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
         // If cell has a counterpart cell, then select it as well
         let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDateSelectedByUser, cell: selectedCell)
-        var pathsToReload = indexPathsToReload
+        
+        // index paths to be reloaded should be index to the left and right of the selected index
+        var pathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)) : []
         if let selectedCounterPartIndexPath = selectCounterPartCellIndexPathIfExists(indexPath,
                                                                                      date: infoOfDateSelectedByUser.date,
                                                                                      dateOwner: cellState.dateBelongsTo) {
-            // ONLY if the counterPart cell is visible,
-            // then we need to inform the delegate
-            if !pathsToReload.contains(selectedCounterPartIndexPath) {
-                pathsToReload.append(selectedCounterPartIndexPath)
-                let counterPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath) : []
-                pathsToReload.append(contentsOf: counterPathsToReload)
-            }
+            pathsToReload.insert(selectedCounterPartIndexPath)
+            let counterPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath)) : []
+            pathsToReload.formUnion(counterPathsToReload)
         }
-        if pathsToReload.count > 0 {
-            self.batchReloadIndexPaths(pathsToReload)
+        if !pathsToReload.isEmpty {
+            self.batchReloadIndexPaths(Array(pathsToReload))
         }
         delegate.calendar(self, didSelectDate: infoOfDateSelectedByUser.date, cell: selectedCell, cellState: cellState)
     }

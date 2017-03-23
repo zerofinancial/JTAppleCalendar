@@ -27,6 +27,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var minimumLineSpacing: CGFloat = 0
     var sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     var headerSizes: [AnyHashable:CGFloat] = [:]
+    var focusIndexPath: (IndexPath, UICollectionElementCategory)?
     
     var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
     var layoutIsReadyToBePrepared: Bool {
@@ -85,7 +86,9 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     }
     /// Tells the layout object to update the current layout.
     open override func prepare() {
+        print("prepare called.")
         if !layoutIsReadyToBePrepared { return }
+        print("prepare was re-calculated.")
         
         setupDataFromDelegate()
         
@@ -587,6 +590,65 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         super.init(coder: aDecoder)
     }
     
+    func setMinVisibleDate() { // jt101 for setting proposal
+        let minIndices = minimumVisibleIndexPaths()
+        switch (minIndices.headerIndex, minIndices.cellIndex) {
+        case (.some(let path), nil):
+            focusIndexPath = (path, UICollectionElementCategory.supplementaryView)
+        case (nil, .some(let path)):
+            focusIndexPath = (path, UICollectionElementCategory.cell)
+        case (.some(let hPath), (.some(let cPath))):
+            if hPath <= cPath {
+                focusIndexPath = (hPath, UICollectionElementCategory.supplementaryView)
+            } else {
+                focusIndexPath = (cPath, UICollectionElementCategory.cell)
+            }
+        default:
+            break
+        }
+    }
+    
+    override func prepare(forAnimatedBoundsChange oldBounds: CGRect) {
+        super.prepare(forAnimatedBoundsChange: oldBounds)
+        setMinVisibleDate()
+        print("focusedPath = \(focusIndexPath)")
+    }
+    
+    override func finalizeAnimatedBoundsChange() {
+        super.finalizeAnimatedBoundsChange()
+        focusIndexPath = nil
+    }
+    
+    // This function ignores decoration views //JT101 for setting proposal
+    func minimumVisibleIndexPaths() -> (cellIndex: IndexPath?, headerIndex: IndexPath?) {
+        let visibleItems: [UICollectionViewLayoutAttributes] = scrollDirection == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()
+        
+        var cells: [IndexPath] = []
+        var headers: [IndexPath] = []
+        for item in visibleItems {
+            switch item.representedElementCategory {
+            case .cell:
+                cells.append(item.indexPath)
+            case .supplementaryView:
+                headers.append(item.indexPath)
+            case .decorationView:
+                break
+            }
+        }
+        return (cells.min(), headers.min())
+    }
+    
+    func visibleElements(excludeHeaders: Bool? = false, from rect: CGRect? = nil) -> [UICollectionViewLayoutAttributes] {
+        let aRect = rect ?? CGRect(x: collectionView!.contentOffset.x + 1, y: collectionView!.contentOffset.y + 1, width: collectionView!.frame.width - 2, height: collectionView!.frame.height - 2)
+        guard let attributes = layoutAttributesForElements(in: aRect), !attributes.isEmpty else {
+            return []
+        }
+        if excludeHeaders == true {
+            return attributes.filter { $0.representedElementKind != UICollectionElementKindSectionHeader }
+        }
+        return attributes
+    }
+    
     /// Returns the content offset to use after an animation
     /// layout update or change.
     /// - Parameter proposedContentOffset: The proposed point for the
@@ -596,7 +658,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var retval = proposedContentOffset
         
         
-        if let lastOffsetIndex = delegate.lastIndexOffset {
+        if let lastOffsetIndex = focusIndexPath {
+            print("path retrieved: \(lastOffsetIndex)")
             switch lastOffsetIndex.1 {
             case .supplementaryView:
                 if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: lastOffsetIndex.0) {
@@ -633,7 +696,10 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     open override func invalidateLayout() {
         super.invalidateLayout()
         
+        print("invalidateLayout called.")
+        
         if shouldClearCacheOnInvalidate {
+            print("cache cleared.")
             clearCache()
         }
     }
