@@ -232,6 +232,11 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var section = 0
         var totalDayCounter = 0
         var headerGuide = 0
+        
+        xCellOffset = sectionInset.left
+        yCellOffset = sectionInset.top
+        endSeparator = sectionInset.top + sectionInset.bottom
+        
         for aMonth in monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
@@ -274,6 +279,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                     }
                 }
                 // Save the content size for each section
+                contentHeight += endSeparator
+                yCellOffset += endSeparator
                 sectionSize.append(contentHeight)
                 section += 1
             }
@@ -390,7 +397,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         if !(0...monthMap.count ~= section) || !(0...numberOfDays  ~= item) { return nil }
         
         let size = sizeForitemAtIndexPath(item, section: section)
-        return (item, section, xCellOffset + stride, yCellOffset + sectionInset.top, size.width, size.height)
+        let y = scrollDirection == .horizontal ? yCellOffset + sectionInset.top : yCellOffset
+        return (item, section, xCellOffset + stride, y, size.width, size.height)
     }
     
     func determineToApplySupplementaryAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
@@ -409,7 +417,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             // delegate so much
             
             let modifiedSize = (width: collectionView!.frame.width, height: headerHeight)
-            retval = (item, section, 0, yCellOffset, modifiedSize.width, modifiedSize.height)
+            retval = (item, section, 0, yCellOffset , modifiedSize.width, modifiedSize.height)
         }
         if retval?.4 == 0, retval?.5 == 0 {
             return nil
