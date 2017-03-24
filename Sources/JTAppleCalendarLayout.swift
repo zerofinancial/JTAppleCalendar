@@ -149,8 +149,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         
         return retval
     }
-    var testVal: CGFloat = 0
-    var rsi: CGFloat = 30
+
     
     func horizontalStuff() {
         var section = 0
@@ -170,7 +169,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                 if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: section) {
                     headerCache[section] = aHeaderAttr
                     if strictBoundaryRulesShouldApply {
-                        contentWidth += aHeaderAttr.4 + testVal
+                        contentWidth += aHeaderAttr.4
                         yCellOffset = aHeaderAttr.5
                     }
                 }
@@ -409,7 +408,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         switch scrollDirection {
         case .horizontal:
             let modifiedSize = sizeForitemAtIndexPath(item, section: section)
-            retval = (item, section, contentWidth + sectionInset.left, sectionInset.top, modifiedSize.width * 7, headerHeight)
+            let width = (modifiedSize.width * 7)
+            retval = (item, section, contentWidth + sectionInset.left, sectionInset.top, width , headerHeight)
         case .vertical:
             // Use the calculaed header size and force the width
             // of the header to take up 7 columns
@@ -492,7 +492,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                 return (cachedCell.width, cachedCell.height)
             }
         }
-        let width = cellSize.width - ((sectionInset.left / 7) * 2)
+        let width = cellSize.width - ((sectionInset.left / 7) + (sectionInset.right / 7))
         
         var size: (width: CGFloat, height: CGFloat) = (/*itemSize.*/width, cellSize.height)
         if itemSizeWasSet {
