@@ -108,8 +108,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     
     func setupDataFromDelegate() {
         // get information from the delegate
+        headerSizes = delegate.sizesForMonthSection() // update first. Other variables below depend on it
         strictBoundaryRulesShouldApply = thereAreHeaders || delegate.cachedConfiguration.hasStrictBoundaries
-        headerSizes = delegate.sizesForMonthSection()
         numberOfRows = delegate.cachedConfiguration.numberOfRows
         monthMap = delegate.monthMap
         allowsDateCellStretching = delegate.allowsDateCellStretching
@@ -261,14 +261,14 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                                 // We are at the last item in the
                                 // section && if we have headers
                                 headerGuide = 0
-                                xCellOffset = 0
+                                xCellOffset = sectionInset.left
                                 yCellOffset += attribute.5
                                 contentHeight += attribute.5
                             }
                         } else {
                             totalDayCounter += 1
                             if totalDayCounter % maxNumberOfDaysInWeek == 0 {
-                                xCellOffset = 0
+                                xCellOffset = sectionInset.left
                                 yCellOffset += attribute.5
                                 contentHeight += attribute.5
                             } else if totalDayCounter == delegate.totalDays {
@@ -417,7 +417,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             // delegate so much
             
             let modifiedSize = (width: collectionView!.frame.width, height: headerHeight)
-            retval = (item, section, 0, yCellOffset , modifiedSize.width, modifiedSize.height)
+            retval = (item, section, sectionInset.left, yCellOffset , modifiedSize.width - (sectionInset.left + sectionInset.right), modifiedSize.height)
         }
         if retval?.4 == 0, retval?.5 == 0 {
             return nil
