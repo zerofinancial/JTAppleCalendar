@@ -250,7 +250,6 @@ open class JTAppleCalendarView: UICollectionView {
         }
     }
     
-    @available(iOS 9.0, *)
     open override var semanticContentAttribute: UISemanticContentAttribute {
         didSet {
             transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
