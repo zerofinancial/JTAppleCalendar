@@ -139,10 +139,18 @@ open class JTAppleCalendarView: UICollectionView {
     var initIsComplete = false
 
     /// Notifies the container that the size of its view is about to change.
-    open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDateIndexPathAfterRotate: IndexPath? = nil) {
+        print("")
+        self.calendarViewLayout.focusIndexPath = focusDateIndexPathAfterRotate
+        
         coordinator.animate(alongsideTransition: { (context) -> Void in
-            self.calendarViewLayout.invalidateLayout()
+            
+            self.calendarViewLayout.clearCache()
+            self.calendarViewLayout.prepare()
+            self.calendarViewLayout.shouldClearCacheOnInvalidate = false
+            self.performBatchUpdates(nil, completion: nil)
         },completion: { (context) -> Void in
+            self.calendarViewLayout.focusIndexPath = nil
         })
     }
     
@@ -271,13 +279,17 @@ open class JTAppleCalendarView: UICollectionView {
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
+    }
+    
+    func setupNewLayout(from oldLayout: JTAppleCalendarLayoutProtocol) {
         
-        let oldLayout = collectionViewLayout
         let newLayout = JTAppleCalendarLayout(withDelegate: self)
-        newLayout.scrollDirection = (oldLayout as? UICollectionViewFlowLayout)?.scrollDirection ?? .horizontal
-        newLayout.sectionInset = (oldLayout as? UICollectionViewFlowLayout)?.sectionInset ?? UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        newLayout.minimumInteritemSpacing = (oldLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing ?? 0
-        newLayout.minimumLineSpacing = (oldLayout as? UICollectionViewFlowLayout)?.minimumLineSpacing ?? 0
+        newLayout.scrollDirection = oldLayout.scrollDirection
+        newLayout.sectionInset = oldLayout.sectionInset
+        newLayout.minimumInteritemSpacing = oldLayout.minimumInteritemSpacing
+        newLayout.minimumLineSpacing = oldLayout.minimumLineSpacing
+        
         
         collectionViewLayout = newLayout
         
@@ -301,7 +313,6 @@ open class JTAppleCalendarView: UICollectionView {
             }
         #endif
         initIsComplete = true
-        
     }
     
     func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> [IndexPath] {
@@ -800,10 +811,10 @@ extension JTAppleCalendarView {
         }
         
         // Reload the invisible paths first.
+        // Why reload invisible paths? because they have already been prefetched
         if !invisiblePathsToRelad.isEmpty {
             calendarViewLayout.shouldClearCacheOnInvalidate = false
             reloadItems(at: invisiblePathsToRelad)
-            calendarViewLayout.shouldClearCacheOnInvalidate = true
         }
         
         // Reload the visible paths
@@ -813,7 +824,6 @@ extension JTAppleCalendarView {
                 performBatchUpdates({[unowned self] in
                     self.reloadItems(at: visiblePathsToReload)
                 })
-                self.calendarViewLayout.shouldClearCacheOnInvalidate = true
             }
         }
     }
@@ -939,31 +949,25 @@ extension JTAppleCalendarView {
     }
     
     func dateSegmentInfoFrom(visible indexPaths: [IndexPath]) -> DateSegmentInfo {
-        var inDates   = [Date]()
-        var monthDates = [Date]()
-        var outDates  = [Date]()
-        var inDateIndexes   = [IndexPath]()
-        var monthDateIndexes = [IndexPath]()
-        var outDateIndexes  = [IndexPath]()
+        var inDates    = [(Date, IndexPath)]()
+        var monthDates = [(Date, IndexPath)]()
+        var outDates   = [(Date, IndexPath)]()
         
         for indexPath in indexPaths {
             let info = dateOwnerInfoFromPath(indexPath)
             if let validInfo = info  {
                 switch validInfo.owner {
                 case .thisMonth:
-                    monthDates.append(validInfo.date)
-                    monthDateIndexes.append(indexPath)
+                    monthDates.append((validInfo.date, indexPath))
                 case .previousMonthWithinBoundary, .previousMonthOutsideBoundary:
-                    inDates.append(validInfo.date)
-                    inDateIndexes.append(indexPath)
+                    inDates.append((validInfo.date, indexPath))                    
                 default:
-                    outDateIndexes.append(indexPath)
-                    outDates.append(validInfo.date)
+                    outDates.append((validInfo.date, indexPath))
                 }
             }
         }
         
-        let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates, indateIndexes: inDateIndexes, monthDateIndexes: monthDateIndexes, outdateIndexes: outDateIndexes)
+        let retval = DateSegmentInfo(indates: inDates, monthDates: monthDates, outdates: outDates)
         return retval
     }
     

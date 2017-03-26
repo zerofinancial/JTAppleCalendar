@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9v8-0V-uqf">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -83,13 +83,13 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="vbP-Kr-0hG">
-                                <rect key="frame" x="16" y="118" width="343" height="343"/>
+                                <rect key="frame" x="16" y="118" width="343" height="250"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="1YD-90-lES">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="343"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="250"/>
                                         <subviews>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rcm-BV-nfJ" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
-                                                <rect key="frame" x="0.0" y="0.0" width="343" height="343"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="250"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="Rjk-DW-wpX">
                                                     <size key="itemSize" width="115" height="91"/>
@@ -122,8 +122,8 @@
                                                                     </variation>
                                                                 </view>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hcf-AU-Etn">
-                                                                    <rect key="frame" x="37" y="35.5" width="42" height="20.5"/>
-                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                    <rect key="frame" x="35" y="35.5" width="46.5" height="20.5"/>
+                                                                    <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
@@ -148,7 +148,7 @@
                                                     </collectionViewCell>
                                                 </cells>
                                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="WhiteSectionHeaderView" id="a4X-fd-9fP" customClass="WhiteSectionHeaderView" customModule="JTAppleCalendar_iOS_Example" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="343"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="250"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZeE-2j-jod">
@@ -182,7 +182,7 @@
                                     </stackView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="343" id="Xwi-53-JiG"/>
+                                    <constraint firstAttribute="height" constant="250" id="Xwi-53-JiG"/>
                                 </constraints>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="sua-xp-Lel">
@@ -207,10 +207,10 @@
                                 </subviews>
                             </stackView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X9n-vl-A2l">
-                                <rect key="frame" x="16" y="461" width="343" height="539"/>
+                                <rect key="frame" x="16" y="383" width="343" height="617"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="iQI-Hq-aUc">
-                                        <rect key="frame" x="0.0" y="0.0" width="332" height="230"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="332" height="270"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="aZd-el-ynv">
                                                 <rect key="frame" x="0.0" y="0.0" width="323" height="30"/>
@@ -598,6 +598,37 @@
                                                     </button>
                                                 </subviews>
                                             </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="GrB-Ci-kGG">
+                                                <rect key="frame" x="0.0" y="240" width="202" height="30"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PTy-sv-Bef">
+                                                        <rect key="frame" x="0.0" y="0.0" width="99" height="30"/>
+                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <state key="normal" title="show oHeader"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                                <integer key="value" value="1"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="showOutsideHeaders:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g4x-g0-yUd"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pU0-d7-bYc">
+                                                        <rect key="frame" x="109" y="0.0" width="93" height="30"/>
+                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <state key="normal" title="hide oHeader"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                                <integer key="value" value="1"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="hideOutsideHeaders:" destination="BYZ-38-t0r" eventType="touchUpInside" id="byS-AV-PHr"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -621,7 +652,7 @@
                             <constraint firstItem="Ik7-d5-Fp7" firstAttribute="top" secondItem="cFX-1e-6ck" secondAttribute="bottom" constant="1.5" id="R2g-Od-0Bh"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="X9n-vl-A2l" secondAttribute="bottom" id="UGt-Iv-oUy"/>
                             <constraint firstAttribute="trailingMargin" secondItem="cFX-1e-6ck" secondAttribute="trailing" id="cP1-5y-E8C"/>
-                            <constraint firstItem="X9n-vl-A2l" firstAttribute="top" secondItem="vbP-Kr-0hG" secondAttribute="bottom" id="fCQ-UZ-Laj"/>
+                            <constraint firstItem="X9n-vl-A2l" firstAttribute="top" secondItem="vbP-Kr-0hG" secondAttribute="bottom" constant="15" id="fCQ-UZ-Laj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Ik7-d5-Fp7" secondAttribute="trailing" id="ilm-o0-e6c"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="vbP-Kr-0hG" secondAttribute="bottom" constant="200" id="jXl-ia-jmV"/>
                             <constraint firstItem="Ik7-d5-Fp7" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="jhB-zy-7YW"/>
@@ -646,6 +677,7 @@
                     <connections>
                         <outlet property="calendarView" destination="Rcm-BV-nfJ" id="37o-jK-dmJ"/>
                         <outlet property="monthLabel" destination="cFX-1e-6ck" id="3QP-nf-lUt"/>
+                        <outlet property="weekViewStack" destination="Ik7-d5-Fp7" id="6rD-Rm-wAT"/>
                         <outletCollection property="outDates" destination="UFs-LS-ELE" collectionClass="NSMutableArray" id="8CL-cf-eXS"/>
                         <outletCollection property="numbers" destination="cDl-9c-uWn" collectionClass="NSMutableArray" id="BW9-yx-NGw"/>
                         <outletCollection property="outDates" destination="pY3-9l-obO" collectionClass="NSMutableArray" id="j8F-yr-DnT"/>

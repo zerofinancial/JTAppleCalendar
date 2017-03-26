@@ -382,13 +382,9 @@ struct JTAppleDateConfigGenerator {
 /// Contains the information for visible dates of the calendar.
 public struct DateSegmentInfo {
     /// Visible pre-dates
-    public let indates: [Date]
+    public let indates: [(date: Date, indexPath: IndexPath)]
     /// Visible month-dates
-    public let monthDates: [Date]
+    public let monthDates: [(date: Date, indexPath: IndexPath)]
     /// Visible post-dates
-    public let outdates: [Date]
-    
-    internal let indateIndexes: [IndexPath]
-    internal let monthDateIndexes: [IndexPath]
-    internal let outdateIndexes: [IndexPath]
+    public let outdates: [(date: Date, indexPath: IndexPath)]
 }

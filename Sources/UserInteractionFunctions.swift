@@ -191,7 +191,6 @@ extension JTAppleCalendarView {
         isReloadDataInProgress = true
         if !layoutNeedsUpdating { calendarViewLayout.shouldClearCacheOnInvalidate = false }
         super.reloadData()
-        if !layoutNeedsUpdating { calendarViewLayout.shouldClearCacheOnInvalidate = true }
         isReloadDataInProgress = false
         
         if !delayedExecutionClosure.isEmpty {
@@ -209,10 +208,7 @@ extension JTAppleCalendarView {
             if !aPath.isEmpty && !paths.contains(aPath[0]) {
                 paths.append(aPath[0])
                 let cellState = cellStateFromIndexPath(aPath[0])
-                if let validCounterPartCell =
-                    indexPathOfdateCellCounterPath(
-                        date,
-                        dateOwner: cellState.dateBelongsTo) {
+                if let validCounterPartCell = indexPathOfdateCellCounterPath(date,dateOwner: cellState.dateBelongsTo) {
                     paths.append(validCounterPartCell)
                 }
             }
@@ -552,7 +548,7 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - DateSegmentInfo
     public func visibleDates()-> DateSegmentInfo {
-        let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [], indateIndexes: [], monthDateIndexes: [], outdateIndexes: [])
+        let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [])
         
         if !isCalendarLayoutLoaded {
             return emptySegment

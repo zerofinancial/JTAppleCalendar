@@ -27,7 +27,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var minimumLineSpacing: CGFloat = 0
     var sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     var headerSizes: [AnyHashable:CGFloat] = [:]
-    var focusIndexPath: (IndexPath, UICollectionElementCategory)?
+    var focusIndexPath: IndexPath?
     
     var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
     var layoutIsReadyToBePrepared: Bool {
@@ -341,7 +341,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                 }
             }
         }
-
         return attributes
     }
     
@@ -493,8 +492,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             }
         }
         let width = cellSize.width - ((sectionInset.left / 7) + (sectionInset.right / 7))
-        
-        var size: (width: CGFloat, height: CGFloat) = (/*itemSize.*/width, cellSize.height)
+        var size: (width: CGFloat, height: CGFloat) = (width, cellSize.height)
         if itemSizeWasSet {
             if scrollDirection == .vertical {
                 size.height = cellSize.height
@@ -602,29 +600,18 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         let minIndices = minimumVisibleIndexPaths()
         switch (minIndices.headerIndex, minIndices.cellIndex) {
         case (.some(let path), nil):
-            focusIndexPath = (path, UICollectionElementCategory.supplementaryView)
+            focusIndexPath = path
         case (nil, .some(let path)):
-            focusIndexPath = (path, UICollectionElementCategory.cell)
+            focusIndexPath = path
         case (.some(let hPath), (.some(let cPath))):
             if hPath <= cPath {
-                focusIndexPath = (hPath, UICollectionElementCategory.supplementaryView)
+                focusIndexPath = hPath
             } else {
-                focusIndexPath = (cPath, UICollectionElementCategory.cell)
+                focusIndexPath = cPath
             }
         default:
             break
         }
-    }
-    
-    override func prepare(forAnimatedBoundsChange oldBounds: CGRect) {
-        super.prepare(forAnimatedBoundsChange: oldBounds)
-        setMinVisibleDate()
-        print("focusedPath = \(focusIndexPath)")
-    }
-    
-    override func finalizeAnimatedBoundsChange() {
-        super.finalizeAnimatedBoundsChange()
-        focusIndexPath = nil
     }
     
     // This function ignores decoration views //JT101 for setting proposal
@@ -665,20 +652,17 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     open override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
         var retval = proposedContentOffset
         
-        
-        if let lastOffsetIndex = focusIndexPath {
-            print("path retrieved: \(lastOffsetIndex)")
-            switch lastOffsetIndex.1 {
-            case .supplementaryView:
-                if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: lastOffsetIndex.0) {
+        if let focusIndexPath = focusIndexPath {
+            print("path retrieved: \(focusIndexPath)")
+            if thereAreHeaders {
+                let headerIndexPath = IndexPath(item: 0, section: focusIndexPath.section)
+                if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: headerIndexPath) {
                     retval = scrollDirection == .horizontal ? CGPoint(x: headerAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: headerAttr.frame.origin.y)
                 }
-            case .cell:
-                if let cellAttr = layoutAttributesForItem(at: lastOffsetIndex.0) {
+            } else {
+                if let cellAttr = layoutAttributesForItem(at: focusIndexPath) {
                     retval = scrollDirection == .horizontal ? CGPoint(x: cellAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: cellAttr.frame.origin.y)
                 }
-            default:
-                break
             }
             
             // Floating point issues. number could appear the same, but are not.
@@ -705,14 +689,12 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         super.invalidateLayout()
         
         print("invalidateLayout called.")
-        
-        if shouldClearCacheOnInvalidate {
-            print("cache cleared.")
-            clearCache()
-        }
+        if shouldClearCacheOnInvalidate { clearCache() }
+        shouldClearCacheOnInvalidate = true
     }
     
     func clearCache() {
+        print("cache cleared.")
         headerCache.removeAll()
         cellCache.removeAll()
         sectionSize.removeAll()

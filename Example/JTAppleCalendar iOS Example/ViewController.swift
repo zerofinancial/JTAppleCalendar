@@ -12,13 +12,13 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var calendarView: JTAppleCalendarView!
     @IBOutlet weak var monthLabel: UILabel!
-
+    @IBOutlet weak var weekViewStack: UIStackView!
     @IBOutlet var numbers: [UIButton]!
     @IBOutlet var headerss: [UIButton]!
     @IBOutlet var directions: [UIButton]!
     @IBOutlet var outDates: [UIButton]!
     @IBOutlet var inDates: [UIButton]!
-
+    
     var numberOfRows = 6
     let formatter = DateFormatter()
     var testCalendar = Calendar.current
@@ -30,7 +30,7 @@ class ViewController: UIViewController {
     let disabledColor = UIColor.lightGray
     let enabledColor = UIColor.blue
     let dateCellSize: CGFloat? = nil
-    var monthSize: MonthSize? = MonthSize(defaultSize: 50, months: [75: [.feb, .apr]])
+    var monthSize: MonthSize? = nil
     var prepostHiddenValue = false
     
     let red = UIColor.red
@@ -55,31 +55,25 @@ class ViewController: UIViewController {
         }
         calendarView.reloadData()
     }
-    @IBAction func decreaseSectionInset(_ sender: UIButton) {
-//        calendarView.sectionInset.bottom += 3
-        calendarView.sectionInset.left += 3
-//        calendarView.sectionInset.top += 3
-//        calendarView.sectionInset.right += 3
-        calendarView.reloadData()
-    }
     
-    @IBAction func increaseSectionInset(_ sender: UIButton) {
-//        calendarView.sectionInset.bottom -= 3
-        calendarView.sectionInset.left -= 3
-//        calendarView.sectionInset.top -= 3
-//        calendarView.sectionInset.right -= 3
-        calendarView.reloadData()
+    @IBAction func showOutsideHeaders(_ sender: UIButton) {
+        monthLabel.isHidden = false
+        weekViewStack.isHidden = false
+    }
+    @IBAction func hideOutsideHeaders(_ sender: UIButton) {
+        monthLabel.isHidden = true
+        weekViewStack.isHidden = true
     }
     
     @IBAction func decreaseCellInset(_ sender: UIButton) {
-        calendarView.minimumLineSpacing -= 3
-        calendarView.minimumInteritemSpacing -= 3
+        calendarView.minimumLineSpacing -= 0.5
+        calendarView.minimumInteritemSpacing -= 0.5
         calendarView.reloadData()
     }
     
     @IBAction func increaseCellInset(_ sender: UIButton) {
-        calendarView.minimumLineSpacing += 3
-        calendarView.minimumInteritemSpacing += 3
+        calendarView.minimumLineSpacing += 0.5
+        calendarView.minimumInteritemSpacing += 0.5
         calendarView.reloadData()
     }
     
@@ -187,8 +181,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        calendarView.scrollingMode = .none
-        
+        hideOutsideHeaders(UIButton())
 //        calendarView.itemSize = CGFloat(53.43 - 20)
         
         
@@ -222,18 +215,22 @@ class ViewController: UIViewController {
 //        calendarView.rangeSelectionWillBeUsed = true
 //           self.calendarView.reloadData() {
 //           self.calendarView.reloadData() {
-        self.calendarView.reloadData() {
         self.calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
-        }
-//            }
-//    }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        calendarView.viewWillTransition(to: size, with: coordinator)
+        if let firstDateInfo = calendarView.visibleDates().indates.first {
+            calendarView.viewWillTransition(to: size, with: coordinator, focusDateIndexPathAfterRotate: firstDateInfo.indexPath)
+        } else {
+           let firstDateInfo = calendarView.visibleDates().monthDates.first!
+            calendarView.viewWillTransition(to: size, with: coordinator, focusDateIndexPathAfterRotate: firstDateInfo.indexPath)
+        }
+        
+        
+        
     }
     
     var rangeSelectedDates: [Date] = []
@@ -313,7 +310,7 @@ class ViewController: UIViewController {
     }
 
     func setupViewsOfCalendar(from visibleDates: DateSegmentInfo) {
-        guard let startDate = visibleDates.monthDates.first else {
+        guard let startDate = visibleDates.monthDates.first?.date else {
             return
         }
         let month = testCalendar.dateComponents([.month], from: startDate).month!
@@ -369,6 +366,25 @@ class ViewController: UIViewController {
             myCustomCell.selectedView.isHidden = true
         }
     }
+    
+    
+    @IBAction func decreaseSectionInset(_ sender: UIButton) {
+        
+                calendarView.sectionInset.bottom -= 3
+                calendarView.sectionInset.top -= 3
+        calendarView.sectionInset.left -= 3
+        calendarView.sectionInset.right -= 3
+        
+        calendarView.reloadData()
+    }
+    
+    @IBAction func increaseSectionInset(_ sender: UIButton) {
+                calendarView.sectionInset.bottom += 3
+                calendarView.sectionInset.top += 3
+        calendarView.sectionInset.left += 3
+        calendarView.sectionInset.right += 3
+        calendarView.reloadData()
+    }
 }
 
 // MARK : JTAppleCalendarDelegate
@@ -382,7 +398,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         
         
         let startDate = formatter.date(from: "2017 01 01")!
-        let endDate = formatter.date(from: "2017 02 01")!
+        let endDate = formatter.date(from: "2068 02 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
@@ -446,7 +462,6 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     }
     
     func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {
-        return MonthSize(defaultSize: 50,
-                         months: [75: [.feb, .apr]])
+        return monthSize
     }
 }
