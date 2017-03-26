@@ -130,10 +130,14 @@ open class JTAppleCalendarView: UIView {
     
     /// Informs when change in orientation
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        if calendarIsAlreadyLoaded {
-            setMinVisibleDate()
-            layoutNeedsUpdating = true
-            reloadData()
+        super.traitCollectionDidChange(previousTraitCollection)
+        if ((self.traitCollection.verticalSizeClass != previousTraitCollection?.verticalSizeClass)
+            || self.traitCollection.horizontalSizeClass != previousTraitCollection?.horizontalSizeClass) {
+            if calendarIsAlreadyLoaded {
+                setMinVisibleDate()
+                layoutNeedsUpdating = true
+                reloadData()
+            }
         }
     }
 
