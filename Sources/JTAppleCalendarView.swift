@@ -433,8 +433,10 @@ open class JTAppleCalendarView: UICollectionView {
                 if let validHandler = completionHandler {
                     self.delayedExecutionClosure.append(validHandler)
                 }
-                let topOfHeader = CGPoint(x: attributes.frame.origin.x,
-                                          y: attributes.frame.origin.y)
+                
+                let maxYCalendarOffset = max(0, self.contentSize.height - self.frame.size.height)
+                let topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
+                
                 self.isScrollInProgress = true
                 self.setContentOffset(topOfHeader,
                                       animated: animation)
