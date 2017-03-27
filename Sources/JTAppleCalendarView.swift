@@ -494,7 +494,7 @@ open class JTAppleCalendarView: UIView {
                 }
 
                 let maxYCalendarOffset = max(0, self.calendarView.contentSize.height - self.calendarView.frame.size.height)
-                let topOfHeader = CGPoint(x: attributes.frame.origin.x,y: maxYCalendarOffset)
+                let topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
                 
                 self.scrollInProgress = true
                 self.calendarView.setContentOffset(topOfHeader, animated: animation)
