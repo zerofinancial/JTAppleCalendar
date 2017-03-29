@@ -85,12 +85,12 @@ extension UIView {
         topRotationAnimation.isRemovedOnCompletion = false
         switch (inDirection) {
         case .open:
-            topRotationAnimation.fromValue = -M_PI_2
+            topRotationAnimation.fromValue = -(.pi / 2.0)
             topRotationAnimation.toValue = 0
             break;
         case .closed:
             topRotationAnimation.fromValue = 0
-            topRotationAnimation.toValue = -M_PI_2
+            topRotationAnimation.toValue = -(.pi / 2.0)
         }
         
         topHalfView.layer.add(topRotationAnimation, forKey:nil)
@@ -101,12 +101,12 @@ extension UIView {
         bottomRotationAnimation.isRemovedOnCompletion = false
         switch (inDirection) {
         case .open:
-            bottomRotationAnimation.fromValue = M_PI_2
+            bottomRotationAnimation.fromValue = (.pi / 2.0)
             bottomRotationAnimation.toValue = 0
             break;
         case .closed:
             bottomRotationAnimation.fromValue = 0
-            bottomRotationAnimation.toValue = M_PI_2
+            bottomRotationAnimation.toValue = (.pi / 2.0)
         }
         bottomHalfView.layer.add(bottomRotationAnimation, forKey:nil)
         
@@ -220,7 +220,7 @@ class AnimationClass {
         var transform = CATransform3DIdentity
         transform.m34 = -1.0 / 500.0
         transform = CATransform3DRotate(transform,
-                                CGFloat(angle * M_PI / 180.0), 0, 1, 0.0)
+                                CGFloat(angle * .pi / 180.0), 0, 1, 0.0)
         return transform
     }
 
