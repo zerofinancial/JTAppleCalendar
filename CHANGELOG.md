@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - `7.0.0` Releases - [7.0.0](#700)
 
 #### 6.x Releases
-- `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)|[6.1.3](#613)|[6.1.4](#614)|[6.1.5](#615)
+- `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)|[6.1.3](#613)|[6.1.4](#614)|[6.1.5](#615)|[6.1.6](#616)
 - `6.0.0` Releases - [6.0.0](#600)|[6.0.1](#601)|[6.0.2](#602)|[6.0.3](#603)|[6.0.4](#604)|[6.0.5](#605)
 - `6.0.0` Betas - [6.0.0-beta.1](#600-beta1)
 
@@ -38,6 +38,9 @@ All notable changes to this project will be documented in this file.
    - Performance load time of dates has been decreased
    - [Visible fixed](https://github.com/patchthecode/JTAppleCalendar/issues/263)
    
+## [6.1.6](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.6)
+- Fixed - [Memory leak](https://github.com/patchthecode/JTAppleCalendar/issues/333)
+- Fixed - [Over scrolling in vertical mode when scrolled to last date](https://github.com/patchthecode/JTAppleCalendar/issues/344)
 
 ## [6.1.5](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.5)
 - Fixed - [Crash on reloading items](https://github.com/patchthecode/JTAppleCalendar/issues/327)
