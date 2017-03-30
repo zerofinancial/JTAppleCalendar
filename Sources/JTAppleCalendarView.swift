@@ -608,7 +608,7 @@ extension JTAppleCalendarView {
                 itemIndex = extraIndex
                 let reCalcRapth = IndexPath(item: itemIndex, section: section)
                 retval = reCalcRapth
-            } else if case 26...31 = dayIndex { // check the following month
+            } else if case 25...31 = dayIndex { // check the following month
                 let periodApart = calendar.dateComponents([.month], from: startOfMonthCache, to: date)
                 let monthSectionIndex = periodApart.month!
                 if monthSectionIndex + 1 >= monthInfo.count {
