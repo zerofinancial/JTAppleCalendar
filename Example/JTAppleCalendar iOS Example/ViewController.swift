@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     var testCalendar = Calendar.current
     var generateInDates: InDateCellGeneration = .forAllMonths
     var generateOutDates: OutDateCellGeneration = .tillEndOfGrid
-    var prePostVisibility: ((CellState, CellView)->())?
+    var prePostVisibility: ((CellState, CellView?)->())?
     var hasStrictBoundaries = true
     let firstDayOfWeek: DaysOfWeek = .monday
     let disabledColor = UIColor.lightGray
@@ -41,16 +41,16 @@ class ViewController: UIViewController {
     
     @IBAction func showPrepost(_ sender: UIButton) {
         prePostVisibility = {state, cell in
-            cell.isHidden = false
+            cell?.isHidden = false
         }
         calendarView.reloadData()
     }
     @IBAction func hidePrepost(_ sender: UIButton) {
         prePostVisibility = {state, cell in
             if state.dateBelongsTo == .thisMonth {
-                cell.isHidden = false
+                cell?.isHidden = false
             } else {
-                cell.isHidden = true
+                cell?.isHidden = true
             }
         }
         calendarView.reloadData()
@@ -323,7 +323,7 @@ class ViewController: UIViewController {
     func handleCellConfiguration(cell: JTAppleCell?, cellState: CellState) {
         handleCellSelection(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
-        prePostVisibility?(cellState, cell as! CellView)
+        prePostVisibility?(cellState, cell as? CellView)
     }
     
     // Function to handle the text color of the calendar
