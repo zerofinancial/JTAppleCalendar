@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9v8-0V-uqf">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9v8-0V-uqf">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -152,7 +152,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZeE-2j-jod">
-                                                            <rect key="frame" x="150.5" y="22" width="42" height="21"/>
+                                                            <rect key="frame" x="4" y="114.5" width="42" height="21"/>
                                                             <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -698,90 +698,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2729" y="414"/>
-        </scene>
-        <!--Ib Data Source-->
-        <scene sceneID="Idf-2T-a2q">
-            <objects>
-                <viewController id="azG-VX-2Iw" customClass="CalendarSearchViewController" customModule="JTAppleCalendar_iOS_Example" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ftu-Q2-DR6"/>
-                        <viewControllerLayoutGuide type="bottom" id="Gnx-GB-oub"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="LgL-oB-JFA">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="myK-Pm-Fqc" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="597"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="aj7-CQ-gre">
-                                    <size key="itemSize" width="116" height="102"/>
-                                    <size key="headerReferenceSize" width="50" height="50"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells/>
-                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="WhiteSectionHeaderView" id="gkK-x9-CEc" customClass="WhiteSectionHeaderView" customModule="JTAppleCalendar_iOS_Example" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IWM-50-ggH">
-                                            <rect key="frame" x="166.5" y="14.5" width="42" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="IWM-50-ggH" firstAttribute="centerY" secondItem="gkK-x9-CEc" secondAttribute="centerY" id="OyO-WC-UlG"/>
-                                        <constraint firstItem="IWM-50-ggH" firstAttribute="centerX" secondItem="gkK-x9-CEc" secondAttribute="centerX" id="c0s-nG-dDZ"/>
-                                    </constraints>
-                                    <connections>
-                                        <outlet property="title" destination="IWM-50-ggH" id="H8T-wa-2w5"/>
-                                    </connections>
-                                </collectionReusableView>
-                                <connections>
-                                    <outlet property="ibDataSource" destination="azG-VX-2Iw" id="25v-UB-XT2"/>
-                                    <outlet property="ibDelegate" destination="azG-VX-2Iw" id="yXQ-lB-hFT"/>
-                                </connections>
-                            </collectionView>
-                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="LTg-CE-O9g">
-                                <rect key="frame" x="16" y="617" width="166" height="30"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="woW-Jh-rUc">
-                                        <rect key="frame" x="0.0" y="0.0" width="47" height="30"/>
-                                        <state key="normal" title="Reload"/>
-                                        <connections>
-                                            <action selector="reloadWithSender:" destination="azG-VX-2Iw" eventType="touchUpInside" id="uos-4N-kU3"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hEL-Pn-aj0">
-                                        <rect key="frame" x="67" y="0.0" width="99" height="30"/>
-                                        <state key="normal" title="selectedDates"/>
-                                        <connections>
-                                            <action selector="printselecteddatesWithSender:" destination="azG-VX-2Iw" eventType="touchUpInside" id="sJ2-wb-BpF"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                            </stackView>
-                        </subviews>
-                        <color key="backgroundColor" red="0.44705882349999998" green="0.78039215689999997" blue="0.96470588239999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="LTg-CE-O9g" firstAttribute="leading" secondItem="LgL-oB-JFA" secondAttribute="leadingMargin" id="E0m-N3-Rjn"/>
-                            <constraint firstItem="myK-Pm-Fqc" firstAttribute="leading" secondItem="LgL-oB-JFA" secondAttribute="leading" id="Jvw-3l-mB6"/>
-                            <constraint firstItem="Gnx-GB-oub" firstAttribute="top" secondItem="LTg-CE-O9g" secondAttribute="bottom" constant="20" id="KCk-f8-gQf"/>
-                            <constraint firstItem="myK-Pm-Fqc" firstAttribute="top" secondItem="LgL-oB-JFA" secondAttribute="top" id="eyO-Fs-LbO"/>
-                            <constraint firstAttribute="trailing" secondItem="myK-Pm-Fqc" secondAttribute="trailing" id="g13-f9-RzZ"/>
-                            <constraint firstItem="Gnx-GB-oub" firstAttribute="top" secondItem="myK-Pm-Fqc" secondAttribute="bottom" constant="70" id="ref-OW-gif"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="calendarView" destination="myK-Pm-Fqc" id="4vN-ua-NSm"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="olM-k2-E6x" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1980" y="1025"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="enG-ib-FHj">

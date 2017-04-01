@@ -71,8 +71,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             }
         }
         
-        let recalculateOffset = {
-            (diff: CGFloat, interval: CGFloat) -> CGFloat in
+        let recalculateOffset = {(diff: CGFloat, interval: CGFloat) -> CGFloat in
             if isScrollingForward() {
                 let recalcOffsetAfterResistanceApplied = theTargetContentOffset - diff
                 return ceil(recalcOffsetAfterResistanceApplied / interval) * interval
@@ -92,8 +91,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         }
         switch scrollingMode {
         case let .stopAtEach(customInterval: interval):
-            let calculatedOffset =
-                calculatedCurrentFixedContentOffsetFrom(interval)
+            let calculatedOffset = calculatedCurrentFixedContentOffsetFrom(interval)
             setTargetContentOffset(calculatedOffset)
         case .stopAtEachCalendarFrameWidth:
             #if os(tvOS)

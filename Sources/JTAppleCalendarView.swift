@@ -329,7 +329,7 @@ open class JTAppleCalendarView: UICollectionView {
         return retval
     }
     
-    func scrollTo(indexPath: IndexPath, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, completionHandler: (() -> Void)?) {
+    func scrollTo(indexPath: IndexPath, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
         if let validCompletionHandler = completionHandler {
             self.delayedExecutionClosure.append(validCompletionHandler)
         }
@@ -422,6 +422,7 @@ open class JTAppleCalendarView: UICollectionView {
     func scrollToHeaderInSection(_ section: Int,
                                  triggerScrollToDateDelegate: Bool = false,
                                  withAnimation animation: Bool = true,
+                                 extraAddedOffset: CGFloat,
                                  completionHandler: (() -> Void)? = nil) {
         if !calendarViewLayout.thereAreHeaders {
             return
@@ -435,11 +436,11 @@ open class JTAppleCalendarView: UICollectionView {
                 }
                 
                 let maxYCalendarOffset = max(0, self.contentSize.height - self.frame.size.height)
-                let topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
+                var topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
+                if self.scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
                 
                 self.isScrollInProgress = true
-                self.setContentOffset(topOfHeader,
-                                      animated: animation)
+                self.setContentOffset(topOfHeader, animated: animation)
                 if !animation {
                     self.scrollViewDidEndScrollingAnimation(self)
                 } else {
