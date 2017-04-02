@@ -86,9 +86,9 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     }
     /// Tells the layout object to update the current layout.
     open override func prepare() {
-        print("prepare called.")
+//        print("prepare called.")
         if !layoutIsReadyToBePrepared { return }
-        print("prepare was re-calculated.")
+//        print("prepare was re-calculated.")
         
         setupDataFromDelegate()
         
@@ -126,27 +126,21 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var retval: IndexPath?
         switch direction {
         case .next:
-            if let data = cellCache[section]?.last, data.1 == section, data.0 == item {
-                retval = IndexPath(item: data.0, section: data.1)
-            } else {
-                if let data = cellCache[section]?[item + 1] {
-                    retval = IndexPath(item: data.0, section: data.1)
-                }
+            if let data = cellCache[section], data.count > item + 1 {
+                retval = IndexPath(item: item + 1, section: section)
+            } else if let data = cellCache[section + 1], !data.isEmpty {
+                retval = IndexPath(item: 0, section: section + 1)
             }
         case .previous:
-            if item < 1 {
-                if let data = cellCache[section - 1]?.last {
-                    retval = IndexPath(item: data.0, section: data.1)
-                }
-            } else {
-                if let data = cellCache[section]?[item - 1] {
-                    retval = IndexPath(item: data.0, section: data.1)
-                }
+            if let data = cellCache[section], item - 1 >= 0 {
+                retval = IndexPath(item: item - 1, section: section)
+            } else if let data = cellCache[section - 1], !data.isEmpty {
+                retval = IndexPath(item: data.count - 1, section: section - 1)
             }
         default:
             break
         }
-        
+        print("-> \(retval)")
         return retval
     }
 
@@ -653,7 +647,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var retval = proposedContentOffset
         
         if let focusIndexPath = focusIndexPath {
-            print("path retrieved: \(focusIndexPath)")
+//            print("path retrieved: \(focusIndexPath)")
             if thereAreHeaders {
                 let headerIndexPath = IndexPath(item: 0, section: focusIndexPath.section)
                 if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: headerIndexPath) {
@@ -688,13 +682,13 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     open override func invalidateLayout() {
         super.invalidateLayout()
         
-        print("invalidateLayout called.")
+//        print("invalidateLayout called.")
         if shouldClearCacheOnInvalidate { clearCache() }
         shouldClearCacheOnInvalidate = true
     }
     
     func clearCache() {
-        print("cache cleared.")
+//        print("cache cleared.")
         headerCache.removeAll()
         cellCache.removeAll()
         sectionSize.removeAll()
