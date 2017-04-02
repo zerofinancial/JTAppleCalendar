@@ -126,13 +126,13 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var retval: IndexPath?
         switch direction {
         case .next:
-            if let data = cellCache[section], data.count > item + 1 {
+            if let data = cellCache[section], !data.isEmpty, 0..<data.count ~= item + 1 {
                 retval = IndexPath(item: item + 1, section: section)
             } else if let data = cellCache[section + 1], !data.isEmpty {
                 retval = IndexPath(item: 0, section: section + 1)
             }
         case .previous:
-            if let data = cellCache[section], item - 1 >= 0 {
+            if let data = cellCache[section], !data.isEmpty, 0..<data.count ~= item - 1 {
                 retval = IndexPath(item: item - 1, section: section)
             } else if let data = cellCache[section - 1], !data.isEmpty {
                 retval = IndexPath(item: data.count - 1, section: section - 1)

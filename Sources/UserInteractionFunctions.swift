@@ -157,7 +157,7 @@ extension JTAppleCalendarView {
         
         // Restore the selected index paths
         let restoreAfterReload = {
-            if layoutNeedsUpdating { // If layoutNeedsUpdating was false, layoutData would remain and re-selection wouldnt be needed
+            if layoutNeedsUpdating, !selectedDates.isEmpty { // If layoutNeedsUpdating was false, layoutData would remain and re-selection wouldnt be needed
                 self.selectDates(selectedDates, triggerSelectionDelegate: false)
             }
         }
@@ -180,10 +180,10 @@ extension JTAppleCalendarView {
                                       completionHandler: completionHandler)
                 }
                 
-                restoreAfterReload()
+                if !selectedDates.isEmpty { restoreAfterReload() }
             }
         } else {
-            delayedExecutionClosure.append(restoreAfterReload)
+            if !selectedDates.isEmpty { delayedExecutionClosure.append(restoreAfterReload) }
             if let validCompletionHandler = completionHandler  {
                 delayedExecutionClosure.append(validCompletionHandler)
             }
@@ -255,26 +255,26 @@ extension JTAppleCalendarView {
     /// the delegate e.g. For instance, when youre initally setting up data
     /// in your viewDidLoad
     public func selectDates(_ dates: [Date], triggerSelectionDelegate: Bool = true, keepSelectionIfMultiSelectionAllowed: Bool = false) {
+        if dates.isEmpty { return }
         if functionIsUnsafeSafeToRun {
             // If the calendar is not yet fully loaded.
             // Add the task to the delayed queue
             delayedExecutionClosure.append {[unowned self] in
-                self.selectDates(
-                    dates,
-                    triggerSelectionDelegate: triggerSelectionDelegate,
-                    keepSelectionIfMultiSelectionAllowed: keepSelectionIfMultiSelectionAllowed
-                )
+                self.selectDates(dates,
+                                 triggerSelectionDelegate: triggerSelectionDelegate,
+                                 keepSelectionIfMultiSelectionAllowed: keepSelectionIfMultiSelectionAllowed)
             }
             return
         }
-        var allIndexPathsToReload: [IndexPath] = []
+        print("\nSelecting Dates \(dates)")
+        var allIndexPathsToReload: Set<IndexPath> = []
         var validDatesToSelect = dates
         // If user is trying to select multiple dates with
         // multiselection disabled, then only select the last object
         if !allowsMultipleSelection, let dateToSelect = dates.last {
             validDatesToSelect = [dateToSelect]
         }
-
+        
         for date in validDatesToSelect {
             let components = calendar.dateComponents([.year, .month, .day], from: date)
             let firstDayOfDate = calendar.date(from: components)!
@@ -294,31 +294,29 @@ extension JTAppleCalendarView {
                 for indexPath in selectedIndexPaths {
                     if indexPath != sectionIndexPath {
                         let pathsToReload = deselectDate(oldIndexPath: indexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                        allIndexPathsToReload.append(contentsOf: pathsToReload)
+                        allIndexPathsToReload.formUnion(pathsToReload)
                     }
                 }
                 // Add new selections Must be added here. If added in delegate didSelectItemAtIndexPath
                 let pathsToReload = selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                allIndexPathsToReload.append(contentsOf: pathsToReload)
+                allIndexPathsToReload.formUnion(pathsToReload)
             } else {
                 // If multiple selection is on. Multiple selection behaves differently to singleselection.
                 // It behaves like a toggle. unless keepSelectionIfMultiSelectionAllowed is true.
                 // If user wants to force selection if multiselection is enabled, then removed the selected dates from generated dates
                 if keepSelectionIfMultiSelectionAllowed, selectedDates.contains(calendar.startOfDay(for: date)) {
-                    // Do not deselect or select the cell.
-                    if allIndexPathsToReload.contains(sectionIndexPath) { continue }
                     // Just add it to be reloaded
-                    allIndexPathsToReload.append(sectionIndexPath)
+                    allIndexPathsToReload.insert(sectionIndexPath)
                 } else {
                     if self.theSelectedIndexPaths.contains(sectionIndexPath) {
                         // If this cell is already selected, then deselect it
                         let pathsToReload = self.deselectDate(oldIndexPath: sectionIndexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                        allIndexPathsToReload.append(contentsOf: pathsToReload)
+                        allIndexPathsToReload.formUnion(pathsToReload)
                     } else {
                         // Add new selections
                         // Must be added here. If added in delegate didSelectItemAtIndexPath
                         let pathsToReload = self.selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                        allIndexPathsToReload.append(contentsOf: pathsToReload)
+                        allIndexPathsToReload.formUnion(pathsToReload)
                     }
                 }
             }
@@ -327,7 +325,7 @@ extension JTAppleCalendarView {
         // called, we do want the cell refreshed.
         // Reload to call itemAtIndexPath
         if !triggerSelectionDelegate && !allIndexPathsToReload.isEmpty {
-            self.batchReloadIndexPaths(allIndexPathsToReload)
+            self.batchReloadIndexPaths(Array(allIndexPathsToReload))
         }
     }
     

@@ -313,10 +313,12 @@ open class JTAppleCalendarView: UICollectionView {
     
     func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> [IndexPath] {
         var retval: [IndexPath] = []
+        print("Getting fwd references")
         if let validForwardIndex = calendarViewLayout.indexPath(direction: .next, of: indexPath.section, item: indexPath.item),
             theSelectedIndexPaths.contains(validForwardIndex) {
             retval.append(validForwardIndex)
         }
+        print("Getting bck references")
         if
             let validBackwardIndex = calendarViewLayout.indexPath(direction: .previous, of: indexPath.section, item: indexPath.item),
             theSelectedIndexPaths.contains(validBackwardIndex) {
@@ -827,7 +829,7 @@ extension JTAppleCalendarView {
         }
     }
     
-    func selectDate(indexPath: IndexPath, date: Date, shouldTriggerSelecteionDelegate: Bool) -> [IndexPath] {
+    func selectDate(indexPath: IndexPath, date: Date, shouldTriggerSelecteionDelegate: Bool) -> Set<IndexPath> {
         var allIndexPathsToReload: Set<IndexPath> = []
         selectItem(at: indexPath, animated: false, scrollPosition: [])
         allIndexPathsToReload.insert(indexPath)
@@ -836,24 +838,26 @@ extension JTAppleCalendarView {
         if shouldTriggerSelecteionDelegate {
             self.collectionView(self, didSelectItemAt: indexPath)
         } else {
-            // Although we do not want the delegate triggered, we
-            // still want counterpart cells to be selected
-            // Because there is no triggering of the delegate, the cell
-            // will not be added to selection and it will not be
-            // reloaded. We need to do this here
-            self.addCellToSelectedSetIfUnselected(indexPath, date: date)
+            // Although we do not want the delegate triggered,
+            // we still want counterpart cells to be selected
+            addCellToSelectedSetIfUnselected(indexPath, date: date)
             let cellState = self.cellStateFromIndexPath(indexPath)
-            // , withDateInfo: date)
+            if isRangeSelectionUsed {
+                allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)))
+            }
             if let aSelectedCounterPartIndexPath = self.selectCounterPartCellIndexPathIfExists(indexPath, date: date, dateOwner: cellState.dateBelongsTo) {
                 // If there was a counterpart cell then
                 // it will also need to be reloaded
                 allIndexPathsToReload.insert(aSelectedCounterPartIndexPath)
+                if isRangeSelectionUsed {
+                    allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: aSelectedCounterPartIndexPath)))
+                }
             }
         }
-        return Array(allIndexPathsToReload)
+        return allIndexPathsToReload
     }
     
-    func deselectDate(oldIndexPath: IndexPath, shouldTriggerSelecteionDelegate: Bool) -> [IndexPath] {
+    func deselectDate(oldIndexPath: IndexPath, shouldTriggerSelecteionDelegate: Bool) -> Set<IndexPath> {
         var allIndexPathsToReload: Set<IndexPath> = []
         
         if let index = self.theSelectedIndexPaths.index(of: oldIndexPath) {
@@ -870,14 +874,20 @@ extension JTAppleCalendarView {
                 // we still want counterpart cells to be deselected
                 allIndexPathsToReload.insert(oldIndexPath)
                 let cellState = self.cellStateFromIndexPath(oldIndexPath)
+                if isRangeSelectionUsed {
+                    allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: oldIndexPath)))
+                }
                 if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
                     // If there was a counterpart cell then
                     // it will also need to be reloaded
                     allIndexPathsToReload.insert(anUnselectedCounterPartIndexPath)
+                    if isRangeSelectionUsed {
+                        allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: anUnselectedCounterPartIndexPath)))
+                    }
                 }
             }
         }
-        return Array(allIndexPathsToReload)
+        return allIndexPathsToReload
     }
 
     
