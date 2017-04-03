@@ -70,6 +70,7 @@
 		6B6B1F711DA1CC130063A678 /* CalendarStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F6F1DA1CC130063A678 /* CalendarStructs.swift */; };
 		6B6B1F731DA1CD5D0063A678 /* UICollectionViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */; };
 		6B6B1F741DA1CD5D0063A678 /* UICollectionViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */; };
+		6B7026181E92455B009506CA /* JTAppleCalendarView.swift in Headers */ = {isa = PBXBuildFile; fileRef = 6B60DED71D5BDD4D009174A2 /* JTAppleCalendarView.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		6B74405E1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */; };
 		6B74405F1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */; };
 		6BA9245E1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA9245D1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift */; };
@@ -466,6 +467,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B60DEC01D5BDA46009174A2 /* JTAppleCalendar.h in Headers */,
+				6B7026181E92455B009506CA /* JTAppleCalendarView.swift in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
