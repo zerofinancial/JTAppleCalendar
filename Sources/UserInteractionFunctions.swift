@@ -276,6 +276,7 @@ extension JTAppleCalendarView {
         }
         
         for date in validDatesToSelect {
+            let date = calendar.startOfDay(for: date)
             let components = calendar.dateComponents([.year, .month, .day], from: date)
             let firstDayOfDate = calendar.date(from: components)!
             // If the date is not within valid boundaries, then exit
@@ -304,7 +305,7 @@ extension JTAppleCalendarView {
                 // If multiple selection is on. Multiple selection behaves differently to singleselection.
                 // It behaves like a toggle. unless keepSelectionIfMultiSelectionAllowed is true.
                 // If user wants to force selection if multiselection is enabled, then removed the selected dates from generated dates
-                if keepSelectionIfMultiSelectionAllowed, selectedDates.contains(calendar.startOfDay(for: date)) {
+                if keepSelectionIfMultiSelectionAllowed, selectedDates.contains(date) {
                     // Just add it to be reloaded
                     allIndexPathsToReload.insert(sectionIndexPath)
                 } else {
