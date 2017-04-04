@@ -266,7 +266,6 @@ extension JTAppleCalendarView {
             }
             return
         }
-        print("\nSelecting Dates \(dates)")
         var allIndexPathsToReload: Set<IndexPath> = []
         var validDatesToSelect = dates
         // If user is trying to select multiple dates with
