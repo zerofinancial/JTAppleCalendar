@@ -136,7 +136,6 @@ open class JTAppleCalendarView: UICollectionView {
 
     /// Notifies the container that the size of its view is about to change.
     open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDateIndexPathAfterRotate: IndexPath? = nil) {
-        print("")
         calendarViewLayout.focusIndexPath = focusDateIndexPathAfterRotate
         coordinator.animate(alongsideTransition: { (context) -> Void in
             self.performBatchUpdates(nil, completion: nil)
@@ -263,9 +262,14 @@ open class JTAppleCalendarView: UICollectionView {
         assert(false)
     }
     
+    public init() {
+        super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
+    }
     
     public override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
-        super.init(frame: frame, collectionViewLayout: layout)
+        super.init(frame: frame, collectionViewLayout: UICollectionViewFlowLayout())
+        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -308,12 +312,10 @@ open class JTAppleCalendarView: UICollectionView {
     
     func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> [IndexPath] {
         var retval: [IndexPath] = []
-        print("Getting fwd references")
         if let validForwardIndex = calendarViewLayout.indexPath(direction: .next, of: indexPath.section, item: indexPath.item),
             theSelectedIndexPaths.contains(validForwardIndex) {
             retval.append(validForwardIndex)
         }
-        print("Getting bck references")
         if
             let validBackwardIndex = calendarViewLayout.indexPath(direction: .previous, of: indexPath.section, item: indexPath.item),
             theSelectedIndexPaths.contains(validBackwardIndex) {
@@ -558,10 +560,9 @@ extension JTAppleCalendarView {
             if date < startOfMonthCache || date > endOfMonthCache {
                 return retval
             }
-            guard let dayIndex = calendar
-                .dateComponents([.day], from: date).day else {
-                    print("Invalid Index")
-                    return nil
+            guard let dayIndex = calendar.dateComponents([.day], from: date).day else {
+                print("Invalid Index")
+                return nil
             }
             if case 1...13 = dayIndex {
                 // then check the previous month
