@@ -142,8 +142,6 @@ open class JTAppleCalendarView: UICollectionView {
             self.performBatchUpdates(nil, completion: nil)
         },completion: { (context) -> Void in
             self.calendarViewLayout.focusIndexPath = nil
-            self.calendarViewLayout.shouldClearCacheOnInvalidate = false
-            self.calendarViewLayout.invalidateLayout()
         })
     }
     
