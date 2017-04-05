@@ -137,16 +137,13 @@ open class JTAppleCalendarView: UICollectionView {
     /// Notifies the container that the size of its view is about to change.
     open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDateIndexPathAfterRotate: IndexPath? = nil) {
         print("")
-        self.calendarViewLayout.focusIndexPath = focusDateIndexPathAfterRotate
-        
+        calendarViewLayout.focusIndexPath = focusDateIndexPathAfterRotate
         coordinator.animate(alongsideTransition: { (context) -> Void in
-            
-            self.calendarViewLayout.clearCache()
-            self.calendarViewLayout.prepare()
-            self.calendarViewLayout.shouldClearCacheOnInvalidate = false
             self.performBatchUpdates(nil, completion: nil)
         },completion: { (context) -> Void in
             self.calendarViewLayout.focusIndexPath = nil
+            self.calendarViewLayout.shouldClearCacheOnInvalidate = false
+            self.calendarViewLayout.invalidateLayout()
         })
     }
     
