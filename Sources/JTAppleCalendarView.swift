@@ -269,7 +269,7 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     
-    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+    public override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
     }
     
