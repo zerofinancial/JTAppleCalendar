@@ -78,7 +78,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     // Subclasses cannot use this function
     @available(*, unavailable)
-    open override var delegate: UICollectionViewDelegate? {
+    @IBOutlet open override var delegate: UICollectionViewDelegate? {
         get { return super.delegate }
         set { super.delegate =  self }
     }
@@ -90,7 +90,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
     /// Remove this extra property once Xcode gets fixed.
-    @IBOutlet public var ibDelegate: AnyObject? {
+    @IBOutlet public var ibCalendarDelegate: AnyObject? {
         get { return calendarDelegate }
         set { calendarDelegate = newValue as? JTAppleCalendarViewDelegate }
     }
@@ -104,7 +104,7 @@ open class JTAppleCalendarView: UICollectionView {
     }
     /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
     /// Remove this extra property once Xcode gets fixed.
-    @IBOutlet public var ibDataSource: AnyObject? {
+    @IBOutlet public var ibCalendarDataSource: AnyObject? {
         get { return calendarDataSource }
         set { calendarDataSource = newValue as? JTAppleCalendarViewDataSource }
     }
