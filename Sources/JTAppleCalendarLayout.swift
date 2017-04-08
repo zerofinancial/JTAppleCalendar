@@ -86,9 +86,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     }
     /// Tells the layout object to update the current layout.
     open override func prepare() {
-//        print("prepare called.")
         if !layoutIsReadyToBePrepared { return }
-//        print("prepare was re-calculated.")
         
         setupDataFromDelegate()
         
@@ -140,7 +138,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         default:
             break
         }
-        print("-> \(retval)")
         return retval
     }
 
@@ -295,7 +292,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var attributes: [UICollectionViewLayoutAttributes] = []
         var beganIntercepting = false
         var missCount = 0
-        for sectionIndex in startSectionIndex..<cellCache.count {
+        
+        outterLoop: for sectionIndex in startSectionIndex..<cellCache.count {
             if let validSection = cellCache[sectionIndex], !validSection.isEmpty {
                 if thereAreDecorationViews {
                     let attrib = layoutAttributesForDecorationView(ofKind: decorationViewID, at: IndexPath(item: 0, section: sectionIndex))!
@@ -324,14 +322,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                         // since intercepting began, then this
                         // section has no more interceptions.
                         // So break
-                        if missCount > maxMissCount && beganIntercepting {
-                            break
-                        }
+                        if missCount > maxMissCount && beganIntercepting { break outterLoop }
                     }
-                }
-                if missCount > maxMissCount && beganIntercepting {
-                    // Also break from outter loop
-                    break
                 }
             }
         }
@@ -593,10 +585,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     func setMinVisibleDate() { // jt101 for setting proposal
         let minIndices = minimumVisibleIndexPaths()
         switch (minIndices.headerIndex, minIndices.cellIndex) {
-        case (.some(let path), nil):
-            focusIndexPath = path
-        case (nil, .some(let path)):
-            focusIndexPath = path
+        case (.some(let path), nil): focusIndexPath = path
+        case (nil, .some(let path)): focusIndexPath = path
         case (.some(let hPath), (.some(let cPath))):
             if hPath <= cPath {
                 focusIndexPath = hPath
@@ -647,7 +637,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var retval = proposedContentOffset
         
         if let focusIndexPath = focusIndexPath {
-//            print("path retrieved: \(focusIndexPath)")
             if thereAreHeaders {
                 let headerIndexPath = IndexPath(item: 0, section: focusIndexPath.section)
                 if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: headerIndexPath) {
@@ -682,13 +671,11 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     open override func invalidateLayout() {
         super.invalidateLayout()
         
-//        print("invalidateLayout called.")
         if shouldClearCacheOnInvalidate { clearCache() }
         shouldClearCacheOnInvalidate = true
     }
     
     func clearCache() {
-//        print("cache cleared.")
         headerCache.removeAll()
         cellCache.removeAll()
         sectionSize.removeAll()
