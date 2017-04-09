@@ -505,7 +505,6 @@ extension JTAppleCalendarView {
         
         // point takes preference
         if let validPoint = point {
-            isScrollInProgress = true
             scrollTo(point: validPoint,
                      triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                      isAnimationEnabled: isAnimationEnabled,
@@ -521,7 +520,6 @@ extension JTAppleCalendarView {
                                         extraAddedOffset: extraAddedOffset,
                                         completionHandler: completionHandler)
             } else {
-                isScrollInProgress = true
                 scrollTo(indexPath:validIndexPath,
                          isAnimationEnabled: isAnimationEnabled,
                          position: position ?? .left,
@@ -529,13 +527,8 @@ extension JTAppleCalendarView {
                          completionHandler: completionHandler)
             }
         }
-        
-        // Jt101 put this into a function to reduce code between
-        // this and the scroll to header function
-        if !isAnimationEnabled {
-            self.scrollViewDidEndScrollingAnimation(self)
-        }
-        self.isScrollInProgress = false
+
+        if !isAnimationEnabled { scrollViewDidEndScrollingAnimation(self) }
     }
     
     func scrollTo(point: CGPoint, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
@@ -546,8 +539,10 @@ extension JTAppleCalendarView {
         isScrollInProgress = true
         var point = point
         if scrollDirection == .horizontal { point.x += extraAddedOffset } else { point.y += extraAddedOffset }
-        setContentOffset(point, animated: isAnimationEnabled)
-        isScrollInProgress = false
+        DispatchQueue.main.async {
+            self.setContentOffset(point, animated: isAnimationEnabled)
+            self.isScrollInProgress = false
+        }
     }
     
     func scrollTo(rect: CGRect,
