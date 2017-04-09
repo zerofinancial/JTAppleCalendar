@@ -285,9 +285,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func reloadCalendar(_ sender: UIButton) {
-//        calendarView.reloadData()
-        print(calendarView.currentSection())
-        
+        calendarView.reloadData()
     }
 
     @IBAction func next(_ sender: UIButton) {
