@@ -76,11 +76,16 @@ open class JTAppleCalendarView: UICollectionView {
         return !isCalendarLayoutLoaded || isScrollInProgress || isReloadDataInProgress
     }
     
-    // Subclasses cannot use this function
+    
     @available(*, unavailable)
-    @IBOutlet open override var delegate: UICollectionViewDelegate? {
+    open override var delegate: UICollectionViewDelegate? {
         get { return super.delegate }
-        set { super.delegate =  self }
+        set { /* Do nothing */ }
+    }
+    @available(*, unavailable)
+    open override var dataSource: UICollectionViewDataSource? {
+        get { return super.dataSource }
+        set {/* Do nothing */ }
     }
     
     /// The object that acts as the delegate of the calendar view.
@@ -302,14 +307,14 @@ open class JTAppleCalendarView: UICollectionView {
         if let validCompletionHandler = completionHandler {
             self.delayedExecutionClosure.append(validCompletionHandler)
         }
+        isScrollInProgress = true
         scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
         if isAnimationEnabled {
             if calendarOffsetIsAlreadyAtScrollPosition(forIndexPath: indexPath) {
                 self.scrollViewDidEndScrollingAnimation(self)
-                self.isScrollInProgress = false
-                return
             }
         }
+        self.isScrollInProgress = false
     }
     
     func targetPointForItemAt(indexPath: IndexPath) -> CGPoint? {
