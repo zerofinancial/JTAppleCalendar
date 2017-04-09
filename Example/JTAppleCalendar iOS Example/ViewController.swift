@@ -185,8 +185,6 @@ class ViewController: UIViewController {
 //        calendarView.itemSize = CGFloat(53.43 - 20)
         
         
-        
-        
 //        testCalendar = Calendar(identifier: .gregorian)
 //        let timeZone = TimeZone(identifier: "Asia/Amman")!
 //        testCalendar.timeZone = timeZone
@@ -213,7 +211,6 @@ class ViewController: UIViewController {
 //        panGensture.minimumPressDuration = 0.5
 //        calendarView.addGestureRecognizer(panGensture)
 //        calendarView.rangeSelectionWillBeUsed = true
-//           self.calendarView.reloadData() {
 //           self.calendarView.reloadData() {
         self.calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
@@ -411,7 +408,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         return parameters
     }
     
-    public func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
+    func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
         let myCustomCell = calendar.dequeueReusableCell(withReuseIdentifier: "CellView", for: indexPath) as! CellView
         
         myCustomCell.dayLabel.text = cellState.text
