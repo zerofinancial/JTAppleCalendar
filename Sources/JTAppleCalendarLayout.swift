@@ -28,11 +28,14 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     var headerSizes: [AnyHashable:CGFloat] = [:]
     var focusIndexPath: IndexPath?
-    
     var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
     var layoutIsReadyToBePrepared: Bool {
-        return !(!cellCache.isEmpty  || collectionView!.frame.width == 0 || collectionView!.frame.height == 0)
+        return !(!cellCache.isEmpty  ||
+            collectionView!.frame.width == 0 ||
+            collectionView!.frame.height == 0 ||
+            delegate.calendarDataSource == nil)
     }
+
     var monthMap: [Int: Int] = [:]
     var numberOfRows: Int = 0
     var strictBoundaryRulesShouldApply: Bool = false
