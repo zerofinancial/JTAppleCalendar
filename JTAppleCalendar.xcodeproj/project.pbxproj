@@ -77,6 +77,9 @@
 		6BA9245F1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA9245D1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift */; };
 		6BAB2C421E9B49D500FF125F /* JTAppleCalendarVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAB2C411E9B49D500FF125F /* JTAppleCalendarVariables.swift */; };
 		6BAB2C431E9B49D500FF125F /* JTAppleCalendarVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAB2C411E9B49D500FF125F /* JTAppleCalendarVariables.swift */; };
+		6BAB2C441E9C2B1700FF125F /* JTAppleCalendarVariables.swift in Headers */ = {isa = PBXBuildFile; fileRef = 6BAB2C411E9B49D500FF125F /* JTAppleCalendarVariables.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		6BAB2C451E9C2B1D00FF125F /* JTAppleCalendarView.swift in Headers */ = {isa = PBXBuildFile; fileRef = 6B60DED71D5BDD4D009174A2 /* JTAppleCalendarView.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		6BAB2C461E9C2B1F00FF125F /* JTAppleCalendarVariables.swift in Headers */ = {isa = PBXBuildFile; fileRef = 6BAB2C411E9B49D500FF125F /* JTAppleCalendarVariables.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		6BF7B1FF1D606BA600D60900 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0F1D5BE834009174A2 /* ViewController.swift */; };
 		6BF7B2001D606C0F00D60900 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0D1D5BE834009174A2 /* AppDelegate.swift */; };
 		6BFB05231E7F9AA400ACE696 /* SectionDecorationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6BFB05221E7F9AA400ACE696 /* SectionDecorationView.xib */; };
@@ -472,6 +475,7 @@
 			files = (
 				6B60DEC01D5BDA46009174A2 /* JTAppleCalendar.h in Headers */,
 				6B7026181E92455B009506CA /* JTAppleCalendarView.swift in Headers */,
+				6BAB2C441E9C2B1700FF125F /* JTAppleCalendarVariables.swift in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,6 +484,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B60DED31D5BDCBA009174A2 /* JTAppleCalendar.h in Headers */,
+				6BAB2C451E9C2B1D00FF125F /* JTAppleCalendarView.swift in Headers */,
+				6BAB2C461E9C2B1F00FF125F /* JTAppleCalendarVariables.swift in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
