@@ -103,6 +103,7 @@ extension JTAppleCalendarView {
         super.register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: identifier)
     }
     
+    /// Dequeues re-usable calendar cells
     public func dequeueReusableJTAppleSupplementaryView(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCollectionReusableView {
         guard let headerView = dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader,
                                                                 withReuseIdentifier: identifier,
@@ -113,20 +114,20 @@ extension JTAppleCalendarView {
         return headerView
     }
     
+    /// Registers a nib for use in creating Decoration views for the collection view.
     public func registerDecorationView(nib: UINib?) {
         calendarViewLayout.register(nib, forDecorationViewOfKind: decorationViewID)
     }
+    /// Registers a class for use in creating Decoration views for the collection view.
     public func register(viewClass className: AnyClass?, forDecorationViewOfKind kind: String) {
         calendarViewLayout.register(className, forDecorationViewOfKind: decorationViewID)
     }
-
-    
+    /// Dequeues a reuable calendar cell
     public func dequeueReusableJTAppleCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCell {
         guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleCell else {
             developerError(string: "Error initializing Cell View with identifier: '\(identifier)'")
             return JTAppleCell()
         }
-        
         return cell
     }
     
@@ -491,70 +492,6 @@ extension JTAppleCalendarView {
                      position: position,
                      extraAddedOffset: extraAddedOffset,
                      completionHandler: completionHandler)
-    }
-    
-    func handleScroll(point: CGPoint? = nil,
-                      indexPath: IndexPath? = nil,
-                      triggerScrollToDateDelegate: Bool = true,
-                      isAnimationEnabled: Bool,
-                      position: UICollectionViewScrollPosition? = .left,
-                      extraAddedOffset: CGFloat = 0,
-                      completionHandler: (() -> Void)?) {
-        
-        if isScrollInProgress { return }
-        
-        // point takes preference
-        if let validPoint = point {
-            scrollTo(point: validPoint,
-                     triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                     isAnimationEnabled: isAnimationEnabled,
-                     extraAddedOffset: extraAddedOffset,
-                     completionHandler: completionHandler)
-        } else {
-            guard let validIndexPath = indexPath else { return }
-            
-            if calendarViewLayout.thereAreHeaders && scrollDirection == .vertical {
-                scrollToHeaderInSection(validIndexPath.section,
-                                        triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                                        withAnimation: isAnimationEnabled,
-                                        extraAddedOffset: extraAddedOffset,
-                                        completionHandler: completionHandler)
-            } else {
-                scrollTo(indexPath:validIndexPath,
-                         isAnimationEnabled: isAnimationEnabled,
-                         position: position ?? .left,
-                         extraAddedOffset: extraAddedOffset,
-                         completionHandler: completionHandler)
-            }
-        }
-
-        if !isAnimationEnabled { scrollViewDidEndScrollingAnimation(self) }
-    }
-    
-    func scrollTo(point: CGPoint, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
-        if let validCompletionHandler = completionHandler {
-            self.delayedExecutionClosure.append(validCompletionHandler)
-        }
-        self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
-        isScrollInProgress = true
-        var point = point
-        if scrollDirection == .horizontal { point.x += extraAddedOffset } else { point.y += extraAddedOffset }
-        DispatchQueue.main.async {
-            self.setContentOffset(point, animated: isAnimationEnabled)
-            self.isScrollInProgress = false
-        }
-    }
-    
-    func scrollTo(rect: CGRect,
-                  triggerScrollToDateDelegate: Bool? = nil,
-                  isAnimationEnabled: Bool,
-                  extraAddedOffset: CGFloat,
-                  completionHandler: (() -> Void)?) {
-        scrollTo(point: CGPoint(x: rect.origin.x, y: rect.origin.y),
-                 triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                 isAnimationEnabled: isAnimationEnabled,
-                 extraAddedOffset: extraAddedOffset,
-                 completionHandler: completionHandler)
     }
     
     /// Scrolls the calendar view to the start of a section view header.

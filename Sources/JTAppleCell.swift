@@ -19,6 +19,7 @@ open class JTAppleCell: UICollectionViewCell {
 		super.init(coder: aDecoder)
 	}
     
+    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     open override func awakeFromNib() {
         super.awakeFromNib()
         
