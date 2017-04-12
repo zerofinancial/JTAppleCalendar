@@ -270,8 +270,6 @@ class ViewController: UIViewController {
         for date in calendarView.selectedDates {
             print(formatter.string(from: date))
         }
-        
-        
     }
 
     @IBAction func resize(_ sender: UIButton) {
