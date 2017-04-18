@@ -291,6 +291,7 @@ open class JTAppleCalendarView: UICollectionView {
                 !isAnimationEnabled {
                 self.scrollViewDidEndScrollingAnimation(self)
             }
+            self.isScrollInProgress = false
         }
     }
     
@@ -392,6 +393,7 @@ open class JTAppleCalendarView: UICollectionView {
                 !animation {
                 self.scrollViewDidEndScrollingAnimation(self)
             }
+            self.isScrollInProgress = false
         }
     }
     
@@ -531,6 +533,7 @@ extension JTAppleCalendarView {
                 !isAnimationEnabled {
                 self.scrollViewDidEndScrollingAnimation(self)
             }
+            self.isScrollInProgress = false
         }
     }
     
