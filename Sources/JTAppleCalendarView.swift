@@ -84,7 +84,6 @@ open class JTAppleCalendarView: UICollectionView {
     var triggerScrollToDateDelegate: Bool? = true
     var isScrollInProgress                 = false
     var isReloadDataInProgress             = false
-    var initIsComplete                     = false
     
     var delayedExecutionClosure: [(() -> Void)] = []
     let dateGenerator = JTAppleDateConfigGenerator()
@@ -139,22 +138,54 @@ open class JTAppleCalendarView: UICollectionView {
     var endOfMonthCache: Date!
     var theSelectedIndexPaths: [IndexPath] = []
     var theSelectedDates: [Date] = []
+    var initialScrollDate: Date?
     
-    func invalidateLayoutIfInitComplete() {
-        if !initIsComplete { return }
-        calendarViewLayout.invalidateLayout()
+    func firstContentOffset() -> CGPoint {
+        var retval: CGPoint = .zero
+        guard let date  = initialScrollDate else { return retval }
+        
+        // Ensure date is within valid boundary
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+        let firstDayOfDate = calendar.date(from: components)!
+        if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) { return retval }
+        
+        // Get valid indexPath of date to scroll to
+        let retrievedPathsFromDates = self.pathsFromDates([date])
+        if retrievedPathsFromDates.isEmpty { return retval }
+        let sectionIndexPath =  self.pathsFromDates([date])[0]
+        
+        
+        if calendarViewLayout.thereAreHeaders && scrollDirection == .vertical {
+            let indexPath = IndexPath(item: 0, section: sectionIndexPath.section)
+            guard let attributes = self.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) else { return retval }
+            
+            let maxYCalendarOffset = max(0, self.contentSize.height - self.frame.size.height)
+            retval = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
+            //            if self.scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
+            
+        } else {
+            switch self.scrollingMode {
+            case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
+                if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
+                    retval = self.targetPointForItemAt(indexPath: sectionIndexPath) ?? .zero
+                }
+            default:
+                break
+            }
+        }
+        return retval
     }
     
     open var sectionInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0) {
-        didSet { invalidateLayoutIfInitComplete() }
+        didSet { calendarViewLayout.invalidateLayout() }
         
     }
     open var minimumInteritemSpacing: CGFloat = 0 {
-        didSet { invalidateLayoutIfInitComplete() }
+        didSet { calendarViewLayout.invalidateLayout() }
     }
     
     open var minimumLineSpacing: CGFloat = 0 {
-        didSet { invalidateLayoutIfInitComplete() }
+        didSet { calendarViewLayout.invalidateLayout() }
     }
     
     lazy var theData: CalendarData = {
@@ -201,6 +232,7 @@ open class JTAppleCalendarView: UICollectionView {
         assert(false)
     }
     
+    
     func setupNewLayout(from oldLayout: JTAppleCalendarLayoutProtocol) {
         
         let newLayout = JTAppleCalendarLayout(withDelegate: self)
@@ -231,7 +263,6 @@ open class JTAppleCalendarView: UICollectionView {
                 scrollingMode = .none
             }
         #endif
-        initIsComplete = true
     }
     
     func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> [IndexPath] {
@@ -248,18 +279,19 @@ open class JTAppleCalendarView: UICollectionView {
         return retval
     }
     
-    func scrollTo(indexPath: IndexPath, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
+    func scrollTo(indexPath: IndexPath, triggerScrollToDateDelegate: Bool, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
+        isScrollInProgress = true
         if let validCompletionHandler = completionHandler {
             self.delayedExecutionClosure.append(validCompletionHandler)
         }
-        isScrollInProgress = true
-        scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
-        if isAnimationEnabled {
-            if calendarOffsetIsAlreadyAtScrollPosition(forIndexPath: indexPath) {
+        self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
+        DispatchQueue.main.async {
+            self.scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
+            if (isAnimationEnabled && self.calendarOffsetIsAlreadyAtScrollPosition(forIndexPath: indexPath)) ||
+                !isAnimationEnabled {
                 self.scrollViewDidEndScrollingAnimation(self)
             }
         }
-        self.isScrollInProgress = false
     }
     
     func targetPointForItemAt(indexPath: IndexPath) -> CGPoint? {
@@ -342,36 +374,23 @@ open class JTAppleCalendarView: UICollectionView {
                                  withAnimation animation: Bool = true,
                                  extraAddedOffset: CGFloat,
                                  completionHandler: (() -> Void)? = nil) {
-        if !calendarViewLayout.thereAreHeaders {
-            return
-        }
-        self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
+        if !calendarViewLayout.thereAreHeaders { return }
         let indexPath = IndexPath(item: 0, section: section)
+        guard let attributes = self.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) else { return }
+        
+        isScrollInProgress = true
+        if let validHandler = completionHandler { self.delayedExecutionClosure.append(validHandler) }
+        
+        self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
+        
+        let maxYCalendarOffset = max(0, self.contentSize.height - self.frame.size.height)
+        var topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
+        if self.scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
         DispatchQueue.main.async {
-            if let attributes = self.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) { // JT101 this was changed --> we need this function inside the layout
-                if let validHandler = completionHandler {
-                    self.delayedExecutionClosure.append(validHandler)
-                }
-                
-                let maxYCalendarOffset = max(0, self.contentSize.height - self.frame.size.height)
-                var topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
-                if self.scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
-                
-                self.isScrollInProgress = true
-                self.setContentOffset(topOfHeader, animated: animation)
-                if !animation {
-                    self.scrollViewDidEndScrollingAnimation(self)
-                } else {
-                    // If the scroll is set to animate, and the target
-                    // content offset is already on the screen, then the
-                    // didFinishScrollingAnimation
-                    // delegate will not get called. Once animation is on
-                    // let's force a scroll so the delegate MUST get caalled
-                    if self.calendarOffsetIsAlreadyAtScrollPosition(forOffset: topOfHeader) {
-                        self.scrollViewDidEndScrollingAnimation(self)
-                    }
-                }
-                self.isScrollInProgress = false
+            self.setContentOffset(topOfHeader, animated: animation)
+            if (animation && self.calendarOffsetIsAlreadyAtScrollPosition(forOffset: topOfHeader)) ||
+                !animation {
+                self.scrollViewDidEndScrollingAnimation(self)
             }
         }
     }
@@ -489,40 +508,30 @@ extension JTAppleCalendarView {
                                         completionHandler: completionHandler)
             } else {
                 scrollTo(indexPath:validIndexPath,
+                         triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                          isAnimationEnabled: isAnimationEnabled,
                          position: position ?? .left,
                          extraAddedOffset: extraAddedOffset,
                          completionHandler: completionHandler)
             }
         }
-        
-        if !isAnimationEnabled { scrollViewDidEndScrollingAnimation(self) }
     }
     
     func scrollTo(point: CGPoint, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
+        isScrollInProgress = true
         if let validCompletionHandler = completionHandler {
             self.delayedExecutionClosure.append(validCompletionHandler)
         }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
-        isScrollInProgress = true
         var point = point
         if scrollDirection == .horizontal { point.x += extraAddedOffset } else { point.y += extraAddedOffset }
-        DispatchQueue.main.async {
+        DispatchQueue.main.async() {
             self.setContentOffset(point, animated: isAnimationEnabled)
-            self.isScrollInProgress = false
+            if (isAnimationEnabled && self.calendarOffsetIsAlreadyAtScrollPosition(forOffset: point)) ||
+                !isAnimationEnabled {
+                self.scrollViewDidEndScrollingAnimation(self)
+            }
         }
-    }
-    
-    func scrollTo(rect: CGRect,
-                  triggerScrollToDateDelegate: Bool? = nil,
-                  isAnimationEnabled: Bool,
-                  extraAddedOffset: CGFloat,
-                  completionHandler: (() -> Void)?) {
-        scrollTo(point: CGPoint(x: rect.origin.x, y: rect.origin.y),
-                 triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                 isAnimationEnabled: isAnimationEnabled,
-                 extraAddedOffset: extraAddedOffset,
-                 completionHandler: completionHandler)
     }
     
     func indexPathOfdateCellCounterPath(_ date: Date,

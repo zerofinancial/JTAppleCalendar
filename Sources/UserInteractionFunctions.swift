@@ -154,20 +154,22 @@ extension JTAppleCalendarView {
     /// - Parameter animation: Scroll is animated if this is set to true
     /// - Parameter completionHandler: This closure will run after
     ///                                the reload is complete
-    public func reloadData(with anchorDate: Date? = nil, animation: Bool = false, completionHandler: (() -> Void)? = nil) {
+    public func reloadData(completionHandler: (() -> Void)? = nil) {
         if isScrollInProgress || isReloadDataInProgress {
             delayedExecutionClosure.append {[unowned self] in
-                self.reloadData(with: anchorDate, animation: animation, completionHandler: completionHandler)
+                self.reloadData(completionHandler: completionHandler)
             }
             return
         }
-
+        
+        isReloadDataInProgress = true
+        
         let selectedDates = self.selectedDates
         let layoutNeedsUpdating = reloadDelegateDataSource()
         if layoutNeedsUpdating {
             calendarViewLayout.invalidateLayout()
             setupMonthInfoAndMap()
-
+            
             self.theSelectedIndexPaths = []
             self.theSelectedDates = []
         }
@@ -179,33 +181,11 @@ extension JTAppleCalendarView {
             }
         }
         
-        if let validAnchorDate = anchorDate {
-            // If we have a valid anchor date, this means we want to
-            // scroll
-            // This scroll should happen after the reload above
-            delayedExecutionClosure.append{[unowned self] in
-                if self.calendarViewLayout.thereAreHeaders {
-                    self.scrollToHeaderForDate(
-                        validAnchorDate,
-                        triggerScrollToDateDelegate: false,
-                        withAnimation: animation,
-                        completionHandler: completionHandler)
-                } else {
-                    self.scrollToDate(validAnchorDate,
-                                      triggerScrollToDateDelegate: false,
-                                      animateScroll: animation,
-                                      completionHandler: completionHandler)
-                }
-                
-                if !selectedDates.isEmpty { restoreAfterReload() }
-            }
-        } else {
-            if !selectedDates.isEmpty { delayedExecutionClosure.append(restoreAfterReload) }
-            if let validCompletionHandler = completionHandler  {
-                delayedExecutionClosure.append(validCompletionHandler)
-            }
+        if !selectedDates.isEmpty { delayedExecutionClosure.append(restoreAfterReload) }
+        if let validCompletionHandler = completionHandler  {
+            delayedExecutionClosure.append(validCompletionHandler)
         }
-        isReloadDataInProgress = true
+        
         if !layoutNeedsUpdating { calendarViewLayout.shouldClearCacheOnInvalidate = false }
         super.reloadData()
         isReloadDataInProgress = false
@@ -428,8 +408,7 @@ extension JTAppleCalendarView {
             }
         }
         
-        let rect = CGRect(x: xOffset, y: yOffset, width: frame.width, height: frame.height)
-        scrollTo(rect: rect,
+        scrollTo(point: CGPoint(x: xOffset, y: yOffset),
                  triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                  isAnimationEnabled: true,
                  extraAddedOffset: extraAddedOffset,
@@ -452,6 +431,7 @@ extension JTAppleCalendarView {
         
         // Ensure scrolling to date is safe to run
         if functionIsUnsafeSafeToRun {
+            if !animateScroll  { initialScrollDate = date}
             delayedExecutionClosure.append {[unowned self] in
                 self.scrollToDate(date,
                                   triggerScrollToDateDelegate: triggerScrollToDateDelegate,
@@ -477,16 +457,15 @@ extension JTAppleCalendarView {
         
         // Ensure valid scroll position is set
         var position: UICollectionViewScrollPosition = self.scrollDirection == .horizontal ? .left : .top
-        if !self.scrollingMode.pagingIsEnabled() {
-            if let validPosition = preferredScrollPosition {
-                if self.scrollDirection == .horizontal {
-                    if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
-                        position = validPosition
-                    }
-                } else {
-                    if validPosition == .top || validPosition == .bottom || validPosition == .centeredVertically {
-                        position = validPosition
-                    }
+        if !self.scrollingMode.pagingIsEnabled(),
+            let validPosition = preferredScrollPosition {
+            if self.scrollDirection == .horizontal {
+                if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
+                    position = validPosition
+                }
+            } else {
+                if validPosition == .top || validPosition == .bottom || validPosition == .centeredVertically {
+                    position = validPosition
                 }
             }
         }
@@ -519,6 +498,17 @@ extension JTAppleCalendarView {
                                       withAnimation animation: Bool = false,
                                       extraAddedOffset: CGFloat = 0,
                                       completionHandler: (() -> Void)? = nil) {
+        if functionIsUnsafeSafeToRun {
+            if !animation  { initialScrollDate = date}
+            delayedExecutionClosure.append {[unowned self] in
+                self.scrollToHeaderForDate(date,
+                                           triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+                                           withAnimation: animation,
+                                           extraAddedOffset: extraAddedOffset,
+                                           completionHandler: completionHandler)
+            }
+            return
+        }
         let path = pathsFromDates([date])
         // Return if date was incalid and no path was returned
         if path.isEmpty { return }

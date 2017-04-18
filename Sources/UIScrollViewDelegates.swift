@@ -227,6 +227,9 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     /// Tells the delegate when a scrolling
     /// animation in the scroll view concludes.
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        // A scroll was just completed.
+        isScrollInProgress = false
+        
         if
             let shouldTrigger = triggerScrollToDateDelegate,
             shouldTrigger == true {
@@ -234,8 +237,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             triggerScrollToDateDelegate = nil
         }
         executeDelayedTasks()
-        // A scroll was just completed.
-        isScrollInProgress = false
         saveLastContentOffset(scrollView.contentOffset)
     }
     
