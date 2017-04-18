@@ -39,6 +39,13 @@ class ViewController: UIViewController {
     let gray = UIColor.gray
     let shade = UIColor(colorWithHexValue: 0x4E4E4E)
     
+    @IBAction func scrollNone(_ sender: Any) {
+        calendarView.scrollingMode = .none
+    }
+    
+    @IBAction func scrollFixed(_ sender: Any) {
+        calendarView.scrollingMode = .stopAtEachCalendarFrameWidth
+    }
     @IBAction func showPrepost(_ sender: UIButton) {
         prePostVisibility = {state, cell in
             cell?.isHidden = false
@@ -79,12 +86,12 @@ class ViewController: UIViewController {
     
     
     @IBAction func decreaseItemSize(_ sender: UIButton) {
-        calendarView.cellSize -= 3
+        calendarView.cellSize -= 1
         calendarView.reloadData()
     }
     
     @IBAction func increaseItemSize(_ sender: UIButton) {
-        calendarView.cellSize += 3
+        calendarView.cellSize += 1
         calendarView.reloadData()
     }
 
@@ -287,19 +294,11 @@ class ViewController: UIViewController {
     }
 
     @IBAction func next(_ sender: UIButton) {
-        self.calendarView.scrollToSegment(.next) {
-            self.calendarView.visibleDates({ (visibleDates: DateSegmentInfo) in
-                self.setupViewsOfCalendar(from: visibleDates)
-            })
-        }
+        self.calendarView.scrollToSegment(.next)
     }
 
     @IBAction func previous(_ sender: UIButton) {
-        self.calendarView.scrollToSegment(.previous) {
-            self.calendarView.visibleDates({ (visibleDates: DateSegmentInfo) in
-                self.setupViewsOfCalendar(from: visibleDates)
-            })
-        }
+        self.calendarView.scrollToSegment(.previous)
     }
 
     func setupViewsOfCalendar(from visibleDates: DateSegmentInfo) {
@@ -363,8 +362,8 @@ class ViewController: UIViewController {
     
     @IBAction func decreaseSectionInset(_ sender: UIButton) {
         
-                calendarView.sectionInset.bottom -= 3
-                calendarView.sectionInset.top -= 3
+        calendarView.sectionInset.bottom -= 3
+        calendarView.sectionInset.top -= 3
         calendarView.sectionInset.left -= 3
         calendarView.sectionInset.right -= 3
         
@@ -391,7 +390,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         
         
         let startDate = formatter.date(from: "2017 01 01")!
-        let endDate = formatter.date(from: "2068 02 01")!
+        let endDate = formatter.date(from: "2018 02 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
