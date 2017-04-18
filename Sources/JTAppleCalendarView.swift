@@ -702,11 +702,11 @@ extension JTAppleCalendarView {
     func pathsFromDates(_ dates: [Date]) -> [IndexPath] {
         var returnPaths: [IndexPath] = []
         for date in dates {
-            if  calendar.startOfDay(for: date) >= startOfMonthCache! && calendar.startOfDay(for: date) <= endOfMonthCache! {
+            if calendar.startOfDay(for: date) >= startOfMonthCache! && calendar.startOfDay(for: date) <= endOfMonthCache! {
                 let periodApart = calendar.dateComponents([.month], from: startOfMonthCache, to: date)
                 let day = calendar.dateComponents([.day], from: date).day!
-                let monthSectionIndex = periodApart.month
-                let currentMonthInfo = monthInfo[monthSectionIndex!]
+                guard let monthSectionIndex = periodApart.month else { continue }
+                let currentMonthInfo = monthInfo[monthSectionIndex]
                 if let indexPath = currentMonthInfo.indexPath(forDay: day) {
                     returnPaths.append(indexPath)
                 }
@@ -728,11 +728,11 @@ extension JTAppleCalendarView {
                                  dateBelongsTo: .thisMonth,
                                  date: Date(),
                                  day: .sunday,
-                                 row: {return 0},
-                                 column: {return 0},
+                                 row: { return 0 },
+                                 column: { return 0 },
                                  dateSection: {
                                     return (range: (Date(), Date()), month: 0, rowCount: 0)
-                },
+                                 },
                                  selectedPosition: {return .left},
                                  cell: {return nil})
             }
