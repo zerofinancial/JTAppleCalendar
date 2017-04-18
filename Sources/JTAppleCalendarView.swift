@@ -694,14 +694,12 @@ extension JTAppleCalendarView {
         var returnPaths: [IndexPath] = []
         for date in dates {
             if  calendar.startOfDay(for: date) >= startOfMonthCache! && calendar.startOfDay(for: date) <= endOfMonthCache! {
-                if  calendar.startOfDay(for: date) >= startOfMonthCache! && calendar.startOfDay(for: date) <= endOfMonthCache! {
-                    let periodApart = calendar.dateComponents([.month], from: startOfMonthCache, to: date)
-                    let day = calendar.dateComponents([.day], from: date).day!
-                    let monthSectionIndex = periodApart.month
-                    let currentMonthInfo = monthInfo[monthSectionIndex!]
-                    if let indexPath = currentMonthInfo.indexPath(forDay: day) {
-                        returnPaths.append(indexPath)
-                    }
+                let periodApart = calendar.dateComponents([.month], from: startOfMonthCache, to: date)
+                let day = calendar.dateComponents([.day], from: date).day!
+                let monthSectionIndex = periodApart.month
+                let currentMonthInfo = monthInfo[monthSectionIndex!]
+                if let indexPath = currentMonthInfo.indexPath(forDay: day) {
+                    returnPaths.append(indexPath)
                 }
             }
         }
