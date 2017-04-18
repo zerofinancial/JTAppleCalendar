@@ -161,7 +161,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     }
 
     
-    func horizontalStuff() {
+    func configureHorizontalLayout() {
         var section = 0
         var totalDayCounter = 0
         var headerGuide = 0
@@ -237,7 +237,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         contentHeight = self.collectionView!.bounds.size.height
     }
     
-    func verticalStuff() {
+    func configureVerticalLayout() {
         var section = 0
         var totalDayCounter = 0
         var headerGuide = 0
