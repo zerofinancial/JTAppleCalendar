@@ -32,8 +32,10 @@
 - [x] [Complete Documentation](http://cocoadocs.org/docsets/JTAppleCalendar)
 
 
-1. [Installation](Installation)
-2. Tutorial 
+[Installation](Installation)
+
+Tutorials
+  
   **1. Building a Calendar from scratch**
    
    [<img width="300" alt="screen shot 2017-04-07 at 1 10 00 am" src="https://cloud.githubusercontent.com/assets/2439146/24791476/10ae6602-1b2f-11e7-9d2b-038b007090ab.png">](https://www.youtube.com/watch?v=zOphH-h-qCs)
