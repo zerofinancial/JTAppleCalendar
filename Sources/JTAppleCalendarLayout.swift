@@ -30,6 +30,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var firstContentOffsetWasSet = false
     let errorDelta: CGFloat = 0.0000001
     
+    var lastSetCollectionViewSize: CGRect = .zero
+    
     var cellSize: CGSize = CGSize.zero
     var itemSizeWasSet: Bool = false
     var scrollDirection: UICollectionViewScrollDirection = .horizontal
@@ -130,6 +132,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             collectionView!.setContentOffset(firstContentOffset, animated: false)
         }
         daysInSection.removeAll() // Clear chache
+        lastSetCollectionViewSize = collectionView!.frame
     }
     
     func setupDataFromDelegate() {
