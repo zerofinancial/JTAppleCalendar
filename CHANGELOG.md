@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 7.x Releases
-- `7.0.0` Releases - [7.0.0](#700)
+- `7.0.0` Releases - [7.0.0](#700)|[7.0.1](#701)|[7.0.2](#702)
 
 #### 6.x Releases
 - `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)|[6.1.3](#613)|[6.1.4](#614)|[6.1.5](#615)|[6.1.6](#616)
@@ -29,7 +29,14 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
-## [7.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/6.1.5)
+## [7.0.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.0.2)
+- [Fixed visible scrolling issue](https://github.com/patchthecode/JTAppleCalendar/issues/263)
+- Added check if dev forcefully calls layoutIfNeeded(). Layout should be re-created.
+
+## [7.0.1](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.0.1)
+- Quickfix for Charthage users. Correct header file was included. 
+
+## [7.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.0.0)
 - Massive changes and minor bug fixes 
    - JTAppleCalendar is now a UICollectionView subclass and can be designed on interface builder.
    - Months sections distance is now configurable
