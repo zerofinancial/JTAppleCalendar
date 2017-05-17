@@ -479,7 +479,7 @@ extension JTAppleCalendarView {
         
         var point: CGPoint?
         switch self.scrollingMode {
-        case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth:
+        case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrameWidth, .nonStopToSection:
             if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
                 point = self.targetPointForItemAt(indexPath: sectionIndexPath)
             }

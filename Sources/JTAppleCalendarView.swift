@@ -310,7 +310,7 @@ open class JTAppleCalendarView: UICollectionView {
         let theTargetContentOffset: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
         var fixedScrollSize: CGFloat = 0
         switch scrollingMode {
-        case .stopAtEachSection, .stopAtEachCalendarFrameWidth:
+        case .stopAtEachSection, .stopAtEachCalendarFrameWidth, .nonStopToSection:
             if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
                 // Horizontal has a fixed width.
                 // Vertical with no header has fixed height
