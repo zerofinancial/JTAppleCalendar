@@ -24,8 +24,8 @@
 
 /// Default delegate functions
 public extension JTAppleCalendarViewDelegate {
-    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date) -> Bool { return true }
-    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date) -> Bool { return true }
+    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleCell, cellState: CellState) -> Bool { return true }
+    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date, cell: JTAppleCell, cellState: CellState) -> Bool { return true }
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {}
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {}
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {}
@@ -64,16 +64,20 @@ public protocol JTAppleCalendarViewDelegate: class {
     /// - Parameters:
     ///     - calendar: The JTAppleCalendar view requesting this information.
     ///     - date: The date attached to the date-cell.
+    ///     - cell: The date-cell view. This can be customized at this point.
+    ///     - cellState: The month the date-cell belongs to.
     /// - returns: A Bool value indicating if the operation can be done.
-    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date) -> Bool
+    func calendar(_ calendar: JTAppleCalendarView, shouldSelectDate date: Date, cell: JTAppleCell, cellState: CellState) -> Bool
 
     /// Asks the delegate if de-selecting the
     /// date-cell with a specified date is allowed
     /// - Parameters:
     ///     - calendar: The JTAppleCalendar view requesting this information.
     ///     - date: The date attached to the date-cell.
+    ///     - cell: The date-cell view. This can be customized at this point.
+    ///     - cellState: The month the date-cell belongs to.
     /// - returns: A Bool value indicating if the operation can be done.
-    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date) -> Bool
+    func calendar(_ calendar: JTAppleCalendarView, shouldDeselectDate date: Date, cell: JTAppleCell, cellState: CellState) -> Bool
 
     /// Tells the delegate that a date-cell with a specified date was selected
     /// - Parameters:
