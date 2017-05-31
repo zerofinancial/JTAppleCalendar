@@ -26,7 +26,7 @@
 /// behavior of the cells that appear in JTAppleCalendarView objects.
 open class JTAppleCell: UICollectionViewCell {
     
-    @available(*, unavailable)
+    @available(*, unavailable, message: "Please use cellState.isSelected instead")
     open override var isSelected: Bool {
         get { return super.isSelected }
         set { super.isSelected = newValue }
