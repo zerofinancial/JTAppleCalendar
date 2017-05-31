@@ -125,10 +125,10 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             let counterPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath)) : []
             pathsToReload.formUnion(counterPathsToReload)
         }
+        delegate.calendar(self, didSelectDate: infoOfDateSelectedByUser.date, cell: selectedCell, cellState: cellState)
         if !pathsToReload.isEmpty {
             self.batchReloadIndexPaths(Array(pathsToReload))
         }
-        delegate.calendar(self, didSelectDate: infoOfDateSelectedByUser.date, cell: selectedCell, cellState: cellState)
     }
     
     /// Tells the delegate that the item at the specified path was deselected.
@@ -155,10 +155,10 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 let counterPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: unselectedCounterPartIndexPath)) : []
                 indexPathsToReload.formUnion(counterPathsToReload)
             }
+            delegate.calendar(self, didDeselectDate: dateInfoDeselectedByUser.date, cell: selectedCell, cellState: cellState)
             if indexPathsToReload.count > 0 {
                 self.batchReloadIndexPaths(Array(indexPathsToReload))
             }
-            delegate.calendar(self, didDeselectDate: dateInfoDeselectedByUser.date, cell: selectedCell, cellState: cellState)
         }
     }
     
