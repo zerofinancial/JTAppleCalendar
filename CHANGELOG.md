@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 7.x Releases
-- `7.0.0` Releases - [7.0.0](#700)|[7.0.1](#701)|[7.0.2](#702)
+- `7.0.0` Releases - [7.0.0](#700)|[7.0.1](#701)|[7.0.2](#702)|[7.0.3](#703)
 
 #### 6.x Releases
 - `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)|[6.1.3](#613)|[6.1.4](#614)|[6.1.5](#615)|[6.1.6](#616)
@@ -29,6 +29,12 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [7.0.3](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.0.3)
+- [Changed order in which delegates are called](https://github.com/patchthecode/JTAppleCalendar/issues/431)
+- [Fixed recursive loop error](https://github.com/patchthecode/JTAppleCalendar/commit/e95ec9806ef932a619329b3f40062ad125b4a17e)
+- [Potential crash fix. Incorrectly used statdard function instead of custom](https://github.com/patchthecode/JTAppleCalendar/commit/3cbfab2382ccb7168a5c22e0081504f43d0d76e6)
+- [ShouldSelect should be called on programatic selection](https://github.com/patchthecode/JTAppleCalendar/commit/4f528d17842848bf3cca4b80ce2fb89958caf614)
+
 ## [7.0.2](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.0.2)
 - [Fixed visible scrolling issue](https://github.com/patchthecode/JTAppleCalendar/issues/263)
 - Added check if dev forcefully calls layoutIfNeeded(). Layout should be re-created.
