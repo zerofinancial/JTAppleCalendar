@@ -43,7 +43,8 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// to the specified item in the collection view.
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let delegate = calendarDelegate else {
-            developerError(string: "Cell was not of type JTAppleCell")
+            print("Your delegate does not conform to JTAppleCalendarViewDelegate")
+            assert(false)
             return UICollectionViewCell()
         }
         restoreSelectionStateForCellAtIndexPath(indexPath)
