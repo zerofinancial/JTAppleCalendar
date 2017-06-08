@@ -387,26 +387,30 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         }
         return retval
     }
-    func cellAttributeFor(_ item: Int, section: Int) -> UICollectionViewLayoutAttributes? {
+    
+    func cachedValue(for item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
         if
             let alreadyCachedCellAttrib = cellCache[section],
             item < alreadyCachedCellAttrib.count,
             item >= 0 {
             
-            let cachedValue = alreadyCachedCellAttrib[item]
-            
-            let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
-            attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
-            if minimumInteritemSpacing > -1, minimumLineSpacing > -1 {
-                var frame = attrib.frame.insetBy(dx: minimumInteritemSpacing, dy: minimumLineSpacing)
-                if frame == .null {
-                    frame = attrib.frame.insetBy(dx: 0, dy: 0)
-                }
-                attrib.frame = frame
-            }
-            return attrib
+            return alreadyCachedCellAttrib[item]
         }
         return nil
+    }
+    func cellAttributeFor(_ item: Int, section: Int) -> UICollectionViewLayoutAttributes? {
+        guard let cachedValue = cachedValue(for: item, section: section) else { return nil }
+        let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
+        
+        attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
+        if minimumInteritemSpacing > -1, minimumLineSpacing > -1 {
+            var frame = attrib.frame.insetBy(dx: minimumInteritemSpacing, dy: minimumLineSpacing)
+            if frame == .null {
+                frame = attrib.frame.insetBy(dx: 0, dy: 0)
+            }
+            attrib.frame = frame
+        }
+        return attrib
     }
     
     func determineToApplyAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {

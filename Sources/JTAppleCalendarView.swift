@@ -787,6 +787,7 @@ extension JTAppleCalendarView {
         var invisiblePathsToRelad: [IndexPath] = []
         
         for path in indexPaths {
+            if calendarViewLayout.cachedValue(for: path.item, section: path.section) == nil { continue }
             if visiblePaths.contains(path) {
                 visiblePathsToReload.append(path)
             } else {
