@@ -87,6 +87,7 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     /// Initializes and returns a newly allocated collection view object with the specified frame and layout.
+    @available(*, unavailable, message: "Please use JTAppleCalendar() instead")
     public override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: UICollectionViewFlowLayout())
         setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
