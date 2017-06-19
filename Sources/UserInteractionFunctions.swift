@@ -159,7 +159,7 @@ extension JTAppleCalendarView {
     /// - Parameter animation: Scroll is animated if this is set to true
     /// - Parameter completionHandler: This closure will run after
     ///                                the reload is complete
-    public func reloadData(completionHandler: (() -> Void)? = nil) {
+    public func reloadData(withanchor date: Date? = nil, completionHandler: (() -> Void)? = nil) {
         if isScrollInProgress || isReloadDataInProgress {
             delayedExecutionClosure.append {[unowned self] in
                 self.reloadData(completionHandler: completionHandler)
@@ -168,6 +168,7 @@ extension JTAppleCalendarView {
         }
         
         isReloadDataInProgress = true
+        initialScrollDate = date
         
         let selectedDates = self.selectedDates
         let layoutNeedsUpdating = reloadDelegateDataSource()

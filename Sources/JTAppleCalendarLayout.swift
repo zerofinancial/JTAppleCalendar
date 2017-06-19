@@ -727,5 +727,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         contentHeight = 0
         contentWidth = 0
         stride = 0
+        firstContentOffsetWasSet = false
     }
 }
