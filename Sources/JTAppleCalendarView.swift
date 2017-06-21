@@ -116,8 +116,7 @@ open class JTAppleCalendarView: UICollectionView {
         if (collectionViewLayout as! JTAppleCalendarLayout).lastSetCollectionViewSize != frame {
             // ive seen that layout subview gets called. Calendar is setup, and then it gets called again
             // At this point, it already has generaed cells which needs to be invalidated.
-            calendarViewLayout.invalidateLayout()
-            layoutIfNeeded()
+            reloadData()
         }
         
         if !delayedExecutionClosure.isEmpty, isCalendarLayoutLoaded {
