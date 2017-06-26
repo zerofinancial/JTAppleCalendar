@@ -124,8 +124,8 @@ open class JTAppleCalendarView: UICollectionView {
         }
     }
     
-    func setupMonthInfoAndMap() {
-        theData = setupMonthInfoDataForStartAndEndDate()
+    func setupMonthInfoAndMap(with data: ConfigurationParameters? = nil) {
+        theData = setupMonthInfoDataForStartAndEndDate(with: data)
     }
     
     // Configuration parameters from the dataSource
@@ -402,8 +402,8 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     // Only reload the dates if the datasource information has changed
-    func reloadDelegateDataSource() -> Bool {
-        var retval = false
+    func reloadDelegateDataSource() -> (shouldReload: Bool, configParameters: ConfigurationParameters?) {
+        var retval: (Bool, ConfigurationParameters?) = (false, nil)
         if let
             newDateBoundary = calendarDataSource?.configureCalendar(self) {
             // Jt101 do a check in each var to see if
@@ -424,7 +424,7 @@ open class JTAppleCalendarView: UICollectionView {
                 lastMonthSize != newLastMonth ||
                 calendarViewLayout.updatedLayoutCellSize != calendarViewLayout.cellSize {
                     lastMonthSize = newLastMonth
-                    retval = true
+                    retval = (true, newDateBoundary)
             }
         }
         
@@ -617,12 +617,15 @@ extension JTAppleCalendarView {
         return retval
     }
     
-    func setupMonthInfoDataForStartAndEndDate() -> CalendarData {
+    func setupMonthInfoDataForStartAndEndDate(with config: ConfigurationParameters? = nil) -> CalendarData {
         var months = [Month]()
         var monthMap = [Int: Int]()
         var totalSections = 0
         var totalDays = 0
-        if let validConfig = calendarDataSource?.configureCalendar(self) {
+        
+        var validConfig = config
+        if validConfig == nil { validConfig = calendarDataSource?.configureCalendar(self) }
+        if let validConfig = validConfig {
             let comparison = validConfig.calendar.compare(validConfig.startDate, to: validConfig.endDate, toGranularity: .nanosecond)
             if comparison == ComparisonResult.orderedDescending {
                 assert(false, "Error, your start date cannot be greater than your end date\n")

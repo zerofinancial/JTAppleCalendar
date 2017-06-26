@@ -171,10 +171,10 @@ extension JTAppleCalendarView {
         initialScrollDate = date
         
         let selectedDates = self.selectedDates
-        let layoutNeedsUpdating = reloadDelegateDataSource()
-        if layoutNeedsUpdating {
+        let data = reloadDelegateDataSource()
+        if data.shouldReload {
             calendarViewLayout.invalidateLayout()
-            setupMonthInfoAndMap()
+            setupMonthInfoAndMap(with: data.configParameters)
             
             self.theSelectedIndexPaths = []
             self.theSelectedDates = []
@@ -192,7 +192,7 @@ extension JTAppleCalendarView {
             delayedExecutionClosure.append(validCompletionHandler)
         }
         
-        if !layoutNeedsUpdating { calendarViewLayout.shouldClearCacheOnInvalidate = false }
+        if !data.shouldReload { calendarViewLayout.shouldClearCacheOnInvalidate = false }
         super.reloadData()
         isReloadDataInProgress = false
         
