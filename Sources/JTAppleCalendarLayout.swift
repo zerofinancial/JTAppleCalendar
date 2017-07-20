@@ -41,7 +41,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var decorationCache: [IndexPath:UICollectionViewLayoutAttributes] = [:]
     var sectionSize: [CGFloat] = []
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
-    var isPreparing = true
     var stride: CGFloat = 0
     var minimumInteritemSpacing: CGFloat = 0
     var minimumLineSpacing: CGFloat = 0
@@ -49,12 +48,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var headerSizes: [AnyHashable:CGFloat] = [:]
     var focusIndexPath: IndexPath?
     var isCalendarLayoutLoaded: Bool { return !cellCache.isEmpty }
-    var layoutIsReadyToBePrepared: Bool {
-        return !(!cellCache.isEmpty  ||
-            collectionView!.frame.width == 0 ||
-            collectionView!.frame.height == 0 ||
-            delegate.calendarDataSource == nil)
-    }
+    var layoutIsReadyToBePrepared: Bool { return !(!cellCache.isEmpty  || delegate.calendarDataSource == nil) }
 
     var monthMap: [Int: Int] = [:]
     var numberOfRows: Int = 0
@@ -317,6 +311,12 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     /// The width and height of the collection view’s contents.
     open override var collectionViewContentSize: CGSize {
         return CGSize(width: contentWidth, height: contentHeight)
+    }
+    
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        return
+            lastSetCollectionViewSize.height != newBounds.height ||
+            lastSetCollectionViewSize.width != newBounds.width
     }
     
     /// Returns the layout attributes for all of the cells
