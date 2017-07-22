@@ -69,6 +69,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var daysInSection: [Int: Int] = [:] // temporary caching
     var monthInfo: [Month] = []
     
+    var cellSizeWasUpdated: Bool { return updatedLayoutCellSize != cellSize }
+    
     var updatedLayoutCellSize: CGSize {
         
         // Default Item height and width

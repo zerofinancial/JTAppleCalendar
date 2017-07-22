@@ -47,19 +47,10 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     /// The scroll direction of the sections in JTAppleCalendar.
-    open var scrollDirection: UICollectionViewScrollDirection! {
-        didSet {
-            if oldValue == scrollDirection { return }
-            calendarViewLayout.invalidateLayout()
-        }
-    }
+    open var scrollDirection: UICollectionViewScrollDirection!
     
     /// Enables/Disables the stretching of date cells. When enabled cells will stretch to fit the width of a month in case of a <= 5 row month.
-    open var allowsDateCellStretching = true {
-        didSet {
-            calendarViewLayout.invalidateLayout()
-        }
-    }
+    open var allowsDateCellStretching = true
     
     /// Alerts the calendar that range selection will be checked. If you are
     /// not using rangeSelection and you enable this,
@@ -175,17 +166,9 @@ open class JTAppleCalendarView: UICollectionView {
         return retval
     }
     
-    open var sectionInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0) {
-        didSet { calendarViewLayout.invalidateLayout() }
-        
-    }
-    open var minimumInteritemSpacing: CGFloat = 0 {
-        didSet { calendarViewLayout.invalidateLayout() }
-    }
-    
-    open var minimumLineSpacing: CGFloat = 0 {
-        didSet { calendarViewLayout.invalidateLayout() }
-    }
+    open var sectionInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
+    open var minimumInteritemSpacing: CGFloat = 0
+    open var minimumLineSpacing: CGFloat = 0
     
     lazy var theData: CalendarData = {
         return self.setupMonthInfoDataForStartAndEndDate()
@@ -421,17 +404,27 @@ open class JTAppleCalendarView: UICollectionView {
             let newEndOfMonth   = calendar.endOfMonth(for: newDateBoundary.endDate)
             let oldStartOfMonth = calendar.startOfMonth(for: startDateCache)
             let oldEndOfMonth   = calendar.endOfMonth(for: endDateCache)
-            let newLastMonth  = sizesForMonthSection()
-            if newStartOfMonth != oldStartOfMonth ||
-                newEndOfMonth != oldEndOfMonth ||
-                newDateBoundary.calendar != cachedConfiguration.calendar ||
-                newDateBoundary.numberOfRows != cachedConfiguration.numberOfRows ||
-                newDateBoundary.generateInDates != cachedConfiguration.generateInDates ||
-                newDateBoundary.generateOutDates != cachedConfiguration.generateOutDates ||
-                newDateBoundary.firstDayOfWeek != cachedConfiguration.firstDayOfWeek ||
+            let newLastMonth    = sizesForMonthSection()
+            let calendarLayout  = calendarViewLayout
+            
+            if
+                // ConfigParameters were changed
+                newStartOfMonth                     != oldStartOfMonth ||
+                newEndOfMonth                       != oldEndOfMonth ||
+                newDateBoundary.calendar            != cachedConfiguration.calendar ||
+                newDateBoundary.numberOfRows        != cachedConfiguration.numberOfRows ||
+                newDateBoundary.generateInDates     != cachedConfiguration.generateInDates ||
+                newDateBoundary.generateOutDates    != cachedConfiguration.generateOutDates ||
+                newDateBoundary.firstDayOfWeek      != cachedConfiguration.firstDayOfWeek ||
                 newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries ||
-                lastMonthSize != newLastMonth ||
-                calendarViewLayout.updatedLayoutCellSize != calendarViewLayout.cellSize {
+                // Other layout information were changed
+                minimumInteritemSpacing  != calendarLayout.minimumLineSpacing ||
+                minimumLineSpacing       != calendarLayout.minimumLineSpacing ||
+                sectionInset             != calendarLayout.sectionInset ||
+                lastMonthSize            != newLastMonth ||
+                allowsDateCellStretching != calendarLayout.allowsDateCellStretching ||
+                scrollDirection          != calendarLayout.scrollDirection ||
+                calendarLayout.cellSizeWasUpdated {
                     lastMonthSize = newLastMonth
                     retval = (true, newDateBoundary)
             }
