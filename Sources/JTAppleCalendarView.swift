@@ -47,10 +47,19 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     /// The scroll direction of the sections in JTAppleCalendar.
-    open var scrollDirection: UICollectionViewScrollDirection!
+    open var scrollDirection: UICollectionViewScrollDirection! {
+        didSet {
+            if oldValue == scrollDirection { return }
+            calendarViewLayout.invalidateLayout()
+        }
+    }
     
     /// Enables/Disables the stretching of date cells. When enabled cells will stretch to fit the width of a month in case of a <= 5 row month.
-    open var allowsDateCellStretching = true
+    open var allowsDateCellStretching = true {
+        didSet {
+            calendarViewLayout.invalidateLayout()
+        }
+    }
     
     /// Alerts the calendar that range selection will be checked. If you are
     /// not using rangeSelection and you enable this,
@@ -166,9 +175,17 @@ open class JTAppleCalendarView: UICollectionView {
         return retval
     }
     
-    open var sectionInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
-    open var minimumInteritemSpacing: CGFloat = 0
-    open var minimumLineSpacing: CGFloat = 0
+    open var sectionInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0) {
+        didSet { calendarViewLayout.invalidateLayout() }
+        
+    }
+    open var minimumInteritemSpacing: CGFloat = 0 {
+        didSet { calendarViewLayout.invalidateLayout() }
+    }
+    
+    open var minimumLineSpacing: CGFloat = 0 {
+        didSet { calendarViewLayout.invalidateLayout() }
+    }
     
     lazy var theData: CalendarData = {
         return self.setupMonthInfoDataForStartAndEndDate()
