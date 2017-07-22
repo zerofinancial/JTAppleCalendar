@@ -571,11 +571,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         }
     }
     
-    //    func sectionFromRectOffset(_ offset: CGPoint) -> Int {
-    //        let theOffet = scrollDirection == .horizontal ? offset.x : offset.y
-    //        return sectionFromOffset(theOffet)
-    //    }
-    
     func sectionFromOffset(_ theOffSet: CGFloat) -> Int {
         var val: Int = 0
         for (index, sectionSizeValue) in sectionSize.enumerated() {

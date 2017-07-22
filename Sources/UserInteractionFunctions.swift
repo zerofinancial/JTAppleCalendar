@@ -60,6 +60,20 @@ extension JTAppleCalendarView {
         return stateOfCell
     }
     
+    /// Returns the month status for a given date
+    /// - Parameter: date Date of the cell you want to find
+    /// - returns:
+    ///     - Month: The state of the found month
+    public func monthStatus(for date: Date) -> Month? {
+        guard
+            let calendar = cachedConfiguration?.calendar,
+            let startMonth = startOfMonthCache,
+            let monthIndex = calendar.dateComponents([.month], from: startMonth, to: date).month else {
+                return nil
+        }
+        return monthInfo[monthIndex]
+    }
+    
     /// Returns the cell status for a given point
     /// - Parameter: point of the cell you want to find
     /// - returns:

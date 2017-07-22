@@ -79,7 +79,6 @@ open class JTAppleCalendarView: UICollectionView {
     var delayedExecutionClosure: [(() -> Void)] = []
     let dateGenerator = JTAppleDateConfigGenerator()
     
-        
     /// Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated.
     public init() {
         super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -112,14 +111,6 @@ open class JTAppleCalendarView: UICollectionView {
     /// Lays out subviews.
     override open func layoutSubviews() {
         super.layoutSubviews()
-        
-//        if (collectionViewLayout as! JTAppleCalendarLayout).lastSetCollectionViewSize != frame {
-//            // ive seen that layout subview gets called. Calendar is setup, and then it gets called again
-//            // At this point, it already has generaed cells which needs to be invalidated.
-//            calendarViewLayout.invalidateLayout()
-//            layoutIfNeeded()
-//        }
-        
         if !delayedExecutionClosure.isEmpty, isCalendarLayoutLoaded {
             executeDelayedTasks()
         }
