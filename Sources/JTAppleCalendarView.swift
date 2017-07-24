@@ -493,7 +493,16 @@ extension JTAppleCalendarView {
         } else {
             guard let validIndexPath = indexPath else { return }
             
-            if calendarViewLayout.thereAreHeaders && scrollDirection == .vertical {
+            var isNonConinuousScroll = true
+            switch scrollingMode {
+            case .none, .nonStopToCell: isNonConinuousScroll = false
+            default: break
+            }
+            
+            if
+                calendarViewLayout.thereAreHeaders,
+                scrollDirection == .vertical,
+                isNonConinuousScroll {
                 scrollToHeaderInSection(validIndexPath.section,
                                         triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                         withAnimation: isAnimationEnabled,
