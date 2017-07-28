@@ -418,7 +418,7 @@ open class JTAppleCalendarView: UICollectionView {
                 newDateBoundary.firstDayOfWeek      != cachedConfiguration.firstDayOfWeek ||
                 newDateBoundary.hasStrictBoundaries != cachedConfiguration.hasStrictBoundaries ||
                 // Other layout information were changed
-                minimumInteritemSpacing  != calendarLayout.minimumLineSpacing ||
+                minimumInteritemSpacing  != calendarLayout.minimumInteritemSpacing ||
                 minimumLineSpacing       != calendarLayout.minimumLineSpacing ||
                 sectionInset             != calendarLayout.sectionInset ||
                 lastMonthSize            != newLastMonth ||
