@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
 
 #### 7.x Releases
-- `7.0.0` Releases - [7.0.0](#700)|[7.0.1](#701)|[7.0.2](#702)|[7.0.3](#703)|[7.0.4](#704)|[7.0.5](#705)
+- `7.0.0` Releases - [7.0.0](#700)|[7.0.1](#701)|[7.0.2](#702)|[7.0.3](#703)|[7.0.4](#704)|[7.0.5](#705)|[7.0.6](#706)
 
 #### 6.x Releases
 - `6.1.0` Releases - [6.1.0](#610)|[6.1.1](#611)|[6.1.2](#612)|[6.1.3](#613)|[6.1.4](#614)|[6.1.5](#615)|[6.1.6](#616)
@@ -29,6 +29,13 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [7.0.6](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.0.6)
+- [bug fix - accidentaly introduced in 7.0.5](https://github.com/patchthecode/JTAppleCalendar/commit/7f60c8c5b2265954ad0041ac4f150c6f4862cdb7)
+- Other code cleanup
+  - Updated by [JayT](https://github.com/patchthecode).
+  - Updated by [mayurdzk](https://github.com/mayurdzk).
+  - Updated by [mgurreta](https://github.com/mgurreta).
+
 ## [7.0.5](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.0.5)
 - [bug fix](https://github.com/patchthecode/JTAppleCalendar/commit/bcbb2bc5696cb2f15a6e87e1023c3a9cdf3dfdff)
 - [added anchor dates on reload](https://github.com/patchthecode/JTAppleCalendar/commit/b81158dfd7600e1d31143be4fbfba32af2187253)
