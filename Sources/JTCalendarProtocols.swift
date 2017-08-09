@@ -33,10 +33,10 @@ public extension JTAppleCalendarViewDelegate {
         assert(false, "You have implemted a header size function, but forgot to implement the `headerViewForDateRange` function")
         return JTAppleCollectionReusableView()
     }
+    func calendarDidScroll(_ calendar: JTAppleCalendarView) {}
     func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? { return nil }
     func sizeOfDecorationView(indexPath: IndexPath) -> CGRect { return .zero }
     func scrollDidEndDecelerating(for calendar: JTAppleCalendarView) {}
-    func calendarDidScroll(_ calendar: JTAppleCalendarView) {}
 }
 
 /// The JTAppleCalendarViewDataSource protocol is adopted by an
@@ -128,6 +128,9 @@ public protocol JTAppleCalendarViewDelegate: class {
     /// Tells the delegate that a scroll occured
     func calendarDidScroll(_ calendar: JTAppleCalendarView)
     
+    /// Called to retrieve the size to be used for the month headers
     func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize?
+    
+    /// Called to retrieve the size to be used for decoration views
     func sizeOfDecorationView(indexPath: IndexPath) -> CGRect
 }

@@ -720,7 +720,10 @@ extension JTAppleCalendarView {
         return returnPaths
     }
     
-    func cellStateFromIndexPath(_ indexPath: IndexPath, withDateInfo info: (date: Date, owner: DateOwner)? = nil, cell: JTAppleCell? = nil) -> CellState {
+    func cellStateFromIndexPath(_ indexPath: IndexPath,
+                                withDateInfo info: (date: Date, owner: DateOwner)? = nil,
+                                cell: JTAppleCell? = nil,
+                                selectionChangedProgramatically: Bool? = nil) -> CellState {
         let validDateInfo: (date: Date, owner: DateOwner)
         if let nonNilDateInfo = info {
             validDateInfo = nonNilDateInfo
@@ -734,11 +737,10 @@ extension JTAppleCalendarView {
                                  day: .sunday,
                                  row: { return 0 },
                                  column: { return 0 },
-                                 dateSection: {
-                                    return (range: (Date(), Date()), month: 0, rowCount: 0)
-                                 },
+                                 dateSection: { return (range: (Date(), Date()), month: 0, rowCount: 0) },
                                  selectedPosition: {return .left},
-                                 cell: {return nil})
+                                 cell: {return nil},
+                                 selectionChangedProgramatically: nil)
             }
             validDateInfo = newDateInfo
         }
@@ -785,9 +787,10 @@ extension JTAppleCalendarView {
             column: { return indexPath.item % maxNumberOfDaysInWeek },
             dateSection: {
                 return self.monthInfoFromSection(indexPath.section)!
-        },
+            },
             selectedPosition: rangePosition,
-            cell: { return cell }
+            cell: { return cell },
+            selectionChangedProgramatically: selectionChangedProgramatically
         )
         return cellState
     }
@@ -833,7 +836,7 @@ extension JTAppleCalendarView {
         // If triggereing is enabled, then let their delegate
         // handle the reloading of view, else we will reload the data
         if shouldTriggerSelecteionDelegate {
-            self.collectionView(self, didSelectItemAt: indexPath)
+            internalCollectionView(self, didSelectItemAt: indexPath, selectionChangedProgramatically: true)
         } else {
             // Although we do not want the delegate triggered,
             // we still want counterpart cells to be selected
@@ -865,7 +868,7 @@ extension JTAppleCalendarView {
             // If delegate triggering is enabled, let the
             // delegate function handle the cell
             if shouldTriggerSelecteionDelegate {
-                self.collectionView(self, didDeselectItemAt: oldIndexPath)
+                self.internalCollectionView(self, didDeselectItemAt: oldIndexPath, selectionChangedProgramatically: true)
             } else {
                 // Although we do not want the delegate triggered,
                 // we still want counterpart cells to be deselected

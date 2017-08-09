@@ -56,9 +56,12 @@ public struct CellState {
     public let dateSection: () -> (range: (start: Date, end: Date), month: Int, rowCount: Int)
     /// returns the position of a selection in the event you wish to do range selection
     public let selectedPosition: () -> SelectionRangePosition
-    /// returns the cell frame.
+    /// returns the cell.
     /// Useful if you wish to display something at the cell's frame/position
     public var cell: () -> JTAppleCell?
+    /// Shows if a cell's selection/deselection was done either programatically or by the user
+    /// This variable is guranteed to be non-nil inside of a didSelect/didDeselect function
+    public var selectionChangedProgramatically: Bool? = nil
 }
 
 /// Defines the parameters which configures the calendar.
