@@ -197,45 +197,45 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                 }
                 // Generate and cache the cells
                 for item in 0..<numberOfDaysInCurrentSection {
-                    if let attribute = determineToApplyAttribs(item, section: section) {
-                        if cellCache[section] == nil {
-                            cellCache[section] = []
+                    guard let attribute = determineToApplyAttribs(item, section: section)  else { continue }
+                    if cellCache[section] == nil {
+                        cellCache[section] = []
+                    }
+                    cellCache[section]!.append(attribute)
+                    lastWrittenCellAttribute = attribute
+                    xCellOffset += attribute.4
+                    
+                    if strictBoundaryRulesShouldApply {
+                        headerGuide += 1
+                        if numberOfDaysInCurrentSection - 1 == item || headerGuide % maxNumberOfDaysInWeek == 0 {
+                            // We are at the last item in the section
+                            // && if we have headers
+                            headerGuide = 0
+                            xCellOffset = sectionInset.left
+                            yCellOffset += attribute.5
                         }
-                        cellCache[section]!.append(attribute)
-                        lastWrittenCellAttribute = attribute
-                        xCellOffset += attribute.4
-                        
-                        if strictBoundaryRulesShouldApply {
-                            headerGuide += 1
-                            if numberOfDaysInCurrentSection - 1 == item || headerGuide % maxNumberOfDaysInWeek == 0 {
-                                // We are at the last item in the section
-                                // && if we have headers
-                                headerGuide = 0
+                    } else {
+                        totalDayCounter += 1
+                        extra += 1
+                        if totalDayCounter % fullSection == 0 { // If you have a full section
+                            xCellOffset = sectionInset.left
+                            yCellOffset = 0
+                            contentWidth += attribute.4 * 7
+                            stride = contentWidth
+                            sectionSize.append(contentWidth)
+                        } else {
+                            if totalDayCounter >= delegate.totalDays {
+                                contentWidth += attribute.4 * 7
+                                sectionSize.append(contentWidth)
+                            }
+                            
+                            if totalDayCounter % maxNumberOfDaysInWeek == 0 {
                                 xCellOffset = sectionInset.left
                                 yCellOffset += attribute.5
                             }
-                        } else {
-                            totalDayCounter += 1
-                            extra += 1
-                            if totalDayCounter % fullSection == 0 { // If you have a full section
-                                xCellOffset = sectionInset.left
-                                yCellOffset = 0
-                                contentWidth += attribute.4 * 7
-                                stride = contentWidth
-                                sectionSize.append(contentWidth)
-                            } else {
-                                if totalDayCounter >= delegate.totalDays {
-                                    contentWidth += attribute.4 * 7
-                                    sectionSize.append(contentWidth)
-                                }
-                                
-                                if totalDayCounter % maxNumberOfDaysInWeek == 0 {
-                                    xCellOffset = sectionInset.left
-                                    yCellOffset += attribute.5
-                                }
-                            }
                         }
                     }
+                    
                 }
                 // Save the content size for each section
                 contentWidth += endSeparator
@@ -270,32 +270,31 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                 }
                 // Generate and cache the cells
                 for item in 0..<numberOfDaysInCurrentSection {
-                    if let attribute = determineToApplyAttribs(item, section: section) {
-                        if cellCache[section] == nil {
-                            cellCache[section] = []
+                    guard let attribute = determineToApplyAttribs(item, section: section) else { continue }
+                    if cellCache[section] == nil {
+                        cellCache[section] = []
+                    }
+                    cellCache[section]!.append(attribute)
+                    lastWrittenCellAttribute = attribute
+                    xCellOffset += attribute.4
+                    if strictBoundaryRulesShouldApply {
+                        headerGuide += 1
+                        if headerGuide % maxNumberOfDaysInWeek == 0 || numberOfDaysInCurrentSection - 1 == item {
+                            // We are at the last item in the
+                            // section && if we have headers
+                            headerGuide = 0
+                            xCellOffset = sectionInset.left
+                            yCellOffset += attribute.5
+                            contentHeight += attribute.5
                         }
-                        cellCache[section]!.append(attribute)
-                        lastWrittenCellAttribute = attribute
-                        xCellOffset += attribute.4
-                        if strictBoundaryRulesShouldApply {
-                            headerGuide += 1
-                            if headerGuide % maxNumberOfDaysInWeek == 0 || numberOfDaysInCurrentSection - 1 == item {
-                                // We are at the last item in the
-                                // section && if we have headers
-                                headerGuide = 0
-                                xCellOffset = sectionInset.left
-                                yCellOffset += attribute.5
-                                contentHeight += attribute.5
-                            }
-                        } else {
-                            totalDayCounter += 1
-                            if totalDayCounter % maxNumberOfDaysInWeek == 0 {
-                                xCellOffset = sectionInset.left
-                                yCellOffset += attribute.5
-                                contentHeight += attribute.5
-                            } else if totalDayCounter == delegate.totalDays {
-                                contentHeight += attribute.5
-                            }
+                    } else {
+                        totalDayCounter += 1
+                        if totalDayCounter % maxNumberOfDaysInWeek == 0 {
+                            xCellOffset = sectionInset.left
+                            yCellOffset += attribute.5
+                            contentHeight += attribute.5
+                        } else if totalDayCounter == delegate.totalDays {
+                            contentHeight += attribute.5
                         }
                     }
                 }
