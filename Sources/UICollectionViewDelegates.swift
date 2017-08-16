@@ -95,16 +95,21 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// Asks the delegate if the specified item should be deselected.
     /// true if the item should be deselected or false if it should not.
     public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        return internalCollectionView(collectionView, shouldDeselectItemAt: indexPath, selectionChangedProgramatically: false)
+    }
+    
+    internal func internalCollectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath, selectionChangedProgramatically: Bool? = nil) -> Bool {
         if
             let delegate = calendarDelegate,
             let infoOfDateDeSelectedByUser = dateOwnerInfoFromPath(indexPath) {
-                let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-                let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDateDeSelectedByUser)
-                return delegate.calendar(self, shouldDeselectDate: infoOfDateDeSelectedByUser.date, cell: cell, cellState: cellState)
+            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
+            let cellState = cellStateFromIndexPath(indexPath,
+                                                   withDateInfo: infoOfDateDeSelectedByUser,
+                                                   selectionChangedProgramatically: selectionChangedProgramatically)
+            return delegate.calendar(self, shouldDeselectDate: infoOfDateDeSelectedByUser.date, cell: cell, cellState: cellState)
         }
         return false
     }
-    
     /// Tells the delegate that the item at the specified index
     /// path was selected. The collection view calls this method when the
     /// user successfully selects an item in the collection view.
