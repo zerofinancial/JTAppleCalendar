@@ -303,7 +303,7 @@ extension JTAppleCalendarView {
             if pathFromDates.isEmpty { continue }
             let sectionIndexPath = pathFromDates[0]
             
-            if !collectionView(self, shouldSelectItemAt: sectionIndexPath) { continue }
+            if !internalCollectionView(self, shouldSelectItemAt: sectionIndexPath, selectionChangedProgramatically: true) { continue }
             
             // Remove old selections
             if self.allowsMultipleSelection == false {

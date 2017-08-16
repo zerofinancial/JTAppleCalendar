@@ -72,15 +72,22 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         return count
     }
     
+    
     /// Asks the delegate if the specified item should be selected.
     /// true if the item should be selected or false if it should not.
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return internalCollectionView(collectionView, shouldSelectItemAt: indexPath, selectionChangedProgramatically: false)
+    }
+    
+    internal func internalCollectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath, selectionChangedProgramatically: Bool? = nil) -> Bool {
         if let
             delegate = calendarDelegate,
             let infoOfDateUserSelected = dateOwnerInfoFromPath(indexPath) {
-                let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-                let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDateUserSelected)
-                return delegate.calendar(self, shouldSelectDate: infoOfDateUserSelected.date, cell: cell, cellState: cellState)
+            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
+            let cellState = cellStateFromIndexPath(indexPath,
+                                                   withDateInfo: infoOfDateUserSelected,
+                                                   selectionChangedProgramatically: selectionChangedProgramatically)
+            return delegate.calendar(self, shouldSelectDate: infoOfDateUserSelected.date, cell: cell, cellState: cellState)
         }
         return false
     }
