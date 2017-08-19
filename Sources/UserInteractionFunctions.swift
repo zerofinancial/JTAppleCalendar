@@ -106,6 +106,15 @@ extension JTAppleCalendarView {
         }
     }
     
+    /// Notifies the container that the size of its view is about to change.
+    public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDateIndexPathAfterRotate: IndexPath? = nil) {
+        calendarViewLayout.focusIndexPath = focusDateIndexPathAfterRotate
+        coordinator.animate(alongsideTransition: { (context) -> Void in
+        },completion: { (context) -> Void in
+            self.calendarViewLayout.focusIndexPath = nil
+        })
+    }
+    
     /// Generates a range of dates from from a startDate to an
     /// endDate you provide
     /// Parameter startDate: Start date to generate dates from

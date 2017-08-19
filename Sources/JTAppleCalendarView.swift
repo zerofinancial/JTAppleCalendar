@@ -97,16 +97,6 @@ open class JTAppleCalendarView: UICollectionView {
         super.init(coder: aDecoder)
         setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
     }
-
-    /// Notifies the container that the size of its view is about to change.
-    public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDateIndexPathAfterRotate: IndexPath? = nil) {
-        calendarViewLayout.focusIndexPath = focusDateIndexPathAfterRotate
-        coordinator.animate(alongsideTransition: { (context) -> Void in
-            self.performBatchUpdates(nil, completion: nil)
-        },completion: { (context) -> Void in
-            self.calendarViewLayout.focusIndexPath = nil
-        })
-    }
     
     /// Lays out subviews.
     override open func layoutSubviews() {
