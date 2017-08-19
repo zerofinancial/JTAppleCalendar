@@ -290,7 +290,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func reloadCalendar(_ sender: UIButton) {
-        calendarView.reloadData()
+//        calendarView.reloadData()
+        let date = formatter.date(from: "2017 01 01")!
+        calendarView.selectDates([ date ])
     }
 
     @IBAction func next(_ sender: UIButton) {
