@@ -537,11 +537,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             let currentMonth = monthInfo[monthMap[section]!]
             let numberOfRowsForSection: Int
             if allowsDateCellStretching {
-                if strictBoundaryRulesShouldApply {
-                    numberOfRowsForSection = currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows)
-                } else {
-                    numberOfRowsForSection = numberOfRows
-                }
+                numberOfRowsForSection
+                    = strictBoundaryRulesShouldApply ? currentMonth.maxNumberOfRowsForFull(developerSetRows: numberOfRows) : numberOfRows
             } else {
                 numberOfRowsForSection = maxNumberOfRowsPerMonth
             }
