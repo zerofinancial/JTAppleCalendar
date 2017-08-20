@@ -118,14 +118,14 @@ open class JTAppleCalendarView: UICollectionView {
     var endOfMonthCache: Date!
     var theSelectedIndexPaths: [IndexPath] = []
     var theSelectedDates: [Date] = []
-    var focusDate: Date?
+    var anchorDate: Date?
     
     var firstContentOffset: CGPoint {
         var retval: CGPoint = .zero
-        guard let date  = focusDate else { return retval }
+        guard let date  = anchorDate else { return retval }
         
         // reset the initial scroll date once used.
-        focusDate = nil
+        anchorDate = nil
         
         // Ensure date is within valid boundary
         let components = calendar.dateComponents([.year, .month, .day], from: date)

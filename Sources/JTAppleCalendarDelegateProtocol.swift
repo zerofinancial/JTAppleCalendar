@@ -28,7 +28,7 @@ protocol JTAppleCalendarDelegateProtocol: class {
     var cachedConfiguration: ConfigurationParameters! {get set}
     var calendarDataSource: JTAppleCalendarViewDataSource? {get set}
     var cellSize: CGFloat {get set}
-    var focusDate: Date? {get set}
+    var anchorDate: Date? {get set}
     var isCalendarLayoutLoaded: Bool {get}
     var minimumInteritemSpacing: CGFloat  {get set}
     var minimumLineSpacing: CGFloat {get set}

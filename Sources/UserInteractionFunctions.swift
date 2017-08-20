@@ -187,7 +187,7 @@ extension JTAppleCalendarView {
         }
         
         isReloadDataInProgress = true
-        focusDate = date
+        anchorDate = date
         
         let selectedDates = self.selectedDates
         let data = reloadDelegateDataSource()
@@ -308,7 +308,7 @@ extension JTAppleCalendarView {
             if pathFromDates.isEmpty { continue }
             let sectionIndexPath = pathFromDates[0]
             
-            if !internalCollectionView(self, shouldSelectItemAt: sectionIndexPath, selectionChangedProgramatically: true) { continue }
+            if !internalCollectionView(self, shouldSelectItemAt: sectionIndexPath, selectionType: .programatic) { continue }
             
             // Remove old selections
             if self.allowsMultipleSelection == false {
@@ -458,7 +458,7 @@ extension JTAppleCalendarView {
         
         // Ensure scrolling to date is safe to run
         if functionIsUnsafeSafeToRun {
-            if !animateScroll  { focusDate = date}
+            if !animateScroll  { anchorDate = date}
             delayedExecutionClosure.append {[unowned self] in
                 self.scrollToDate(date,
                                   triggerScrollToDateDelegate: triggerScrollToDateDelegate,
@@ -526,7 +526,7 @@ extension JTAppleCalendarView {
                                       extraAddedOffset: CGFloat = 0,
                                       completionHandler: (() -> Void)? = nil) {
         if functionIsUnsafeSafeToRun {
-            if !animation  { focusDate = date}
+            if !animation  { anchorDate = date}
             delayedExecutionClosure.append {[unowned self] in
                 self.scrollToHeaderForDate(date,
                                            triggerScrollToDateDelegate: triggerScrollToDateDelegate,
