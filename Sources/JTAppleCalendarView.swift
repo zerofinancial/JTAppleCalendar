@@ -831,14 +831,16 @@ extension JTAppleCalendarView {
     
     func selectDate(indexPath: IndexPath, date: Date, shouldTriggerSelectionDelegate: Bool) -> Set<IndexPath> {
         var allIndexPathsToReload: Set<IndexPath> = []
-        selectItem(at: indexPath, animated: false, scrollPosition: [])
-        allIndexPathsToReload.insert(indexPath)
+        
+        
         // If triggereing is enabled, then let their delegate
         // handle the reloading of view, else we will reload the data
         if shouldTriggerSelectionDelegate {
             selectItem(at: indexPath, animated: false, scrollPosition: [])
             internalCollectionView(self, didSelectItemAt: indexPath, selectionType: .programatic)
         } else {
+            allIndexPathsToReload.insert(indexPath)
+            
             // Although we do not want the delegate triggered,
             // we still want counterpart cells to be selected
             addCellToSelectedSetIfUnselected(indexPath, date: date)
@@ -864,8 +866,9 @@ extension JTAppleCalendarView {
         if let index = self.theSelectedIndexPaths.index(of: oldIndexPath) {
             let oldDate = self.theSelectedDates[index]
             self.deselectItem(at: oldIndexPath, animated: false)
-            self.theSelectedIndexPaths.remove(at: index)
-            self.theSelectedDates.remove(at: index)
+            
+            deleteCellFromSelectedSetIfSelected(oldIndexPath)
+
             // If delegate triggering is enabled, let the
             // delegate function handle the cell
             if shouldTriggerSelecteionDelegate {

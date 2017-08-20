@@ -201,8 +201,10 @@ extension JTAppleCalendarView {
         
         // Restore the selected index paths
         let restoreAfterReload = {
-            if !selectedDates.isEmpty { // If layoutNeedsUpdating was false, layoutData would remain and re-selection wouldnt be needed
-                self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
+            DispatchQueue.main.async {
+                if !selectedDates.isEmpty { // If layoutNeedsUpdating was false, layoutData would remain and re-selection wouldnt be needed
+                    self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
+                }
             }
         }
         
