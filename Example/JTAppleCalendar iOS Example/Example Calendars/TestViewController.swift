@@ -168,7 +168,7 @@ extension TestViewController: JTAppleCalendarViewDataSource, JTAppleCalendarView
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        calendarView.viewWillTransition(to: size, with: coordinator, focusDatePathAfterRotate: iii)
+        calendarView.viewWillTransition(to: size, with: coordinator, focusDateAfterRotate: iii)
     }
     
     
