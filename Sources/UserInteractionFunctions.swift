@@ -107,8 +107,8 @@ extension JTAppleCalendarView {
     }
     
     /// Notifies the container that the size of its view is about to change.
-    public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDateAfterRotate: Date?) {
-        focusDate = focusDateAfterRotate
+    public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, anchorDate: Date?) {
+        self.anchorDate = anchorDate
     }
     
     /// Generates a range of dates from from a startDate to an
