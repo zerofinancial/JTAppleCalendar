@@ -716,7 +716,7 @@ extension JTAppleCalendarView {
     func cellStateFromIndexPath(_ indexPath: IndexPath,
                                 withDateInfo info: (date: Date, owner: DateOwner)? = nil,
                                 cell: JTAppleCell? = nil,
-                                selectionChangedProgramatically: Bool? = nil) -> CellState {
+                                selectionType: SelectionType? = nil) -> CellState {
         let validDateInfo: (date: Date, owner: DateOwner)
         if let nonNilDateInfo = info {
             validDateInfo = nonNilDateInfo
@@ -733,7 +733,7 @@ extension JTAppleCalendarView {
                                  dateSection: { return (range: (Date(), Date()), month: 0, rowCount: 0) },
                                  selectedPosition: {return .left},
                                  cell: {return nil},
-                                 selectionChangedProgramatically: nil)
+                                 selectionType: nil)
             }
             validDateInfo = newDateInfo
         }
@@ -783,7 +783,7 @@ extension JTAppleCalendarView {
             },
             selectedPosition: rangePosition,
             cell: { return cell },
-            selectionChangedProgramatically: selectionChangedProgramatically
+            selectionType: selectionType
         )
         return cellState
     }
@@ -794,6 +794,7 @@ extension JTAppleCalendarView {
         
         var visiblePathsToReload: [IndexPath] = []
         var invisiblePathsToRelad: [IndexPath] = []
+        
         
         for path in indexPaths {
             if calendarViewLayout.cachedValue(for: path.item, section: path.section) == nil { continue }
@@ -809,6 +810,12 @@ extension JTAppleCalendarView {
         if !invisiblePathsToRelad.isEmpty {
             calendarViewLayout.shouldClearCacheOnInvalidate = false
             reloadItems(at: invisiblePathsToRelad)
+            
+            for path in invisiblePathsToRelad {
+                // Restore the selection
+                if theSelectedIndexPaths.contains(path) { selectItem(at: path, animated: false, scrollPosition: []) }
+            }
+            print("Done")
         }
         
         // Reload the visible paths
@@ -829,7 +836,8 @@ extension JTAppleCalendarView {
         // If triggereing is enabled, then let their delegate
         // handle the reloading of view, else we will reload the data
         if shouldTriggerSelectionDelegate {
-            internalCollectionView(self, didSelectItemAt: indexPath, selectionChangedProgramatically: true)
+            selectItem(at: indexPath, animated: false, scrollPosition: [])
+            internalCollectionView(self, didSelectItemAt: indexPath, selectionType: .programatic)
         } else {
             // Although we do not want the delegate triggered,
             // we still want counterpart cells to be selected
@@ -861,7 +869,7 @@ extension JTAppleCalendarView {
             // If delegate triggering is enabled, let the
             // delegate function handle the cell
             if shouldTriggerSelecteionDelegate {
-                self.internalCollectionView(self, didDeselectItemAt: oldIndexPath, selectionChangedProgramatically: true)
+                self.internalCollectionView(self, didDeselectItemAt: oldIndexPath, selectionType: .programatic)
             } else {
                 // Although we do not want the delegate triggered,
                 // we still want counterpart cells to be deselected

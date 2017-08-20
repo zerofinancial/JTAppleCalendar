@@ -61,7 +61,7 @@ public struct CellState {
     public var cell: () -> JTAppleCell?
     /// Shows if a cell's selection/deselection was done either programatically or by the user
     /// This variable is guranteed to be non-nil inside of a didSelect/didDeselect function
-    public var selectionChangedProgramatically: Bool? = nil
+    public var selectionType: SelectionType? = nil
 }
 
 /// Defines the parameters which configures the calendar.

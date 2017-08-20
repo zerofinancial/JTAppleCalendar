@@ -103,6 +103,12 @@ public enum SelectionRangePosition: Int {
     case left = 1, middle, right, full, none
 }
 
+/// Signifies whether or not a selection was done programatically or by the user
+public enum SelectionType: String {
+    /// Selection type
+    case programatic, userInitiated
+}
+
 /// Days of the week. By setting you calandar's first day of week,
 /// you can change which day is the first for the week. Sunday is by default.
 public enum DaysOfWeek: Int {
