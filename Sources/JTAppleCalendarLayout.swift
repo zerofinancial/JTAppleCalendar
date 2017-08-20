@@ -129,7 +129,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         // Set the first content offset only once. This will prevent scrolling animation on viewDidload.
         if !firstContentOffsetWasSet {
             firstContentOffsetWasSet = true
-            let firstContentOffset = delegate.firstContentOffset()
+            let firstContentOffset = delegate.firstContentOffset
             collectionView!.setContentOffset(firstContentOffset, animated: false)
         }
         daysInSection.removeAll() // Clear chache
@@ -658,47 +658,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             return attributes.filter { $0.representedElementKind != UICollectionElementKindSectionHeader }
         }
         return attributes
-    }
-    
-    /// Returns the content offset to use after an animation
-    /// layout update or change.
-    /// - Parameter proposedContentOffset: The proposed point for the
-    ///   upper-left corner of the visible content
-    /// - returns: The content offset that you want to use instead
-    open override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-        var retval = proposedContentOffset
-        
-        if let focusIndexPath = focusIndexPath {
-            if thereAreHeaders {
-                let headerIndexPath = IndexPath(item: 0, section: focusIndexPath.section)
-                if let headerAttr = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: headerIndexPath) {
-                    retval = scrollDirection == .horizontal ? CGPoint(x: headerAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: headerAttr.frame.origin.y)
-                }
-            } else {
-                if let cellAttr = layoutAttributesForItem(at: focusIndexPath) {
-                    retval = scrollDirection == .horizontal ? CGPoint(x: cellAttr.frame.origin.x, y: 0) : CGPoint(x: 0, y: cellAttr.frame.origin.y)
-                }
-            }
-            
-            // Floating point issues. number could appear the same, but are not.
-            // thereby causing UIScollView to think it has scrolled
-            let retvalOffset: CGFloat
-            let calendarOffset: CGFloat
-            
-            switch scrollDirection {
-            case .horizontal:
-                retvalOffset = retval.x
-                calendarOffset = collectionView!.contentOffset.x
-            case .vertical:
-                retvalOffset = retval.y
-                calendarOffset = collectionView!.contentOffset.y
-            }
-            
-            if  abs(retvalOffset - calendarOffset) < errorDelta {
-                retval = collectionView!.contentOffset
-            }
-        }
-        return retval
     }
     open override func invalidateLayout() {
         super.invalidateLayout()

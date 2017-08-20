@@ -118,11 +118,14 @@ open class JTAppleCalendarView: UICollectionView {
     var endOfMonthCache: Date!
     var theSelectedIndexPaths: [IndexPath] = []
     var theSelectedDates: [Date] = []
-    var initialScrollDate: Date?
+    var focusDate: Date?
     
-    func firstContentOffset() -> CGPoint {
+    var firstContentOffset: CGPoint {
         var retval: CGPoint = .zero
-        guard let date  = initialScrollDate else { return retval }
+        guard let date  = focusDate else { return retval }
+        
+        // reset the initial scroll date once used.
+        focusDate = nil
         
         // Ensure date is within valid boundary
         let components = calendar.dateComponents([.year, .month, .day], from: date)
@@ -819,13 +822,13 @@ extension JTAppleCalendarView {
         }
     }
     
-    func selectDate(indexPath: IndexPath, date: Date, shouldTriggerSelecteionDelegate: Bool) -> Set<IndexPath> {
+    func selectDate(indexPath: IndexPath, date: Date, shouldTriggerSelectionDelegate: Bool) -> Set<IndexPath> {
         var allIndexPathsToReload: Set<IndexPath> = []
         selectItem(at: indexPath, animated: false, scrollPosition: [])
         allIndexPathsToReload.insert(indexPath)
         // If triggereing is enabled, then let their delegate
         // handle the reloading of view, else we will reload the data
-        if shouldTriggerSelecteionDelegate {
+        if shouldTriggerSelectionDelegate {
             internalCollectionView(self, didSelectItemAt: indexPath, selectionChangedProgramatically: true)
         } else {
             // Although we do not want the delegate triggered,

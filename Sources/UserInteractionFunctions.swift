@@ -107,12 +107,8 @@ extension JTAppleCalendarView {
     }
     
     /// Notifies the container that the size of its view is about to change.
-    public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDateIndexPathAfterRotate: IndexPath? = nil) {
-        calendarViewLayout.focusIndexPath = focusDateIndexPathAfterRotate
-        coordinator.animate(alongsideTransition: { (context) -> Void in
-        },completion: { (context) -> Void in
-            self.calendarViewLayout.focusIndexPath = nil
-        })
+    public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, focusDatePathAfterRotate: Date?) {
+        focusDate = focusDatePathAfterRotate
     }
     
     /// Generates a range of dates from from a startDate to an
@@ -191,7 +187,7 @@ extension JTAppleCalendarView {
         }
         
         isReloadDataInProgress = true
-        initialScrollDate = date
+        focusDate = date
         
         let selectedDates = self.selectedDates
         let data = reloadDelegateDataSource()
@@ -326,7 +322,7 @@ extension JTAppleCalendarView {
                     }
                 }
                 // Add new selections Must be added here. If added in delegate didSelectItemAtIndexPath
-                let pathsToReload = selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
+                let pathsToReload = selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
                 allIndexPathsToReload.formUnion(pathsToReload)
             } else {
                 // If multiple selection is on. Multiple selection behaves differently to singleselection.
@@ -343,7 +339,7 @@ extension JTAppleCalendarView {
                     } else {
                         // Add new selections
                         // Must be added here. If added in delegate didSelectItemAtIndexPath
-                        let pathsToReload = self.selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
+                        let pathsToReload = self.selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
                         allIndexPathsToReload.formUnion(pathsToReload)
                     }
                 }
@@ -462,7 +458,7 @@ extension JTAppleCalendarView {
         
         // Ensure scrolling to date is safe to run
         if functionIsUnsafeSafeToRun {
-            if !animateScroll  { initialScrollDate = date}
+            if !animateScroll  { focusDate = date}
             delayedExecutionClosure.append {[unowned self] in
                 self.scrollToDate(date,
                                   triggerScrollToDateDelegate: triggerScrollToDateDelegate,
@@ -530,7 +526,7 @@ extension JTAppleCalendarView {
                                       extraAddedOffset: CGFloat = 0,
                                       completionHandler: (() -> Void)? = nil) {
         if functionIsUnsafeSafeToRun {
-            if !animation  { initialScrollDate = date}
+            if !animation  { focusDate = date}
             delayedExecutionClosure.append {[unowned self] in
                 self.scrollToHeaderForDate(date,
                                            triggerScrollToDateDelegate: triggerScrollToDateDelegate,
