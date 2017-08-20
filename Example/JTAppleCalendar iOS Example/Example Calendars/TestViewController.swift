@@ -51,20 +51,43 @@ class TestViewController: UIViewController {
     
     @IBAction func zeroHeightView(_ sender: UIButton) {
         viewHeightConstraint.constant = 0
-        runThis()
+        calendarView.reloadData()
 
     }
     @IBAction func twoHeightView(_ sender: UIButton) {
         viewHeightConstraint.constant = 50
-        runThis()
+        calendarView.reloadData()
     }
     @IBAction func twoHundredHeightView(_ sender: UIButton) {
         viewHeightConstraint.constant = 200
-        runThis()
+        calendarView.reloadData()
     }
     
-    func runThis() {
+    @IBAction func selectOneDate(_ sender: UIButton) {
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2017 01 03")!
+        calendarView.selectDates([date])
+        calendarView.debugThis()
+    }
+    @IBAction func selectOtherDate(_ sender: UIButton) {
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2017 01 07")!
+        calendarView.selectDates([date])
+        calendarView.debugThis()
+    }
+    
+    @IBAction func selectOneMonth(_ sender: UIButton) {
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2017 02 12")!
+        calendarView.selectDates([date])
+        calendarView.debugThis()
+    }
+    @IBAction func reload(_ sender: UIButton) {
         calendarView.reloadData()
+    }
+    
+    @IBAction func debugthis(_ sender: UIButton) {
+        calendarView.debugThis()
     }
     
     func setupViewsOfCalendar(from visibleDates: DateSegmentInfo) {
@@ -78,28 +101,35 @@ class TestViewController: UIViewController {
         monthLabel.text = monthName + " " + String(year)
     }
     
-    func handleCellTextColor(view: JTAppleCell?, cellState: CellState) {
-        guard let myCustomCell = view as? CellView  else {
-            return
-        }
-        
+    func configureCell(view: JTAppleCell?, cellState: CellState) {
+        guard let myCustomCell = view as? CellView  else { return }
+        handleCellTextColor(view: myCustomCell, cellState: cellState)
+        handleCellSelection(view: myCustomCell, cellState: cellState)
+    }
+    
+    func handleCellSelection(view: CellView, cellState: CellState) {
         if cellState.isSelected {
-            myCustomCell.dayLabel.textColor = UIColor.white
+            view.backgroundColor = UIColor.red
         } else {
-            if cellState.dateBelongsTo == .thisMonth {
-                myCustomCell.dayLabel.textColor = UIColor.black
-            } else {
-                myCustomCell.dayLabel.textColor = UIColor.gray
-            }
+            view.backgroundColor = UIColor.white
         }
     }
+    func handleCellTextColor(view: CellView, cellState: CellState) {
+        if cellState.dateBelongsTo == .thisMonth {
+            view.dayLabel.textColor = UIColor.black
+        } else {
+            view.dayLabel.textColor = UIColor.gray
+        }
+    }
+    
+    var iii: Date?
 }
 
 
 extension TestViewController: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelegate {
     func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "cell", for: indexPath) as! CellView
-        handleCellTextColor(view: cell, cellState: cellState)
+        configureCell(view: cell, cellState: cellState)
         if cellState.text == "1" {
             formatter.dateFormat = "MMM"
             let month = formatter.string(from: date)
@@ -117,19 +147,28 @@ extension TestViewController: JTAppleCalendarViewDataSource, JTAppleCalendarView
         
         
         let startDate = formatter.date(from: "2017 01 01")!
-        let endDate = formatter.date(from: "2018 02 01")!
+        let endDate = formatter.date(from: "2030 02 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,endDate: endDate)
         return parameters
     }
     
+    
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
         setupViewsOfCalendar(from: visibleDates)
+        iii = visibleDates.monthDates.first?.date
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+        configureCell(view: cell, cellState: cellState)
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+        configureCell(view: cell, cellState: cellState)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        let indexPath = calendarView.visibleDates().indates.first?.indexPath
-        calendarView.viewWillTransition(to: size, with: coordinator, focusDateIndexPathAfterRotate: indexPath)
+        calendarView.viewWillTransition(to: size, with: coordinator, focusDatePathAfterRotate: iii)
     }
     
     

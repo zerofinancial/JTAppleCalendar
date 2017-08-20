@@ -835,6 +835,7 @@
                                                         </label>
                                                     </subviews>
                                                 </view>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstItem="7qW-Ip-gdz" firstAttribute="centerY" secondItem="NXg-7B-L4u" secondAttribute="centerY" id="mYT-gv-eLK"/>
                                                     <constraint firstItem="7qW-Ip-gdz" firstAttribute="centerX" secondItem="NXg-7B-L4u" secondAttribute="centerX" id="uJn-xg-gEQ"/>
@@ -976,31 +977,80 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="he5-OD-oBh">
-                                <rect key="frame" x="16" y="392" width="154" height="30"/>
-                                <state key="normal" title="Resizing inside TabBar"/>
-                                <connections>
-                                    <segue destination="9Vk-ez-fic" kind="show" id="d4V-XS-ToU"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="ULx-90-n0y">
+                                <rect key="frame" x="16" y="392" width="343" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="he5-OD-oBh">
+                                        <rect key="frame" x="0.0" y="0.0" width="114.5" height="30"/>
+                                        <state key="normal" title="Resizing inside TabBar"/>
+                                        <connections>
+                                            <segue destination="9Vk-ez-fic" kind="show" id="d4V-XS-ToU"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HK3-rn-nG9">
+                                        <rect key="frame" x="114.5" y="0.0" width="114" height="30"/>
+                                        <state key="normal" title="reload"/>
+                                        <connections>
+                                            <action selector="reload:" destination="AVg-Nb-61y" eventType="touchUpInside" id="Kek-GF-ofn"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F5Z-I4-eWm">
+                                        <rect key="frame" x="228.5" y="0.0" width="114.5" height="30"/>
+                                        <state key="normal" title="DebugThis"/>
+                                        <connections>
+                                            <action selector="debugthis:" destination="AVg-Nb-61y" eventType="touchUpInside" id="Fa5-Da-AMY"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="HBe-aT-7IQ">
+                                <rect key="frame" x="16" y="422" width="359" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hAY-Ma-dSs">
+                                        <rect key="frame" x="0.0" y="0.0" width="119.5" height="30"/>
+                                        <state key="normal" title="select1Date"/>
+                                        <connections>
+                                            <action selector="selectOneDate:" destination="AVg-Nb-61y" eventType="touchUpInside" id="MSw-ce-TAS"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a3c-kq-fCK">
+                                        <rect key="frame" x="119.5" y="0.0" width="120" height="30"/>
+                                        <state key="normal" title="SelectODate"/>
+                                        <connections>
+                                            <action selector="selectOtherDate:" destination="AVg-Nb-61y" eventType="touchUpInside" id="tJW-Lw-m1V"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dHk-d9-jd7">
+                                        <rect key="frame" x="239.5" y="0.0" width="119.5" height="30"/>
+                                        <state key="normal" title="Select1Month"/>
+                                        <connections>
+                                            <action selector="selectOneMonth:" destination="AVg-Nb-61y" eventType="touchUpInside" id="ru2-Ty-6al"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="TU3-e8-jQU" firstAttribute="top" secondItem="kyX-nO-Lf1" secondAttribute="bottom" id="2r7-2w-dQL"/>
                             <constraint firstItem="bqS-br-Qs5" firstAttribute="leading" secondItem="XpA-6B-Jfk" secondAttribute="leading" id="3jd-oT-Frz"/>
-                            <constraint firstItem="he5-OD-oBh" firstAttribute="leading" secondItem="XpA-6B-Jfk" secondAttribute="leadingMargin" id="DCf-l8-Zwr"/>
+                            <constraint firstItem="HBe-aT-7IQ" firstAttribute="top" secondItem="ULx-90-n0y" secondAttribute="bottom" id="7t8-Z1-YDE"/>
                             <constraint firstItem="bqS-br-Qs5" firstAttribute="top" secondItem="TU3-e8-jQU" secondAttribute="bottom" id="EXo-hd-nWg"/>
+                            <constraint firstAttribute="trailing" secondItem="HBe-aT-7IQ" secondAttribute="trailing" id="I5d-ku-WFN"/>
                             <constraint firstAttribute="trailingMargin" secondItem="TU3-e8-jQU" secondAttribute="trailing" id="K3s-3T-4Xp"/>
                             <constraint firstItem="d9e-9A-w1w" firstAttribute="top" secondItem="2Fr-cm-o6h" secondAttribute="bottom" id="QIx-0I-RIo"/>
-                            <constraint firstItem="he5-OD-oBh" firstAttribute="top" secondItem="bqS-br-Qs5" secondAttribute="bottom" id="QhM-r5-Q0O"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ULx-90-n0y" secondAttribute="trailing" id="R6w-GA-XOt"/>
                             <constraint firstAttribute="trailing" secondItem="Ctc-L8-eMh" secondAttribute="trailing" id="R9U-ft-hu6"/>
                             <constraint firstItem="TU3-e8-jQU" firstAttribute="leading" secondItem="XpA-6B-Jfk" secondAttribute="leadingMargin" id="Rgk-Wc-CsP"/>
                             <constraint firstItem="kyX-nO-Lf1" firstAttribute="top" secondItem="Ctc-L8-eMh" secondAttribute="bottom" id="SDu-h6-SUF"/>
+                            <constraint firstItem="HBe-aT-7IQ" firstAttribute="leading" secondItem="XpA-6B-Jfk" secondAttribute="leadingMargin" id="V31-tL-Fnj"/>
                             <constraint firstItem="d9e-9A-w1w" firstAttribute="centerX" secondItem="XpA-6B-Jfk" secondAttribute="centerX" id="ZEY-cJ-hiS"/>
                             <constraint firstItem="Ctc-L8-eMh" firstAttribute="leading" secondItem="XpA-6B-Jfk" secondAttribute="leading" id="cNt-Qa-XDf"/>
                             <constraint firstItem="Ctc-L8-eMh" firstAttribute="top" secondItem="d9e-9A-w1w" secondAttribute="bottom" id="iJt-Iz-w7S"/>
                             <constraint firstAttribute="trailing" secondItem="kyX-nO-Lf1" secondAttribute="trailing" id="q1h-Hf-VVp"/>
+                            <constraint firstItem="ULx-90-n0y" firstAttribute="leading" secondItem="XpA-6B-Jfk" secondAttribute="leadingMargin" id="t7b-8h-WRI"/>
                             <constraint firstItem="kyX-nO-Lf1" firstAttribute="leading" secondItem="XpA-6B-Jfk" secondAttribute="leading" id="vXs-df-zYw"/>
+                            <constraint firstItem="ULx-90-n0y" firstAttribute="top" secondItem="bqS-br-Qs5" secondAttribute="bottom" id="wfr-pu-TrS"/>
                             <constraint firstAttribute="trailing" secondItem="bqS-br-Qs5" secondAttribute="trailing" id="xT0-Ul-JMb"/>
                         </constraints>
                     </view>
@@ -1157,6 +1207,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="d4V-XS-ToU"/>
         <segue reference="Koe-cZ-02p"/>
     </inferredMetricsTieBreakers>
 </document>
