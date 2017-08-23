@@ -66,6 +66,18 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var yCellOffset: CGFloat = 0
     var endSeparator: CGFloat = 0
     
+    var delayedExecutionClosure: [(() -> Void)] = []
+    func executeDelayedTasks() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            let tasksToExecute = self.delayedExecutionClosure
+            self.delayedExecutionClosure.removeAll()
+            
+            for aTaskToExecute in tasksToExecute {
+                aTaskToExecute()
+            }
+        }
+    }
+    
     var daysInSection: [Int: Int] = [:] // temporary caching
     var monthInfo: [Month] = []
     
@@ -110,7 +122,10 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         // with layout subviews
         lastSetCollectionViewSize = collectionView!.frame
         
-        if !layoutIsReadyToBePrepared { return }
+        if !layoutIsReadyToBePrepared {
+            executeDelayedTasks()
+            return
+        }
         
         setupDataFromDelegate()
         
@@ -133,6 +148,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             collectionView!.setContentOffset(firstContentOffset, animated: false)
         }
         daysInSection.removeAll() // Clear chache
+        executeDelayedTasks()
     }
     
     func setupDataFromDelegate() {

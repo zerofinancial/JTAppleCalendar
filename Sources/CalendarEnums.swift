@@ -115,3 +115,7 @@ public enum DaysOfWeek: Int {
     /// Days of the week.
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 }
+
+internal enum DelayedTaskType {
+    case scroll, general
+}

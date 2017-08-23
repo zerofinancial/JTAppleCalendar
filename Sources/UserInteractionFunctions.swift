@@ -180,7 +180,7 @@ extension JTAppleCalendarView {
     ///                                the reload is complete
     public func reloadData(withanchor date: Date? = nil, completionHandler: (() -> Void)? = nil) {
         if isScrollInProgress || isReloadDataInProgress {
-            delayedExecutionClosure.append {[unowned self] in
+            generalDelayedExecutionClosure.append {[unowned self] in
                 self.reloadData(completionHandler: completionHandler)
             }
             return
@@ -199,26 +199,23 @@ extension JTAppleCalendarView {
             self.theSelectedDates = []
         }
         
-        // Restore the selected index paths
-        let restoreAfterReload = {
-            DispatchQueue.main.async {
-                if !selectedDates.isEmpty { // If layoutNeedsUpdating was false, layoutData would remain and re-selection wouldnt be needed
-                    self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
-                }
+        // Restore the selected index paths if dates were already selected.
+        if !selectedDates.isEmpty {
+            generalDelayedExecutionClosure.append {[unowned self] in
+                self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
             }
         }
         
-        if !selectedDates.isEmpty { delayedExecutionClosure.append(restoreAfterReload) }
-        if let validCompletionHandler = completionHandler  {
-            delayedExecutionClosure.append(validCompletionHandler)
+        if let validCompletionHandler = completionHandler  { calendarViewLayout.delayedExecutionClosure.append(validCompletionHandler) }
+        
+        // Add calendar reload completion 
+        calendarViewLayout.delayedExecutionClosure.append {[unowned self] in
+            self.isReloadDataInProgress = false
+            if !self.generalDelayedExecutionClosure.isEmpty { self.executeDelayedTasks(.general) }
         }
         
         if !data.shouldReload { calendarViewLayout.shouldClearCacheOnInvalidate = false }
         super.reloadData()
-        isReloadDataInProgress = false
-        
-        if !isCalendarLayoutLoaded { return } // Return if the reload is not yet complete and cells have not yet been re-generated
-        if !delayedExecutionClosure.isEmpty { executeDelayedTasks() }
     }
     
     /// Reload the date of specified date-cells on the calendar-view
@@ -282,7 +279,7 @@ extension JTAppleCalendarView {
         if (!isCalendarLayoutLoaded || isReloadDataInProgress) {
             // If the calendar is not yet fully loaded.
             // Add the task to the delayed queue
-            delayedExecutionClosure.append {[unowned self] in
+            generalDelayedExecutionClosure.append {[unowned self] in
                 self.selectDates(dates,
                                  triggerSelectionDelegate: triggerSelectionDelegate,
                                  keepSelectionIfMultiSelectionAllowed: keepSelectionIfMultiSelectionAllowed)
@@ -348,10 +345,13 @@ extension JTAppleCalendarView {
             }
         }
         // If triggering was false, although the selectDelegates weren't
-        // called, we do want the cell refreshed.
-        // Reload to call itemAtIndexPath
+        // called, we do want the cell refreshed. Reload to call itemAtIndexPath
         if !triggerSelectionDelegate && !allIndexPathsToReload.isEmpty {
-            self.batchReloadIndexPaths(Array(allIndexPathsToReload))
+            // Because sometimes if not on main thread, it will not get the
+            // visible cells in the following function
+            DispatchQueue.main.async {
+                self.batchReloadIndexPaths(Array(allIndexPathsToReload))
+            }
         }
     }
     
@@ -366,7 +366,7 @@ extension JTAppleCalendarView {
                                 extraAddedOffset: CGFloat = 0,
                                 completionHandler: (() -> Void)? = nil) {
         if functionIsUnsafeSafeToRun {
-            delayedExecutionClosure.append {[unowned self] in
+            generalDelayedExecutionClosure.append {[unowned self] in
                 self.scrollToSegment(destination,
                                      triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                      animateScroll: animateScroll,
@@ -461,7 +461,7 @@ extension JTAppleCalendarView {
         // Ensure scrolling to date is safe to run
         if functionIsUnsafeSafeToRun {
             if !animateScroll  { anchorDate = date}
-            delayedExecutionClosure.append {[unowned self] in
+            generalDelayedExecutionClosure.append {[unowned self] in
                 self.scrollToDate(date,
                                   triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                   animateScroll: animateScroll,
@@ -529,7 +529,7 @@ extension JTAppleCalendarView {
                                       completionHandler: (() -> Void)? = nil) {
         if functionIsUnsafeSafeToRun {
             if !animation  { anchorDate = date}
-            delayedExecutionClosure.append {[unowned self] in
+            generalDelayedExecutionClosure.append {[unowned self] in
                 self.scrollToHeaderForDate(date,
                                            triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                            withAnimation: animation,
@@ -569,7 +569,7 @@ extension JTAppleCalendarView {
     ///     - DateSegmentInfo
     public func visibleDates(_ completionHandler: @escaping (_ dateSegmentInfo: DateSegmentInfo) ->()) {
         if functionIsUnsafeSafeToRun {
-            delayedExecutionClosure.append {[unowned self] in
+            generalDelayedExecutionClosure.append {[unowned self] in
                 self.visibleDates(completionHandler)
             }
             return

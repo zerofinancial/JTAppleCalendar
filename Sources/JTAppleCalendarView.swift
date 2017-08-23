@@ -66,9 +66,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     /// The object that acts as the data source of the calendar view.
     weak open var calendarDataSource: JTAppleCalendarViewDataSource? {
-        didSet {
-            setupMonthInfoAndMap() // Refetch the data source for a data source change
-        }
+        didSet { setupMonthInfoAndMap() } // Refetch the data source for a data source change
     }
     
     var lastSavedContentOffset: CGFloat    = 0.0
@@ -76,7 +74,9 @@ open class JTAppleCalendarView: UICollectionView {
     var isScrollInProgress                 = false
     var isReloadDataInProgress             = false
     
-    var delayedExecutionClosure: [(() -> Void)] = []
+    var generalDelayedExecutionClosure: [(() -> Void)] = []
+    var scrollDelayedExecutionClosure: [(() -> Void)]  = []
+    
     let dateGenerator = JTAppleDateConfigGenerator()
     
     /// Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated.
@@ -101,8 +101,8 @@ open class JTAppleCalendarView: UICollectionView {
     /// Lays out subviews.
     override open func layoutSubviews() {
         super.layoutSubviews()
-        if !delayedExecutionClosure.isEmpty, isCalendarLayoutLoaded {
-            executeDelayedTasks()
+        if !generalDelayedExecutionClosure.isEmpty, isCalendarLayoutLoaded {
+            executeDelayedTasks(.general)
         }
     }
     
@@ -255,9 +255,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     func scrollTo(indexPath: IndexPath, triggerScrollToDateDelegate: Bool, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
         isScrollInProgress = true
-        if let validCompletionHandler = completionHandler {
-            self.delayedExecutionClosure.append(validCompletionHandler)
-        }
+        if let validCompletionHandler = completionHandler { self.scrollDelayedExecutionClosure.append(validCompletionHandler) }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         DispatchQueue.main.async {
             self.scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
@@ -354,7 +352,7 @@ open class JTAppleCalendarView: UICollectionView {
         guard let attributes = calendarViewLayout.layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: indexPath) else { return }
         
         isScrollInProgress = true
-        if let validHandler = completionHandler { self.delayedExecutionClosure.append(validHandler) }
+        if let validHandler = completionHandler { scrollDelayedExecutionClosure.append(validHandler) }
         
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         
@@ -377,13 +375,18 @@ open class JTAppleCalendarView: UICollectionView {
         super.reloadData()
     }
     
-    func executeDelayedTasks() {
-        let tasksToExecute = delayedExecutionClosure
-        delayedExecutionClosure.removeAll()
-        
-        for aTaskToExecute in tasksToExecute {
-            aTaskToExecute()
+    
+    func executeDelayedTasks(_ type: DelayedTaskType) {
+        let tasksToExecute: [(() -> Void)]
+        switch type {
+        case .scroll:
+            tasksToExecute = scrollDelayedExecutionClosure
+            scrollDelayedExecutionClosure.removeAll()
+        case .general:
+            tasksToExecute = generalDelayedExecutionClosure
+            generalDelayedExecutionClosure.removeAll()
         }
+        for aTaskToExecute in tasksToExecute { aTaskToExecute() }
     }
     
     // Only reload the dates if the datasource information has changed
@@ -513,9 +516,7 @@ extension JTAppleCalendarView {
     
     func scrollTo(point: CGPoint, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
         isScrollInProgress = true
-        if let validCompletionHandler = completionHandler {
-            self.delayedExecutionClosure.append(validCompletionHandler)
-        }
+        if let validCompletionHandler = completionHandler { scrollDelayedExecutionClosure.append(validCompletionHandler) }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         var point = point
         if scrollDirection == .horizontal { point.x += extraAddedOffset } else { point.y += extraAddedOffset }
