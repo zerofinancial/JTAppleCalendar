@@ -179,7 +179,8 @@ extension JTAppleCalendarView {
     /// - Parameter completionHandler: This closure will run after
     ///                                the reload is complete
     public func reloadData(withanchor date: Date? = nil, completionHandler: (() -> Void)? = nil) {
-        if isScrollInProgress || isReloadDataInProgress {
+        if isReloadDataInProgress { return }
+        if isScrollInProgress {
             generalDelayedExecutionClosure.append {[unowned self] in
                 self.reloadData(completionHandler: completionHandler)
             }
@@ -205,15 +206,14 @@ extension JTAppleCalendarView {
                 self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
             }
         }
-        
-        if let validCompletionHandler = completionHandler  { calendarViewLayout.delayedExecutionClosure.append(validCompletionHandler) }
-        
+
         // Add calendar reload completion 
         calendarViewLayout.delayedExecutionClosure.append {[unowned self] in
             self.isReloadDataInProgress = false
+            completionHandler?()
             if !self.generalDelayedExecutionClosure.isEmpty { self.executeDelayedTasks(.general) }
         }
-        
+                
         if !data.shouldReload { calendarViewLayout.shouldClearCacheOnInvalidate = false }
         super.reloadData()
     }
