@@ -810,12 +810,11 @@ extension JTAppleCalendarView {
     
     func selectDate(indexPath: IndexPath, date: Date, shouldTriggerSelectionDelegate: Bool) -> Set<IndexPath> {
         var allIndexPathsToReload: Set<IndexPath> = []
-        
+        selectItem(at: indexPath, animated: false, scrollPosition: [])
         
         // If triggereing is enabled, then let their delegate
         // handle the reloading of view, else we will reload the data
         if shouldTriggerSelectionDelegate {
-            selectItem(at: indexPath, animated: false, scrollPosition: [])
             internalCollectionView(self, didSelectItemAt: indexPath, selectionType: .programatic)
         } else {
             allIndexPathsToReload.insert(indexPath)
