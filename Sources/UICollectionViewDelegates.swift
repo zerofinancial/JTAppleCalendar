@@ -39,6 +39,18 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         return headerView
     }
     
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if !pathsToReload.contains(indexPath) { return }
+        pathsToReload.remove(indexPath)
+        let cellState = cellStateFromIndexPath(indexPath)
+
+        calendarDelegate!.calendar(self,
+                                   willDisplay: cell as! JTAppleCell,
+                                   forItemAt: cellState.date,
+                                   cellState: cellState,
+                                   indexPath: indexPath)
+    }
+    
     /// Asks your data source object for the cell that corresponds
     /// to the specified item in the collection view.
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -47,9 +59,11 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             assert(false)
             return UICollectionViewCell()
         }
-        restoreSelectionStateForCellAtIndexPath(indexPath)
         let cellState = cellStateFromIndexPath(indexPath)
         let configuredCell = delegate.calendar(self, cellForItemAt: cellState.date, cellState: cellState, indexPath: indexPath)
+        
+        pathsToReload.remove(indexPath)
+        
         configuredCell.transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
         return configuredCell
     }
@@ -110,6 +124,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         }
         return false
     }
+
     /// Tells the delegate that the item at the specified index
     /// path was selected. The collection view calls this method when the
     /// user successfully selects an item in the collection view.
@@ -174,9 +189,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                                                    withDateInfo: dateInfoDeselectedByUser,
                                                    cell: selectedCell,
                                                    selectionType: selectionType)
-            let deselectedCell = deselectCounterPartCellIndexPath(indexPath, date: dateInfoDeselectedByUser.date, dateOwner: cellState.dateBelongsTo)
-            if let unselectedCounterPartIndexPath = deselectedCell {
-                deleteCellFromSelectedSetIfSelected(unselectedCounterPartIndexPath)
+            if let unselectedCounterPartIndexPath = deselectCounterPartCellIndexPath(indexPath, date: dateInfoDeselectedByUser.date, dateOwner: cellState.dateBelongsTo) {
                 indexPathsToReload.insert(unselectedCounterPartIndexPath)
                 let counterPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: unselectedCounterPartIndexPath)) : []
                 indexPathsToReload.formUnion(counterPathsToReload)

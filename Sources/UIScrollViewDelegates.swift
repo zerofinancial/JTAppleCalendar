@@ -194,7 +194,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                             calculatedOffSet = attrib.frame.origin.y
                         }
                     } else if calendarViewLayout.thereAreHeaders,
-                        let attrib = layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: attribPath) { // JT101 this was changed
+                        let attrib = calendarLayout.layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: attribPath) { // JT101 this was changed
                         // change the final value to the end of the header
                         if isScrollingForward() {
                             calculatedOffSet = attrib.frame.origin.y + attrib.frame.size.height

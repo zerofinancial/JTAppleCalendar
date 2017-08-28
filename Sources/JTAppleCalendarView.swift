@@ -117,6 +117,7 @@ open class JTAppleCalendarView: UICollectionView {
     // Set the end of month
     var endOfMonthCache: Date!
     var theSelectedIndexPaths: [IndexPath] = []
+    var pathsToReload: Set<IndexPath> = [] //Paths to reload because of prefetched cells
     var theSelectedDates: [Date] = []
     var anchorDate: Date?
     
@@ -460,11 +461,6 @@ open class JTAppleCalendarView: UICollectionView {
         }
         return retval
     }
-    func restoreSelectionStateForCellAtIndexPath(_ indexPath: IndexPath) {
-        if theSelectedIndexPaths.contains(indexPath) {
-            selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition() )
-        }
-    }
 }
 
 extension JTAppleCalendarView {
@@ -792,40 +788,22 @@ extension JTAppleCalendarView {
     
     func batchReloadIndexPaths(_ indexPaths: [IndexPath]) {
         let visiblePaths = indexPathsForVisibleItems
-        
-        var visiblePathsToReload: [IndexPath] = []
-        var invisiblePathsToRelad: [IndexPath] = []
-        
+        var visibleCellsToReload: [JTAppleCell: IndexPath] = [:]
         
         for path in indexPaths {
             if calendarViewLayout.cachedValue(for: path.item, section: path.section) == nil { continue }
             if visiblePaths.contains(path) {
-                visiblePathsToReload.append(path)
+                pathsToReload.insert(path)
+                visibleCellsToReload[cellForItem(at: path) as! JTAppleCell] = path
             } else {
-                invisiblePathsToRelad.append(path)
+                pathsToReload.insert(path)
             }
-        }
-        
-        // Reload the invisible paths first.
-        // Why reload invisible paths? because they have already been prefetched
-        if !invisiblePathsToRelad.isEmpty {
-            calendarViewLayout.shouldClearCacheOnInvalidate = false
-            reloadItems(at: invisiblePathsToRelad)
-            
-            for path in invisiblePathsToRelad {
-                // Restore the selection
-                if theSelectedIndexPaths.contains(path) { selectItem(at: path, animated: false, scrollPosition: []) }
-            }
-            print("Done")
         }
         
         // Reload the visible paths
-        if !visiblePathsToReload.isEmpty {
-            UICollectionView.performWithoutAnimation {
-                self.calendarViewLayout.shouldClearCacheOnInvalidate = false
-                performBatchUpdates({[unowned self] in
-                    self.reloadItems(at: visiblePathsToReload)
-                })
+        if !visibleCellsToReload.isEmpty {
+            for (cell, path) in visibleCellsToReload {
+                self.collectionView(self, willDisplay: cell, forItemAt: path)
             }
         }
     }
@@ -897,7 +875,7 @@ extension JTAppleCalendarView {
 
     
     func addCellToSelectedSetIfUnselected(_ indexPath: IndexPath, date: Date) {
-        if self.theSelectedIndexPaths.contains(indexPath) == false {
+        if !self.theSelectedIndexPaths.contains(indexPath) {
             self.theSelectedIndexPaths.append(indexPath)
             self.theSelectedDates.append(date)
         }
@@ -911,23 +889,21 @@ extension JTAppleCalendarView {
     }
     
     func deselectCounterPartCellIndexPath(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
-        if let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) {
-            deleteCellFromSelectedSetIfSelected(counterPartCellIndexPath)
-            return counterPartCellIndexPath
-        }
-        return nil
+        guard let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) else { return nil }
+        deleteCellFromSelectedSetIfSelected(counterPartCellIndexPath)
+        deselectItem(at: counterPartCellIndexPath, animated: false)
+        return counterPartCellIndexPath
     }
     
     func selectCounterPartCellIndexPathIfExists(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
-        if let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) {
-            let dateComps = calendar.dateComponents([.month, .day, .year], from: date)
-            guard let counterpartDate = calendar.date(from: dateComps) else {
-                return nil
-            }
-            addCellToSelectedSetIfUnselected(counterPartCellIndexPath, date: counterpartDate)
-            return counterPartCellIndexPath
+        guard let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) else { return nil }
+        addCellToSelectedSetIfUnselected(counterPartCellIndexPath, date: date)
+        if allowsMultipleSelection {
+            // only if multiple selection is enabled. With single selection, we do not want the counterpart cell to be
+            // selected in place of the main cell. With multiselection, however, all can be selected
+            selectItem(at: counterPartCellIndexPath, animated: false, scrollPosition: [])
         }
-        return nil
+        return counterPartCellIndexPath
     }
     
     func monthInfoFromSection(_ section: Int) -> (range: (start: Date, end: Date), month: Int, rowCount: Int)? {

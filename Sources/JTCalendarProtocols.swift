@@ -131,6 +131,18 @@ public protocol JTAppleCalendarViewDelegate: class {
     /// Called to retrieve the size to be used for the month headers
     func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize?
     
+    /// Implement the function to configure calendar cells. The code that will go in here is the same
+    /// that you will code for your cellForItem function. This function is only called to address
+    /// inconsistencies in the visual appearance as stated by Apple: https://developer.apple.com/documentation/uikit/uicollectionview/1771771-prefetchingenabled
+    /// a date-cell. This is the point of customization for your date cells
+    /// - Parameters:
+    ///     - calendar: The JTAppleCalendar view giving this information.
+    ///     - cell: The cell
+    ///     - date: date attached to the cell
+    ///     - cellState: The month the date-cell belongs to.
+    ///     - indexPath: use this value when dequeing cells
+    func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath)
+    
     /// Called to retrieve the size to be used for decoration views
     func sizeOfDecorationView(indexPath: IndexPath) -> CGRect
 }
