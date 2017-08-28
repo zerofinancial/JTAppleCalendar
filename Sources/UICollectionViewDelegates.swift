@@ -131,7 +131,6 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// It does not call this method when you programmatically
     /// set the selection.
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
         internalCollectionView(collectionView, didSelectItemAt: indexPath, selectionType: .userInitiated)
     }
     
