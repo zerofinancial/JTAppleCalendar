@@ -202,7 +202,8 @@ extension JTAppleCalendarView {
         
         // Restore the selected index paths if dates were already selected.
         if !selectedDates.isEmpty {
-            generalDelayedExecutionClosure.append {[unowned self] in
+            calendarViewLayout.delayedExecutionClosure.append {[unowned self] in
+                self.isReloadDataInProgress = false
                 self.selectDates(selectedDates, triggerSelectionDelegate: false, keepSelectionIfMultiSelectionAllowed: true)
             }
         }
