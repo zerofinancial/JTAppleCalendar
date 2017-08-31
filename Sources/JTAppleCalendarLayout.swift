@@ -630,22 +630,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         super.init(coder: aDecoder)
     }
     
-    func setMinVisibleDate() { // jt101 for setting proposal
-        let minIndices = minimumVisibleIndexPaths()
-        switch (minIndices.headerIndex, minIndices.cellIndex) {
-        case (.some(let path), nil): focusIndexPath = path
-        case (nil, .some(let path)): focusIndexPath = path
-        case (.some(let hPath), (.some(let cPath))):
-            if hPath <= cPath {
-                focusIndexPath = hPath
-            } else {
-                focusIndexPath = cPath
-            }
-        default:
-            break
-        }
-    }
-    
     // This function ignores decoration views //JT101 for setting proposal
     func minimumVisibleIndexPaths() -> (cellIndex: IndexPath?, headerIndex: IndexPath?) {
         let visibleItems: [UICollectionViewLayoutAttributes] = scrollDirection == .horizontal ? visibleElements(excludeHeaders: true) : visibleElements()

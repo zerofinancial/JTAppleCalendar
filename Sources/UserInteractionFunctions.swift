@@ -223,22 +223,18 @@ extension JTAppleCalendarView {
     /// - Parameter dates: Date-cells with these specified
     ///                    dates will be reloaded
     public func reloadDates(_ dates: [Date]) {
-        var paths = [IndexPath]()
+        var paths: Set<IndexPath> = []
         for date in dates {
             let aPath = pathsFromDates([date])
-            if !aPath.isEmpty && !paths.contains(aPath[0]) {
-                paths.append(aPath[0])
-                let cellState = cellStateFromIndexPath(aPath[0])
-                if let validCounterPartCell = indexPathOfdateCellCounterPath(date,dateOwner: cellState.dateBelongsTo) {
-                    paths.append(validCounterPartCell)
+            if let validPath = aPath.first {
+                paths.insert(validPath)
+                let cellState = cellStateFromIndexPath(validPath)
+                if let validCounterPartCellPath = indexPathOfdateCellCounterPath(date,dateOwner: cellState.dateBelongsTo) {
+                    paths.insert(validCounterPartCellPath)
                 }
             }
         }
-        
-        // Before reloading, set the proposal path,
-        // so that in the event targetContentOffset gets called. We know the path
-        calendarViewLayout.setMinVisibleDate()
-        batchReloadIndexPaths(paths)
+        batchReloadIndexPaths(Array(paths))
     }
     
     /// Select a date-cell range
@@ -266,6 +262,26 @@ extension JTAppleCalendarView {
         let dates = selectedDates.filter { $0 >= start && $0 <= end }
         deselect(dates: dates, triggerSelectionDelegate: triggerSelectionDelegate)
         
+    }
+    
+    public func debugThis() {
+        print("*********START*******************")
+        print("SelectedDates: \(theSelectedDates)")
+        print("SelectedIndex: \(theSelectedIndexPaths)")
+
+        print("indexPathsForSelectedItems")
+        print(indexPathsForSelectedItems ?? [])
+
+        print("****************************\n\n\n\n\n\n")
+        
+        
+//        let indexPath1 = IndexPath(item: 0, section: 0)
+//        let indexPath2 = IndexPath(item: 1, section: 0)
+//
+//        selectItem(at: indexPath1, animated: false, scrollPosition: [])
+//        selectItem(at: indexPath2, animated: false, scrollPosition: [])
+//
+//        print(indexPathsForSelectedItems ?? [])
     }
     
     /// Select a date-cells
