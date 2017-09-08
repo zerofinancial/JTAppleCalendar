@@ -57,7 +57,6 @@ class TestPersianCalendar: UIViewController {
             let today = Date()
             persianDateFormatter.dateFormat = "yyyy MM dd"
             let todayDateStr = persianDateFormatter.string(from: today)
-            let test = persianDateFormatter.string(from: today)
             dateFormatter.dateFormat = "yyyy MM dd"
             let cellDateStr = dateFormatter.string(from: cellState.date)
             
@@ -102,6 +101,15 @@ extension TestPersianCalendar: JTAppleCalendarViewDataSource {
 }
 
 extension TestPersianCalendar: JTAppleCalendarViewDelegate {
+    func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
+        // The code here is the same as cellForItem function
+        let cell = cell as! CellView
+        cell.dayLabel.text = cellState.text
+        
+        handleCellSelected(cell: cell, cellState: cellState)
+        handleCellTextColor(cell: cell, cellState: cellState)
+    }
+    
     func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "mainInfo_CalenderCell", for: indexPath) as! CellView
         cell.dayLabel.text = cellState.text

@@ -23,7 +23,12 @@ class TestViewController: UIViewController {
         }
 
     }
-    
+    @IBAction func selectABunch(_ sender: UIButton) {
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2017 01 01")!
+        let date2 = formatter.date(from: "2017 12 25")!
+        calendarView.selectDates(from: date, to: date2, triggerSelectionDelegate: true)
+    }
     @IBAction func zeroHeight(_ sender: UIButton) {
         let frame = calendarView.frame
         calendarView.frame = CGRect(x: frame.origin.x,
@@ -71,14 +76,14 @@ class TestViewController: UIViewController {
     }
     @IBAction func selectOtherDate(_ sender: UIButton) {
         formatter.dateFormat = "yyyy MM dd"
-        let date = formatter.date(from: "2017 01 07")!
+        let date = formatter.date(from: "2017 01 31")!
         calendarView.selectDates([date])
         calendarView.debugThis()
     }
     
     @IBAction func selectOneMonth(_ sender: UIButton) {
         formatter.dateFormat = "yyyy MM dd"
-        let date = formatter.date(from: "2017 02 12")!
+        let date = formatter.date(from: "2017 02 01")!
         calendarView.selectDates([date])
         calendarView.debugThis()
     }
@@ -89,7 +94,14 @@ class TestViewController: UIViewController {
     @IBAction func debugthis(_ sender: UIButton) {
         calendarView.debugThis()
     }
-    
+    @IBAction func singleSelect(_ sender: UIButton) {
+        calendarView.allowsMultipleSelection = false
+        calendarView.isRangeSelectionUsed = false
+    }
+    @IBAction func multiSelect(_ sender: UIButton) {
+        calendarView.allowsMultipleSelection = true
+        calendarView.isRangeSelectionUsed = true
+    }
     func setupViewsOfCalendar(from visibleDates: DateSegmentInfo) {
         guard let startDate = visibleDates.monthDates.first?.date else {
             return
@@ -108,10 +120,20 @@ class TestViewController: UIViewController {
     }
     
     func handleCellSelection(view: CellView, cellState: CellState) {
-        if cellState.isSelected {
-            view.backgroundColor = UIColor.red
+        if calendarView.allowsMultipleSelection {
+        switch cellState.selectedPosition() {
+        case .full: view.backgroundColor = .green
+        case .left: view.backgroundColor = .yellow
+        case .right: view.backgroundColor = .red
+        case .middle: view.backgroundColor = .blue
+        case .none: view.backgroundColor = nil
+        }
         } else {
-            view.backgroundColor = UIColor.white
+            if cellState.isSelected {
+                view.backgroundColor = UIColor.red
+            } else {
+                view.backgroundColor = UIColor.white
+            }
         }
     }
     func handleCellTextColor(view: CellView, cellState: CellState) {
@@ -127,6 +149,10 @@ class TestViewController: UIViewController {
 
 
 extension TestViewController: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelegate {
+    func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
+        configureCell(view: cell, cellState: cellState)
+    }
+    
     func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "cell", for: indexPath) as! CellView
         configureCell(view: cell, cellState: cellState)
@@ -156,7 +182,6 @@ extension TestViewController: JTAppleCalendarViewDataSource, JTAppleCalendarView
     
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
         setupViewsOfCalendar(from: visibleDates)
-        iii = visibleDates.monthDates.first?.date
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
@@ -168,9 +193,10 @@ extension TestViewController: JTAppleCalendarViewDataSource, JTAppleCalendarView
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        calendarView.viewWillTransition(to: size, with: coordinator, focusDateAfterRotate: iii)
+        calendarView.viewWillTransition(to: size, with: coordinator, anchorDate: iii)
     }
     
     
 }
+
 

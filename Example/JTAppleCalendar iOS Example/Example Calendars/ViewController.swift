@@ -44,7 +44,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func scrollFixed(_ sender: Any) {
-        calendarView.scrollingMode = .stopAtEachCalendarFrame
+        calendarView.scrollingMode = .stopAtEachSection
     }
     @IBAction func showPrepost(_ sender: UIButton) {
         prePostVisibility = {state, cell in
@@ -188,53 +188,15 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        hideOutsideHeaders(UIButton())
-//        calendarView.itemSize = CGFloat(53.43 - 20)
-        
-        
-//        testCalendar = Calendar(identifier: .gregorian)
-//        let timeZone = TimeZone(identifier: "Asia/Amman")!
-//        testCalendar.timeZone = timeZone
-//        
-//        let locale = Locale(identifier: "ar_JO")
-//        testCalendar.locale = locale
-
-//        calendarView.calendarDataSource = self
-//        calendarView.calendarDelegate = self
-        // ___________________________________________________________________
-        // Registering header cells is optional
         
         calendarView.register(UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main),
                               forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
                               withReuseIdentifier: "PinkSectionHeaderView")
         
-//        calendarView.registerDecorationView(nib: UINib(nibName: "SectionDecorationView", bundle: Bundle.main))
         
-//        calendarView.allowsMultipleSelection = true
-//        calendarView.isRangeSelectionUsed = true
-//
-        
-//        let panGensture = UILongPressGestureRecognizer(target: self, action: #selector(didStartRangeSelecting(gesture:)))
-//        panGensture.minimumPressDuration = 0.5
-//        calendarView.addGestureRecognizer(panGensture)
-//        calendarView.rangeSelectionWillBeUsed = true
-//           self.calendarView.reloadData() {
         self.calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        if let firstDateInfo = calendarView.visibleDates().indates.first {
-            calendarView.viewWillTransition(to: size, with: coordinator, focusDateIndexPathAfterRotate: firstDateInfo.indexPath)
-        } else {
-           let firstDateInfo = calendarView.visibleDates().monthDates.first!
-            calendarView.viewWillTransition(to: size, with: coordinator, focusDateIndexPathAfterRotate: firstDateInfo.indexPath)
-        }
-        
-        
-        
     }
     
     var rangeSelectedDates: [Date] = []
@@ -290,9 +252,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func reloadCalendar(_ sender: UIButton) {
-//        calendarView.reloadData()
-        let date = formatter.date(from: "2017 01 01")!
-        calendarView.selectDates([ date ])
+        calendarView.reloadData()
     }
 
     @IBAction func next(_ sender: UIButton) {
@@ -405,9 +365,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         return parameters
     }
     
-    func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
-        let myCustomCell = calendar.dequeueReusableCell(withReuseIdentifier: "CellView", for: indexPath) as! CellView
-        
+    func configureVisibleCell(myCustomCell: CellView, cellState: CellState, date: Date) {
         myCustomCell.dayLabel.text = cellState.text
         if testCalendar.isDateInToday(date) {
             myCustomCell.backgroundColor = red
@@ -416,6 +374,27 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         }
         
         handleCellConfiguration(cell: myCustomCell, cellState: cellState)
+        
+        
+        if cellState.text == "1" {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMM"
+            let month = formatter.string(from: date)
+            myCustomCell.monthLabel.text = "\(month) \(cellState.text)"
+        } else {
+            myCustomCell.monthLabel.text = ""
+        }
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
+        // This function should have the same code as the cellForItemAt function
+        let myCustomCell = cell as! CellView
+        configureVisibleCell(myCustomCell: myCustomCell, cellState: cellState, date: date)
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
+        let myCustomCell = calendar.dequeueReusableCell(withReuseIdentifier: "CellView", for: indexPath) as! CellView
+        configureVisibleCell(myCustomCell: myCustomCell, cellState: cellState, date: date)
         return myCustomCell
     }
 
@@ -428,17 +407,6 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
-        self.setupViewsOfCalendar(from: visibleDates)
-    }
-    
-    func scrollDidEndDecelerating(for calendar: JTAppleCalendarView) {
-        let visibleDates = calendarView.visibleDates()
-//        let dateWeShouldNotCross = formatter.date(from: "2017 08 07")!
-//        let dateToScrollBackTo = formatter.date(from: "2017 07 03")!
-//        if visibleDates.monthDates.contains (where: {$0.date >= dateWeShouldNotCross}) {
-//            calendarView.scrollToDate(dateToScrollBackTo)
-//            return
-//        }
         self.setupViewsOfCalendar(from: visibleDates)
     }
     
