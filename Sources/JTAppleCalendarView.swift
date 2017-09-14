@@ -116,14 +116,14 @@ open class JTAppleCalendarView: UICollectionView {
     var startOfMonthCache: Date!
     // Set the end of month
     var endOfMonthCache: Date!
-    var theSelectedIndexPaths: [IndexPath] = []
+    var selectedCellData: [IndexPath:SelectedCellData] = [:]
     var pathsToReload: Set<IndexPath> = [] //Paths to reload because of prefetched cells
-    var theSelectedDates: [Date] = []
+    
     var anchorDate: Date?
     
     var firstContentOffset: CGPoint {
         var retval: CGPoint = .zero
-        guard let date  = anchorDate else { return retval }
+        guard let date = anchorDate else { return retval }
         
         // reset the initial scroll date once used.
         anchorDate = nil
@@ -243,12 +243,12 @@ open class JTAppleCalendarView: UICollectionView {
     func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> [IndexPath] {
         var retval: [IndexPath] = []
         if let validForwardIndex = calendarViewLayout.indexPath(direction: .next, of: indexPath.section, item: indexPath.item),
-            theSelectedIndexPaths.contains(validForwardIndex) {
+            selectedCellData[validForwardIndex] != nil {
             retval.append(validForwardIndex)
         }
         if
             let validBackwardIndex = calendarViewLayout.indexPath(direction: .previous, of: indexPath.section, item: indexPath.item),
-            theSelectedIndexPaths.contains(validBackwardIndex) {
+            selectedCellData[validBackwardIndex] != nil {
             retval.append(validBackwardIndex)
         }
         return retval
@@ -744,8 +744,8 @@ extension JTAppleCalendarView {
         
         
         
-        let rangePosition = { () -> SelectionRangePosition in
-            if !self.theSelectedIndexPaths.contains(indexPath) { return .none }
+        let selectedPosition = { () -> SelectionRangePosition in
+            if self.selectedCellData[indexPath] == nil { return .none }
             if self.selectedDates.count == 1 { return .full }
             
             guard
@@ -754,8 +754,10 @@ extension JTAppleCalendarView {
                     return .full
             }
             
-            let selectedIndicesContainsPreviousPath = self.theSelectedIndexPaths.contains(previousIndexPath)
-            let selectedIndicesContainsFollowingPath = self.theSelectedIndexPaths.contains(nextIndexPath)
+            let selectedIndicesContainsPreviousPath = self.selectedCellData[previousIndexPath] != nil
+            let selectedIndicesContainsFollowingPath = self.selectedCellData[nextIndexPath] != nil
+            
+            
             
             var position: SelectionRangePosition
             if selectedIndicesContainsPreviousPath == selectedIndicesContainsFollowingPath {
@@ -768,7 +770,7 @@ extension JTAppleCalendarView {
         }
         
         let cellState = CellState(
-            isSelected: theSelectedIndexPaths.contains(indexPath),
+            isSelected: selectedCellData[indexPath] != nil,
             text: cellText,
             dateBelongsTo: dateBelongsTo,
             date: date,
@@ -778,7 +780,7 @@ extension JTAppleCalendarView {
             dateSection: {
                 return self.monthInfoFromSection(indexPath.section)!
             },
-            selectedPosition: rangePosition,
+            selectedPosition: selectedPosition,
             cell: { return cell },
             selectionType: selectionType
         )
@@ -826,12 +828,11 @@ extension JTAppleCalendarView {
             if isRangeSelectionUsed {
                 allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)))
             }
-            if let aSelectedCounterPartIndexPath = self.selectCounterPartCellIndexPathIfExists(indexPath, date: date, dateOwner: cellState.dateBelongsTo) {
-                // If there was a counterpart cell then
-                // it will also need to be reloaded
-                allIndexPathsToReload.insert(aSelectedCounterPartIndexPath)
+            if let selectedCounterPartIndexPath = self.selectCounterPartCellIndexPathIfExists(indexPath, date: date, dateOwner: cellState.dateBelongsTo) {
+                // Also If there was a counterpart cell then it will also need to be reloaded
+                allIndexPathsToReload.insert(selectedCounterPartIndexPath)
                 if isRangeSelectionUsed {
-                    allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: aSelectedCounterPartIndexPath)))
+                    allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath)))
                 }
             }
         }
@@ -841,31 +842,30 @@ extension JTAppleCalendarView {
     func deselectDate(oldIndexPath: IndexPath, shouldTriggerSelecteionDelegate: Bool) -> Set<IndexPath> {
         var allIndexPathsToReload: Set<IndexPath> = []
         
-        if let index = self.theSelectedIndexPaths.index(of: oldIndexPath) {
-            let oldDate = self.theSelectedDates[index]
-            self.deselectItem(at: oldIndexPath, animated: false)
-            
-            deleteCellFromSelectedSetIfSelected(oldIndexPath)
+        guard let oldDate = selectedCellData[oldIndexPath]?.date else { return allIndexPathsToReload }
 
-            // If delegate triggering is enabled, let the
-            // delegate function handle the cell
-            if shouldTriggerSelecteionDelegate {
-                self.internalCollectionView(self, didDeselectItemAt: oldIndexPath, selectionType: .programatic)
-            } else {
-                // Although we do not want the delegate triggered,
-                // we still want counterpart cells to be deselected
-                allIndexPathsToReload.insert(oldIndexPath)
-                let cellState = self.cellStateFromIndexPath(oldIndexPath)
+        self.deselectItem(at: oldIndexPath, animated: false)
+        
+        deleteCellFromSelectedSetIfSelected(oldIndexPath)
+
+        // If delegate triggering is enabled, let the
+        // delegate function handle the cell
+        if shouldTriggerSelecteionDelegate {
+            self.internalCollectionView(self, didDeselectItemAt: oldIndexPath, selectionType: .programatic)
+        } else {
+            // Although we do not want the delegate triggered,
+            // we still want counterpart cells to be deselected
+            allIndexPathsToReload.insert(oldIndexPath)
+            let cellState = self.cellStateFromIndexPath(oldIndexPath)
+            if isRangeSelectionUsed {
+                allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: oldIndexPath)))
+            }
+            if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
+                // If there was a counterpart cell then
+                // it will also need to be reloaded
+                allIndexPathsToReload.insert(anUnselectedCounterPartIndexPath)
                 if isRangeSelectionUsed {
-                    allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: oldIndexPath)))
-                }
-                if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
-                    // If there was a counterpart cell then
-                    // it will also need to be reloaded
-                    allIndexPathsToReload.insert(anUnselectedCounterPartIndexPath)
-                    if isRangeSelectionUsed {
-                        allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: anUnselectedCounterPartIndexPath)))
-                    }
+                    allIndexPathsToReload.formUnion(Set(validForwardAndBackwordSelectedIndexes(forIndexPath: anUnselectedCounterPartIndexPath)))
                 }
             }
         }
@@ -874,19 +874,14 @@ extension JTAppleCalendarView {
 
     
     func addCellToSelectedSetIfUnselected(_ indexPath: IndexPath, date: Date) {
-        if !self.theSelectedIndexPaths.contains(indexPath) {
-            self.theSelectedIndexPaths.append(indexPath)
-            self.theSelectedDates.append(date)
-        }
+        selectedCellData[indexPath] = SelectedCellData(indexPath: indexPath, date: date)
     }
     
     func deleteCellFromSelectedSetIfSelected(_ indexPath: IndexPath) {
-        if let index = self.theSelectedIndexPaths.index(of: indexPath) {
-            self.theSelectedIndexPaths.remove(at: index)
-            self.theSelectedDates.remove(at: index)
-        }
+        selectedCellData.removeValue(forKey: indexPath)
     }
     
+    // Returns an indexPath if valid one was found
     func deselectCounterPartCellIndexPath(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
         guard let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) else { return nil }
         deleteCellFromSelectedSetIfSelected(counterPartCellIndexPath)
@@ -897,6 +892,11 @@ extension JTAppleCalendarView {
     func selectCounterPartCellIndexPathIfExists(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
         guard let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) else { return nil }
         addCellToSelectedSetIfUnselected(counterPartCellIndexPath, date: date)
+        
+        // Update the selectedCellData counterIndexPathData
+        selectedCellData[indexPath]?.counterIndexPath = counterPartCellIndexPath
+        selectedCellData[counterPartCellIndexPath]?.counterIndexPath = indexPath
+        
         if allowsMultipleSelection {
             // only if multiple selection is enabled. With single selection, we do not want the counterpart cell to be
             // selected in place of the main cell. With multiselection, however, all can be selected

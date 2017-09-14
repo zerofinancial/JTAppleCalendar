@@ -391,3 +391,14 @@ public struct DateSegmentInfo {
     /// Visible post-dates
     public let outdates: [(date: Date, indexPath: IndexPath)]
 }
+
+struct SelectedCellData {
+    let indexPath: IndexPath
+    let date: Date
+    var counterIndexPath: IndexPath?
+    init(indexPath: IndexPath, date: Date, counterIndexPath: IndexPath? = nil) {
+        self.indexPath = indexPath
+        self.date = date
+        self.counterIndexPath = counterIndexPath
+    }
+}

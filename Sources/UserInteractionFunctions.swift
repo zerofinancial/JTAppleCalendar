@@ -196,8 +196,7 @@ extension JTAppleCalendarView {
             calendarViewLayout.invalidateLayout()
             setupMonthInfoAndMap(with: data.configParameters)
             
-            self.theSelectedIndexPaths = []
-            self.theSelectedDates = []
+            self.selectedCellData = [:]
         }
         
         // Restore the selected index paths if dates were already selected.
@@ -264,26 +263,6 @@ extension JTAppleCalendarView {
         
     }
     
-    public func debugThis() {
-        print("*********START*******************")
-        print("SelectedDates: \(theSelectedDates)")
-        print("SelectedIndex: \(theSelectedIndexPaths)")
-
-        print("indexPathsForSelectedItems")
-        print(indexPathsForSelectedItems ?? [])
-
-        print("****************************\n\n\n\n\n\n")
-        
-        
-//        let indexPath1 = IndexPath(item: 0, section: 0)
-//        let indexPath2 = IndexPath(item: 1, section: 0)
-//
-//        selectItem(at: indexPath1, animated: false, scrollPosition: [])
-//        selectItem(at: indexPath2, animated: false, scrollPosition: [])
-//
-//        print(indexPathsForSelectedItems ?? [])
-    }
-    
     /// Select a date-cells
     /// - Parameter date: The date-cell with this date will be selected
     /// - Parameter triggerDidSelectDelegate: Triggers the delegate function
@@ -329,11 +308,11 @@ extension JTAppleCalendarView {
             // Remove old selections
             if self.allowsMultipleSelection == false {
                 // If single selection is ON
-                let selectedIndexPaths = self.theSelectedIndexPaths
+                let selectedIndexPaths = self.selectedCellData
                 // made a copy because the array is about to be mutated
-                for indexPath in selectedIndexPaths {
-                    if indexPath != sectionIndexPath {
-                        let pathsToReload = deselectDate(oldIndexPath: indexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
+                for cellData in selectedIndexPaths {
+                    if cellData.value.indexPath != sectionIndexPath {
+                        let pathsToReload = deselectDate(oldIndexPath: cellData.value.indexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
                         allIndexPathsToReload.formUnion(pathsToReload)
                     }
                 }
@@ -348,7 +327,7 @@ extension JTAppleCalendarView {
                     // Just add it to be reloaded
                     allIndexPathsToReload.insert(sectionIndexPath)
                 } else {
-                    if self.theSelectedIndexPaths.contains(sectionIndexPath) {
+                    if selectedCellData[sectionIndexPath] != nil {
                         // If this cell is already selected, then deselect it
                         let pathsToReload = self.deselectDate(oldIndexPath: sectionIndexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
                         allIndexPathsToReload.formUnion(pathsToReload)
