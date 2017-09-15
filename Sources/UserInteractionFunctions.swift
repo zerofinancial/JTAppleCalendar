@@ -50,6 +50,7 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - CellState: The state of the found cell
     public func cellStatus(for date: Date) -> CellState? {
+        if functionIsUnsafeSafeToRun { return nil }
         // validate the path
         let paths = pathsFromDates([date])
         // Jt101 change this function to also return
@@ -58,6 +59,21 @@ extension JTAppleCalendarView {
         let cell = cellForItem(at: paths[0]) as? JTAppleCell
         let stateOfCell = cellStateFromIndexPath(paths[0], cell: cell)
         return stateOfCell
+    }
+    
+    /// Returns the cell status for a given date
+    /// - Parameter: date Date of the cell you want to find
+    /// - returns:
+    ///     - CellState: The state of the found cell
+    public func cellStatus(for date: Date, completionHandler: @escaping (_ cellStatus: CellState?) ->()) {
+        if functionIsUnsafeSafeToRun {
+            generalDelayedExecutionClosure.append {[unowned self] in
+                self.cellStatus(for: date, completionHandler: completionHandler)
+            }
+            return
+        }
+        let retval = cellStatus(for: date)
+        completionHandler(retval)
     }
     
     /// Returns the month status for a given date

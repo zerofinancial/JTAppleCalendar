@@ -42,8 +42,13 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if !pathsToReload.contains(indexPath) { return }
         pathsToReload.remove(indexPath)
-        let cellState = cellStateFromIndexPath(indexPath)
-
+        let cellState: CellState
+        if let validCachedCellState = selectedCellData[indexPath]?.cellState {
+            cellState = validCachedCellState
+        } else {
+            cellState = cellStateFromIndexPath(indexPath)
+        }
+        
         calendarDelegate!.calendar(self,
                                    willDisplay: cell as! JTAppleCell,
                                    forItemAt: cellState.date,
@@ -131,36 +136,66 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// It does not call this method when you programmatically
     /// set the selection.
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        internalCollectionView(collectionView, didSelectItemAt: indexPath, selectionType: .userInitiated)
+        handleSelectionValueChanged(collectionView, action: .didSelect, indexPath: indexPath, selectionType: .userInitiated)
     }
     
-    internal func internalCollectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath, selectionType: SelectionType? = nil) {
+    func handleSelectionValueChanged(_ collectionView: UICollectionView, action: SelectionAction, indexPath: IndexPath, selectionType: SelectionType) {
         guard
             let delegate = calendarDelegate,
-            let infoOfDateSelectedByUser = dateOwnerInfoFromPath(indexPath) else {
+            let infoOfDate = dateOwnerInfoFromPath(indexPath) else {
                 return
         }
+        // index paths to be reloaded should be index to the left and right of the selected index
+        var localPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
         
-        // Update model
-        addCellToSelectedSetIfUnselected(indexPath, date: infoOfDateSelectedByUser.date)
-        let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
+        let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
+        if cell == nil { localPathsToReload.insert(indexPath) }
+        
+        let isSelected = action == .didSelect ? true : false
+        
         // If cell has a counterpart cell, then select it as well
-        let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDateSelectedByUser,
-                                               cell: selectedCell,
+        let cellState = cellStateFromIndexPath(indexPath,
+                                               withDateInfo: infoOfDate,
+                                               cell: cell,
+                                               isSelected: isSelected,
                                                selectionType: selectionType)
         
-        // index paths to be reloaded should be index to the left and right of the selected index
-        var pathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)) : []
-        if let selectedCounterPartIndexPath = selectCounterPartCellIndexPathIfExists(indexPath,
-                                                                                     date: infoOfDateSelectedByUser.date,
-                                                                                     dateOwner: cellState.dateBelongsTo) {
-            pathsToReload.insert(selectedCounterPartIndexPath)
-            let counterPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath)) : []
-            pathsToReload.formUnion(counterPathsToReload)
+        // Update model
+        let cleanupAction: (IndexPath, Date, DateOwner) -> IndexPath?
+        
+        if action == .didSelect {
+            cleanupAction = selectCounterPartCellIndexPath
+            addCellToSelectedSet(indexPath, date: infoOfDate.date, cellState: cellState)
+        } else {
+            cleanupAction = deselectCounterPartCellIndexPath
+            deleteCellFromSelectedSetIfSelected(indexPath)
         }
-        delegate.calendar(self, didSelectDate: infoOfDateSelectedByUser.date, cell: selectedCell, cellState: cellState)
-        if !pathsToReload.isEmpty {
-            self.batchReloadIndexPaths(Array(pathsToReload))
+        
+        // check if the paths to reload (forward&backward indexes) also have counterpart dates
+        if !localPathsToReload.isEmpty {
+            let reloadPaths = localPathsToReload
+            for path in reloadPaths {
+                if let validCounterPath = self.selectedCellData[path]?.counterIndexPath {
+                    localPathsToReload.insert(validCounterPath)
+                }
+            }
+        }
+        
+        if let counterPartIndexPath = cleanupAction(indexPath, infoOfDate.date, cellState.dateBelongsTo) {
+            localPathsToReload.insert(counterPartIndexPath)
+            let counterPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: counterPartIndexPath) : []
+            localPathsToReload.formUnion(counterPathsToReload)
+        }
+        
+        if action == .didSelect {
+            delegate.calendar(self, didSelectDate: infoOfDate.date, cell: cell, cellState: cellState)
+        } else {
+            delegate.calendar(self, didDeselectDate: infoOfDate.date, cell: cell, cellState: cellState)
+            
+        }
+        
+        if !localPathsToReload.isEmpty {
+            self.batchReloadIndexPaths(Array(localPathsToReload))
         }
     }
     
@@ -169,35 +204,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
     /// deselects an item in the collection view.
     /// It does not call this method when you programmatically deselect items.
     public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        internalCollectionView(collectionView, didDeselectItemAt: indexPath, selectionType: .userInitiated)
-    }
-    
-    internal func internalCollectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath, selectionType: SelectionType? = nil) {
-        if
-            let delegate = calendarDelegate,
-            let dateInfoDeselectedByUser = dateOwnerInfoFromPath(indexPath) {
-            // Update model
-            deleteCellFromSelectedSetIfSelected(indexPath)
-            let selectedCell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-            var indexPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)) : []
-            if selectedCell == nil { indexPathsToReload.insert(indexPath) }
-            // Cell may be nil if user switches month sections
-            // Although the cell may be nil, we still want to
-            // return the cellstate
-            let cellState = cellStateFromIndexPath(indexPath,
-                                                   withDateInfo: dateInfoDeselectedByUser,
-                                                   cell: selectedCell,
-                                                   selectionType: selectionType)
-            if let unselectedCounterPartIndexPath = deselectCounterPartCellIndexPath(indexPath, date: dateInfoDeselectedByUser.date, dateOwner: cellState.dateBelongsTo) {
-                indexPathsToReload.insert(unselectedCounterPartIndexPath)
-                let counterPathsToReload = isRangeSelectionUsed ? Set(validForwardAndBackwordSelectedIndexes(forIndexPath: unselectedCounterPartIndexPath)) : []
-                indexPathsToReload.formUnion(counterPathsToReload)
-            }
-            delegate.calendar(self, didDeselectDate: dateInfoDeselectedByUser.date, cell: selectedCell, cellState: cellState)
-            if indexPathsToReload.count > 0 {
-                self.batchReloadIndexPaths(Array(indexPathsToReload))
-            }
-        }
+        handleSelectionValueChanged(collectionView, action: .didDeselect, indexPath: indexPath, selectionType: .userInitiated)
     }
     
     public func sizeOfDecorationView(indexPath: IndexPath) -> CGRect {

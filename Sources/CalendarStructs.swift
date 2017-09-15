@@ -396,9 +396,24 @@ struct SelectedCellData {
     let indexPath: IndexPath
     let date: Date
     var counterIndexPath: IndexPath?
-    init(indexPath: IndexPath, date: Date, counterIndexPath: IndexPath? = nil) {
-        self.indexPath = indexPath
-        self.date = date
+    let cellState: CellState
+    
+    enum DateOwnerCategory {
+        case inDate, outDate, monthDate
+    }
+    
+    var dateBelongsTo: DateOwnerCategory {
+        switch cellState.dateBelongsTo {
+        case .thisMonth: return .monthDate
+        case .previousMonthOutsideBoundary, .previousMonthWithinBoundary: return .inDate
+        case .followingMonthWithinBoundary, .followingMonthOutsideBoundary: return .outDate
+        }
+    }
+    
+    init(indexPath: IndexPath, counterIndexPath: IndexPath? = nil, date: Date, cellState: CellState) {
+        self.indexPath        = indexPath
+        self.date             = date
+        self.cellState        = cellState
         self.counterIndexPath = counterIndexPath
     }
 }

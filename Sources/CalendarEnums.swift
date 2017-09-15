@@ -119,3 +119,7 @@ public enum DaysOfWeek: Int {
 internal enum DelayedTaskType {
     case scroll, general
 }
+
+internal enum SelectionAction {
+    case didSelect, didDeselect
+}
