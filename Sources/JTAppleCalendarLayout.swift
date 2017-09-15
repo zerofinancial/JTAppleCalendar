@@ -332,8 +332,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return
-            lastSetCollectionViewSize.height != newBounds.height ||
-            lastSetCollectionViewSize.width != newBounds.width
+            abs(lastSetCollectionViewSize.height - newBounds.height) > errorDelta ||
+            abs(lastSetCollectionViewSize.width - newBounds.width) > errorDelta
     }
     
     /// Returns the layout attributes for all of the cells

@@ -745,12 +745,7 @@ extension JTAppleCalendarView {
         let cellText = String(describing: currentDay)
         let dayOfWeek = DaysOfWeek(rawValue: componentWeekDay)!
         
-        
-        
         let selectedPosition = { () -> SelectionRangePosition in
-            
-            
-            
             let selectedDates = self.selectedDatesSet
             if !selectedDates.contains(date) || selectedDates.isEmpty  { return .none }
             
