@@ -72,27 +72,24 @@ class TestViewController: UIViewController {
         formatter.dateFormat = "yyyy MM dd"
         let date = formatter.date(from: "2017 01 03")!
         calendarView.selectDates([date])
-        calendarView.debugThis()
     }
     @IBAction func selectOtherDate(_ sender: UIButton) {
         formatter.dateFormat = "yyyy MM dd"
         let date = formatter.date(from: "2017 01 31")!
         calendarView.selectDates([date])
-        calendarView.debugThis()
     }
     
     @IBAction func selectOneMonth(_ sender: UIButton) {
         formatter.dateFormat = "yyyy MM dd"
         let date = formatter.date(from: "2017 02 01")!
         calendarView.selectDates([date])
-        calendarView.debugThis()
     }
     @IBAction func reload(_ sender: UIButton) {
         calendarView.reloadData()
     }
     
     @IBAction func debugthis(_ sender: UIButton) {
-        calendarView.debugThis()
+//        calendarView.debugThis()
     }
     @IBAction func singleSelect(_ sender: UIButton) {
         calendarView.allowsMultipleSelection = false
