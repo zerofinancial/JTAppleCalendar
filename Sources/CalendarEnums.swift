@@ -59,7 +59,7 @@ public enum ReadingOrientation {
 }
 
 /// Configures the behavior of the scrolling mode of the calendar
-public enum ScrollingMode {
+public enum ScrollingMode: Equatable {
     /// stopAtEachCalendarFrame - non-continuous scrolling that will stop at each frame
     case stopAtEachCalendarFrame
     /// stopAtEachSection - non-continuous scrolling that will stop at each section
@@ -78,6 +78,19 @@ public enum ScrollingMode {
     func pagingIsEnabled() -> Bool {
         switch self {
         case .stopAtEachCalendarFrame: return true
+        default: return false
+        }
+    }
+    
+    public static func ==(lhs: ScrollingMode, rhs: ScrollingMode) -> Bool {
+        switch (lhs, rhs) {
+        case (.none, .none),
+             (.stopAtEachCalendarFrame, .stopAtEachCalendarFrame),
+             (.stopAtEachSection, .stopAtEachSection): return true
+        case (let .stopAtEach(customInterval: v1), let .stopAtEach(customInterval: v2)): return v1 == v2
+        case (let .nonStopToSection(withResistance: v1), let .nonStopToSection(withResistance: v2)): return v1 == v2
+        case (let .nonStopToCell(withResistance: v1), let .nonStopToCell(withResistance: v2)): return v1 == v2
+        case (let .nonStopTo(customInterval: v1, withResistance: x1), let .nonStopTo(customInterval: v2, withResistance: x2)): return v1 == v2 && x1 == x2
         default: return false
         }
     }

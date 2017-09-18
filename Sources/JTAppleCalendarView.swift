@@ -73,6 +73,12 @@ open class JTAppleCalendarView: UICollectionView {
     var triggerScrollToDateDelegate: Bool? = true
     var isScrollInProgress                 = false
     var isReloadDataInProgress             = false
+
+    // keeps track of if didEndScroll is not yet completed. If isStillScrolling
+    var didEndScollCount = 0
+    // Keeps track of scroll target location. If isScrolling, and user taps while scrolling
+    var endScrollTargetLocation: CGFloat = 0
+
     
     var generalDelayedExecutionClosure: [(() -> Void)] = []
     var scrollDelayedExecutionClosure: [(() -> Void)]  = []
