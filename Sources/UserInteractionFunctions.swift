@@ -472,7 +472,6 @@ extension JTAppleCalendarView {
         
         // Ensure scrolling to date is safe to run
         if functionIsUnsafeSafeToRun {
-            if !animateScroll  { anchorDate = date}
             generalDelayedExecutionClosure.append {[unowned self] in
                 self.scrollToDate(date,
                                   triggerScrollToDateDelegate: triggerScrollToDateDelegate,
@@ -483,19 +482,20 @@ extension JTAppleCalendarView {
             }
             return
         }
+
         // Set triggereing of delegate on scroll
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
-        
+
         // Ensure date is within valid boundary
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
         if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) { return }
-        
+
         // Get valid indexPath of date to scroll to
         let retrievedPathsFromDates = self.pathsFromDates([date])
         if retrievedPathsFromDates.isEmpty { return }
         let sectionIndexPath =  self.pathsFromDates([date])[0]
-        
+
         // Ensure valid scroll position is set
         var position: UICollectionViewScrollPosition = self.scrollDirection == .horizontal ? .left : .top
         if !self.scrollingMode.pagingIsEnabled(),
@@ -510,7 +510,7 @@ extension JTAppleCalendarView {
                 }
             }
         }
-        
+
         var point: CGPoint?
         switch self.scrollingMode {
         case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrame, .nonStopToSection:
@@ -520,7 +520,6 @@ extension JTAppleCalendarView {
         default:
             break
         }
-        
         handleScroll(point: point,
                      indexPath: sectionIndexPath,
                      triggerScrollToDateDelegate: triggerScrollToDateDelegate,
@@ -540,7 +539,6 @@ extension JTAppleCalendarView {
                                       extraAddedOffset: CGFloat = 0,
                                       completionHandler: (() -> Void)? = nil) {
         if functionIsUnsafeSafeToRun {
-            if !animation  { anchorDate = date}
             generalDelayedExecutionClosure.append {[unowned self] in
                 self.scrollToHeaderForDate(date,
                                            triggerScrollToDateDelegate: triggerScrollToDateDelegate,
