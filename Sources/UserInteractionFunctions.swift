@@ -67,13 +67,21 @@ extension JTAppleCalendarView {
     ///     - CellState: The state of the found cell
     public func cellStatus(for date: Date, completionHandler: @escaping (_ cellStatus: CellState?) ->()) {
         if functionIsUnsafeSafeToRun {
-            generalDelayedExecutionClosure.append {[unowned self] in
+            addToDelayedHandlers {[unowned self] in
                 self.cellStatus(for: date, completionHandler: completionHandler)
             }
             return
         }
         let retval = cellStatus(for: date)
         completionHandler(retval)
+    }
+    
+    func addToDelayedHandlers(function: @escaping ()->()) {
+        if isScrollInProgress {
+            scrollDelayedExecutionClosure.append { function() }
+        } else {
+            generalDelayedExecutionClosure.append { function() }
+        }
     }
     
     /// Returns the month status for a given date
@@ -134,9 +142,7 @@ extension JTAppleCalendarView {
     /// returns:
     ///     - An array of the successfully generated dates
     public func generateDateRange(from startDate: Date, to endDate: Date) -> [Date] {
-        if startDate > endDate {
-            return []
-        }
+        if startDate > endDate { return [] }
         var returnDates: [Date] = []
         var currentDate = startDate
         repeat {
@@ -379,7 +385,7 @@ extension JTAppleCalendarView {
                                 extraAddedOffset: CGFloat = 0,
                                 completionHandler: (() -> Void)? = nil) {
         if functionIsUnsafeSafeToRun {
-            generalDelayedExecutionClosure.append {[unowned self] in
+            addToDelayedHandlers {[unowned self] in
                 self.scrollToSegment(destination,
                                      triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                      animateScroll: animateScroll,
@@ -473,7 +479,8 @@ extension JTAppleCalendarView {
         
         // Ensure scrolling to date is safe to run
         if functionIsUnsafeSafeToRun {
-            generalDelayedExecutionClosure.append {[unowned self] in
+            if !animateScroll  { anchorDate = date} // Gets rid of visible scrolling when calendar starts
+            addToDelayedHandlers {[unowned self] in
                 self.scrollToDate(date,
                                   triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                   animateScroll: animateScroll,
@@ -540,7 +547,8 @@ extension JTAppleCalendarView {
                                       extraAddedOffset: CGFloat = 0,
                                       completionHandler: (() -> Void)? = nil) {
         if functionIsUnsafeSafeToRun {
-            generalDelayedExecutionClosure.append {[unowned self] in
+            if !animation  { anchorDate = date}
+            addToDelayedHandlers { [unowned self] in
                 self.scrollToHeaderForDate(date,
                                            triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                            withAnimation: animation,
@@ -580,9 +588,7 @@ extension JTAppleCalendarView {
     ///     - DateSegmentInfo
     public func visibleDates(_ completionHandler: @escaping (_ dateSegmentInfo: DateSegmentInfo) ->()) {
         if functionIsUnsafeSafeToRun {
-            generalDelayedExecutionClosure.append {[unowned self] in
-                self.visibleDates(completionHandler)
-            }
+            addToDelayedHandlers { [unowned self] in self.visibleDates(completionHandler) }
             return
         }
         let retval = visibleDates()
