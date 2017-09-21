@@ -319,39 +319,30 @@ extension JTAppleCalendarView {
             if pathFromDates.isEmpty { continue }
             let sectionIndexPath = pathFromDates[0]
             
-            if !internalCollectionView(self, shouldSelectItemAt: sectionIndexPath, selectionType: .programatic) { continue }
+            
+            if !handleShouldSelectionValueChange(self, action: .shouldSelect, indexPath: sectionIndexPath, selectionType: .programatic) { continue }
             
             // Remove old selections
-            if self.allowsMultipleSelection == false {
+            if !allowsMultipleSelection {
                 // If single selection is ON
                 let selectedIndexPaths = self.selectedCellData
-                // made a copy because the array is about to be mutated
-                for cellData in selectedIndexPaths {
-                    if cellData.value.indexPath != sectionIndexPath {
-                        let pathsToReload = deselectDate(oldIndexPath: cellData.value.indexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                        allIndexPathsToReload.formUnion(pathsToReload)
-                    }
+                
+                if let cellData = selectedIndexPaths.first, cellData.value.indexPath != sectionIndexPath {
+                    programaticallyDeselectItem(at: cellData.value.indexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
                 }
                 // Add new selections Must be added here. If added in delegate didSelectItemAtIndexPath
-                let pathsToReload = selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
-                allIndexPathsToReload.formUnion(pathsToReload)
+                programaticallySelectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
             } else {
                 // If multiple selection is on. Multiple selection behaves differently to singleselection.
                 // It behaves like a toggle. unless keepSelectionIfMultiSelectionAllowed is true.
                 // If user wants to force selection if multiselection is enabled, then removed the selected dates from generated dates
                 if keepSelectionIfMultiSelectionAllowed, selectedDates.contains(date) {
-                    // Just add it to be reloaded
-                    allIndexPathsToReload.insert(sectionIndexPath)
+                    allIndexPathsToReload.insert(sectionIndexPath) // Just add it to be reloaded
                 } else {
-                    if selectedCellData[sectionIndexPath] != nil {
-                        // If this cell is already selected, then deselect it
-                        let pathsToReload = self.deselectDate(oldIndexPath: sectionIndexPath, shouldTriggerSelecteionDelegate: triggerSelectionDelegate)
-                        allIndexPathsToReload.formUnion(pathsToReload)
-                    } else {
-                        // Add new selections
-                        // Must be added here. If added in delegate didSelectItemAtIndexPath
-                        let pathsToReload = self.selectDate(indexPath: sectionIndexPath, date: date, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
-                        allIndexPathsToReload.formUnion(pathsToReload)
+                    if selectedCellData[sectionIndexPath] != nil { // If this cell is already selected, then deselect it
+                        programaticallyDeselectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
+                    } else { // If this cell is unselected, then select it
+                        programaticallySelectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
                     }
                 }
             }
@@ -365,6 +356,16 @@ extension JTAppleCalendarView {
                 self.batchReloadIndexPaths(Array(allIndexPathsToReload))
             }
         }
+    }
+
+    func programaticallyDeselectItem(at indexPath: IndexPath, shouldTriggerSelectionDelegate: Bool) {
+        deselectItem(at: indexPath, animated: false)
+        handleSelectionValueChanged(self, action: .didDeselect, indexPath: indexPath, selectionType: .programatic, shouldTriggerSelectionDelegate: shouldTriggerSelectionDelegate)
+    }
+
+    func programaticallySelectItem(at indexPath: IndexPath, shouldTriggerSelectionDelegate: Bool) {
+        selectItem(at: indexPath, animated: false, scrollPosition: [])
+        handleSelectionValueChanged(self, action: .didSelect, indexPath: indexPath, selectionType: .programatic, shouldTriggerSelectionDelegate: shouldTriggerSelectionDelegate)
     }
     
     /// Scrolls the calendar view to the next section view. It will execute a completion handler at the end of scroll animation if provided.

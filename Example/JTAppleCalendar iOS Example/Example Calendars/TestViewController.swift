@@ -17,7 +17,6 @@ class TestViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
         }
@@ -89,7 +88,7 @@ class TestViewController: UIViewController {
     }
     
     @IBAction func debugthis(_ sender: UIButton) {
-//        calendarView.debugThis()
+        print(calendarView.selectedDates)
     }
     @IBAction func singleSelect(_ sender: UIButton) {
         calendarView.allowsMultipleSelection = false

@@ -136,3 +136,7 @@ internal enum DelayedTaskType {
 internal enum SelectionAction {
     case didSelect, didDeselect
 }
+
+internal enum ShouldSelectionAction {
+    case shouldSelect, shouldDeselect
+}

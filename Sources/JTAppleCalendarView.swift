@@ -795,18 +795,15 @@ extension JTAppleCalendarView {
         return cellState
     }
     
-    
     func batchReloadIndexPaths(_ indexPaths: [IndexPath]) {
         let visiblePaths = indexPathsForVisibleItems
         var visibleCellsToReload: [JTAppleCell: IndexPath] = [:]
         
         for path in indexPaths {
             if calendarViewLayout.cachedValue(for: path.item, section: path.section) == nil { continue }
+            pathsToReload.insert(path)
             if visiblePaths.contains(path) {
-                pathsToReload.insert(path)
                 visibleCellsToReload[cellForItem(at: path) as! JTAppleCell] = path
-            } else {
-                pathsToReload.insert(path)
             }
         }
         
@@ -817,69 +814,6 @@ extension JTAppleCalendarView {
             }
         }
     }
-    
-    func selectDate(indexPath: IndexPath, date: Date, shouldTriggerSelectionDelegate: Bool) -> Set<IndexPath> {
-        var allIndexPathsToReload: Set<IndexPath> = []
-        selectItem(at: indexPath, animated: false, scrollPosition: [])
-        
-        // If triggereing is enabled, then let their delegate
-        // handle the reloading of view, else we will reload the data
-        if shouldTriggerSelectionDelegate {
-            handleSelectionValueChanged(self, action: .didSelect, indexPath: indexPath, selectionType: .programatic)
-        } else {
-            allIndexPathsToReload.insert(indexPath)
-            
-            // Although we do not want the delegate triggered,
-            // we still want counterpart cells to be selected
-            let cellState = self.cellStateFromIndexPath(indexPath)
-            addCellToSelectedSet(indexPath, date: date, cellState: cellState)
-            if isRangeSelectionUsed {
-                allIndexPathsToReload.formUnion(validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath))
-            }
-            if let selectedCounterPartIndexPath = self.selectCounterPartCellIndexPath(indexPath, date: date, dateOwner: cellState.dateBelongsTo) {
-                // Also If there was a counterpart cell then it will also need to be reloaded
-                allIndexPathsToReload.insert(selectedCounterPartIndexPath)
-                if isRangeSelectionUsed {
-                    allIndexPathsToReload.formUnion(validForwardAndBackwordSelectedIndexes(forIndexPath: selectedCounterPartIndexPath))
-                }
-            }
-        }
-        return allIndexPathsToReload
-    }
-    
-    func deselectDate(oldIndexPath: IndexPath, shouldTriggerSelecteionDelegate: Bool) -> Set<IndexPath> {
-        var allIndexPathsToReload: Set<IndexPath> = []
-        
-        guard let oldDate = selectedCellData[oldIndexPath]?.date else { return allIndexPathsToReload }
-
-        self.deselectItem(at: oldIndexPath, animated: false)
-        
-        deleteCellFromSelectedSetIfSelected(oldIndexPath)
-
-        // If delegate triggering is enabled, let the
-        // delegate function handle the cell
-        if shouldTriggerSelecteionDelegate {
-            handleSelectionValueChanged(self, action: .didDeselect, indexPath: oldIndexPath, selectionType: .programatic)
-        } else {
-            // Although we do not want the delegate triggered,
-            // we still want counterpart cells to be deselected
-            allIndexPathsToReload.insert(oldIndexPath)
-            let cellState = self.cellStateFromIndexPath(oldIndexPath)
-            if isRangeSelectionUsed {
-                allIndexPathsToReload.formUnion(validForwardAndBackwordSelectedIndexes(forIndexPath: oldIndexPath))
-            }
-            if let anUnselectedCounterPartIndexPath = self.deselectCounterPartCellIndexPath(oldIndexPath, date: oldDate, dateOwner: cellState.dateBelongsTo) {
-                // If there was a counterpart cell then
-                // it will also need to be reloaded
-                allIndexPathsToReload.insert(anUnselectedCounterPartIndexPath)
-                if isRangeSelectionUsed {
-                    allIndexPathsToReload.formUnion(validForwardAndBackwordSelectedIndexes(forIndexPath: anUnselectedCounterPartIndexPath))
-                }
-            }
-        }
-        return allIndexPathsToReload
-    }
-
     
     func addCellToSelectedSet(_ indexPath: IndexPath, date: Date, cellState: CellState) {
         selectedCellData[indexPath] = SelectedCellData(indexPath: indexPath, date: date, cellState: cellState)

@@ -48,12 +48,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         } else {
             cellState = cellStateFromIndexPath(indexPath)
         }
-        
-        calendarDelegate!.calendar(self,
-                                   willDisplay: cell as! JTAppleCell,
-                                   forItemAt: cellState.date,
-                                   cellState: cellState,
-                                   indexPath: indexPath)
+        calendarDelegate!.calendar(self, willDisplay: cell as! JTAppleCell, forItemAt: cellState.date, cellState: cellState, indexPath: indexPath)
     }
     
     /// Asks your data source object for the cell that corresponds
@@ -79,7 +74,6 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         return monthMap.count
     }
     
-    
     /// Asks your data source object for the number of items in the
     /// specified section. The number of rows in section.
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -91,43 +85,16 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         return count
     }
     
-    
     /// Asks the delegate if the specified item should be selected.
     /// true if the item should be selected or false if it should not.
     public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return internalCollectionView(collectionView, shouldSelectItemAt: indexPath, selectionType: .userInitiated)
-    }
-    
-    internal func internalCollectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath, selectionType: SelectionType? = nil) -> Bool {
-        if let
-            delegate = calendarDelegate,
-            let infoOfDateUserSelected = dateOwnerInfoFromPath(indexPath) {
-            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-            let cellState = cellStateFromIndexPath(indexPath,
-                                                   withDateInfo: infoOfDateUserSelected,
-                                                   selectionType: selectionType)
-            return delegate.calendar(self, shouldSelectDate: infoOfDateUserSelected.date, cell: cell, cellState: cellState)
-        }
-        return false
+        return handleShouldSelectionValueChange(collectionView, action: .shouldSelect, indexPath: indexPath, selectionType: .userInitiated)
     }
     
     /// Asks the delegate if the specified item should be deselected.
     /// true if the item should be deselected or false if it should not.
     public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-        return internalCollectionView(collectionView, shouldDeselectItemAt: indexPath, selectionType: .userInitiated)
-    }
-    
-    internal func internalCollectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath, selectionType: SelectionType? = nil) -> Bool {
-        if
-            let delegate = calendarDelegate,
-            let infoOfDateDeSelectedByUser = dateOwnerInfoFromPath(indexPath) {
-            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-            let cellState = cellStateFromIndexPath(indexPath,
-                                                   withDateInfo: infoOfDateDeSelectedByUser,
-                                                   selectionType: selectionType)
-            return delegate.calendar(self, shouldDeselectDate: infoOfDateDeSelectedByUser.date, cell: cell, cellState: cellState)
-        }
-        return false
+        return handleShouldSelectionValueChange(collectionView, action: .shouldDeselect, indexPath: indexPath, selectionType: .userInitiated)
     }
 
     /// Tells the delegate that the item at the specified index
@@ -139,7 +106,20 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         handleSelectionValueChanged(collectionView, action: .didSelect, indexPath: indexPath, selectionType: .userInitiated)
     }
     
-    func handleSelectionValueChanged(_ collectionView: UICollectionView, action: SelectionAction, indexPath: IndexPath, selectionType: SelectionType) {
+    /// Tells the delegate that the item at the specified path was deselected.
+    /// The collection view calls this method when the user successfully
+    /// deselects an item in the collection view.
+    /// It does not call this method when you programmatically deselect items.
+    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        handleSelectionValueChanged(collectionView, action: .didDeselect, indexPath: indexPath, selectionType: .userInitiated)
+    }
+    
+    public func sizeOfDecorationView(indexPath: IndexPath) -> CGRect {
+        guard let size = calendarDelegate?.sizeOfDecorationView(indexPath: indexPath) else { return .zero }
+        return size
+    }
+    
+    func handleSelectionValueChanged(_ collectionView: UICollectionView, action: SelectionAction, indexPath: IndexPath, selectionType: SelectionType, shouldTriggerSelectionDelegate: Bool = true) {
         guard
             let delegate = calendarDelegate,
             let infoOfDate = dateOwnerInfoFromPath(indexPath) else {
@@ -149,16 +129,15 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         var localPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
         
         let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
-        if cell == nil { localPathsToReload.insert(indexPath) }
+        if !shouldTriggerSelectionDelegate || cell == nil {
+            pathsToReload.insert(indexPath)
+            localPathsToReload.insert(indexPath)
+        }
         
         let isSelected = action == .didSelect ? true : false
         
         // If cell has a counterpart cell, then select it as well
-        let cellState = cellStateFromIndexPath(indexPath,
-                                               withDateInfo: infoOfDate,
-                                               cell: cell,
-                                               isSelected: isSelected,
-                                               selectionType: selectionType)
+        let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDate, cell: cell, isSelected: isSelected, selectionType: selectionType)
         
         // Update model
         let cleanupAction: (IndexPath, Date, DateOwner) -> IndexPath?
@@ -187,11 +166,12 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
             localPathsToReload.formUnion(counterPathsToReload)
         }
         
-        if action == .didSelect {
-            delegate.calendar(self, didSelectDate: infoOfDate.date, cell: cell, cellState: cellState)
-        } else {
-            delegate.calendar(self, didDeselectDate: infoOfDate.date, cell: cell, cellState: cellState)
-            
+        if shouldTriggerSelectionDelegate {
+            if action == .didSelect {
+                delegate.calendar(self, didSelectDate: infoOfDate.date, cell: cell, cellState: cellState)
+            } else {
+                delegate.calendar(self, didDeselectDate: infoOfDate.date, cell: cell, cellState: cellState)
+            }
         }
         
         if !localPathsToReload.isEmpty {
@@ -199,16 +179,21 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         }
     }
     
-    /// Tells the delegate that the item at the specified path was deselected.
-    /// The collection view calls this method when the user successfully
-    /// deselects an item in the collection view.
-    /// It does not call this method when you programmatically deselect items.
-    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        handleSelectionValueChanged(collectionView, action: .didDeselect, indexPath: indexPath, selectionType: .userInitiated)
-    }
-    
-    public func sizeOfDecorationView(indexPath: IndexPath) -> CGRect {
-        guard let size = calendarDelegate?.sizeOfDecorationView(indexPath: indexPath) else { return .zero }
-        return size
+    func handleShouldSelectionValueChange(_ collectionView: UICollectionView, action: ShouldSelectionAction, indexPath: IndexPath, selectionType: SelectionType) -> Bool {
+        if let
+            delegate = calendarDelegate,
+            let infoOfDate = dateOwnerInfoFromPath(indexPath) {
+            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
+            let cellState = cellStateFromIndexPath(indexPath,
+                                                   withDateInfo: infoOfDate,
+                                                   selectionType: selectionType)
+            switch action {
+            case .shouldSelect:
+                return delegate.calendar(self, shouldSelectDate: infoOfDate.date, cell: cell, cellState: cellState)
+            case .shouldDeselect:
+                return delegate.calendar(self, shouldDeselectDate: infoOfDate.date, cell: cell, cellState: cellState)
+            }
+        }
+        return false
     }
 }
