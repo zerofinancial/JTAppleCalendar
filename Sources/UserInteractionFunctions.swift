@@ -50,7 +50,7 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - CellState: The state of the found cell
     public func cellStatus(for date: Date) -> CellState? {
-        if functionIsUnsafeSafeToRun { return nil }
+        if !isCalendarLayoutLoaded || isReloadDataInProgress { return nil }
         // validate the path
         let paths = pathsFromDates([date])
         // Jt101 change this function to also return
@@ -66,7 +66,7 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - CellState: The state of the found cell
     public func cellStatus(for date: Date, completionHandler: @escaping (_ cellStatus: CellState?) ->()) {
-        if functionIsUnsafeSafeToRun {
+        if !isCalendarLayoutLoaded || isReloadDataInProgress {
             addToDelayedHandlers {[unowned self] in
                 self.cellStatus(for: date, completionHandler: completionHandler)
             }
