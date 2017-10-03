@@ -158,7 +158,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         if !localPathsToReload.isEmpty {
             let reloadPaths = localPathsToReload
             for path in reloadPaths {
-                if let validCounterPath = self.selectedCellData[path]?.counterIndexPath {
+                if let validCounterPath = selectedCellData[path]?.counterIndexPath {
                     localPathsToReload.insert(validCounterPath)
                 }
             }
@@ -179,7 +179,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         }
         
         if !localPathsToReload.isEmpty {
-            self.batchReloadIndexPaths(Array(localPathsToReload))
+            batchReloadIndexPaths(Array(localPathsToReload))
         }
     }
     

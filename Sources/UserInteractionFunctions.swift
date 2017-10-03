@@ -218,7 +218,7 @@ extension JTAppleCalendarView {
             calendarViewLayout.invalidateLayout()
             setupMonthInfoAndMap(with: data.configParameters)
             
-            self.selectedCellData = [:]
+            selectedCellData = [:]
         }
         
         // Restore the selected index paths if dates were already selected.
@@ -320,7 +320,7 @@ extension JTAppleCalendarView {
             // If the date is not within valid boundaries, then exit
             if !(firstDayOfDate >= startOfMonthCache! && firstDayOfDate <= endOfMonthCache!) { continue }
             
-            let pathFromDates = self.pathsFromDates([date])
+            let pathFromDates = pathsFromDates([date])
             // If the date path youre searching for, doesnt exist, return
             if pathFromDates.isEmpty { continue }
             let sectionIndexPath = pathFromDates[0]
@@ -331,7 +331,7 @@ extension JTAppleCalendarView {
             // Remove old selections
             if !allowsMultipleSelection {
                 // If single selection is ON
-                let selectedIndexPaths = self.selectedCellData
+                let selectedIndexPaths = selectedCellData
                 
                 if let cellData = selectedIndexPaths.first, cellData.value.indexPath != sectionIndexPath {
                     programaticallyDeselectItem(at: cellData.value.indexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
@@ -497,18 +497,18 @@ extension JTAppleCalendarView {
         // Ensure date is within valid boundary
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
-        if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) { return }
+        if !((firstDayOfDate >= startOfMonthCache!) && (firstDayOfDate <= endOfMonthCache!)) { return }
 
         // Get valid indexPath of date to scroll to
-        let retrievedPathsFromDates = self.pathsFromDates([date])
+        let retrievedPathsFromDates = pathsFromDates([date])
         if retrievedPathsFromDates.isEmpty { return }
-        let sectionIndexPath =  self.pathsFromDates([date])[0]
+        let sectionIndexPath = pathsFromDates([date])[0]
 
         // Ensure valid scroll position is set
-        var position: UICollectionViewScrollPosition = self.scrollDirection == .horizontal ? .left : .top
-        if !self.scrollingMode.pagingIsEnabled(),
+        var position: UICollectionViewScrollPosition = scrollDirection == .horizontal ? .left : .top
+        if !scrollingMode.pagingIsEnabled(),
             let validPosition = preferredScrollPosition {
-            if self.scrollDirection == .horizontal {
+            if scrollDirection == .horizontal {
                 if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
                     position = validPosition
                 }
@@ -520,10 +520,10 @@ extension JTAppleCalendarView {
         }
 
         var point: CGPoint?
-        switch self.scrollingMode {
+        switch scrollingMode {
         case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrame, .nonStopToSection:
-            if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
-                point = self.targetPointForItemAt(indexPath: sectionIndexPath)
+            if scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
+                point = targetPointForItemAt(indexPath: sectionIndexPath)
             }
         default:
             break

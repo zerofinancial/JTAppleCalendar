@@ -137,12 +137,12 @@ open class JTAppleCalendarView: UICollectionView {
         // Ensure date is within valid boundary
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
-        if !((firstDayOfDate >= self.startOfMonthCache!) && (firstDayOfDate <= self.endOfMonthCache!)) { return retval }
+        if !((firstDayOfDate >= startOfMonthCache!) && (firstDayOfDate <= endOfMonthCache!)) { return retval }
         
         // Get valid indexPath of date to scroll to
-        let retrievedPathsFromDates = self.pathsFromDates([date])
+        let retrievedPathsFromDates = pathsFromDates([date])
         if retrievedPathsFromDates.isEmpty { return retval }
-        let sectionIndexPath =  self.pathsFromDates([date])[0]
+        let sectionIndexPath = pathsFromDates([date])[0]
         
         
         if calendarViewLayout.thereAreHeaders && scrollDirection == .vertical {
@@ -154,9 +154,9 @@ open class JTAppleCalendarView: UICollectionView {
             //            if self.scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
             
         } else {
-            switch self.scrollingMode {
+            switch scrollingMode {
             case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrame:
-                if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
+                if scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
                     retval = self.targetPointForItemAt(indexPath: sectionIndexPath) ?? .zero
                 }
             default:
@@ -259,7 +259,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     func scrollTo(indexPath: IndexPath, triggerScrollToDateDelegate: Bool, isAnimationEnabled: Bool, position: UICollectionViewScrollPosition, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
         isScrollInProgress = true
-        if let validCompletionHandler = completionHandler { self.scrollDelayedExecutionClosure.append(validCompletionHandler) }
+        if let validCompletionHandler = completionHandler { scrollDelayedExecutionClosure.append(validCompletionHandler) }
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         DispatchQueue.main.async {
             self.scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
@@ -280,7 +280,7 @@ open class JTAppleCalendarView: UICollectionView {
         var fixedScrollSize: CGFloat = 0
         switch scrollingMode {
         case .stopAtEachSection, .stopAtEachCalendarFrame, .nonStopToSection:
-            if self.scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
+            if scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
                 // Horizontal has a fixed width.
                 // Vertical with no header has fixed height
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
@@ -362,7 +362,7 @@ open class JTAppleCalendarView: UICollectionView {
         
         let maxYCalendarOffset = max(0, self.contentSize.height - self.frame.size.height)
         var topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
-        if self.scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
+        if scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
         DispatchQueue.main.async {
             self.setContentOffset(topOfHeader, animated: animation)
             if (animation && self.calendarOffsetIsAlreadyAtScrollPosition(forOffset: topOfHeader)) ||
@@ -439,12 +439,12 @@ open class JTAppleCalendarView: UICollectionView {
             let selectedDates = self.selectedDates
             
             // Get the new paths
-            let newPaths = self.pathsFromDates(selectedDates)
+            let newPaths = pathsFromDates(selectedDates)
             
             // Get the new counter Paths
             var newCounterPaths: [IndexPath] = []
             for date in selectedDates {
-                if let counterPath = self.indexPathOfdateCellCounterPath(date, dateOwner: .thisMonth) {
+                if let counterPath = indexPathOfdateCellCounterPath(date, dateOwner: .thisMonth) {
                     newCounterPaths.append(counterPath)
                 }
             }
