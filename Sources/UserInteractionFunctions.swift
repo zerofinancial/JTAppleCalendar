@@ -594,4 +594,10 @@ extension JTAppleCalendarView {
         let retval = visibleDates()
         completionHandler(retval)
     }
+    
+    /// Retrieves the current section
+    public func currentSection() -> Int? {
+        let minVisiblePaths = calendarViewLayout.minimumVisibleIndexPaths()
+        return minVisiblePaths.cellIndex?.section
+    }
 }

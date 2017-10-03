@@ -76,6 +76,10 @@
 		6B6B1F741DA1CD5D0063A678 /* UICollectionViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */; };
 		6B74405E1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */; };
 		6B74405F1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */; };
+		6B75F55E1F83A60200AFC07F /* InternalQueryFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B75F55D1F83A60200AFC07F /* InternalQueryFunctions.swift */; };
+		6B75F55F1F83A60200AFC07F /* InternalQueryFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B75F55D1F83A60200AFC07F /* InternalQueryFunctions.swift */; };
+		6B75F5611F83A7B600AFC07F /* InternalActionFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B75F5601F83A7B600AFC07F /* InternalActionFunctions.swift */; };
+		6B75F5621F83A7B600AFC07F /* InternalActionFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B75F5601F83A7B600AFC07F /* InternalActionFunctions.swift */; };
 		6B9027EB1F48824800BDF3C3 /* TestOrientationChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9027EA1F48824800BDF3C3 /* TestOrientationChanges.swift */; };
 		6B9027EC1F48824800BDF3C3 /* TestOrientationChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9027EA1F48824800BDF3C3 /* TestOrientationChanges.swift */; };
 		6B9C4F561F15BBF3006E4ABA /* CellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF361D5BF5D7009174A2 /* CellView.swift */; };
@@ -213,6 +217,8 @@
 		6B6B1F6F1DA1CC130063A678 /* CalendarStructs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarStructs.swift; sourceTree = "<group>"; };
 		6B6B1F721DA1CD5D0063A678 /* UICollectionViewDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICollectionViewDelegates.swift; sourceTree = "<group>"; };
 		6B74405D1D6ADE6A00DE2386 /* CalendarEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarEnums.swift; sourceTree = "<group>"; };
+		6B75F55D1F83A60200AFC07F /* InternalQueryFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalQueryFunctions.swift; sourceTree = "<group>"; };
+		6B75F5601F83A7B600AFC07F /* InternalActionFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalActionFunctions.swift; sourceTree = "<group>"; };
 		6B9027EA1F48824800BDF3C3 /* TestOrientationChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOrientationChanges.swift; sourceTree = "<group>"; };
 		6BA9245D1D8FD33F00415488 /* JTAppleCalendarDelegateProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCalendarDelegateProtocol.swift; sourceTree = "<group>"; };
 		6BAB2C411E9B49D500FF125F /* JTAppleCalendarVariables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JTAppleCalendarVariables.swift; sourceTree = "<group>"; };
@@ -336,6 +342,8 @@
 				6B60DED81D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift */,
 				6B60DED91D5BDD4D009174A2 /* JTAppleCell.swift */,
 				6B60DEDC1D5BDD4D009174A2 /* UserInteractionFunctions.swift */,
+				6B75F55D1F83A60200AFC07F /* InternalQueryFunctions.swift */,
+				6B75F5601F83A7B600AFC07F /* InternalActionFunctions.swift */,
 				6B60DEBF1D5BDA46009174A2 /* JTAppleCalendar.h */,
 				6B60DECE1D5BDA74009174A2 /* Info-tvOS.plist */,
 				6B60DEC11D5BDA46009174A2 /* Info-iOS.plist */,
@@ -879,8 +887,10 @@
 				6BAB2C421E9B49D500FF125F /* JTAppleCalendarVariables.swift in Sources */,
 				6B60DEE01D5BDD4D009174A2 /* JTAppleCalendarView.swift in Sources */,
 				6B60DEDF1D5BDD4D009174A2 /* JTAppleCalendarLayout.swift in Sources */,
+				6B75F55E1F83A60200AFC07F /* InternalQueryFunctions.swift in Sources */,
 				6B74405E1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */,
 				6B60DEE11D5BDD4D009174A2 /* JTAppleCollectionReusableView.swift in Sources */,
+				6B75F5611F83A7B600AFC07F /* InternalActionFunctions.swift in Sources */,
 				6B60DEDE1D5BDD4D009174A2 /* UIScrollViewDelegates.swift in Sources */,
 				6B60DEE21D5BDD4D009174A2 /* JTAppleCell.swift in Sources */,
 				6B6B1F701DA1CC130063A678 /* CalendarStructs.swift in Sources */,
@@ -900,8 +910,10 @@
 				6BAB2C431E9B49D500FF125F /* JTAppleCalendarVariables.swift in Sources */,
 				6B60DEE91D5BDD58009174A2 /* JTAppleCalendarView.swift in Sources */,
 				6B60DEE81D5BDD58009174A2 /* JTAppleCalendarLayout.swift in Sources */,
+				6B75F55F1F83A60200AFC07F /* InternalQueryFunctions.swift in Sources */,
 				6B74405F1D6ADE6A00DE2386 /* CalendarEnums.swift in Sources */,
 				6B60DEEA1D5BDD58009174A2 /* JTAppleCollectionReusableView.swift in Sources */,
+				6B75F5621F83A7B600AFC07F /* InternalActionFunctions.swift in Sources */,
 				6B60DEE71D5BDD58009174A2 /* UIScrollViewDelegates.swift in Sources */,
 				6B60DEEB1D5BDD58009174A2 /* JTAppleCell.swift in Sources */,
 				6B6B1F711DA1CC130063A678 /* CalendarStructs.swift in Sources */,
