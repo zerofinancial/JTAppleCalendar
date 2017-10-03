@@ -244,27 +244,6 @@ public struct Month {
         }
         return (startIndex: startIndex, endIndex: endIndex)
     }
-    
-//    func startDayFor(section: Int) -> Int? {
-//        var retval: Int?
-//        
-//        if !(0..<sections.count ~= section)  {
-//            return nil
-//        }
-//        if section == 0 {
-//            retval = 1
-//        } else {
-//            var diff: Int = 0
-//            for (index, _) in sections.enumerated() {
-//                guard let bounds = boundaryIndicesFor(section: index), index < section else {
-//                    break
-//                }
-//                diff += bounds.endIndex - bounds.startIndex + 1
-//            }
-//            retval = diff + 1
-//        }
-//        return retval
-//    }
 }
 
 struct JTAppleDateConfigGenerator {
