@@ -34,6 +34,8 @@
 
 [Installation](#installation)
 
+### Important Change in version 7.1.0 --> https://github.com/patchthecode/JTAppleCalendar/issues/553
+
 Tutorials
   
   **1. Building a Calendar from scratch**
