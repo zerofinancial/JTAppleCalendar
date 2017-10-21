@@ -95,7 +95,6 @@
 		6BF7B1FF1D606BA600D60900 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0F1D5BE834009174A2 /* ViewController.swift */; };
 		6BF7B2001D606C0F00D60900 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B60DF0D1D5BE834009174A2 /* AppDelegate.swift */; };
 		6BFB05231E7F9AA400ACE696 /* SectionDecorationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6BFB05221E7F9AA400ACE696 /* SectionDecorationView.xib */; };
-		6BFB05241E7F9AA400ACE696 /* SectionDecorationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6BFB05221E7F9AA400ACE696 /* SectionDecorationView.xib */; };
 		6BFB05251E7F9C0C00ACE696 /* monthBorder.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BFB051C1E7F7EAE00ACE696 /* monthBorder.png */; };
 /* End PBXBuildFile section */
 
@@ -800,7 +799,6 @@
 				6B60DF5C1D5BFE41009174A2 /* Assets.xcassets in Resources */,
 				6B60DF5A1D5BFE41009174A2 /* Main.storyboard in Resources */,
 				6B60DF6E1D5C00A9009174A2 /* PinkSectionHeaderView.xib in Resources */,
-				6BFB05241E7F9AA400ACE696 /* SectionDecorationView.xib in Resources */,
 				6B60DF701D5C00BB009174A2 /* WhiteSectionHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
