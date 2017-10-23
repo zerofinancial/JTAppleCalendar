@@ -290,8 +290,8 @@ extension JTAppleCalendarView {
             let selectedDates = self.selectedDatesSet
             if !selectedDates.contains(date) || selectedDates.isEmpty  { return .none }
             
-            let dateBefore = self.cachedConfiguration.calendar.date(byAdding: .day, value: 1, to: date)!
-            let dateAfter = self.cachedConfiguration.calendar.date(byAdding: .day, value: -1, to: date)!
+            let dateBefore = self.cachedConfiguration.calendar.date(byAdding: .day, value: -1, to: date)!
+            let dateAfter = self.cachedConfiguration.calendar.date(byAdding: .day, value: 1, to: date)!
             
             let dateBeforeIsSelected = selectedDates.contains(dateBefore)
             let dateAfterIsSelected = selectedDates.contains(dateAfter)
