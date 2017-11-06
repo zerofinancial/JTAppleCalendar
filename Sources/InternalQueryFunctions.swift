@@ -62,7 +62,7 @@ extension JTAppleCalendarView {
             break
         }
         
-        let section = CGFloat(Int(theTargetContentOffset / fixedScrollSize))
+        let section = CGFloat(round(theTargetContentOffset / fixedScrollSize))
         let destinationRectOffset = (fixedScrollSize * section)
         var x: CGFloat = 0
         var y: CGFloat = 0
