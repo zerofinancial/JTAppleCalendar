@@ -62,7 +62,11 @@ extension JTAppleCalendarView {
             break
         }
         
-        let section = CGFloat(round(theTargetContentOffset / fixedScrollSize))
+        var section = theTargetContentOffset / fixedScrollSize
+        let roundedSection = round(section)
+        if abs(roundedSection - section) < errorDelta { section = roundedSection }
+        section = CGFloat(Int(section))
+        
         let destinationRectOffset = (fixedScrollSize * section)
         var x: CGFloat = 0
         var y: CGFloat = 0

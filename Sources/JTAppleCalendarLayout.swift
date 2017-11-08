@@ -28,7 +28,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var allowsDateCellStretching = true
     var shouldClearCacheOnInvalidate = true
     var firstContentOffsetWasSet = false
-    let errorDelta: CGFloat = 0.0000001
     
     var lastSetCollectionViewSize: CGRect = .zero
     
