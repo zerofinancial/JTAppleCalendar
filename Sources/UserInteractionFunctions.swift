@@ -343,7 +343,16 @@ extension JTAppleCalendarView {
                 // It behaves like a toggle. unless keepSelectionIfMultiSelectionAllowed is true.
                 // If user wants to force selection if multiselection is enabled, then removed the selected dates from generated dates
                 if keepSelectionIfMultiSelectionAllowed, selectedDates.contains(date) {
-                    allIndexPathsToReload.insert(sectionIndexPath) // Just add it to be reloaded
+                    guard
+                        let selectedIndexPaths = indexPathsForSelectedItems,
+                        selectedIndexPaths.contains(sectionIndexPath) else {
+                            // Select the item if it is not selected (not included in indexPathsForSelectedItems).
+                            // This makes the cell to be in selected state thus, if selected physically, will call the didDeselect function
+                            programaticallySelectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
+                            continue
+                    }
+                    // Just add it to be reloaded, if it is already selected
+                    allIndexPathsToReload.insert(sectionIndexPath)
                 } else {
                     if selectedCellData[sectionIndexPath] != nil { // If this cell is already selected, then deselect it
                         programaticallyDeselectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
