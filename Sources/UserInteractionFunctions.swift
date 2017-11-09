@@ -325,9 +325,6 @@ extension JTAppleCalendarView {
             if pathFromDates.isEmpty { continue }
             let sectionIndexPath = pathFromDates[0]
             
-            
-            if !handleShouldSelectionValueChange(self, action: .shouldSelect, indexPath: sectionIndexPath, selectionType: .programatic) { continue }
-            
             // Remove old selections
             if !allowsMultipleSelection {
                 // If single selection is ON
@@ -374,11 +371,13 @@ extension JTAppleCalendarView {
     }
 
     func programaticallyDeselectItem(at indexPath: IndexPath, shouldTriggerSelectionDelegate: Bool) {
+        if !handleShouldSelectionValueChange(self, action: .shouldDeselect, indexPath: indexPath, selectionType: .programatic) { return }
         deselectItem(at: indexPath, animated: false)
         handleSelectionValueChanged(self, action: .didDeselect, indexPath: indexPath, selectionType: .programatic, shouldTriggerSelectionDelegate: shouldTriggerSelectionDelegate)
     }
 
     func programaticallySelectItem(at indexPath: IndexPath, shouldTriggerSelectionDelegate: Bool) {
+        if !handleShouldSelectionValueChange(self, action: .shouldSelect, indexPath: indexPath, selectionType: .programatic) { return }
         selectItem(at: indexPath, animated: false, scrollPosition: [])
         handleSelectionValueChanged(self, action: .didSelect, indexPath: indexPath, selectionType: .programatic, shouldTriggerSelectionDelegate: shouldTriggerSelectionDelegate)
     }
