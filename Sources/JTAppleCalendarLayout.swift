@@ -584,7 +584,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         }
     }
     
-    func sectionFromOffset(_ theOffSet: CGFloat) -> Int {
+    func sectionFrom(_ theOffSet: CGFloat) -> Int {
         var val: Int = 0
         for (index, sectionSizeValue) in sectionSize.enumerated() {
             if abs(theOffSet - sectionSizeValue) < errorDelta {
