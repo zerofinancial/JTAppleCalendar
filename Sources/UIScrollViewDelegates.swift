@@ -102,10 +102,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
 //            return
 //        }
         
-        if directionVelocity == 0.0 {
-            decelerationRate = UIScrollViewDecelerationRateFast
-        }
-        
         if didEndScollCount > 0, directionVelocity == 0 {
             switch scrollingMode {
             case .nonStopToSection, .none:
@@ -125,7 +121,9 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         
         didEndScollCount += 1
         
-        
+        if directionVelocity == 0.0 {
+            decelerationRate = UIScrollViewDecelerationRateFast
+        }
         
         
         let isScrollingForward = {
@@ -304,6 +302,27 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         }
         
         return retval
+    }
+    
+    func mmm() {
+        //        let diff = abs(theTargetContentOffset - contentOffset)
+        //        let interval = calendarLayout.sizeOfContentForSection(targetSection)
+        //        let diffResistance = diff * resistance
+        //        if scrollDirection == .horizontal {
+        //            calculatedOffSet = recalculateOffset(diffResistance, interval)
+        //        } else {
+        //            if isScrollingForward() {
+        //                calculatedOffSet = theTargetContentOffset - diffResistance
+        //            } else {
+        //                calculatedOffSet = theTargetContentOffset + diffResistance
+        //            }
+        //            let stopSection = isScrollingForward() ?
+        //                calendarLayout.sectionFrom(calculatedOffSet) :
+        //                calendarLayout.sectionFrom(calculatedOffSet) - 1
+        //            calculatedOffSet = stopSection < 0 ?
+        //                0 : calendarLayout.sectionSize[stopSection]
+        //        }
+        //        setTargetContentOffset(calculatedOffSet)
     }
     
     func stopVerticalNonStopAtEachSection(_ scrollView: UIScrollView, with scrollData: ScrollData) -> CGFloat {
