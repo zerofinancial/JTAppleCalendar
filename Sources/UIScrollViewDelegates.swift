@@ -48,7 +48,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     
     /// Tells the delegate when the user finishes scrolling the content.
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        self.decelerationRate = UIScrollViewDecelerationRateNormal
         guard let theCurrentSection = currentSection() else { return }
         
         let cachedDecelerationRate = decelerationRate
