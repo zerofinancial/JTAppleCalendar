@@ -70,7 +70,7 @@ open class JTAppleCalendarView: UICollectionView {
         didSet { setupMonthInfoAndMap() } // Refetch the data source for a data source change
     }
     
-    var scrollDraggBeginningPoint: CGFloat    = 0.0
+    var lastSavedContentOffset: CGFloat    = 0.0
     var triggerScrollToDateDelegate: Bool? = true
     var isScrollInProgress                 = false
     var isReloadDataInProgress             = false

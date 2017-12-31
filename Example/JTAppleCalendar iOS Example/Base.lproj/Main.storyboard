@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9v8-0V-uqf">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13178.6" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9v8-0V-uqf">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13156.2"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -713,10 +713,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="375" height="1000"/>
                     <connections>
-                        <outlet property="FixedButton" destination="eW5-nz-8bG" id="p2c-54-GqP"/>
-                        <outlet property="VerticalOnButton" destination="pR5-bT-hSw" id="Kwz-ld-Q0V"/>
                         <outlet property="calendarView" destination="Rcm-BV-nfJ" id="37o-jK-dmJ"/>
-                        <outlet property="headerOnButton" destination="PyG-Eu-ygd" id="jHq-LK-UMp"/>
                         <outlet property="monthLabel" destination="cFX-1e-6ck" id="3QP-nf-lUt"/>
                         <outlet property="weekViewStack" destination="Ik7-d5-Fp7" id="6rD-Rm-wAT"/>
                         <outletCollection property="outDates" destination="UFs-LS-ELE" collectionClass="NSMutableArray" id="8CL-cf-eXS"/>

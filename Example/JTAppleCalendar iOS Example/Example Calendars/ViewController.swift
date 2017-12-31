@@ -19,10 +19,6 @@ class ViewController: UIViewController {
     @IBOutlet var outDates: [UIButton]!
     @IBOutlet var inDates: [UIButton]!
     
-    @IBOutlet var headerOnButton: UIButton!
-    @IBOutlet var VerticalOnButton: UIButton!
-    @IBOutlet var FixedButton: UIButton!
-    
     var numberOfRows = 6
     let formatter = DateFormatter()
     var testCalendar = Calendar.current
@@ -48,7 +44,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func scrollFixed(_ sender: Any) {
-        calendarView.scrollingMode = .nonStopToSection(withResistance: 0)
+        calendarView.scrollingMode = .stopAtEachSection
     }
     @IBAction func showPrepost(_ sender: UIButton) {
         prePostVisibility = {state, cell in
@@ -200,12 +196,6 @@ class ViewController: UIViewController {
         
         self.calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in
             self.setupViewsOfCalendar(from: visibleDates)
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.headers(self.headerOnButton)
-            self.changeDirection(self.VerticalOnButton)
-            self.scrollFixed(self.FixedButton)
         }
     }
     
