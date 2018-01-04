@@ -413,7 +413,12 @@ extension JTAppleCalendarView {
             } else {
                 fixedScrollSize = frame.width
             }
-            let section = CGFloat(Int(contentOffset.x / fixedScrollSize))
+
+            var section = contentOffset.x / fixedScrollSize
+            let roundedSection = round(section)
+            if abs(roundedSection - section) < errorDelta { section = roundedSection }
+            section = CGFloat(Int(section))
+
             xOffset = (fixedScrollSize * section)
             switch destination {
             case .next:
