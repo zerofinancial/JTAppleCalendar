@@ -215,9 +215,8 @@ extension JTAppleCalendarView {
         let selectedDates = self.selectedDates
         let data = reloadDelegateDataSource()
         if data.shouldReload {
-            calendarViewLayout.invalidateLayout()
+            calendarViewLayout.clearCache()
             setupMonthInfoAndMap(with: data.configParameters)
-            
             selectedCellData = [:]
         }
 
@@ -238,7 +237,6 @@ extension JTAppleCalendarView {
             if !_self.generalDelayedExecutionClosure.isEmpty { _self.executeDelayedTasks(.general) }
         }
                 
-        if !data.shouldReload { calendarViewLayout.shouldClearCacheOnInvalidate = false }
         super.reloadData()
     }
     
