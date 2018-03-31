@@ -143,7 +143,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         // Set the first content offset only once. This will prevent scrolling animation on viewDidload.
         if !firstContentOffsetWasSet {
             firstContentOffsetWasSet = true
-            let firstContentOffset = delegate.firstContentOffset
+            let firstContentOffset = delegate.requestedContentOffset
             collectionView!.setContentOffset(firstContentOffset, animated: false)
         }
         daysInSection.removeAll() // Clear chache

@@ -115,7 +115,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     var anchorDate: Date?
     
-    var firstContentOffset: CGPoint {
+    var requestedContentOffset: CGPoint {
         var retval: CGPoint = .zero
         guard let date = anchorDate else { return retval }
         
