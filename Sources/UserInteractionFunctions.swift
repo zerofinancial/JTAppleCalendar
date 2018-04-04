@@ -133,6 +133,7 @@ extension JTAppleCalendarView {
     /// Notifies the container that the size of its view is about to change.
     public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, anchorDate: Date?) {
         self.anchorDate = anchorDate
+        calendarViewLayout.clearCache()
     }
     
     /// Generates a range of dates from from a startDate to an
