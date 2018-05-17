@@ -241,8 +241,11 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             scrollViewDidEndDecelerating(scrollView)
             triggerScrollToDateDelegate = nil
         }
-        executeDelayedTasks(.scroll)
-        saveLastContentOffset(scrollView.contentOffset)
+        
+        DispatchQueue.main.async { // https://github.com/patchthecode/JTAppleCalendar/issues/778
+            self.executeDelayedTasks(.scroll)
+            self.saveLastContentOffset(scrollView.contentOffset)
+        }
     }
     
     /// Tells the delegate that the scroll view has
