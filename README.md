@@ -35,7 +35,7 @@
 [Installation](#installation) 
 # Want to create a buggy calendar? because this is how people who do not read this creates a buggy calendar.
 # Please implement the willDisplayCell function as stated here --> https://github.com/patchthecode/JTAppleCalendar/issues/553
-I had to put extra bold text because no one reads this 😞
+### I had to put extra bold text because no one reads this 😞
 
 Tutorials
   
