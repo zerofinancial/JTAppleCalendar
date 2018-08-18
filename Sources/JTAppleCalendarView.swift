@@ -43,7 +43,6 @@ open class JTAppleCalendarView: UICollectionView {
                 calendarViewLayout.cellSize.height = cellSize
             }
             calendarViewLayout.invalidateLayout()
-            calendarViewLayout.itemSizeWasSet = cellSize == 0 ? false: true
         }
     }
     

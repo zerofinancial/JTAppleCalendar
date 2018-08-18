@@ -322,7 +322,7 @@ extension JTAppleCalendarView {
                     lastMonthSize            != newLastMonth ||
                     allowsDateCellStretching != calendarLayout.allowsDateCellStretching ||
                     scrollDirection          != calendarLayout.scrollDirection ||
-                    calendarLayout.cellSizeWasUpdated {
+                    calendarLayout.isDirty {
                 lastMonthSize = newLastMonth
                 retval = (true, newDateBoundary)
             }
