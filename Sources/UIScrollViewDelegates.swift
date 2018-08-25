@@ -31,7 +31,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     public func saveLastContentOffset(_ offset: CGPoint) {
         lastSavedContentOffset = scrollDirection == .horizontal ? offset.x : offset.y
     }
-    
+
     /// Tells the delegate when the user finishes scrolling the content.
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         guard let theCurrentSection = currentSection() else { return }
@@ -221,7 +221,12 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             }
         case .none: break
         }
-        saveLastContentOffset(CGPoint(x: targetContentOffset.pointee.x, y: targetContentOffset.pointee.y))
+        
+        let futureScrollPoint = CGPoint(x: targetContentOffset.pointee.x, y: targetContentOffset.pointee.y)
+        saveLastContentOffset(futureScrollPoint)
+        let dateSegmentInfo = datesAtCurrentOffset(futureScrollPoint)
+        calendarDelegate?.calendar(self, willScrollToDateSegmentWith: dateSegmentInfo)
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
             self.decelerationRate = self.decelerationRateMatchingScrollingMode
         }

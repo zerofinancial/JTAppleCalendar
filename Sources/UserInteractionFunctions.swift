@@ -588,16 +588,9 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - DateSegmentInfo
     public func visibleDates()-> DateSegmentInfo {
-        let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [])
-        
-        if !isCalendarLayoutLoaded {
-            return emptySegment
-        }
-        
-        let cellAttributes = calendarViewLayout.visibleElements(excludeHeaders: true)
-        let indexPaths: [IndexPath] = cellAttributes.map { $0.indexPath }.sorted()
-        return dateSegmentInfoFrom(visible: indexPaths)
+        return datesAtCurrentOffset()
     }
+    
     /// Returns the visible dates of the calendar.
     /// - returns:
     ///     - DateSegmentInfo
