@@ -79,12 +79,15 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var daysInSection: [Int: Int] = [:] // temporary caching
     var monthInfo: [Month] = []
     
-    var isDirty: Bool = false
+    var isDirty: Bool {
+        return updatedLayoutCellSize != cellSize
+    }
     
     var updatedLayoutCellSize: CGSize {
+        guard let cachedConfiguration = delegate.cachedConfiguration else { return .zero }
         
         // Default Item height and width
-        var height: CGFloat = collectionView!.bounds.size.height / CGFloat(delegate.cachedConfiguration.numberOfRows)
+        var height: CGFloat = collectionView!.bounds.size.height / CGFloat(cachedConfiguration.numberOfRows)
         var width: CGFloat = collectionView!.bounds.size.width / CGFloat(maxNumberOfDaysInWeek)
         
         if shouldUseUserItemSizeInsteadOfDefault { // If delegate item size was set
@@ -150,7 +153,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             collectionView!.setContentOffset(firstContentOffset, animated: false)
         }
         daysInSection.removeAll() // Clear chache
-        isDirty = false
+//        isDirty = false
         executeDelayedTasks()
     }
     
@@ -337,11 +340,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         return
             abs(lastSetCollectionViewSize.height - newBounds.height) > errorDelta ||
             abs(lastSetCollectionViewSize.width - newBounds.width) > errorDelta
-    }
-    
-    override func invalidateLayout() {
-        super.invalidateLayout()
-        isDirty = true
     }
     
     /// Returns the layout attributes for all of the cells
