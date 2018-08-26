@@ -79,6 +79,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var daysInSection: [Int: Int] = [:] // temporary caching
     var monthInfo: [Month] = []
     
+    var reloadWasTriggered = false
     var isDirty: Bool {
         return updatedLayoutCellSize != cellSize
     }
@@ -153,7 +154,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             collectionView!.setContentOffset(firstContentOffset, animated: false)
         }
         daysInSection.removeAll() // Clear chache
-//        isDirty = false
+        reloadWasTriggered = false
         executeDelayedTasks()
     }
     
@@ -334,6 +335,13 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     /// The width and height of the collection view’s contents.
     open override var collectionViewContentSize: CGSize {
         return CGSize(width: contentWidth, height: contentHeight)
+    }
+    override func invalidateLayout() {
+        super.invalidateLayout()
+        
+        if isDirty && reloadWasTriggered {
+            clearCache()
+        }
     }
     
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
