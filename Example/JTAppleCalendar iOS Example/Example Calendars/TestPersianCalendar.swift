@@ -42,7 +42,7 @@ class TestPersianCalendar: UIViewController {
     
     func handleCellSelected(cell: JTAppleCell?, cellState: CellState){
         guard let validCell = cell as? CalendarCell else { return }
-        if validCell.isSelected {
+        if cellState.isSelected {
             validCell.selectedView.isHidden = false
         } else {
             validCell.selectedView.isHidden = true
@@ -51,7 +51,7 @@ class TestPersianCalendar: UIViewController {
     
     func handleCellTextColor(cell: JTAppleCell?, cellState: CellState){
         guard let validCell = cell as? CalendarCell else { return }
-        if validCell.isSelected {
+        if cellState.isSelected {
             validCell.dateLabel.textColor = UIColor.white
         } else {
             let today = Date()
