@@ -49,6 +49,9 @@ open class JTAppleCalendarView: UICollectionView {
     /// The scroll direction of the sections in JTAppleCalendar.
     open var scrollDirection: UICollectionViewScrollDirection!
     
+    /// The configuration parameters setup by the developer in the confogureCalendar function
+    open var cachedConfiguration: ConfigurationParameters? { return _cachedConfiguration }
+    
     /// Enables/Disables the stretching of date cells. When enabled cells will stretch to fit the width of a month in case of a <= 5 row month.
     open var allowsDateCellStretching = true
     
