@@ -90,7 +90,7 @@ extension JTAppleCalendarView {
     ///     - Month: The state of the found month
     public func monthStatus(for date: Date) -> Month? {
         guard
-            let calendar = cachedConfiguration?.calendar,
+            let calendar = _cachedConfiguration?.calendar,
             let startMonth = startOfMonthCache,
             let monthIndex = calendar.dateComponents([.month], from: startMonth, to: date).month else {
                 return nil
@@ -410,7 +410,7 @@ extension JTAppleCalendarView {
         
         let fixedScrollSize: CGFloat
         if scrollDirection == .horizontal {
-            if calendarViewLayout.thereAreHeaders || cachedConfiguration.generateOutDates == .tillEndOfGrid {
+            if calendarViewLayout.thereAreHeaders || _cachedConfiguration.generateOutDates == .tillEndOfGrid {
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             } else {
                 fixedScrollSize = frame.width

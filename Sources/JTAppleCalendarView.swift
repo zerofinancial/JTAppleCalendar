@@ -104,7 +104,7 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     // Configuration parameters from the dataSource
-    var cachedConfiguration: ConfigurationParameters!
+    var _cachedConfiguration: ConfigurationParameters!
     // Set the start of the month
     var startOfMonthCache: Date!
     // Set the end of month

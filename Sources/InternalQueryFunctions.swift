@@ -119,9 +119,9 @@ extension JTAppleCalendarView {
     }
     
     func indexPathOfdateCellCounterPath(_ date: Date, dateOwner: DateOwner) -> IndexPath? {
-        if (cachedConfiguration.generateInDates == .off ||
-            cachedConfiguration.generateInDates == .forFirstMonthOnly) &&
-            cachedConfiguration.generateOutDates == .off {
+        if (_cachedConfiguration.generateInDates == .off ||
+            _cachedConfiguration.generateInDates == .forFirstMonthOnly) &&
+            _cachedConfiguration.generateOutDates == .off {
             return nil
         }
         var retval: IndexPath?
@@ -299,8 +299,8 @@ extension JTAppleCalendarView {
             let selectedDates = self.selectedDatesSet
             if !selectedDates.contains(date) || selectedDates.isEmpty  { return .none }
             
-            let dateBefore = self.cachedConfiguration.calendar.date(byAdding: .day, value: -1, to: date)!
-            let dateAfter = self.cachedConfiguration.calendar.date(byAdding: .day, value: 1, to: date)!
+            let dateBefore = self._cachedConfiguration.calendar.date(byAdding: .day, value: -1, to: date)!
+            let dateAfter = self._cachedConfiguration.calendar.date(byAdding: .day, value: 1, to: date)!
             
             let dateBeforeIsSelected = selectedDates.contains(dateBefore)
             let dateAfterIsSelected = selectedDates.contains(dateAfter)
@@ -359,7 +359,7 @@ extension JTAppleCalendarView {
         }
         if let monthDate = calendar.date(byAdding: .month, value: monthIndex, to: startDateCache) {
             let monthNumber = calendar.dateComponents([.month], from: monthDate)
-            let numberOfRowsForSection = monthData.numberOfRows(for: section, developerSetRows: cachedConfiguration.numberOfRows)
+            let numberOfRowsForSection = monthData.numberOfRows(for: section, developerSetRows: _cachedConfiguration.numberOfRows)
             return ((startDate, endDate), monthNumber.month!, numberOfRowsForSection)
         }
         return nil

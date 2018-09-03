@@ -85,7 +85,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     }
     
     var updatedLayoutCellSize: CGSize {
-        guard let cachedConfiguration = delegate.cachedConfiguration else { return .zero }
+        guard let cachedConfiguration = delegate._cachedConfiguration else { return .zero }
         
         // Default Item height and width
         var height: CGFloat = collectionView!.bounds.size.height / CGFloat(cachedConfiguration.numberOfRows)
@@ -161,8 +161,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     func setupDataFromDelegate() {
         // get information from the delegate
         headerSizes = delegate.sizesForMonthSection() // update first. Other variables below depend on it
-        strictBoundaryRulesShouldApply = thereAreHeaders || delegate.cachedConfiguration.hasStrictBoundaries
-        numberOfRows = delegate.cachedConfiguration.numberOfRows
+        strictBoundaryRulesShouldApply = thereAreHeaders || delegate._cachedConfiguration.hasStrictBoundaries
+        numberOfRows = delegate._cachedConfiguration.numberOfRows
         monthMap = delegate.monthMap
         allowsDateCellStretching = delegate.allowsDateCellStretching
         monthInfo = delegate.monthInfo
