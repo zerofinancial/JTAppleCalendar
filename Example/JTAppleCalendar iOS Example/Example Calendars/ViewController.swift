@@ -188,9 +188,8 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         calendarView.register(UINib(nibName: "PinkSectionHeaderView", bundle: Bundle.main),
-                              forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                              forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                               withReuseIdentifier: "PinkSectionHeaderView")
         
         

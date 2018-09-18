@@ -637,7 +637,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     /// Returns an object initialized from data in a given unarchiver.
     /// self, initialized using the data in decoder.
     required public init?(coder aDecoder: NSCoder) {
-        delegate = aDecoder.value(forKey: "delegate") as! JTAppleCalendarDelegateProtocol
+        delegate = (aDecoder.value(forKey: "delegate") as! JTAppleCalendarDelegateProtocol)
         cellCache = aDecoder.value(forKey: "delegate") as! [Int : [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]]
         headerCache = aDecoder.value(forKey: "delegate") as! [Int : (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]
         headerSizes = aDecoder.value(forKey: "delegate") as! [AnyHashable:CGFloat]
