@@ -12,7 +12,7 @@ A highly configurable Apple calendar control. Contains features like boundary da
   s.author           = { "JayT" => "patchthecode@gmail.com" }
   s.source           = { :git => "https://github.com/patchthecode/JTAppleCalendar.git", :tag => s.version.to_s }
 
-  s.swift_version = '4.0'
+  s.swift_version = '4.2'
 
   s.ios.deployment_target = '8.0'
   s.tvos.deployment_target = '9.0'
