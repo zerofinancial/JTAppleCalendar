@@ -301,6 +301,11 @@ class ViewController: UIViewController {
         }
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        let ds = calendarView.visibleDates()
+        calendarView.viewWillTransition(to: .zero, with: coordinator, anchorDate: ds.monthDates.first?.date)
+    }
+
     // Function to handle the calendar selection
     func handleCellSelection(view: JTAppleCell?, cellState: CellState) {
         guard let myCustomCell = view as? CellView else {return }
