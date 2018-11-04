@@ -37,11 +37,6 @@ open class JTAppleCalendarView: UICollectionView {
     @IBInspectable open var cellSize: CGFloat = 0 {
         didSet {
             if oldValue == cellSize { return }
-            if scrollDirection == .horizontal {
-                calendarViewLayout.cellSize.width = cellSize
-            } else {
-                calendarViewLayout.cellSize.height = cellSize
-            }
             calendarViewLayout.invalidateLayout()
         }
     }
