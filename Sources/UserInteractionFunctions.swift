@@ -329,16 +329,7 @@ extension JTAppleCalendarView {
             let sectionIndexPath = pathFromDates[0]
             
             // Remove old selections
-            if !allowsMultipleSelection {
-                // If single selection is ON
-                let selectedIndexPaths = selectedCellData
-                
-                if let cellData = selectedIndexPaths.first, cellData.value.indexPath != sectionIndexPath {
-                    programaticallyDeselectItem(at: cellData.value.indexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
-                }
-                // Add new selections Must be added here. If added in delegate didSelectItemAtIndexPath
-                programaticallySelectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
-            } else {
+            if allowsMultipleSelection {
                 // If multiple selection is on. Multiple selection behaves differently to singleselection.
                 // It behaves like a toggle. unless keepSelectionIfMultiSelectionAllowed is true.
                 // If user wants to force selection if multiselection is enabled, then removed the selected dates from generated dates
@@ -360,6 +351,15 @@ extension JTAppleCalendarView {
                         programaticallySelectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
                     }
                 }
+            } else {
+                // If single selection is ON
+                let selectedIndexPaths = selectedCellData
+                
+                if let cellData = (selectedIndexPaths.filter { $0.key != sectionIndexPath  }.first) {
+                    programaticallyDeselectItem(at: cellData.value.indexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
+                }
+                // Add new selections Must be added here. If added in delegate didSelectItemAtIndexPath
+                programaticallySelectItem(at: sectionIndexPath, shouldTriggerSelectionDelegate: triggerSelectionDelegate)
             }
         }
         // If triggering was false, although the selectDelegates weren't
