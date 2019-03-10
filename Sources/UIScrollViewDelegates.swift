@@ -125,15 +125,12 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             break
         case .stopAtEachSection:
             var calculatedOffSet: CGFloat = 0
-            if scrollDirection == .horizontal ||
-                (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders && _cachedConfiguration.generateOutDates == .tillEndOfGrid) {
+            if scrollDirection == .horizontal {
                 // Horizontal has a fixed width.
-                // Vertical with no header has fixed height
                 let interval = calendarLayout.sizeOfContentForSection(theCurrentSection)
                 calculatedOffSet = calculatedCurrentFixedContentOffsetFrom(interval)
             } else {
-                // Vertical with headers have variable heights.
-                // It needs to be calculated
+                // Vertical have variable heights. It needs to be calculated
                 let currentScrollOffset = scrollView.contentOffset.y
                 let currentScrollSection = calendarLayout.sectionFromOffset(currentScrollOffset)
                 var sectionSize: CGFloat = 0
