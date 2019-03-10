@@ -49,17 +49,12 @@ extension JTAppleCalendarView {
         var y: CGFloat = scrollDirection == .vertical ? targetCellFrame.origin.y : 0
         
         let theTargetContentOffset: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
-        let fixedScrollSize: CGFloat
+        var fixedScrollSize: CGFloat = 0
         switch scrollingMode {
             case let .stopAtEach(customInterval: x): fixedScrollSize = x
             case let .nonStopTo(customInterval: x, withResistance: _): fixedScrollSize = x
             case .stopAtEachCalendarFrame: fixedScrollSize = scrollDirection == .horizontal ? self.frame.width : self.frame.height
-            case .stopAtEachSection:
-                if scrollDirection == .horizontal {
-                    fixedScrollSize = self.frame.width
-                } else {
-                    fallthrough
-                }
+            case .stopAtEachSection: break
             default: return nil
         }
 
