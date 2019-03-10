@@ -501,57 +501,35 @@ extension JTAppleCalendarView {
                 self.scrollToDate(date,
                                   triggerScrollToDateDelegate: triggerScrollToDateDelegate,
                                   animateScroll: animateScroll,
-                                  preferredScrollPosition: preferredScrollPosition,
                                   extraAddedOffset: extraAddedOffset,
                                   completionHandler: completionHandler)
             }
             return
         }
-
+        
         // Set triggereing of delegate on scroll
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
-
+        
         // Ensure date is within valid boundary
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
         if !((firstDayOfDate >= startOfMonthCache!) && (firstDayOfDate <= endOfMonthCache!)) { return }
-
+        
         // Get valid indexPath of date to scroll to
         let retrievedPathsFromDates = pathsFromDates([date])
         if retrievedPathsFromDates.isEmpty { return }
         let sectionIndexPath = pathsFromDates([date])[0]
-
-        // Ensure valid scroll position is set
-        var position: UICollectionView.ScrollPosition = scrollDirection == .horizontal ? .left : .top
-        if !scrollingMode.pagingIsEnabled(),
-            let validPosition = preferredScrollPosition {
-            if scrollDirection == .horizontal {
-                if validPosition == .left || validPosition == .right || validPosition == .centeredHorizontally {
-                    position = validPosition
-                }
-            } else {
-                if validPosition == .top || validPosition == .bottom || validPosition == .centeredVertically {
-                    position = validPosition
-                }
-            }
+        
+        guard let point = targetPointForItemAt(indexPath: sectionIndexPath) else {
+            assert(false, "Could not determine CGPoint. This is an error. contact developer on github. In production, there will not be a crash, but scrolling will not occur")
+            return
         }
 
-        var point: CGPoint?
-        switch scrollingMode {
-        case .stopAtEach, .stopAtEachSection, .stopAtEachCalendarFrame, .nonStopToSection:
-            if scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
-                point = targetPointForItemAt(indexPath: sectionIndexPath)
-            }
-        default:
-            break
-        }
-        handleScroll(point: point,
-                     indexPath: sectionIndexPath,
-                     triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                     isAnimationEnabled: animateScroll,
-                     position: position,
-                     extraAddedOffset: extraAddedOffset,
-                     completionHandler: completionHandler)
+        scrollTo(point: point,
+                 triggerScrollToDateDelegate: triggerScrollToDateDelegate,
+                 isAnimationEnabled: animateScroll,
+                 extraAddedOffset: extraAddedOffset,
+                 completionHandler: completionHandler)
     }
     
     /// Scrolls the calendar view to the start of a section view header.

@@ -75,20 +75,6 @@ extension JTAppleCalendarView {
         #endif
     }
     
-    func scrollTo(indexPath: IndexPath, triggerScrollToDateDelegate: Bool, isAnimationEnabled: Bool, position: UICollectionView.ScrollPosition, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {
-        isScrollInProgress = true
-        if let validCompletionHandler = completionHandler { scrollDelayedExecutionClosure.append(validCompletionHandler) }
-        self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
-        DispatchQueue.main.async {
-            self.scrollToItem(at: indexPath, at: position, animated: isAnimationEnabled)
-            if (isAnimationEnabled && self.calendarOffsetIsAlreadyAtScrollPosition(forIndexPath: indexPath)) ||
-                !isAnimationEnabled {
-                self.scrollViewDidEndScrollingAnimation(self)
-            }
-            self.isScrollInProgress = false
-        }
-    }
-    
     func scrollToHeaderInSection(_ section: Int,
                                  triggerScrollToDateDelegate: Bool = false,
                                  withAnimation animation: Bool = true,
@@ -120,51 +106,6 @@ extension JTAppleCalendarView {
     @available(*, unavailable)
     open override func reloadData() {
         super.reloadData()
-    }
-    
-    func handleScroll(point: CGPoint? = nil,
-                      indexPath: IndexPath? = nil,
-                      triggerScrollToDateDelegate: Bool = true,
-                      isAnimationEnabled: Bool,
-                      position: UICollectionView.ScrollPosition? = .left,
-                      extraAddedOffset: CGFloat = 0,
-                      completionHandler: (() -> Void)?) {
-        
-        if isScrollInProgress { return }
-        
-        // point takes preference
-        if let validPoint = point {
-            scrollTo(point: validPoint,
-                     triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                     isAnimationEnabled: isAnimationEnabled,
-                     extraAddedOffset: extraAddedOffset,
-                     completionHandler: completionHandler)
-        } else {
-            guard let validIndexPath = indexPath else { return }
-            
-            var isNonConinuousScroll = true
-            switch scrollingMode {
-            case .none, .nonStopToCell: isNonConinuousScroll = false
-            default: break
-            }
-            
-            if calendarViewLayout.thereAreHeaders,
-                scrollDirection == .vertical,
-                isNonConinuousScroll {
-                scrollToHeaderInSection(validIndexPath.section,
-                                        triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                                        withAnimation: isAnimationEnabled,
-                                        extraAddedOffset: extraAddedOffset,
-                                        completionHandler: completionHandler)
-            } else {
-                scrollTo(indexPath:validIndexPath,
-                         triggerScrollToDateDelegate: triggerScrollToDateDelegate,
-                         isAnimationEnabled: isAnimationEnabled,
-                         position: position ?? .left,
-                         extraAddedOffset: extraAddedOffset,
-                         completionHandler: completionHandler)
-            }
-        }
     }
     
     func scrollTo(point: CGPoint, triggerScrollToDateDelegate: Bool? = nil, isAnimationEnabled: Bool, extraAddedOffset: CGFloat, completionHandler: (() -> Void)?) {

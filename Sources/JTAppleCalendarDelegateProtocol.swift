@@ -43,7 +43,7 @@ protocol JTAppleCalendarDelegateProtocol: class {
     func pathsFromDates(_ dates: [Date]) -> [IndexPath]
     func sizeOfDecorationView(indexPath: IndexPath) -> CGRect
     func sizesForMonthSection() -> [AnyHashable:CGFloat]
-    func targetPointForItemAt(indexPath: IndexPath) -> CGPoint?
+    func targetPointForItemAt(indexPath: IndexPath, preferredScrollPosition: UICollectionView.ScrollPosition?) -> CGPoint?
 }
 
 extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol { }

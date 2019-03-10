@@ -39,41 +39,58 @@ extension JTAppleCalendarView {
         return retval
     }
     
-    func targetPointForItemAt(indexPath: IndexPath) -> CGPoint? {
+    // Determines the CGPoint of an index path. The point will vary depending on the scrollingMode
+    func targetPointForItemAt(indexPath: IndexPath, preferredScrollPosition: UICollectionView.ScrollPosition? = nil) -> CGPoint? {
         guard let targetCellFrame = calendarViewLayout.layoutAttributesForItem(at: indexPath)?.frame else { // Jt101 This was changed !!
             return nil
         }
+
+        var x: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : 0
+        var y: CGFloat = scrollDirection == .vertical ? targetCellFrame.origin.y : 0
         
         let theTargetContentOffset: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
-        var fixedScrollSize: CGFloat = 0
+        let fixedScrollSize: CGFloat
         switch scrollingMode {
-        case .stopAtEachSection, .stopAtEachCalendarFrame, .nonStopToSection:
-            if scrollDirection == .horizontal || (scrollDirection == .vertical && !calendarViewLayout.thereAreHeaders) {
-                // Horizontal has a fixed width.
-                // Vertical with no header has fixed height
-                fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
-            } else {
-                // JT101 will remodel this code. Just a quick fix
-                fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
-            }
-        case .stopAtEach(customInterval: let customVal):
-            fixedScrollSize = customVal
-        default:
-            break
+            case let .stopAtEach(customInterval: x): fixedScrollSize = x
+            case let .nonStopTo(customInterval: x, withResistance: _): fixedScrollSize = x
+            case .stopAtEachCalendarFrame: fixedScrollSize = scrollDirection == .horizontal ? self.frame.width : self.frame.height
+            case .stopAtEachSection:
+                if scrollDirection == .horizontal {
+                    fixedScrollSize = self.frame.width
+                } else {
+                    fallthrough
+                }
+            default: return nil
         }
-        
-        var section = theTargetContentOffset / fixedScrollSize
-        let roundedSection = round(section)
-        if abs(roundedSection - section) < errorDelta { section = roundedSection }
-        section = CGFloat(Int(section))
-        
-        let destinationRectOffset = (fixedScrollSize * section)
-        var x: CGFloat = 0
-        var y: CGFloat = 0
-        if scrollDirection == .horizontal {
-            x = destinationRectOffset
-        } else {
-            y = destinationRectOffset
+
+        switch scrollingMode {
+        case .none, .nonStopToCell: break
+        case .stopAtEachCalendarFrame, .stopAtEach, .nonStopTo:
+            let frameSection = theTargetContentOffset / fixedScrollSize
+            let roundedFrameSection = floor(frameSection)
+            if scrollDirection == .horizontal {
+                x = roundedFrameSection * fixedScrollSize
+            } else {
+                // vertical is fixed scroll segments because here, we're using stop at frame and custom fixed size
+                y = roundedFrameSection * fixedScrollSize
+            }
+        case .stopAtEachSection, .nonStopToSection:
+            if scrollDirection == .horizontal  {
+                let section = calendarViewLayout.sectionFromOffset(theTargetContentOffset)
+                guard let validValue = calendarViewLayout.cachedValue(for: 0, section: section)?.2 else { return nil}
+                x = validValue - sectionInset.left
+            } else {
+                // If headers, then find the section headers cgpoint for a cellDate. I no headers, then find the first cell's cgpoint of section
+                if !calendarViewLayout.thereAreHeaders {
+                    let section = calendarViewLayout.sectionFromOffset(theTargetContentOffset)
+                    guard let validAttrib = calendarViewLayout.cachedValue(for: 0, section: section)?.3 else { return nil }
+                    y = validAttrib
+                } else {
+                    let section = calendarViewLayout.sectionFromOffset(theTargetContentOffset)
+                    guard let validSectionHeaderData = calendarViewLayout.headerCache[section] else { return nil }
+                    y = validSectionHeaderData.3 - sectionInset.top
+                }
+            }
         }
         return CGPoint(x: x, y: y)
     }
