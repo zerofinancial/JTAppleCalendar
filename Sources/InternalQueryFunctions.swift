@@ -79,7 +79,7 @@ extension JTAppleCalendarView {
                 if !calendarViewLayout.thereAreHeaders {
                     let section = calendarViewLayout.sectionFromOffset(theTargetContentOffset)
                     guard let validAttrib = calendarViewLayout.cachedValue(for: 0, section: section)?.3 else { return nil }
-                    y = validAttrib
+                    y = validAttrib - sectionInset.top
                 } else {
                     let section = calendarViewLayout.sectionFromOffset(theTargetContentOffset)
                     guard let validSectionHeaderData = calendarViewLayout.headerCache[section] else { return nil }
