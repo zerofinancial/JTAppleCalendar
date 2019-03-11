@@ -51,15 +51,13 @@ extension JTAppleCalendarView {
         let theTargetContentOffset: CGFloat = scrollDirection == .horizontal ? targetCellFrame.origin.x : targetCellFrame.origin.y
         var fixedScrollSize: CGFloat = 0
         switch scrollingMode {
-            case let .stopAtEach(customInterval: x): fixedScrollSize = x
-            case let .nonStopTo(customInterval: x, withResistance: _): fixedScrollSize = x
-            case .stopAtEachCalendarFrame: fixedScrollSize = scrollDirection == .horizontal ? self.frame.width : self.frame.height
-            case .stopAtEachSection: break
-            default: return nil
+        case let .stopAtEach(customInterval: x): fixedScrollSize = x
+        case let .nonStopTo(customInterval: x, withResistance: _): fixedScrollSize = x
+        case .stopAtEachCalendarFrame: fixedScrollSize = scrollDirection == .horizontal ? self.frame.width : self.frame.height
+        default: break
         }
 
         switch scrollingMode {
-        case .none, .nonStopToCell: break
         case .stopAtEachCalendarFrame, .stopAtEach, .nonStopTo:
             let frameSection = theTargetContentOffset / fixedScrollSize
             let roundedFrameSection = floor(frameSection)
@@ -86,6 +84,7 @@ extension JTAppleCalendarView {
                     y = validSectionHeaderData.3 - sectionInset.top
                 }
             }
+        default: break
         }
         return CGPoint(x: x, y: y)
     }
