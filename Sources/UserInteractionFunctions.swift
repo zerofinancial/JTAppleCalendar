@@ -240,7 +240,9 @@ extension JTAppleCalendarView {
             if !_self.generalDelayedExecutionClosure.isEmpty { _self.executeDelayedTasks(.general) }
         }
         calendarViewLayout.reloadWasTriggered = true
-        super.reloadData()
+        DispatchQueue.main.async {
+            super.reloadData()
+        }
     }
     
     /// Reload the date of specified date-cells on the calendar-view
