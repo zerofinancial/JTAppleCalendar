@@ -90,7 +90,7 @@ extension JTAppleCalendarView {
         self.triggerScrollToDateDelegate = triggerScrollToDateDelegate
         
         let maxYCalendarOffset = max(0, self.contentSize.height - self.frame.size.height)
-        var topOfHeader = CGPoint(x: attributes.frame.origin.x,y: min(maxYCalendarOffset, attributes.frame.origin.y))
+        var topOfHeader = CGPoint(x: attributes.frame.origin.x - sectionInset.left, y: min(maxYCalendarOffset, attributes.frame.origin.y))
         if scrollDirection == .horizontal { topOfHeader.x += extraAddedOffset} else { topOfHeader.y += extraAddedOffset }
         DispatchQueue.main.async {
             self.setContentOffset(topOfHeader, animated: animation)
