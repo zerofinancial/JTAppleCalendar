@@ -197,7 +197,7 @@ extension JTAppleCalendarView {
         didSet {
             if #available(iOS 10.0, *) {
                 var superviewIsRTL =  false
-                if let validSuperView = superview?.effectiveUserInterfaceLayoutDirection { superviewIsRTL = validSuperView == .rightToLeft }
+                if let validSuperView = superview?.effectiveUserInterfaceLayoutDirection { superviewIsRTL = validSuperView == .rightToLeft && semanticContentAttribute == .unspecified }
                 transform.a = semanticContentAttribute == .forceRightToLeft || superviewIsRTL ? -1: 1
             } else {
                 transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
