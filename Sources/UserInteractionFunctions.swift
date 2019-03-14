@@ -297,6 +297,9 @@ extension JTAppleCalendarView {
     /// Sometimes it is necessary to setup some dates without triggereing
     /// the delegate e.g. For instance, when youre initally setting up data
     /// in your viewDidLoad
+    /// - Parameter keepSelectionIfMultiSelectionAllowed:
+    ///    if (in range selection) there are 4 dates. -> selected, unselected, selected, selected. (S | U | S | S)
+    ///    Selecting those 4 dates again would give U | S | U | U. With KeepSelection, this becomes S | S | S | S
     public func selectDates(_ dates: [Date], triggerSelectionDelegate: Bool = true, keepSelectionIfMultiSelectionAllowed: Bool = false) {
         if dates.isEmpty { return }
         if (!isCalendarLayoutLoaded || isReloadDataInProgress) {
