@@ -42,7 +42,7 @@ open class JTAppleCalendarView: UICollectionView {
     }
     
     /// The scroll direction of the sections in JTAppleCalendar.
-    open var scrollDirection: UICollectionView.ScrollDirection!
+    open var scrollDirection: UICollectionView.ScrollDirection = .horizontal
     
     /// The configuration parameters setup by the developer in the confogureCalendar function
     open var cachedConfiguration: ConfigurationParameters? { return _cachedConfiguration }
