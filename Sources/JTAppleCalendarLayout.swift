@@ -470,10 +470,12 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             // of the header to take up 7 columns
             // We cache the header here so we dont call the
             // delegate so much
-            
+            fallthrough
+        default:
             let modifiedSize = (width: collectionView!.frame.width, height: headerHeight)
             retval = (item, section, sectionInset.left, yCellOffset , modifiedSize.width - (sectionInset.left + sectionInset.right), modifiedSize.height)
         }
+        
         if retval?.4 == 0, retval?.5 == 0 {
             return nil
         }
@@ -594,8 +596,11 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         case .horizontal:
             return cellCache[section]![0].4 * CGFloat(maxNumberOfDaysInWeek) + sectionInset.left + sectionInset.right
         case .vertical:
+            fallthrough
+        default:
             let headerSizeOfSection = !headerCache.isEmpty ? headerCache[section]!.5 : 0
             return cellCache[section]![0].5 * CGFloat(numberOfRowsForMonth(section)) + headerSizeOfSection
+            
         }
     }
     
@@ -657,7 +662,8 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
             case .supplementaryView:
                 headers.append(item.indexPath)
             case .decorationView:
-                break
+                fallthrough
+            default: break
             }
         }
         return (cells.min(), headers.min())
