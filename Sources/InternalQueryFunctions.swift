@@ -23,18 +23,20 @@
 //
 
 extension JTAppleCalendarView {
-    func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> Set<IndexPath> {
-        var retval: Set<IndexPath> = []
+    func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath) -> (forwardIndex: IndexPath?, backIndex: IndexPath?, set: Set<IndexPath>) {
+        var retval: (forwardIndex: IndexPath?, backIndex: IndexPath?, set: Set<IndexPath>) = (forwardIndex: nil, backIndex: nil, set: [])
         if let validForwardIndex = calendarViewLayout.indexPath(direction: .next, of: indexPath.section, item: indexPath.item),
             validForwardIndex.section == indexPath.section,
             selectedCellData[validForwardIndex] != nil {
-            retval.insert(validForwardIndex)
+            retval.forwardIndex = validForwardIndex
+            retval.set.insert(validForwardIndex)
         }
         if
             let validBackwardIndex = calendarViewLayout.indexPath(direction: .previous, of: indexPath.section, item: indexPath.item),
             validBackwardIndex.section == indexPath.section,
             selectedCellData[validBackwardIndex] != nil {
-            retval.insert(validBackwardIndex)
+            retval.backIndex = validBackwardIndex
+            retval.set.insert(validBackwardIndex)
         }
         return retval
     }
@@ -310,11 +312,9 @@ extension JTAppleCalendarView {
             let selectedDates = self.selectedDatesSet
             if !selectedDates.contains(date) || selectedDates.isEmpty  { return .none }
             
-            let dateBefore = self._cachedConfiguration.calendar.date(byAdding: .day, value: -1, to: date)!
-            let dateAfter = self._cachedConfiguration.calendar.date(byAdding: .day, value: 1, to: date)!
-            
-            let dateBeforeIsSelected = selectedDates.contains(dateBefore)
-            let dateAfterIsSelected = selectedDates.contains(dateAfter)
+            let validSelectedIndexes = self.validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath)
+            let dateBeforeIsSelected = validSelectedIndexes.backIndex != nil
+            let dateAfterIsSelected = validSelectedIndexes.forwardIndex != nil
             
             var position: SelectionRangePosition
             
@@ -329,6 +329,7 @@ extension JTAppleCalendarView {
             } else {
                 position = .none
             }
+
             return position
         }
         

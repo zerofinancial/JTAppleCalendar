@@ -130,7 +130,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
                 return
         }
         // index paths to be reloaded should be index to the left and right of the selected index
-        var localPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath) : []
+        var localPathsToReload: Set<IndexPath> = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath).set : []
         
         let cell = collectionView.cellForItem(at: indexPath) as? JTAppleCell
         if !shouldTriggerSelectionDelegate || cell == nil {
@@ -166,7 +166,7 @@ extension JTAppleCalendarView: UICollectionViewDelegate, UICollectionViewDataSou
         
         if let counterPartIndexPath = cleanupAction(indexPath, infoOfDate.date, cellState.dateBelongsTo) {
             localPathsToReload.insert(counterPartIndexPath)
-            let counterPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: counterPartIndexPath) : []
+            let counterPathsToReload = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: counterPartIndexPath).set : []
             localPathsToReload.formUnion(counterPathsToReload)
         }
         
