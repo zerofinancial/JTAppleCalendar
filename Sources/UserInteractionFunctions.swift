@@ -410,22 +410,24 @@ extension JTAppleCalendarView {
             }
             return
         }
+
+        let fixedScrollSize: CGFloat
         var xOffset: CGFloat = 0
         var yOffset: CGFloat = 0
         
-        let fixedScrollSize: CGFloat
-        if scrollDirection == .horizontal {
+        switch scrollDirection {
+        case .horizontal:
             if calendarViewLayout.thereAreHeaders || _cachedConfiguration.generateOutDates == .tillEndOfGrid {
                 fixedScrollSize = calendarViewLayout.sizeOfContentForSection(0)
             } else {
                 fixedScrollSize = frame.width
             }
-
+            
             var section = contentOffset.x / fixedScrollSize
             let roundedSection = round(section)
             if abs(roundedSection - section) < errorDelta { section = roundedSection }
             section = CGFloat(Int(section))
-
+            
             xOffset = (fixedScrollSize * section)
             switch destination {
             case .next:
@@ -443,22 +445,23 @@ extension JTAppleCalendarView {
             } else if xOffset >= contentSize.width - frame.width {
                 xOffset = contentSize.width - frame.width
             }
-        } else {
+        case .vertical:
+            fallthrough
+        default:
+            guard let currentSection = currentSection() else { return }
+            if (destination == .next && currentSection + 1 >= numberOfSections(in: self)) ||
+                destination == .previous && currentSection - 1 < 0 ||
+                numberOfSections(in: self) < 0 {
+                return
+            }
+            
             if calendarViewLayout.thereAreHeaders {
-                guard let section = currentSection() else {
-                    return
-                }
-                if (destination == .next && section + 1 >= numberOfSections(in: self)) ||
-                    destination == .previous && section - 1 < 0 ||
-                    numberOfSections(in: self) < 0 {
-                    return
-                }
                 
                 switch destination {
                 case .next:
-                    scrollToHeaderInSection(section + 1, extraAddedOffset: extraAddedOffset, completionHandler: completionHandler)
+                    scrollToHeaderInSection(currentSection + 1, extraAddedOffset: extraAddedOffset, completionHandler: completionHandler)
                 case .previous:
-                    scrollToHeaderInSection(section - 1, extraAddedOffset: extraAddedOffset, completionHandler: completionHandler)
+                    scrollToHeaderInSection(currentSection - 1, extraAddedOffset: extraAddedOffset, completionHandler: completionHandler)
                 case .start:
                     scrollToHeaderInSection(0, extraAddedOffset: extraAddedOffset, completionHandler: completionHandler)
                 case .end:
@@ -466,9 +469,12 @@ extension JTAppleCalendarView {
                 }
                 return
             } else {
-                fixedScrollSize = frame.height
-                let section = CGFloat(Int(contentOffset.y / fixedScrollSize))
-                yOffset = (fixedScrollSize * section) + fixedScrollSize
+                switch destination {
+                case .next: yOffset = calendarViewLayout.cachedValue(for: 0, section: currentSection + 1)?.3 ?? contentSize.height // Set to max on nil
+                case .end: yOffset = contentSize.height // Set to max
+                case .previous: yOffset = calendarViewLayout.cachedValue(for: 0, section: currentSection - 1)?.3 ?? 0 // Set min on nil
+                case .start: yOffset = 0 // Set to min
+                }
             }
             
             if yOffset <= 0 {
