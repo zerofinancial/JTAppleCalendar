@@ -201,7 +201,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         var totalDayCounter = 0
         var headerGuide = 0
         let fullSection = numberOfRows * maxNumberOfDaysInWeek
-        var extra = 0
         
         
         xCellOffset = sectionInset.left
