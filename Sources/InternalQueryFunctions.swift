@@ -449,7 +449,22 @@ extension JTAppleCalendarView {
     }
     
     func datesAtCurrentOffset(_ offset: CGPoint? = nil) -> DateSegmentInfo {
-        if !isCalendarLayoutLoaded { return DateSegmentInfo(indates: [], monthDates: [], outdates: []) }
-        return dateSegmentInfoFrom(visible: indexPathsForVisibleItems)
+        
+        let rect: CGRect?
+        if let offset = offset {
+            rect = CGRect(x: offset.x, y: offset.y, width: frame.width, height: frame.height)
+        } else {
+            rect = nil
+        }
+        
+        let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [])
+        
+        if !isCalendarLayoutLoaded {
+            return emptySegment
+        }
+        
+        let cellAttributes = calendarViewLayout.elementsAtRect(excludeHeaders: true, from: rect)
+        let indexPaths: [IndexPath] = cellAttributes.map { $0.indexPath }.sorted()
+        return dateSegmentInfoFrom(visible: indexPaths)
     }
 }
