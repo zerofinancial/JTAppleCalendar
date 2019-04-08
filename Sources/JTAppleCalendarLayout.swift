@@ -238,7 +238,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                         }
                     } else {
                         totalDayCounter += 1
-                        extra += 1
+
                         if totalDayCounter % fullSection == 0 { // If you have a full section
                             xCellOffset = sectionInset.left
                             yCellOffset = 0

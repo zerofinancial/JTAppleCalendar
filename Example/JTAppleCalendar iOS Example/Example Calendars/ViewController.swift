@@ -213,7 +213,7 @@ class ViewController: UIViewController {
                 }
                 calendarView.selectDates(from: rangeSelectedDates.first!, to: date, keepSelectionIfMultiSelectionAllowed: true)
             } else {
-                let indexOfNewlySelectedDate = rangeSelectedDates.index(of: date)! + 1
+                let indexOfNewlySelectedDate = rangeSelectedDates.firstIndex(of: date)! + 1
                 let lastIndex = rangeSelectedDates.endIndex
                 let followingDay = testCalendar.date(byAdding: .day, value: 1, to: date)!
                 calendarView.selectDates(from: followingDay, to: rangeSelectedDates.last!, keepSelectionIfMultiSelectionAllowed: false)
