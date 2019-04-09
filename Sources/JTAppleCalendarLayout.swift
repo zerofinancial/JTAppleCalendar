@@ -197,61 +197,53 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
 
     
     func configureHorizontalLayout() {
-        var section = 0
+        var virtualSection = 0
         var totalDayCounter = 0
-        var headerGuide = 0
         let fullSection = numberOfRows * maxNumberOfDaysInWeek
-        
         
         xCellOffset = sectionInset.left
         endSeparator = sectionInset.left + sectionInset.right
         
-        
         for aMonth in monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
-                if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: section) {
-                    headerCache[section] = aHeaderAttr
+                if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: virtualSection) {
+                    headerCache[virtualSection] = aHeaderAttr
                     if strictBoundaryRulesShouldApply {
                         contentWidth += aHeaderAttr.4
                         yCellOffset = aHeaderAttr.5
                     }
                 }
                 // Generate and cache the cells
-                for item in 0..<numberOfDaysInCurrentSection {
-                    guard let attribute = determineToApplyAttribs(item, section: section)  else { continue }
-                    if cellCache[section] == nil {
-                        cellCache[section] = []
-                    }
-                    cellCache[section]!.append(attribute)
+                for dayCounter in 1...numberOfDaysInCurrentSection {
+                    guard let attribute = determineToApplyAttribs(dayCounter - 1, section: virtualSection)  else { continue }
+                    if cellCache[virtualSection] == nil { cellCache[virtualSection] = [] }
+                    cellCache[virtualSection]!.append(attribute)
                     lastWrittenCellAttribute = attribute
                     xCellOffset += attribute.4
                     
                     if strictBoundaryRulesShouldApply {
-                        headerGuide += 1
-                        if numberOfDaysInCurrentSection - 1 == item || headerGuide % maxNumberOfDaysInWeek == 0 {
+                        if dayCounter == numberOfDaysInCurrentSection || dayCounter % maxNumberOfDaysInWeek == 0 {
                             // We are at the last item in the section
                             // && if we have headers
-                            headerGuide = 0
                             xCellOffset = sectionInset.left
                             yCellOffset += attribute.5
                         }
                     } else {
                         totalDayCounter += 1
-
                         if totalDayCounter % fullSection == 0 { // If you have a full section
-                            xCellOffset = sectionInset.left
                             yCellOffset = 0
-                            contentWidth += attribute.4 * 7
+                            xCellOffset = sectionInset.left
+                            contentWidth += (attribute.4 * 7) + endSeparator
                             stride = contentWidth
                             sectionSize.append(contentWidth)
                         } else {
                             if totalDayCounter >= delegate.totalDays {
-                                contentWidth += attribute.4 * 7
+                                contentWidth += (attribute.4 * 7) + endSeparator // not bothered about this. as should be called only on final days
                                 sectionSize.append(contentWidth)
                             }
                             
-                            if totalDayCounter % maxNumberOfDaysInWeek == 0 {
+                            if totalDayCounter % maxNumberOfDaysInWeek == 0 { // A week (7days--1row) is completed
                                 xCellOffset = sectionInset.left
                                 yCellOffset += attribute.5
                             }
@@ -260,12 +252,13 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                     
                 }
                 // Save the content size for each section
-                contentWidth += endSeparator
+                
                 if strictBoundaryRulesShouldApply {
+                    contentWidth += endSeparator
                     sectionSize.append(contentWidth)
-                    stride = sectionSize[section]
+                    stride = sectionSize[virtualSection]  // Stride = contentWidth + endSeparator
                 }
-                section += 1
+                virtualSection += 1
             }
         }
         contentHeight = self.collectionView!.bounds.size.height
