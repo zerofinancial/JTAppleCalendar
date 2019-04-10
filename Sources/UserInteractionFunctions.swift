@@ -125,7 +125,7 @@ extension JTAppleCalendarView {
         } else {
             let paths = pathsFromDates(dates)
             guard !paths.isEmpty else { return }
-            if paths.count > 1 { assert(false, "WARNING: you are trying to deselect multiple dates with allowsMultipleSelection == false. Only the first date will be deselected.")}
+            assert(paths.count < 2, "WARNING: you are trying to deselect multiple dates with allowsMultipleSelection == false. Only the first date will be deselected.")
             collectionView(self, didDeselectItemAt: paths[0])
         }
     }

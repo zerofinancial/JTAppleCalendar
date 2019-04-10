@@ -193,13 +193,13 @@ extension JTAppleCalendarView {
     
     func deleteCellFromSelectedSetIfSelected(_ indexPath: IndexPath) {
         selectedCellData.removeValue(forKey: indexPath)
+        deselectItem(at: indexPath, animated: false)
     }
     
     // Returns an indexPath if valid one was found
     func deselectCounterPartCellIndexPath(_ indexPath: IndexPath, date: Date, dateOwner: DateOwner) -> IndexPath? {
         guard let counterPartCellIndexPath = indexPathOfdateCellCounterPath(date, dateOwner: dateOwner) else { return nil }
         deleteCellFromSelectedSetIfSelected(counterPartCellIndexPath)
-        deselectItem(at: counterPartCellIndexPath, animated: false)
         return counterPartCellIndexPath
     }
     
