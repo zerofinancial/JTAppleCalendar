@@ -39,7 +39,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var decorationCache: [IndexPath:UICollectionViewLayoutAttributes] = [:]
     var sectionSize: [CGFloat] = []
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
-    var stride: CGFloat = 0
+    var xStride: CGFloat = 0
     var minimumInteritemSpacing: CGFloat = 0
     var minimumLineSpacing: CGFloat = 0
     var sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -195,7 +195,6 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         return retval
     }
 
-    
     func configureHorizontalLayout() {
         var virtualSection = 0
         var totalDayCounter = 0
@@ -231,32 +230,30 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
                         }
                     } else {
                         totalDayCounter += 1
-                        if totalDayCounter % fullSection == 0 { // If you have a full section
+                        if totalDayCounter % fullSection == 0 {
                             yCellOffset = 0
                             xCellOffset = sectionInset.left
                             contentWidth += (attribute.4 * 7) + endSeparator
-                            stride = contentWidth
+                            xStride = contentWidth
                             sectionSize.append(contentWidth)
                         } else {
                             if totalDayCounter >= delegate.totalDays {
-                                contentWidth += (attribute.4 * 7) + endSeparator // not bothered about this. as should be called only on final days
+                                contentWidth += (attribute.4 * 7) + endSeparator
                                 sectionSize.append(contentWidth)
                             }
-                            
-                            if totalDayCounter % maxNumberOfDaysInWeek == 0 { // A week (7days--1row) is completed
+                            if totalDayCounter % maxNumberOfDaysInWeek == 0 {
                                 xCellOffset = sectionInset.left
                                 yCellOffset += attribute.5
                             }
                         }
                     }
-                    
                 }
-                // Save the content size for each section
                 
+                // Save the content size for each section
                 if strictBoundaryRulesShouldApply {
                     contentWidth += endSeparator
                     sectionSize.append(contentWidth)
-                    stride = sectionSize[virtualSection]  // Stride = contentWidth + endSeparator
+                    xStride = sectionSize[virtualSection]
                 }
                 virtualSection += 1
             }
@@ -265,59 +262,72 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     }
     
     func configureVerticalLayout() {
-        var section = 0
+        var virtualSection = 0
         var totalDayCounter = 0
-        var headerGuide = 0
+        let fullSection = numberOfRows * maxNumberOfDaysInWeek
         
-        xCellOffset = sectionInset.left
-        yCellOffset = sectionInset.top
-        endSeparator = sectionInset.top + sectionInset.bottom
+        xCellOffset   = sectionInset.left
+        yCellOffset   = sectionInset.top
+        contentHeight = sectionInset.top
+        endSeparator  = sectionInset.top + sectionInset.bottom
         
         for aMonth in monthInfo {
             for numberOfDaysInCurrentSection in aMonth.sections {
                 // Generate and cache the headers
-                if strictBoundaryRulesShouldApply {
-                    if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: section) {
-                        headerCache[section] = aHeaderAttr
-                        yCellOffset += aHeaderAttr.5
+                if let aHeaderAttr = determineToApplySupplementaryAttribs(0, section: virtualSection) {
+                    headerCache[virtualSection] = aHeaderAttr
+                    if strictBoundaryRulesShouldApply {
                         contentHeight += aHeaderAttr.5
+                        yCellOffset += aHeaderAttr.5
                     }
                 }
                 // Generate and cache the cells
-                for item in 0..<numberOfDaysInCurrentSection {
-                    guard let attribute = determineToApplyAttribs(item, section: section) else { continue }
-                    if cellCache[section] == nil {
-                        cellCache[section] = []
-                    }
-                    cellCache[section]!.append(attribute)
+                for dayCounter in 1...numberOfDaysInCurrentSection {
+                    totalDayCounter += 1
+                    guard let attribute = determineToApplyAttribs(dayCounter - 1, section: virtualSection) else { continue }
+                    if cellCache[virtualSection] == nil { cellCache[virtualSection] = [] }
+                    cellCache[virtualSection]!.append(attribute)
                     lastWrittenCellAttribute = attribute
-                    xCellOffset += attribute.4
+                    xCellOffset += attribute.width
+                    
                     if strictBoundaryRulesShouldApply {
-                        headerGuide += 1
-                        if headerGuide % maxNumberOfDaysInWeek == 0 || numberOfDaysInCurrentSection - 1 == item {
+                        if dayCounter == numberOfDaysInCurrentSection || dayCounter % maxNumberOfDaysInWeek == 0 {
                             // We are at the last item in the
                             // section && if we have headers
-                            headerGuide = 0
+                            
                             xCellOffset = sectionInset.left
-                            yCellOffset += attribute.5
-                            contentHeight += attribute.5
+                            yCellOffset += attribute.height
+                            contentHeight += attribute.height
+                            
+                            if dayCounter == numberOfDaysInCurrentSection {
+                                yCellOffset   += sectionInset.top
+                                contentHeight += sectionInset.top
+                                sectionSize.append(contentHeight - sectionInset.top)
+                            }
                         }
                     } else {
-                        totalDayCounter += 1
-                        if totalDayCounter % maxNumberOfDaysInWeek == 0 {
+                        if totalDayCounter % fullSection == 0 {
+                            
+                            yCellOffset += attribute.height + sectionInset.top
                             xCellOffset = sectionInset.left
-                            yCellOffset += attribute.5
-                            contentHeight += attribute.5
-                        } else if totalDayCounter == delegate.totalDays {
-                            contentHeight += attribute.5
+                            contentHeight = yCellOffset
+                            sectionSize.append(contentHeight - sectionInset.top)
+                            
+                        } else {
+                            if totalDayCounter >= delegate.totalDays {
+                                yCellOffset += attribute.height + sectionInset.top
+                                contentHeight = yCellOffset
+                                sectionSize.append(contentHeight - sectionInset.top)
+                            }
+                            
+                            if totalDayCounter % maxNumberOfDaysInWeek == 0 {
+                                xCellOffset = sectionInset.left
+                                yCellOffset += attribute.height
+                            }
                         }
                     }
                 }
-                // Save the content size for each section
-                contentHeight += endSeparator
-                yCellOffset += endSeparator
-                sectionSize.append(contentHeight)
-                section += 1
+                virtualSection += 1
             }
         }
         contentWidth = self.collectionView!.bounds.size.width
@@ -428,15 +438,13 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         attrib.frame = CGRect(x: cachedValue.2, y: cachedValue.3, width: cachedValue.4, height: cachedValue.5)
         if minimumInteritemSpacing > -1, minimumLineSpacing > -1 {
             var frame = attrib.frame.insetBy(dx: minimumInteritemSpacing, dy: minimumLineSpacing)
-            if frame == .null {
-                frame = attrib.frame.insetBy(dx: 0, dy: 0)
-            }
+            if frame == .null { frame = attrib.frame.insetBy(dx: 0, dy: 0) }
             attrib.frame = frame
         }
         return attrib
     }
     
-    func determineToApplyAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
+    func determineToApplyAttribs(_ item: Int, section: Int) -> (item: Int, section: Int, xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)? {
         let monthIndex = monthMap[section]!
         let numberOfDays = numberOfDaysInSection(monthIndex)
         // return nil on invalid range
@@ -444,7 +452,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         
         let size = sizeForitemAtIndexPath(item, section: section)
         let y = scrollDirection == .horizontal ? yCellOffset + sectionInset.top : yCellOffset
-        return (item, section, xCellOffset + stride, y, size.width, size.height)
+        return (item, section, xCellOffset + xStride, y, size.width, size.height)
     }
     
     func determineToApplySupplementaryAttribs(_ item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
@@ -684,7 +692,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         yCellOffset = 0
         contentHeight = 0
         contentWidth = 0
-        stride = 0
+        xStride = 0
         firstContentOffsetWasSet = false
     }
 }
