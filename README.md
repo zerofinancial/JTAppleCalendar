@@ -33,12 +33,6 @@
 
 
 
-## Tutorials
-  
-  Visit [PatchTheCode.com](http://patchthecode.com)
-   
-
-
 ## Installation
 ___
 
