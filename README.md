@@ -31,7 +31,7 @@
 - [x] [Complete Documentation](http://cocoadocs.org/docsets/JTAppleCalendar)
 ___
 
-# Tutorials now @ [PatchTheCode.com](http://patchthecode.com/)
+# Tutorials now @ [PatchTheCode.com](https://patchthecode.com/)
 ___
 
 ## Installation
