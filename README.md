@@ -29,8 +29,10 @@
 - [x] Ability to scroll to any month by simply using the date
 - [x] Ability to design your calendar [however you want.](https://github.com/patchthecode/JTAppleCalendar/issues/2) You want it, you build it
 - [x] [Complete Documentation](http://cocoadocs.org/docsets/JTAppleCalendar)
+___
 
-## Tutorials now @ [PatchTheCode.com](http://patchthecode.com/)
+# Tutorials now @ [PatchTheCode.com](http://patchthecode.com/)
+___
 
 ## Installation
 ___
