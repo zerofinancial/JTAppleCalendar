@@ -4,7 +4,7 @@
 
 #### Q: How will my calendar dateCells look with this library?
 **A**: However you want them to look.
-### Tutorials now @ [patchthecode.github.io](https://patchthecode.github.io/)
+### Tutorials now @ [PatchTheCode.com](http://patchthecode.com/)
 
 <p align="center">
    <a href="https://github.com/patchthecode/JTAppleCalendar/issues/2">
@@ -32,29 +32,12 @@
 - [x] [Complete Documentation](http://cocoadocs.org/docsets/JTAppleCalendar)
 
 
-[Installation](#installation) 
-# Want to create a buggy calendar? because this is how people who do not read this creates a buggy calendar.
-# Please implement the willDisplayCell function as stated here --> https://github.com/patchthecode/JTAppleCalendar/issues/553
-### I had to put extra bold text because no one reads this 😞
 
-Tutorials
+## Tutorials
   
-  **1. Building a Calendar from scratch**
+  Visit [PatchTheCode.com](http://patchthecode.com)
    
-   [<img width="300" alt="screen shot 2017-04-07 at 1 10 00 am" src="https://cloud.githubusercontent.com/assets/2439146/24791476/10ae6602-1b2f-11e7-9d2b-038b007090ab.png">](https://www.youtube.com/watch?v=zOphH-h-qCs)
-   
-   **2. Designing the Calendar [Part1]**
-   
-   [<img width="300" alt="screen shot 2017-04-09 at 5 16 16 pm" src="https://cloud.githubusercontent.com/assets/2439146/24842167/78a730a2-1d48-11e7-9c63-304491283ce6.png">](https://www.youtube.com/watch?v=Qd_Gc67xzlw)
 
-   **3. Mastering Calendar layouts**
-   
-   [<img width="300" alt="screen shot 2017-04-16 at 1 02 30 am" src="https://cloud.githubusercontent.com/assets/2439146/25069787/82c4c886-2240-11e7-94be-324cde5bed4a.png">](https://www.youtube.com/watch?v=1Sta3aEo9E4)
-
-   **4. Common Questions #1**
-   
-   [<img width="300" alt="screen shot 2017-04-16 at 1 02 30 am" src="https://user-images.githubusercontent.com/2439146/28244395-068cdc62-699f-11e7-9c31-5630745aa130.png">](https://www.youtube.com/watch?v=CQNotydm58s)
-   
 
 ## Installation
 ___
@@ -136,11 +119,6 @@ Run `carthage update` to build the framework and drag the built `JTApplecalendar
 
 Simply drag the source files into your project.
 
-
-
-## Author
-
-JayT, patchthecode@gmail.com <-- Sending me emails will not get you a swift response. I check it once every 2 weeks or so. Create a new issue [here on github](https://github.com/patchthecode/JTAppleCalendar/issues) if you need help.
 
 ## Contributors
 
