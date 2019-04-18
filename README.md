@@ -28,11 +28,10 @@
 - [x] Ability to add month headers in varying sizes/styles of your liking
 - [x] Ability to scroll to any month by simply using the date
 - [x] Ability to design your calendar [however you want.](https://github.com/patchthecode/JTAppleCalendar/issues/2) You want it, you build it
-- [x] [Complete Documentation](http://cocoadocs.org/docsets/JTAppleCalendar)
 ___
 
 ## How do I use this library? 
-### Installation instructions + tutorials located @ [PatchTheCode.com](https://patchthecode.com/)
+### >> Installation instructions + tutorials located @ [PatchTheCode.com](https://patchthecode.com/)
 ___
 
 ## Contributors
