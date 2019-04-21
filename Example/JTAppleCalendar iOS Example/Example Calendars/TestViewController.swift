@@ -2,7 +2,7 @@
 //  TestViewController.swift
 //  JTAppleCalendar iOS
 //
-//  Created by Jeron Thomas on 2017-07-11.
+//  Created by Jay Thomas on 2017-07-11.
 //
 
 import UIKit

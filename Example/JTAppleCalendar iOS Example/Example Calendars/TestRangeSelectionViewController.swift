@@ -2,7 +2,7 @@
 //  TestRangeSelectionViewController.swift
 //  JTAppleCalendar iOS
 //
-//  Created by Jeron Thomas on 2018-08-07.
+//  Created by Jay Thomas on 2018-08-07.
 //
 
 import UIKit
