@@ -20,12 +20,12 @@
 
 - [x] Range selection - select dates in a range. The design is entirely up to you.
 - [x] Boundary dates - limit the calendar date range
-- [x] Week/month mode - show 1 row of weekdays. Or 2, 3 or 6
+- [x] <a href="https://patchthecode.com/jtapplecalendar-home/week-view-month-view/">Week/month mode</a> - show 1 row of weekdays. Or 2, 3 or 6
 - [x] Custom cells - make your day-cells look however you want, with any functionality you want
 - [x] Custom calendar view - make your calendar look however you want, with what ever functionality you want
 - [x] First Day of week - pick anyday to be first day of the week
 - [x] Horizontal or vertical mode
-- [x] Ability to add month headers in varying sizes/styles of your liking
+- [x] Ability to add <a href="https://patchthecode.com/jtapplecalendar-home/headers/">month headers</a> in varying sizes/styles of your liking
 - [x] Ability to scroll to any month by simply using the date
 - [x] Ability to design your calendar [however you want.](https://github.com/patchthecode/JTAppleCalendar/issues/2) You want it, you build it
 ___
