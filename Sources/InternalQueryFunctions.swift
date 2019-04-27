@@ -459,9 +459,7 @@ extension JTAppleCalendarView {
         
         let emptySegment = DateSegmentInfo(indates: [], monthDates: [], outdates: [])
         
-        if !isCalendarLayoutLoaded {
-            return emptySegment
-        }
+        guard calendarLayoutIsLoaded else { return emptySegment }
         
         let cellAttributes = calendarViewLayout.elementsAtRect(excludeHeaders: true, from: rect)
         let indexPaths: [IndexPath] = cellAttributes.map { $0.indexPath }.sorted()

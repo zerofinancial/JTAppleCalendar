@@ -83,10 +83,10 @@ extension JTAppleCalendarView {
     }
     
     var functionIsUnsafeSafeToRun: Bool {
-        return !isCalendarLayoutLoaded || isScrollInProgress || isReloadDataInProgress
+        return !calendarLayoutIsLoaded || isScrollInProgress || isReloadDataInProgress
     }
     
-    var isCalendarLayoutLoaded: Bool { return calendarViewLayout.isCalendarLayoutLoaded }
+    var calendarLayoutIsLoaded: Bool { return calendarViewLayout.isCalendarLayoutLoaded }
     var startDateCache: Date         { return _cachedConfiguration.startDate }
     var endDateCache: Date           { return _cachedConfiguration.endDate }
     var calendar: Calendar           { return _cachedConfiguration.calendar }

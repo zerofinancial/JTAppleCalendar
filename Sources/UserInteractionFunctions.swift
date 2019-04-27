@@ -50,7 +50,7 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - CellState: The state of the found cell
     public func cellStatus(for date: Date) -> CellState? {
-        if !isCalendarLayoutLoaded || isReloadDataInProgress { return nil }
+        if !calendarLayoutIsLoaded || isReloadDataInProgress { return nil }
         // validate the path
         let paths = pathsFromDates([date])
         // Jt101 change this function to also return
@@ -66,7 +66,7 @@ extension JTAppleCalendarView {
     /// - returns:
     ///     - CellState: The state of the found cell
     public func cellStatus(for date: Date, completionHandler: @escaping (_ cellStatus: CellState?) ->()) {
-        if !isCalendarLayoutLoaded || isReloadDataInProgress {
+        if !calendarLayoutIsLoaded || isReloadDataInProgress {
             addToDelayedHandlers {[unowned self] in
                 self.cellStatus(for: date, completionHandler: completionHandler)
             }
@@ -302,7 +302,7 @@ extension JTAppleCalendarView {
     ///    Selecting those 4 dates again would give U | S | U | U. With KeepSelection, this becomes S | S | S | S
     public func selectDates(_ dates: [Date], triggerSelectionDelegate: Bool = true, keepSelectionIfMultiSelectionAllowed: Bool = false) {
         if dates.isEmpty { return }
-        if (!isCalendarLayoutLoaded || isReloadDataInProgress) {
+        if (!calendarLayoutIsLoaded || isReloadDataInProgress) {
             // If the calendar is not yet fully loaded.
             // Add the task to the delayed queue
             generalDelayedExecutionClosure.append {[unowned self] in

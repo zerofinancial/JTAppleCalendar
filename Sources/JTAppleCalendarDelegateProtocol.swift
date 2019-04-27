@@ -29,7 +29,7 @@ protocol JTAppleCalendarDelegateProtocol: class {
     var calendarDataSource: JTAppleCalendarViewDataSource? {get set}
     var cellSize: CGFloat {get set}
     var anchorDate: Date? {get set}
-    var isCalendarLayoutLoaded: Bool {get}
+    var calendarLayoutIsLoaded: Bool {get}
     var minimumInteritemSpacing: CGFloat  {get set}
     var minimumLineSpacing: CGFloat {get set}
     var monthInfo: [Month] {get set}
