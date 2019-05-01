@@ -206,7 +206,7 @@ extension JTAppleCalendarView {
     public func reloadData(withanchor date: Date? = nil, completionHandler: (() -> Void)? = nil) {
         if isReloadDataInProgress { return }
         if isScrollInProgress {
-            generalDelayedExecutionClosure.append {[unowned self] in
+            scrollDelayedExecutionClosure.append {[unowned self] in
                 self.reloadData(completionHandler: completionHandler)
             }
             return
