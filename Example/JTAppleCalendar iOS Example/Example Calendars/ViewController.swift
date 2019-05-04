@@ -368,7 +368,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         
         
         let startDate = formatter.date(from: "2018 01 01")!
-        let endDate = formatter.date(from: "2019 02 01")!
+        let endDate = formatter.date(from: "2018 03 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
