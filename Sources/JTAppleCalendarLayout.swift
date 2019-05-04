@@ -401,7 +401,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         if let alreadyCachedCellAttrib = cellAttributeFor(indexPath.item, section: indexPath.section) {
             return alreadyCachedCellAttrib
         }
-        return nil//deterimeToApplyAttribs(indexPath.item, section: indexPath.section)
+        return nil
     }
     
     func supplementaryAttributeFor(item: Int, section: Int, elementKind: String) -> UICollectionViewLayoutAttributes? {
@@ -415,7 +415,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         return retval
     }
     
-    func cachedValue(for item: Int, section: Int) -> (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)? {
+    func cachedValue(for item: Int, section: Int) -> (item: Int, section: Int, xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)? {
         if
             let alreadyCachedCellAttrib = cellCache[section],
             item < alreadyCachedCellAttrib.count,
@@ -645,7 +645,12 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     
     // This function ignores decoration views //JT101 for setting proposal
     func minimumVisibleIndexPaths() -> (cellIndex: IndexPath?, headerIndex: IndexPath?) {
-        let visibleItems: [UICollectionViewLayoutAttributes] = scrollDirection == .horizontal ? elementsAtRect(excludeHeaders: true) : elementsAtRect()
+        let visibleItems: [UICollectionViewLayoutAttributes]
+        if scrollDirection == .horizontal {
+            visibleItems = elementsAtRect(excludeHeaders: true)
+        } else {
+            visibleItems = elementsAtRect()
+        }
         
         var cells: [IndexPath] = []
         var headers: [IndexPath] = []
