@@ -67,13 +67,10 @@ open class JTAppleCalendarView: UICollectionView {
         didSet { setupMonthInfoAndMap() } // Refetch the data source for a data source change
     }
     
-    var lastSavedContentOffset: CGFloat    = 0.0
     var triggerScrollToDateDelegate: Bool? = true
     var isScrollInProgress                 = false
     var isReloadDataInProgress             = false
     
-    // keeps track of if didEndScroll is not yet completed. If isStillScrolling
-    var didEndScollCount = 0
     // Keeps track of scroll target location. If isScrolling, and user taps while scrolling
     var endScrollTargetLocation: CGFloat = 0
     
