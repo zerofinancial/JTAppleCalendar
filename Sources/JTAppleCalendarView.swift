@@ -73,6 +73,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     // Keeps track of scroll target location. If isScrolling, and user taps while scrolling
     var endScrollTargetLocation: CGFloat = 0
+    var lastMovedScrollDirection: CGFloat = 0
     
     var generalDelayedExecutionClosure: [(() -> Void)] = []
     var scrollDelayedExecutionClosure: [(() -> Void)]  = []
