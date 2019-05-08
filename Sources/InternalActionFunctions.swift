@@ -42,7 +42,6 @@ extension JTAppleCalendarView {
     }
     
     func setupNewLayout(from oldLayout: JTAppleCalendarLayoutProtocol) {
-        
         let newLayout = JTAppleCalendarLayout(withDelegate: self)
         newLayout.scrollDirection = oldLayout.scrollDirection
         newLayout.sectionInset = oldLayout.sectionInset
