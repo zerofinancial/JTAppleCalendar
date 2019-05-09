@@ -73,26 +73,27 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         switch scrollingMode {
         case .stopAtEachCalendarFrame:
             let interval = scrollDirection == .horizontal ? scrollView.frame.width : scrollView.frame.height
-            let offset = scrollingDirectionDecision(currentScrollDirectionValue: translation,
+            let offset = scrollDecision(currentScrollDirectionValue: translation,
                                                     previousScrollDirectionValue: lastMovedScrollDirection,
                                                     forward: { () -> CGFloat in return ceil(theCurrentContentOffset / interval) * interval },
                                                     backward: { () -> CGFloat in return floor(theCurrentContentOffset / interval) * interval})
             setTargetContentOffset(offset)
             
         case let .stopAtEach(customInterval: interval): 
-            let offset = scrollingDirectionDecision(currentScrollDirectionValue: translation,
+            let offset = scrollDecision(currentScrollDirectionValue: translation,
                                                     previousScrollDirectionValue: lastMovedScrollDirection,
                                                     forward: { () -> CGFloat in return ceil(theCurrentContentOffset / interval) * interval },
                                                     backward: { () -> CGFloat in return floor(theCurrentContentOffset / interval) * interval})
             setTargetContentOffset(offset)
         case .stopAtEachSection:
-            let section = scrollingDirectionDecision(currentScrollDirectionValue: translation,
+            let section = scrollDecision(currentScrollDirectionValue: translation,
                                                      previousScrollDirectionValue: lastMovedScrollDirection,
                                                      forward: { () -> Int in return theCurrentSection },
                                                      backward: { () -> Int in return theCurrentSection - 1 },
                                                      fixed: { () -> Int in return theCurrentSection})
 
-            guard section >= 0 else {setTargetContentOffset(0); return}
+            guard section >= 0, section < calendarLayout.sectionSize.count else {setTargetContentOffset(0); return}
+
             let calculatedOffset = calendarLayout.sectionSize[section]
             setTargetContentOffset(calculatedOffset)
         case let .nonStopToCell(withResistance: resistance), let .nonStopToSection(withResistance: resistance):
@@ -116,7 +117,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                 }
                 setTargetContentOffset(calculatedOffSet)
             case .nonStopToSection:
-                let stopSection = scrollingDirectionDecision(currentScrollDirectionValue: translation,
+                let stopSection = scrollDecision(currentScrollDirectionValue: translation,
                                                              previousScrollDirectionValue: lastMovedScrollDirection,
                                                              forward: { () -> Int in return validElementProperties.section },
                                                              backward: {() -> Int in return validElementProperties.section - 1})
@@ -127,12 +128,16 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             }
             
         case let .nonStopTo(interval, resistance):
-            let offset = fixedOffset(interval: interval,
-                                     resistance: resistance,
-                                     targetContentOffset: theTargetContentOffset,
-                                     currentContentOffset: theCurrentContentOffset,
-                                     currentScrollDirectionValue: translation,
-                                     previousScrollDirectionValue: lastMovedScrollDirection)
+            let diffResist = diffResistance(targetOffset: theTargetContentOffset, currentOffset: theCurrentContentOffset, resistance: resistance)
+            let recalculatedOffsetAfterResistance = offsetAfterResistanceApplied(currentScrollDirectionValue: translation,
+                                                                                 previousScrollDirectionValue: lastMovedScrollDirection,
+                                                                                 targetContentOffset: theTargetContentOffset,
+                                                                                 diffResistance: diffResist)
+            let offset = scrollDecision(currentScrollDirectionValue: translation,
+                                        previousScrollDirectionValue: lastMovedScrollDirection,
+                                        forward: { () -> CGFloat in return ceil(recalculatedOffsetAfterResistance / interval) * interval },
+                                        backward: { () -> CGFloat in floor(recalculatedOffsetAfterResistance / interval) * interval })
+            
             setTargetContentOffset(offset)
         case .none: break
         }
@@ -181,26 +186,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         calendarDelegate?.calendarDidScroll(self)
     }
     
-    
-    func fixedOffset(interval: CGFloat,
-                     resistance: CGFloat,
-                     targetContentOffset: CGFloat,
-                     currentContentOffset: CGFloat,
-                     currentScrollDirectionValue: CGFloat,
-                     previousScrollDirectionValue: CGFloat) -> CGFloat {
-        
-        let diffResist = diffResistance(targetOffset: targetContentOffset, currentOffset: currentContentOffset, resistance: resistance)
-        let recalculatedOffsetAfterResistance = offsetAfterResistanceApplied(currentScrollDirectionValue: currentScrollDirectionValue,
-                                                                             previousScrollDirectionValue: previousScrollDirectionValue,
-                                                                             targetContentOffset: targetContentOffset,
-                                                                             diffResistance: diffResist)
-        
-        return scrollingDirectionDecision(currentScrollDirectionValue: currentScrollDirectionValue,
-                                          previousScrollDirectionValue: previousScrollDirectionValue,
-                                          forward: { () -> CGFloat in return ceil(recalculatedOffsetAfterResistance / interval) * interval },
-                                          backward: { () -> CGFloat in floor(recalculatedOffsetAfterResistance / interval) * interval })
-    }
-    
     func rectAfterApplying(resistance: CGFloat,
                            targetContentOffset: CGFloat,
                            currentContentOffset: CGFloat,
@@ -245,17 +230,17 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                                       targetContentOffset: CGFloat,
                                       diffResistance: CGFloat) -> CGFloat {
 
-        return scrollingDirectionDecision(currentScrollDirectionValue: currentScrollDirectionValue,
+        return scrollDecision(currentScrollDirectionValue: currentScrollDirectionValue,
                                           previousScrollDirectionValue: previousScrollDirectionValue,
                                           forward: { () -> CGFloat in return targetContentOffset - diffResistance },
                                           backward: { () -> CGFloat in return targetContentOffset + diffResistance })
     }
     
-    func scrollingDirectionDecision<T>(currentScrollDirectionValue: CGFloat,
-                                    previousScrollDirectionValue: CGFloat,
-                                    forward: ()->T,
-                                    backward: ()->T,
-                                    fixed: (()->T)? = nil) -> T {
+    func scrollDecision<T>(currentScrollDirectionValue: CGFloat,
+                           previousScrollDirectionValue: CGFloat,
+                           forward: ()->T,
+                           backward: ()->T,
+                           fixed: (()->T)? = nil) -> T {
         if currentScrollDirectionValue < 0 {
             return forward()
         } else if currentScrollDirectionValue > 0 {
