@@ -51,7 +51,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
 
         let gestureTranslation = self.panGestureRecognizer.translation(in: self)
         let translation = self.scrollDirection == .horizontal ? gestureTranslation.x : gestureTranslation.y
-        let isScrollingForward = translation < 0
         
         
         
@@ -67,60 +66,26 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         if directionVelocity == 0.0 {
             decelerationRate = .fast
         }
-        
-        
-        let calculatedCurrentFixedContentOffsetFrom = {(interval: CGFloat) -> CGFloat in
-            if isScrollingForward {
-                return ceil(theCurrentContentOffset / interval) * interval
-            } else {
-                return floor(theCurrentContentOffset / interval) * interval
-            }
-        }
-        
-//        let recalculateOffset = {(diff: CGFloat, interval: CGFloat) -> CGFloat in
-//            if isScrollingForward {
-//                let recalcOffsetAfterResistanceApplied = theTargetContentOffset - diff
-//                return ceil(recalcOffsetAfterResistanceApplied / interval) * interval
-//            } else {
-//                let recalcOffsetAfterResistanceApplied = theTargetContentOffset + diff
-//                return floor(recalcOffsetAfterResistanceApplied / interval) * interval
-//            }
-//        }
-        
+
         if theCurrentContentOffset >= maxContentOffset { setTargetContentOffset(maxContentOffset) ; return }
         if theCurrentContentOffset <= 0 { setTargetContentOffset(0); return }
 
         switch scrollingMode {
-//        case let .nonStopTo(interval, resistance):
-//            let offset = fixedOffset(interval: interval,
-//                                     resistance: resistance,
-//                                     targetContentOffset: theTargetContentOffset,
-//                                     currentContentOffset: theCurrentContentOffset,
-//                                     currentScrollDirectionValue: translation,
-//                                     previousScrollDirectionValue: lastMovedScrollDirection)
-//            setTargetContentOffset(offset)
-            
-        case let .stopAtEach(customInterval: interval):
-            let section = scrollingDirectionDecision(currentScrollDirectionValue: translation,
-                                                     previousScrollDirectionValue: lastMovedScrollDirection,
-                                                     forward: { () -> Int in return theCurrentSection + 1 },
-                                                     backward: { () -> Int in return theCurrentSection - 1 },
-                                                     fixed: { () -> Int in return theCurrentSection - 1})
-            
-            
-            let calculatedOffset = calendarLayout.sectionSize[section]
-            setTargetContentOffset(calculatedOffset)
         case .stopAtEachCalendarFrame:
-            #if os(tvOS)
-                let interval = scrollDirection == .horizontal ? scrollView.frame.width : scrollView.frame.height
-                let calculatedOffset = calculatedCurrentFixedContentOffsetFrom(interval)
-                setTargetContentOffset(calculatedOffset)
-            #else
-                setTargetContentOffset(scrollDirection == .horizontal ? targetContentOffset.pointee.x : targetContentOffset.pointee.y)
-            #endif
-            break
+            let interval = scrollDirection == .horizontal ? scrollView.frame.width : scrollView.frame.height
+            let offset = scrollingDirectionDecision(currentScrollDirectionValue: translation,
+                                                    previousScrollDirectionValue: lastMovedScrollDirection,
+                                                    forward: { () -> CGFloat in return ceil(theCurrentContentOffset / interval) * interval },
+                                                    backward: { () -> CGFloat in return floor(theCurrentContentOffset / interval) * interval})
+            setTargetContentOffset(offset)
+            
+        case let .stopAtEach(customInterval: interval): 
+            let offset = scrollingDirectionDecision(currentScrollDirectionValue: translation,
+                                                    previousScrollDirectionValue: lastMovedScrollDirection,
+                                                    forward: { () -> CGFloat in return ceil(theCurrentContentOffset / interval) * interval },
+                                                    backward: { () -> CGFloat in return floor(theCurrentContentOffset / interval) * interval})
+            setTargetContentOffset(offset)
         case .stopAtEachSection:
-            print("theCurrentSection: \(theCurrentSection)")
             let section = scrollingDirectionDecision(currentScrollDirectionValue: translation,
                                                      previousScrollDirectionValue: lastMovedScrollDirection,
                                                      forward: { () -> Int in return theCurrentSection },
@@ -175,8 +140,7 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
         let futureScrollPoint = CGPoint(x: targetContentOffset.pointee.x, y: targetContentOffset.pointee.y)
         let dateSegmentInfo = datesAtCurrentOffset(futureScrollPoint)
         calendarDelegate?.calendar(self, willScrollToDateSegmentWith: dateSegmentInfo)
-        
-        
+
         self.lastMovedScrollDirection = translation
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
