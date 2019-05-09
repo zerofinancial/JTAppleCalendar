@@ -129,10 +129,11 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
             
         case let .nonStopTo(interval, resistance):
             let diffResist = diffResistance(targetOffset: theTargetContentOffset, currentOffset: theCurrentContentOffset, resistance: resistance)
-            let recalculatedOffsetAfterResistance = offsetAfterResistanceApplied(currentScrollDirectionValue: translation,
-                                                                                 previousScrollDirectionValue: lastMovedScrollDirection,
-                                                                                 targetContentOffset: theTargetContentOffset,
-                                                                                 diffResistance: diffResist)
+            let recalculatedOffsetAfterResistance = scrollDecision(currentScrollDirectionValue: translation,
+                                                                   previousScrollDirectionValue: lastMovedScrollDirection,
+                                                                   forward: { () -> CGFloat in return theTargetContentOffset - diffResist },
+                                                                   backward: { () -> CGFloat in return theTargetContentOffset + diffResist })
+
             let offset = scrollDecision(currentScrollDirectionValue: translation,
                                         previousScrollDirectionValue: lastMovedScrollDirection,
                                         forward: { () -> CGFloat in return ceil(recalculatedOffsetAfterResistance / interval) * interval },
@@ -193,10 +194,10 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
                            previousScrollDirectionValue: CGFloat) -> (recalculatedOffset: CGFloat, elementProperty: (item: Int, section: Int, xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)?) {
         
         let diffResist = diffResistance(targetOffset: targetContentOffset, currentOffset: currentContentOffset, resistance: resistance)
-        let recalcOffsetAfterResistanceApplied = offsetAfterResistanceApplied(currentScrollDirectionValue: currentScrollDirectionValue,
-                                                                              previousScrollDirectionValue: previousScrollDirectionValue,
-                                                                              targetContentOffset: targetContentOffset,
-                                                                              diffResistance: diffResist)
+        let recalcOffsetAfterResistanceApplied = scrollDecision(currentScrollDirectionValue: currentScrollDirectionValue,
+                                                                previousScrollDirectionValue: previousScrollDirectionValue,
+                                                                forward: { () -> CGFloat in return targetContentOffset - diffResist },
+                                                                backward: { () -> CGFloat in return targetContentOffset + diffResist })
  
         let element: UICollectionViewLayoutAttributes?
         let rect: CGRect
@@ -223,17 +224,6 @@ extension JTAppleCalendarView: UIScrollViewDelegate {
     func diffResistance(targetOffset: CGFloat, currentOffset: CGFloat, resistance: CGFloat) -> CGFloat {
         let difference = abs(targetOffset - currentOffset)
         return difference * resistance
-    }
-    
-    func offsetAfterResistanceApplied(currentScrollDirectionValue: CGFloat,
-                                      previousScrollDirectionValue: CGFloat,
-                                      targetContentOffset: CGFloat,
-                                      diffResistance: CGFloat) -> CGFloat {
-
-        return scrollDecision(currentScrollDirectionValue: currentScrollDirectionValue,
-                                          previousScrollDirectionValue: previousScrollDirectionValue,
-                                          forward: { () -> CGFloat in return targetContentOffset - diffResistance },
-                                          backward: { () -> CGFloat in return targetContentOffset + diffResistance })
     }
     
     func scrollDecision<T>(currentScrollDirectionValue: CGFloat,
