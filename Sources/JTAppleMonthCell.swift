@@ -22,37 +22,48 @@
 //  THE SOFTWARE.
 //
 
-open class JTAppleMonthCell: UICollectionViewCell {
+open class JTAppleMonthCell: UIView {
     var daysInSection: [Int: Int] = [:] // temporary caching
     var sectionInset = UIEdgeInsets.zero
     var month: Month?
     var monthDate: Date?
+    var configurationParameters: ConfigurationParameters?
+    
     var yCellOffset:CGFloat = 0
     var xCellOffset:CGFloat = 0
     var xStride:CGFloat = 0
     
-    @IBOutlet var drawView: UIView?
-    
 
     var scrollDirection: UICollectionView.ScrollDirection = .horizontal
     
-    func setupWith(month: Month, monthDate: Date) {
-        self.month = month
-        self.monthDate = monthDate
+    func setupWith(configurationParameters: ConfigurationParameters, index: Int) {
+        self.configurationParameters = configurationParameters
+        
+        let dateConfigurator = JTAppleDateConfigGenerator.shared
+        
+        let c = Calendar(identifier: .gregorian)
+        guard let startEndDate = c.date(byAdding: .month, value: index, to: configurationParameters.startDate) else { assert(false, "Could not create date"); return }
+        
+        let internalConfigurationParameters = ConfigurationParameters(startDate: startEndDate,
+                                                                      endDate: startEndDate,
+                                                                      numberOfRows: configurationParameters.numberOfRows,
+                                                                      calendar: configurationParameters.calendar,
+                                                                      generateInDates: configurationParameters.generateInDates,
+                                                                      generateOutDates: configurationParameters.generateOutDates,
+                                                                      firstDayOfWeek: configurationParameters.firstDayOfWeek,
+                                                                      hasStrictBoundaries: configurationParameters.hasStrictBoundaries)
+        
+        
+        let dateInfo = dateConfigurator.setupMonthInfoDataForStartAndEndDate(internalConfigurationParameters)
+        self.month = dateInfo.months.first
+        self.monthDate = startEndDate
+        
     }
 
     func sizeForitem(month: Month) -> (width: CGFloat, height: CGFloat) {
         let numberOfRowsForSection = month.maxNumberOfRowsForFull(developerSetRows: 6)
-        let width: CGFloat
-        let height: CGFloat
-        
-        if let drawView = drawView {
-            width = (drawView.frame.width - ((sectionInset.left / 7) + (sectionInset.right / 7))) / 7
-            height = (drawView.frame.height - sectionInset.top - sectionInset.bottom) / CGFloat(numberOfRowsForSection)
-        } else {
-            width = (frame.width - ((sectionInset.left / 7) + (sectionInset.right / 7))) / 7
-            height = (frame.height - sectionInset.top - sectionInset.bottom) / CGFloat(numberOfRowsForSection)
-        }
+        let width = (frame.width - ((sectionInset.left / 7) + (sectionInset.right / 7))) / 7
+        let height = (frame.height - sectionInset.top - sectionInset.bottom) / CGFloat(numberOfRowsForSection)
         return (width, height)
     }
     
@@ -74,10 +85,7 @@ open class JTAppleMonthCell: UICollectionViewCell {
     
     override open func draw(_ rect: CGRect) {
         super.draw(rect)
-        
-        
-        
-        
+
         UIGraphicsGetCurrentContext()
         let context = UIGraphicsGetCurrentContext()!
         context.saveGState()
@@ -94,14 +102,7 @@ open class JTAppleMonthCell: UICollectionViewCell {
             for dayCounter in 1...numberOfDaysInCurrentSection {
                 guard let attribute = determineToApplyAttribs(month: month) else { continue }
             
-                let rect: CGRect
-                if let drawView = drawView {
-                    rect = CGRect(x: attribute.xOffset + drawView.frame.origin.x, 
-                                  y: attribute.yOffset + drawView.frame.origin.y,
-                                  width: attribute.width, height: attribute.height)
-                } else {
-                    rect = CGRect(x: attribute.xOffset, y: attribute.yOffset, width: attribute.width, height: attribute.height)
-                }
+                let rect = CGRect(x: attribute.xOffset, y: attribute.yOffset, width: attribute.width, height: attribute.height)
                 
                 let date = dateOwnerInfoFromPath(dayCounter - 1, month: month, startOfMonthCache: monthDate)
                 

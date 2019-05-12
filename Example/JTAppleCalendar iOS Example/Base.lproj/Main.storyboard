@@ -823,30 +823,21 @@
                                     <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="monthViewCell" id="C03-vA-CDE" customClass="MonthViewCell" customModule="JTAppleCalendar">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="myCell" id="C03-vA-CDE" customClass="MyCell" customModule="JTAppleCalendar">
                                         <rect key="frame" x="10" y="0.0" width="156" height="135"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="156" height="135"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dkg-wL-Ol1">
-                                                    <rect key="frame" x="0.0" y="45" width="156" height="90"/>
-                                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="90" id="fOh-P5-qxi"/>
-                                                    </constraints>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                            <integer key="value" value="1"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
+                                                <view contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="dkg-wL-Ol1" customClass="JTAppleMonthCell" customModule="JTAppleCalendar">
+                                                    <rect key="frame" x="0.0" y="24" width="156" height="111"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Jan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e8x-Rc-HXw">
-                                                    <rect key="frame" x="44" y="0.0" width="28" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Jan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e8x-Rc-HXw">
+                                                    <rect key="frame" x="0.0" y="0.0" width="29" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                    <color key="textColor" red="1" green="0.30872617429999999" blue="0.17401843089999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -854,15 +845,14 @@
                                         <constraints>
                                             <constraint firstItem="dkg-wL-Ol1" firstAttribute="leading" secondItem="C03-vA-CDE" secondAttribute="leading" id="R1F-lB-9B7"/>
                                             <constraint firstAttribute="trailing" secondItem="dkg-wL-Ol1" secondAttribute="trailing" id="j25-23-mUd"/>
+                                            <constraint firstItem="e8x-Rc-HXw" firstAttribute="leading" secondItem="C03-vA-CDE" secondAttribute="leading" id="mCG-UP-COo"/>
+                                            <constraint firstItem="dkg-wL-Ol1" firstAttribute="top" secondItem="e8x-Rc-HXw" secondAttribute="bottom" constant="3" id="oxu-7n-AYO"/>
                                             <constraint firstAttribute="bottom" secondItem="dkg-wL-Ol1" secondAttribute="bottom" id="u09-rx-cOc"/>
+                                            <constraint firstItem="e8x-Rc-HXw" firstAttribute="top" secondItem="C03-vA-CDE" secondAttribute="top" id="wBE-yf-IXi"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                                <integer key="value" value="1"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <outlet property="drawView" destination="dkg-wL-Ol1" id="suv-IG-n7s"/>
+                                            <outlet property="monthLabel" destination="e8x-Rc-HXw" id="O3L-0W-GD0"/>
+                                            <outlet property="monthView" destination="dkg-wL-Ol1" id="miF-9i-sp4"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

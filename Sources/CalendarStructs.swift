@@ -248,7 +248,11 @@ public struct Month {
     }
 }
 
-struct JTAppleDateConfigGenerator {
+class JTAppleDateConfigGenerator {
+    
+    static let shared =  JTAppleDateConfigGenerator()
+    private init() {}
+    
     func setupMonthInfoDataForStartAndEndDate(_ parameters: ConfigurationParameters)
         -> (months: [Month], monthMap: [Int: Int], totalSections: Int, totalDays: Int) {
             let differenceComponents = parameters.calendar.dateComponents([.month], from: parameters.startDate, to: parameters.endDate)

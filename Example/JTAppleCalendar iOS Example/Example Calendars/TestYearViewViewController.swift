@@ -9,43 +9,40 @@ import UIKit
 
 class TestYearViewViewController: UIViewController {
     var cp: ConfigurationParameters!
-    var months: [Month] = []
     let c = Calendar(identifier: .gregorian)
     
     var sDate: Date!
     var eDate: Date!
     
+    let f = DateFormatter()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let dateConfigurator = JTAppleDateConfigGenerator()
-        let f = DateFormatter()
+
         f.dateFormat = "yyyy MM dd"
         
         sDate = f.date(from: "2019 03 01")!
         eDate = f.date(from: "2019 12 31")!
-        
         cp = ConfigurationParameters(startDate: sDate, endDate: eDate)
-        let monthData = dateConfigurator.setupMonthInfoDataForStartAndEndDate(cp)
-
-        self.months.append(contentsOf: monthData.months)
     }
-    
-
-
 }
 
 
 extension TestYearViewViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return months.count
+        let range = c.dateComponents([.month], from: sDate, to: eDate)
+        return range.month ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "monthViewCell", for: indexPath) as! MonthViewCell
-        let month = months[indexPath.item]
-//        let date = c.date(byAdding: .month, value: indexPath.item, to: sDate)!
-        cell.setupWith(month: month, monthDate: sDate)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "myCell", for: indexPath) as! MyCell
+
+        let date = c.date(byAdding: .month, value: indexPath.item, to: sDate)!
+        
+        f.dateFormat = "MMM"
+        cell.monthLabel.text = f.string(from: date)
+        
+        cell.setupWith(configurationParameters: cp, index: indexPath.item)
         return cell
     }
     
@@ -59,6 +56,11 @@ extension TestYearViewViewController: UICollectionViewDelegate, UICollectionView
 }
 
 
-class MonthViewCell: JTAppleMonthCell {
+class MyCell: UICollectionViewCell {
+    @IBOutlet var monthView: JTAppleMonthCell!
+    @IBOutlet var monthLabel: UILabel!
     
+    func setupWith(configurationParameters: ConfigurationParameters, index: Int) {
+        monthView.setupWith(configurationParameters: configurationParameters, index: index)
+    }
 }

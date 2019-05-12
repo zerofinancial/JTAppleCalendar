@@ -78,7 +78,7 @@ open class JTAppleCalendarMonthView: UICollectionView {
     var generalDelayedExecutionClosure: [(() -> Void)] = []
     var scrollDelayedExecutionClosure: [(() -> Void)]  = []
     
-    let dateGenerator = JTAppleDateConfigGenerator()
+    let dateGenerator = JTAppleDateConfigGenerator.shared
     
     /// Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated.
     public init() {
