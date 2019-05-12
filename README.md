@@ -31,7 +31,7 @@
 ___
 
 ## How do I use this library? 
-### >> Installation instructions + tutorials located @ [PatchTheCode.com](https://patchthecode.com/)
+### >> [Read the wiki](https://github.com/patchthecode/JTAppleCalendar/wiki/Tutorials) for Tutorials and example code to download. Or visit [PatchTheCode.com](https://patchthecode.com).
 ___
 
 ## Contributors
