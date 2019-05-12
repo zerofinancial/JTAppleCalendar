@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-extension JTAppleCalendarView {
+extension JTAppleCalendarMonthView {
     /// Lays out subviews.
     override open func layoutSubviews() {
         super.layoutSubviews()
@@ -41,8 +41,8 @@ extension JTAppleCalendarView {
         assert(false)
     }
     
-    func setupNewLayout(from oldLayout: JTAppleCalendarLayoutProtocol) {
-        let newLayout = JTAppleCalendarLayout(withDelegate: self)
+    func setupNewLayout(from oldLayout: JTAppleCalendarMonthLayoutProtocol) {
+        let newLayout = JTAppleCalendarMonthLayout(withDelegate: self)
         newLayout.scrollDirection = oldLayout.scrollDirection
         newLayout.sectionInset = oldLayout.sectionInset
         newLayout.minimumInteritemSpacing = oldLayout.minimumInteritemSpacing
@@ -168,13 +168,13 @@ extension JTAppleCalendarView {
     
     func batchReloadIndexPaths(_ indexPaths: [IndexPath]) {
         let visiblePaths = indexPathsForVisibleItems
-        var visibleCellsToReload: [JTAppleCell: IndexPath] = [:]
+        var visibleCellsToReload: [JTAppleDayCell: IndexPath] = [:]
         
         for path in indexPaths {
             if calendarViewLayout.cachedValue(for: path.item, section: path.section) == nil { continue }
             pathsToReload.insert(path)
             if visiblePaths.contains(path) {
-                visibleCellsToReload[cellForItem(at: path) as! JTAppleCell] = path
+                visibleCellsToReload[cellForItem(at: path) as! JTAppleDayCell] = path
             }
         }
         

@@ -23,19 +23,19 @@
 //
 
 // Calculated Variables
-extension JTAppleCalendarView {
+extension JTAppleCalendarMonthView {
     /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
     /// Remove this extra property once Xcode gets fixed.
     @IBOutlet public var ibCalendarDelegate: AnyObject? {
         get { return calendarDelegate }
-        set { calendarDelegate = newValue as? JTAppleCalendarViewDelegate }
+        set { calendarDelegate = newValue as? JTAppleCalendarMonthViewDelegate }
     }
     
     /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
     /// Remove this extra property once Xcode gets fixed.
     @IBOutlet public var ibCalendarDataSource: AnyObject? {
         get { return calendarDataSource }
-        set { calendarDataSource = newValue as? JTAppleCalendarViewDataSource }
+        set { calendarDataSource = newValue as? JTAppleCalendarMonthViewDataSource }
     }
     
     @available(*, unavailable)
@@ -74,10 +74,10 @@ extension JTAppleCalendarView {
         return theData.totalDays
     }
     
-    var calendarViewLayout: JTAppleCalendarLayout {
-        guard let layout = collectionViewLayout as? JTAppleCalendarLayout else {
-            developerError(string: "Calendar layout is not of type JTAppleCalendarLayout.")
-            return JTAppleCalendarLayout(withDelegate: self)
+    var calendarViewLayout: JTAppleCalendarMonthLayout {
+        guard let layout = collectionViewLayout as? JTAppleCalendarMonthLayout else {
+            developerError(string: "Calendar layout is not of type JTAppleCalendarMonthLayout.")
+            return JTAppleCalendarMonthLayout(withDelegate: self)
         }
         return layout
     }

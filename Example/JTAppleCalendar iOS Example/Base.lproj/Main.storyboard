@@ -57,7 +57,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="1YD-90-lES">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="250"/>
                                         <subviews>
-                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rcm-BV-nfJ" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
+                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rcm-BV-nfJ" customClass="JTAppleCalendarMonthView" customModule="JTAppleCalendar">
                                                 <rect key="frame" x="0.0" y="0.0" width="343" height="250"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="Rjk-DW-wpX">
@@ -724,7 +724,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="zg8-Vx-EnL" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="zg8-Vx-EnL" customClass="JTAppleCalendarMonthView" customModule="JTAppleCalendar">
                                         <rect key="frame" x="0.0" y="20.5" width="375" height="350"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -796,7 +796,59 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cuU-Mo-63R" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2168.8000000000002" y="-408.84557721139436"/>
+            <point key="canvasLocation" x="1386" y="-444"/>
+        </scene>
+        <!--Test Year View View Controller-->
+        <scene sceneID="wO7-mA-HMM">
+            <objects>
+                <viewController id="ZZU-Fx-N6U" customClass="TestYearViewViewController" customModule="JTAppleCalendar" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="E2D-gB-4ry"/>
+                        <viewControllerLayoutGuide type="bottom" id="cEM-w5-hoy"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="pke-tV-doL">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bh9-Ea-ItT">
+                                <rect key="frame" x="0.0" y="64" width="375" height="335"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="335" id="skL-Tu-a9H"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="8FJ-Ly-S06">
+                                    <size key="itemSize" width="156" height="135"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="monthViewCell" id="C03-vA-CDE" customClass="MonthViewCell" customModule="JTAppleCalendar">
+                                        <rect key="frame" x="0.0" y="0.0" width="156" height="135"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                            <rect key="frame" x="0.0" y="0.0" width="156" height="135"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="ZZU-Fx-N6U" id="S83-jb-GnD"/>
+                                    <outlet property="delegate" destination="ZZU-Fx-N6U" id="gvT-OJ-anT"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Bh9-Ea-ItT" firstAttribute="leading" secondItem="pke-tV-doL" secondAttribute="leading" id="Jcr-c1-TdX"/>
+                            <constraint firstAttribute="trailing" secondItem="Bh9-Ea-ItT" secondAttribute="trailing" id="Lmm-gS-Rmd"/>
+                            <constraint firstItem="Bh9-Ea-ItT" firstAttribute="top" secondItem="E2D-gB-4ry" secondAttribute="bottom" id="XNa-ln-pMt"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vQa-iq-XYe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2256.8000000000002" y="-477.21139430284859"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="Pw0-md-6kX">
@@ -811,7 +863,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="wFg-I5-5WX">
-                                <rect key="frame" x="76" y="273.5" width="223" height="120"/>
+                                <rect key="frame" x="76" y="258.5" width="223" height="150"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r9b-Va-H2a">
                                         <rect key="frame" x="0.0" y="0.0" width="223" height="30"/>
@@ -839,6 +891,13 @@
                                         <state key="normal" title="Range selection"/>
                                         <connections>
                                             <segue destination="JjC-p2-LPZ" kind="show" id="XsD-qK-5c0"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yTB-iP-SZo">
+                                        <rect key="frame" x="0.0" y="120" width="223" height="30"/>
+                                        <state key="normal" title="YearView Calendar"/>
+                                        <connections>
+                                            <segue destination="ZZU-Fx-N6U" kind="show" id="ieI-KL-zST"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -871,7 +930,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kyX-nO-Lf1">
                                 <rect key="frame" x="0.0" y="105" width="375" height="271"/>
                                 <subviews>
-                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="LAY-EA-ORQ" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="LAY-EA-ORQ" customClass="JTAppleCalendarMonthView" customModule="JTAppleCalendar">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="271"/>
                                         <color key="backgroundColor" red="0.93053645360000004" green="0.93053645360000004" blue="0.93053645360000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="eZW-3P-KnG">
@@ -1237,7 +1296,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="tGp-5A-HoB" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="tGp-5A-HoB" customClass="JTAppleCalendarMonthView" customModule="JTAppleCalendar">
                                 <rect key="frame" x="16" y="64" width="343" height="350"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>

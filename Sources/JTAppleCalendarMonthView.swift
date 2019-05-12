@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarView.swift
+//  JTAppleCalendarMonthView.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -29,9 +29,9 @@ let decorationViewID = "Are you ready for the life after this one?"
 let errorDelta: CGFloat = 0.0000001
 
 
-/// An instance of JTAppleCalendarView (or simply, a calendar view) is a
+/// An instance of JTAppleCalendarMonthView (or simply, a calendar view) is a
 /// means for displaying and interacting with a gridstyle layout of date-cells
-open class JTAppleCalendarView: UICollectionView {
+open class JTAppleCalendarMonthView: UICollectionView {
     
     /// Configures the size of your date cells
     @IBInspectable open var cellSize: CGFloat = 0 {
@@ -58,12 +58,12 @@ open class JTAppleCalendarView: UICollectionView {
     open var isRangeSelectionUsed: Bool = false
     
     /// The object that acts as the delegate of the calendar view.
-    weak open var calendarDelegate: JTAppleCalendarViewDelegate? {
+    weak open var calendarDelegate: JTAppleCalendarMonthViewDelegate? {
         didSet { lastMonthSize = sizesForMonthSection() }
     }
     
     /// The object that acts as the data source of the calendar view.
-    weak open var calendarDataSource: JTAppleCalendarViewDataSource? {
+    weak open var calendarDataSource: JTAppleCalendarMonthViewDataSource? {
         didSet { setupMonthInfoAndMap() } // Refetch the data source for a data source change
     }
     
@@ -83,20 +83,20 @@ open class JTAppleCalendarView: UICollectionView {
     /// Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated.
     public init() {
         super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
+        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarMonthLayoutProtocol)
     }
     
     /// Initializes and returns a newly allocated collection view object with the specified frame and layout.
-    @available(*, unavailable, message: "Please use JTAppleCalendarView() instead. It manages its own layout.")
+    @available(*, unavailable, message: "Please use JTAppleCalendarMonthView() instead. It manages its own layout.")
     public override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: UICollectionViewFlowLayout())
-        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
+        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarMonthLayoutProtocol)
     }
     
     /// Initializes using decoder object
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarLayoutProtocol)
+        setupNewLayout(from: collectionViewLayout as! JTAppleCalendarMonthLayoutProtocol)
     }
     
     // Configuration parameters from the dataSource
@@ -189,7 +189,7 @@ open class JTAppleCalendarView: UICollectionView {
 }
 
 @available(iOS 9.0, *)
-extension JTAppleCalendarView {
+extension JTAppleCalendarMonthView {
     /// A semantic description of the view’s contents, used to determine whether the view should be flipped when switching between left-to-right and right-to-left layouts.
     open override var semanticContentAttribute: UISemanticContentAttribute {
         didSet {

@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarMonthLayoutProtocol.swift
+//  JTAppleCalendarYearView.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,13 +22,8 @@
 //  THE SOFTWARE.
 //
 
-
-protocol JTAppleCalendarMonthLayoutProtocol: class {
-    var minimumInteritemSpacing: CGFloat {get set}
-    var minimumLineSpacing: CGFloat {get set}
-    var sectionInset: UIEdgeInsets {get set}
-    var scrollDirection: UICollectionView.ScrollDirection {get set}
+open class JTAppleCalendarYearView: UICollectionView {
+    
+    
 }
-
-extension UICollectionViewFlowLayout: JTAppleCalendarMonthLayoutProtocol {}
 

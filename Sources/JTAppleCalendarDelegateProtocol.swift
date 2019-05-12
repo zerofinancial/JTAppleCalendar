@@ -26,7 +26,7 @@ protocol JTAppleCalendarDelegateProtocol: class {
     // Variables
     var allowsDateCellStretching: Bool {get set}
     var _cachedConfiguration: ConfigurationParameters! {get set}
-    var calendarDataSource: JTAppleCalendarViewDataSource? {get set}
+    var calendarDataSource: JTAppleCalendarMonthViewDataSource? {get set}
     var cellSize: CGFloat {get set}
     var anchorDate: Date? {get set}
     var calendarLayoutIsLoaded: Bool {get}
@@ -46,4 +46,4 @@ protocol JTAppleCalendarDelegateProtocol: class {
     func targetPointForItemAt(indexPath: IndexPath, preferredScrollPosition: UICollectionView.ScrollPosition?) -> CGPoint?
 }
 
-extension JTAppleCalendarView: JTAppleCalendarDelegateProtocol { }
+extension JTAppleCalendarMonthView: JTAppleCalendarDelegateProtocol { }

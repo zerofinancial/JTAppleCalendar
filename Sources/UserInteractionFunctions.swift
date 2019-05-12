@@ -23,7 +23,7 @@
 //
 
 
-extension JTAppleCalendarView {
+extension JTAppleCalendarMonthView {
     
     /// Returns the cellStatus of a date that is visible on the screen.
     /// If the row and column for the date cannot be found,
@@ -56,7 +56,7 @@ extension JTAppleCalendarView {
         // Jt101 change this function to also return
         // information like the dateInfoFromPath function
         if paths.isEmpty { return nil }
-        let cell = cellForItem(at: paths[0]) as? JTAppleCell
+        let cell = cellForItem(at: paths[0]) as? JTAppleDayCell
         let stateOfCell = cellStateFromIndexPath(paths[0], cell: cell)
         return stateOfCell
     }
@@ -104,7 +104,7 @@ extension JTAppleCalendarView {
     ///     - CellState: The state of the found cell
     public func cellStatus(at point: CGPoint) -> CellState? {
         if let indexPath = indexPathForItem(at: point) {
-            let cell = cellForItem(at: indexPath) as? JTAppleCell
+            let cell = cellForItem(at: indexPath) as? JTAppleDayCell
             return cellStateFromIndexPath(indexPath, cell: cell)
         }
         return nil
@@ -188,10 +188,10 @@ extension JTAppleCalendarView {
         calendarViewLayout.register(className, forDecorationViewOfKind: decorationViewID)
     }
     /// Dequeues a reuable calendar cell
-    public func dequeueReusableJTAppleCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCell {
-        guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleCell else {
+    public func dequeueReusableJTAppleCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleDayCell {
+        guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleDayCell else {
             developerError(string: "Error initializing Cell View with identifier: '\(identifier)'")
-            return JTAppleCell()
+            return JTAppleDayCell()
         }
         return cell
     }

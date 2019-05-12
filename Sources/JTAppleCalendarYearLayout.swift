@@ -1,5 +1,5 @@
 //
-//  JTAppleCell.swift
+//  JTAppleCalendarYearLayout.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,31 +22,8 @@
 //  THE SOFTWARE.
 //
 
-/// The JTAppleCell class defines the attributes and
-/// behavior of the cells that appear in JTAppleCalendarView objects.
-open class JTAppleCell: UICollectionViewCell {
-    @available(*, message: "Using isSelected only to determing when selection occurs is ok. For other cases please use cellState.isSelected to avoid synchronization issues.")
-    open override var isSelected: Bool {
-        get { return super.isSelected }
-        set { super.isSelected = newValue}
-    }
+/// Methods in this class are meant to be overridden and will be called by its collection view to gather layout information.
+class JTAppleCalendarYearLayout: UICollectionViewLayout, JTAppleCalendarYearLayoutProtocol {
     
-    /// Cell view that will be customized
-	public override init(frame: CGRect) {
-		super.init(frame: frame)
-	}
-
-	/// Returns an object initialized from data in a given unarchiver.
-	required public init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-	}
-    
-    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
-    open override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        self.contentView.frame = self.bounds
-        self.contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    }
-
+   
 }

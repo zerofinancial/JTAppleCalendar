@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarLayout.swift
+//  JTAppleCalendarMonthLayout.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -23,7 +23,7 @@
 //
 
 /// Methods in this class are meant to be overridden and will be called by its collection view to gather layout information.
-class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtocol {
+class JTAppleCalendarMonthLayout: UICollectionViewLayout, JTAppleCalendarMonthLayoutProtocol {
     
     var allowsDateCellStretching = true
     var firstContentOffsetWasSet = false

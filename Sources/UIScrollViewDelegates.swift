@@ -21,7 +21,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
-extension JTAppleCalendarView: UIScrollViewDelegate {
+extension JTAppleCalendarMonthView: UIScrollViewDelegate {
     /// Inform the scrollViewDidEndDecelerating
     /// function that scrolling just occurred
     public func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {

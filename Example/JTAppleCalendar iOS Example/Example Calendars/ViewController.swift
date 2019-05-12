@@ -10,7 +10,7 @@ import JTAppleCalendar
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var calendarView: JTAppleCalendarView!
+    @IBOutlet weak var calendarView: JTAppleCalendarMonthView!
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var weekViewStack: UIStackView!
     @IBOutlet var numbers: [UIButton]!
@@ -113,6 +113,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func increaseItemSize(_ sender: UIButton) {
+        if calendarView.cellSize == 0 { calendarView.cellSize = 54.0}
         calendarView.cellSize += 1
         calendarView.reloadData()
     }
@@ -131,11 +132,11 @@ class ViewController: UIViewController {
     @IBAction func changeDirection(_ sender: UIButton) {
         if calendarView.scrollDirection == .horizontal {
             calendarView.scrollDirection = .vertical
-            calendarView.cellSize = 25
+//            calendarView.cellSize = 25
             sender.setTitle("Scrolling = Vertical", for: .normal)
         } else {
             calendarView.scrollDirection = .horizontal
-            calendarView.cellSize = 0
+//            calendarView.cellSize = 0
             sender.setTitle("Scrolling = Horizontal", for: .normal)
         }
         calendarView.reloadData()
@@ -280,14 +281,14 @@ class ViewController: UIViewController {
         monthLabel.text = monthName + " " + String(year)
     }
     
-    func handleCellConfiguration(cell: JTAppleCell?, cellState: CellState) {
+    func handleCellConfiguration(cell: JTAppleDayCell?, cellState: CellState) {
         handleCellSelection(view: cell, cellState: cellState)
         handleCellTextColor(view: cell, cellState: cellState)
         prePostVisibility?(cellState, cell as? CellView)
     }
     
     // Function to handle the text color of the calendar
-    func handleCellTextColor(view: JTAppleCell?, cellState: CellState) {
+    func handleCellTextColor(view: JTAppleDayCell?, cellState: CellState) {
         guard let myCustomCell = view as? CellView  else {
             return
         }
@@ -309,7 +310,7 @@ class ViewController: UIViewController {
     }
 
     // Function to handle the calendar selection
-    func handleCellSelection(view: JTAppleCell?, cellState: CellState) {
+    func handleCellSelection(view: JTAppleDayCell?, cellState: CellState) {
         guard let myCustomCell = view as? CellView else {return }
 //        switch cellState.selectedPosition() {
 //        case .full:
@@ -352,15 +353,15 @@ class ViewController: UIViewController {
     }
     
     func setupScrollMode() {
-        currentScrollModeIndex = 2
+        currentScrollModeIndex = 1
         calendarView.scrollingMode = allScrollModes[currentScrollModeIndex]
     }
 }
 
 // MARK : JTAppleCalendarDelegate
-extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
+extension ViewController: JTAppleCalendarMonthViewDelegate, JTAppleCalendarMonthViewDataSource {
 
-    func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
+    func configureCalendar(_ calendar: JTAppleCalendarMonthView) -> ConfigurationParameters {
         
         formatter.dateFormat = "yyyy MM dd"
         formatter.timeZone = testCalendar.timeZone
@@ -368,7 +369,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         
         
         let startDate = formatter.date(from: "2018 01 01")!
-        let endDate = formatter.date(from: "2018 03 01")!
+        let endDate = formatter.date(from: "2018 12 01")!
         
         let parameters = ConfigurationParameters(startDate: startDate,
                                                  endDate: endDate,
@@ -381,8 +382,8 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         return parameters
     }
     
-    func configureVisibleCell(myCustomCell: CellView, cellState: CellState, date: Date) {
-        myCustomCell.dayLabel.text = cellState.text
+    func configureVisibleCell(myCustomCell: CellView, cellState: CellState, date: Date, indexPath: IndexPath) {
+        myCustomCell.dayLabel.text = "\(indexPath.section):\(indexPath.item)"
         if testCalendar.isDateInToday(date) {
             myCustomCell.backgroundColor = .red
         } else {
@@ -402,31 +403,31 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         }
     }
     
-    func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
+    func calendar(_ calendar: JTAppleCalendarMonthView, willDisplay cell: JTAppleDayCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
         // This function should have the same code as the cellForItemAt function
         let myCustomCell = cell as! CellView
-        configureVisibleCell(myCustomCell: myCustomCell, cellState: cellState, date: date)
+        configureVisibleCell(myCustomCell: myCustomCell, cellState: cellState, date: date, indexPath: indexPath)
     }
     
-    func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
+    func calendar(_ calendar: JTAppleCalendarMonthView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleDayCell {
         let myCustomCell = calendar.dequeueReusableCell(withReuseIdentifier: "CellView", for: indexPath) as! CellView
-        configureVisibleCell(myCustomCell: myCustomCell, cellState: cellState, date: date)
+        configureVisibleCell(myCustomCell: myCustomCell, cellState: cellState, date: date, indexPath: indexPath)
         return myCustomCell
     }
 
-    func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+    func calendar(_ calendar: JTAppleCalendarMonthView, didDeselectDate date: Date, cell: JTAppleDayCell?, cellState: CellState) {
         handleCellConfiguration(cell: cell, cellState: cellState)
     }
 
-    func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+    func calendar(_ calendar: JTAppleCalendarMonthView, didSelectDate date: Date, cell: JTAppleDayCell?, cellState: CellState) {
         handleCellConfiguration(cell: cell, cellState: cellState)
     }
     
-    func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
+    func calendar(_ calendar: JTAppleCalendarMonthView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
         self.setupViewsOfCalendar(from: visibleDates)
     }
     
-    func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
+    func calendar(_ calendar: JTAppleCalendarMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
         let date = range.start
         let month = testCalendar.component(.month, from: date)
         
@@ -446,7 +447,7 @@ extension ViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSo
         return CGRect(x: stride + 5, y: 5, width: calendarView.frame.width - 10, height: calendarView.frame.height - 10)
     }
     
-    func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {
+    func calendarSizeForMonths(_ calendar: JTAppleCalendarMonthView?) -> MonthSize? {
         return monthSize
     }
 }
