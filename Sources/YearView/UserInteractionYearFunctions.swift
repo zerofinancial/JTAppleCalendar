@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarYearLayout.swift
+//  UserInteractionYearFunctions.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,8 +22,16 @@
 //  THE SOFTWARE.
 //
 
-/// Methods in this class are meant to be overridden and will be called by its collection view to gather layout information.
-class JTAppleCalendarYearLayout: UICollectionViewLayout, JTAppleCalendarYearLayoutProtocol {
-    
+
+extension JTAppleCalendarYearView {
    
+    /// Dequeues a reuable calendar cell
+    public func dequeueReusableJTAppleMonthCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleMonthCell {
+        guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleMonthCell else {
+            assert(false, "Error initializing Cell View with identifier: '\(identifier)'")
+            return JTAppleMonthCell()
+        }
+        return cell
+    }
+    
 }

@@ -1,5 +1,5 @@
 //
-//  UserInteractionFunctions.swift
+//  UserInteractionMonthFunctions.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
