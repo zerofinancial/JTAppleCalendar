@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarDelegateProtocol.swift
+//  JTACMonthLayoutProtocol.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,28 +22,13 @@
 //  THE SOFTWARE.
 //
 
-protocol JTAppleCalendarDelegateProtocol: class {
-    // Variables
-    var allowsDateCellStretching: Bool {get set}
-    var _cachedConfiguration: ConfigurationParameters! {get set}
-    var calendarDataSource: JTAppleCalendarMonthViewDataSource? {get set}
-    var cellSize: CGFloat {get set}
-    var anchorDate: Date? {get set}
-    var calendarLayoutIsLoaded: Bool {get}
-    var minimumInteritemSpacing: CGFloat  {get set}
+
+protocol JTACMonthLayoutProtocol: class {
+    var minimumInteritemSpacing: CGFloat {get set}
     var minimumLineSpacing: CGFloat {get set}
-    var monthInfo: [Month] {get set}
-    var monthMap: [Int: Int] {get set}
-    var scrollDirection: UICollectionView.ScrollDirection {get set}
     var sectionInset: UIEdgeInsets {get set}
-    var totalDays: Int {get}
-    var requestedContentOffset: CGPoint {get}
-    
-    // Functions
-    func pathsFromDates(_ dates: [Date]) -> [IndexPath]
-    func sizeOfDecorationView(indexPath: IndexPath) -> CGRect
-    func sizesForMonthSection() -> [AnyHashable:CGFloat]
-    func targetPointForItemAt(indexPath: IndexPath, preferredScrollPosition: UICollectionView.ScrollPosition?) -> CGPoint?
+    var scrollDirection: UICollectionView.ScrollDirection {get set}
 }
 
-extension JTAppleCalendarMonthView: JTAppleCalendarDelegateProtocol { }
+extension UICollectionViewFlowLayout: JTACMonthLayoutProtocol {}
+

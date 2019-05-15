@@ -1,5 +1,5 @@
 //
-//  UICollectionViewDelegates.swift
+//  JTACCollectionViewDelegates.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-extension JTAppleCalendarMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
     /// Asks your data source object to provide a
     /// supplementary view to display in the collection view.
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -50,7 +50,7 @@ extension JTAppleCalendarMonthView: UICollectionViewDelegate, UICollectionViewDa
         } else {
             cellState = cellStateFromIndexPath(indexPath)
         }
-        calendarDelegate!.calendar(self, willDisplay: cell as! JTAppleDayCell, forItemAt: cellState.date, cellState: cellState, indexPath: indexPath)
+        calendarDelegate!.calendar(self, willDisplay: cell as! JTACDayCell, forItemAt: cellState.date, cellState: cellState, indexPath: indexPath)
     }
     
     /// Asks your data source object for the cell that corresponds
@@ -132,7 +132,7 @@ extension JTAppleCalendarMonthView: UICollectionViewDelegate, UICollectionViewDa
         // index paths to be reloaded should be index to the left and right of the selected index
         var localPathsToReload: Set<IndexPath> = isRangeSelectionUsed ? validForwardAndBackwordSelectedIndexes(forIndexPath: indexPath, restrictToSection: false).set : []
         
-        let cell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell
+        let cell = collectionView.cellForItem(at: indexPath) as? JTACDayCell
         if !shouldTriggerSelectionDelegate || cell == nil {
             pathsToReload.insert(indexPath)
             localPathsToReload.insert(indexPath)
@@ -187,7 +187,7 @@ extension JTAppleCalendarMonthView: UICollectionViewDelegate, UICollectionViewDa
         if let
             delegate = calendarDelegate,
             let infoOfDate = dateOwnerInfoFromPath(indexPath) {
-            let cell = collectionView.cellForItem(at: indexPath) as? JTAppleDayCell
+            let cell = collectionView.cellForItem(at: indexPath) as? JTACDayCell
             let cellState = cellStateFromIndexPath(indexPath,
                                                    withDateInfo: infoOfDate,
                                                    selectionType: selectionType)

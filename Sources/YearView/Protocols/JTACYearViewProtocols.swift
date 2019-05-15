@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarMonthLayoutProtocol.swift
+//  JTACYearViewProtocols.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,13 +22,30 @@
 //  THE SOFTWARE.
 //
 
-
-protocol JTAppleCalendarMonthLayoutProtocol: class {
-    var minimumInteritemSpacing: CGFloat {get set}
-    var minimumLineSpacing: CGFloat {get set}
-    var sectionInset: UIEdgeInsets {get set}
-    var scrollDirection: UICollectionView.ScrollDirection {get set}
+public protocol JTACYearViewDelegate: class {
+    func calendar(_ calendar: JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell
+    func calendar(_ calendar: JTACYearView,
+                  monthView: JTAppleMonthView,
+                  drawingFor segmentRect: CGRect,
+                  with date: Date,
+                  dateOwner: DateOwner,
+                  monthIndex index: Int) -> (UIImage, CGRect)?
+    func calendar(_ calendar: JTACYearView, sizeFor item: Any) -> CGSize
 }
 
-extension UICollectionViewFlowLayout: JTAppleCalendarMonthLayoutProtocol {}
+extension JTACYearViewDelegate {
+    func calendar(_ calendar: JTACYearView,
+                  monthView: JTAppleMonthView,
+                  drawingFor segmentRect: CGRect,
+                  with date: Date,
+                  dateOwner: DateOwner,
+                  monthIndex index: Int) -> (UIImage, CGRect)? {
+        return (UIImage(), .zero)
+    }
+    func calendar(_ calendar: JTACYearView, sizeFor item: Any) -> CGSize { return .zero }
+}
+
+public protocol JTACYearViewDataSource: class {
+    func configureCalendar(_ calendar: JTACYearView) -> (configurationParameters: ConfigurationParameters, months: [Any])
+}
 

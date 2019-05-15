@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarYearView.swift
+//  JTACCollectionYearViewDelegates.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,78 +22,7 @@
 //  THE SOFTWARE.
 //
 
-public protocol JTAppleCalendarYearViewDelegate: class {
-    func calendar(_ calendar: JTAppleCalendarYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell
-    func calendar(_ calendar: JTAppleCalendarYearView,
-                  monthView: JTAppleMonthView,
-                  drawingFor segmentRect: CGRect,
-                  with date: Date,
-                  dateOwner: DateOwner,
-                  monthIndex index: Int) -> (UIImage, CGRect)?
-    func calendar(_ calendar: JTAppleCalendarYearView, sizeFor item: Any) -> CGSize
-}
-
-extension JTAppleCalendarYearViewDelegate {
-    func calendar(_ calendar: JTAppleCalendarYearView,
-                  monthView: JTAppleMonthView,
-                  drawingFor segmentRect: CGRect,
-                  with date: Date,
-                  dateOwner: DateOwner,
-                  monthIndex index: Int) -> (UIImage, CGRect)? {
-        return (UIImage(), .zero)
-    }
-    func calendar(_ calendar: JTAppleCalendarYearView, sizeFor item: Any) -> CGSize { return .zero }
-}
-
-public protocol JTAppleCalendarYearViewDataSource: class {
-    func configureCalendar(_ calendar: JTAppleCalendarYearView) -> (configurationParameters: ConfigurationParameters, months: [Any])
-}
-
-
-open class JTAppleCalendarYearView: UICollectionView {
-    var configurationParameters = ConfigurationParameters(startDate: Date(), endDate: Date())
-    var monthData: [Any] = []
-    
-    
-    /// The object that acts as the delegate of the calendar year view.
-    weak open var calendarDelegate: JTAppleCalendarYearViewDelegate?
-    weak open var calendarDataSource: JTAppleCalendarYearViewDataSource? {
-        didSet { setupYearViewCalendar() }
-    }
-    
-    /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
-    /// Remove this extra property once Xcode gets fixed.
-    @IBOutlet public var ibCalendarDelegate: AnyObject? {
-        get { return calendarDelegate }
-        set { calendarDelegate = newValue as? JTAppleCalendarYearViewDelegate }
-    }
-    
-    /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
-    /// Remove this extra property once Xcode gets fixed.
-    @IBOutlet public var ibCalendarDataSource: AnyObject? {
-        get { return calendarDataSource }
-        set { calendarDataSource = newValue as? JTAppleCalendarYearViewDataSource }
-    }
-    
-    func dataSourcefrom(configurationParameters: ConfigurationParameters) -> [Any] {
-        return JTAppleDateConfigGenerator.shared.setupMonthInfoDataForStartAndEndDate(configurationParameters).months
-    }
-    
-    func setupYearViewCalendar() {
-        guard let validConfig = calendarDataSource?.configureCalendar(self) else {
-            print("Invalid datasource")
-            return;
-        }
-        
-        configurationParameters = validConfig.configurationParameters
-        monthData               = validConfig.months
-        dataSource = self
-        delegate = self
-    }
-    
-}
-
-extension JTAppleCalendarYearView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension JTACYearView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return monthData.count
     }
@@ -106,7 +35,7 @@ extension JTAppleCalendarYearView: UICollectionViewDelegate, UICollectionViewDat
                 assert(false)
                 return UICollectionViewCell()
         }
-
+        
         if let monthData = monthData[indexPath.item] as? Month {
             guard let date = configurationParameters.calendar.date(byAdding: .month, value: monthData.index, to: configurationParameters.startDate) else {
                 print("Invalid startup parameters. Exiting calendar setup.")
@@ -118,9 +47,9 @@ extension JTAppleCalendarYearView: UICollectionViewDelegate, UICollectionViewDat
             
             let cell = delegate.calendar(self, cellFor: self.monthData[indexPath.item], at: date, indexPath: indexPath)
             cell.setupWith(configurationParameters: configurationParameters,
-                                     month: monthData,
-                                     date: date,
-                                     delegate: self)
+                           month: monthData,
+                           date: date,
+                           delegate: self)
             return cell
         } else {
             let date = findFirstMonthCellDate(cellIndex: indexPath.item, monthData: monthData)
@@ -152,11 +81,5 @@ extension JTAppleCalendarYearView: UICollectionViewDelegate, UICollectionViewDat
             return CGSize(width: width, height: height)
         }
         return size
-    }
-}
-
-extension JTAppleCalendarYearView: JTAppleMonthCellDelegate {
-    public func monthView(_ monthView: JTAppleMonthView, drawingFor segmentRect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex: Int)  -> (UIImage, CGRect)? {
-        return calendarDelegate?.calendar(self, monthView: monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndex: monthIndex)
     }
 }

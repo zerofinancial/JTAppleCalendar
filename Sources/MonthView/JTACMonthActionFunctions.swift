@@ -1,5 +1,5 @@
 //
-//  InternalActionFunctions.swift
+//  JTACMonthActionFunctions.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-extension JTAppleCalendarMonthView {
+extension JTACMonthView {
     /// Lays out subviews.
     override open func layoutSubviews() {
         super.layoutSubviews()
@@ -41,8 +41,8 @@ extension JTAppleCalendarMonthView {
         assert(false)
     }
     
-    func setupNewLayout(from oldLayout: JTAppleCalendarMonthLayoutProtocol) {
-        let newLayout = JTAppleCalendarMonthLayout(withDelegate: self)
+    func setupNewLayout(from oldLayout: JTACMonthLayoutProtocol) {
+        let newLayout = JTACMonthLayout(withDelegate: self)
         newLayout.scrollDirection = oldLayout.scrollDirection
         newLayout.sectionInset = oldLayout.sectionInset
         newLayout.minimumInteritemSpacing = oldLayout.minimumInteritemSpacing
@@ -168,13 +168,13 @@ extension JTAppleCalendarMonthView {
     
     func batchReloadIndexPaths(_ indexPaths: [IndexPath]) {
         let visiblePaths = indexPathsForVisibleItems
-        var visibleCellsToReload: [JTAppleDayCell: IndexPath] = [:]
+        var visibleCellsToReload: [JTACDayCell: IndexPath] = [:]
         
         for path in indexPaths {
             if calendarViewLayout.cachedValue(for: path.item, section: path.section) == nil { continue }
             pathsToReload.insert(path)
             if visiblePaths.contains(path) {
-                visibleCellsToReload[cellForItem(at: path) as! JTAppleDayCell] = path
+                visibleCellsToReload[cellForItem(at: path) as! JTACDayCell] = path
             }
         }
         

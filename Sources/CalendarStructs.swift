@@ -58,7 +58,7 @@ public struct CellState {
     public let selectedPosition: () -> SelectionRangePosition
     /// returns the cell.
     /// Useful if you wish to display something at the cell's frame/position
-    public var cell: () -> JTAppleDayCell?
+    public var cell: () -> JTACDayCell?
     /// Shows if a cell's selection/deselection was done either programatically or by the user
     /// This variable is guranteed to be non-nil inside of a didSelect/didDeselect function
     public var selectionType: SelectionType? = nil

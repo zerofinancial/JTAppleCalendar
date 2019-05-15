@@ -8,7 +8,7 @@
 import UIKit
 
 class TestYearViewViewController: UIViewController {
-    @IBOutlet var calendarView: JTAppleCalendarYearView!
+    @IBOutlet var calendarView: JTACYearView!
     
     
     
@@ -25,8 +25,8 @@ class TestYearViewViewController: UIViewController {
 }
 
 
-extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCalendarYearViewDataSource {
-    func calendar(_ calendar: JTAppleCalendarYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell {
+extension TestYearViewViewController: JTACYearViewDelegate, JTACYearViewDataSource {
+    func calendar(_ calendar: JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell {
         if item is Month {
             let cell = calendar.dequeueReusableJTAppleMonthCell(withReuseIdentifier: "kkk", for: indexPath) as! MyCell
             f.dateFormat = "MMM"
@@ -40,7 +40,7 @@ extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCa
         }
     }
     
-    func configureCalendar(_ calendar: JTAppleCalendarYearView) -> (configurationParameters: ConfigurationParameters, months: [Any]) {
+    func configureCalendar(_ calendar: JTACYearView) -> (configurationParameters: ConfigurationParameters, months: [Any]) {
         let df = DateFormatter()
         df.dateFormat = "yyyy MM dd"
         
@@ -73,7 +73,7 @@ extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCa
     
   
     
-    func calendar(_ calendar: JTAppleCalendarYearView, monthView: JTAppleMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex index: Int) -> (UIImage, CGRect)? {
+    func calendar(_ calendar: JTACYearView, monthView: JTAppleMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex index: Int) -> (UIImage, CGRect)? {
         var retval:  (UIImage, CGRect) = (UIImage(), .zero)
         f.dateFormat = "d"
         
@@ -101,7 +101,7 @@ extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCa
         return retval
     }
     
-    func calendar(_ calendar: JTAppleCalendarYearView, sizeFor item: Any) -> CGSize {
+    func calendar(_ calendar: JTACYearView, sizeFor item: Any) -> CGSize {
         if item is Month {
             let width = (calendar.frame.width - 41 ) / 3
             let height = width
