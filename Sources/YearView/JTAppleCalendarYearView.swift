@@ -23,14 +23,14 @@
 //
 
 public protocol JTAppleCalendarYearViewDelegate: class {
-    func calendar(_ calendar: JTAppleCalendarYearView, cellForItemAt date: Date, indexPath: IndexPath) -> JTAppleMonthCell
+    func calendar(_ calendar: JTAppleCalendarYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell
     func calendar(_ calendar: JTAppleCalendarYearView,
                   monthView: JTAppleMonthView,
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,
-                  monthIndexPath indexPath: IndexPath) -> (UIImage, CGRect)?
-    func calendar(_ calendar: JTAppleCalendarYearView, sizeForItemAt indexPath: IndexPath) -> CGSize
+                  monthIndex index: Int) -> (UIImage, CGRect)?
+    func calendar(_ calendar: JTAppleCalendarYearView, sizeFor item: Any) -> CGSize
 }
 
 extension JTAppleCalendarYearViewDelegate {
@@ -39,10 +39,10 @@ extension JTAppleCalendarYearViewDelegate {
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,
-                  monthIndexPath indexPath: IndexPath) -> (UIImage, CGRect)? {
+                  monthIndex index: Int) -> (UIImage, CGRect)? {
         return (UIImage(), .zero)
     }
-    func calendar(_ calendar: JTAppleCalendarYearView, sizeForItemAt indexPath: IndexPath) -> CGSize { return .zero }
+    func calendar(_ calendar: JTAppleCalendarYearView, sizeFor item: Any) -> CGSize { return .zero }
 }
 
 public protocol JTAppleCalendarYearViewDataSource: class {
@@ -101,29 +101,53 @@ extension JTAppleCalendarYearView: UICollectionViewDelegate, UICollectionViewDat
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
             let delegate = calendarDelegate,
-            let date = configurationParameters.calendar.date(byAdding: .month, value: indexPath.item, to: configurationParameters.startDate),
             monthData.count > indexPath.item else {
                 print("Invalid startup parameters. Exiting calendar setup.")
                 assert(false)
                 return UICollectionViewCell()
         }
 
-        let configuredCell = delegate.calendar(self, cellForItemAt: date, indexPath: indexPath)
-        
         if let monthData = monthData[indexPath.item] as? Month {
-            configuredCell.setupWith(configurationParameters: configurationParameters,
+            guard let date = configurationParameters.calendar.date(byAdding: .month, value: monthData.index, to: configurationParameters.startDate) else {
+                print("Invalid startup parameters. Exiting calendar setup.")
+                assert(false)
+                return UICollectionViewCell()
+            }
+            
+            
+            
+            let cell = delegate.calendar(self, cellFor: self.monthData[indexPath.item], at: date, indexPath: indexPath)
+            cell.setupWith(configurationParameters: configurationParameters,
                                      month: monthData,
                                      date: date,
-                                     indexPath: indexPath,
                                      delegate: self)
+            return cell
+        } else {
+            let date = findFirstMonthCellDate(cellIndex: indexPath.item, monthData: monthData)
+            return delegate.calendar(self, cellFor: self.monthData[indexPath.item], at: date, indexPath: indexPath)
+        }
+    }
+    
+    func findFirstMonthCellDate(cellIndex: Int, monthData: [Any]) -> Date {
+        var retval = configurationParameters.endDate
+        for index in cellIndex..<monthData.count {
+            if let aMonth = monthData[index] as? Month {
+                guard let date = configurationParameters.calendar.date(byAdding: .month, value: aMonth.index, to: configurationParameters.startDate) else {
+                    print("Invalid startup parameters. Exiting calendar setup.")
+                    assert(false)
+                    return configurationParameters.endDate
+                }
+                retval = date
+                break
+            }
         }
         
-        return configuredCell
+        return retval
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let size = calendarDelegate?.calendar(self, sizeForItemAt: indexPath) else {
-            let width = (self.frame.width - 40) / 3
+        guard let size = calendarDelegate?.calendar(self, sizeFor: monthData[indexPath.item]) else {
+            let width: CGFloat = monthData[indexPath.item] is Month ? (frame.width - 40) / 3 : frame.width
             let height = width
             return CGSize(width: width, height: height)
         }
@@ -132,7 +156,7 @@ extension JTAppleCalendarYearView: UICollectionViewDelegate, UICollectionViewDat
 }
 
 extension JTAppleCalendarYearView: JTAppleMonthCellDelegate {
-    public func monthView(_ monthView: JTAppleMonthView, drawingFor segmentRect: CGRect, with date: Date, dateOwner: DateOwner, monthIndexPath: IndexPath)  -> (UIImage, CGRect)? {
-        return calendarDelegate?.calendar(self, monthView: monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndexPath: monthIndexPath)
+    public func monthView(_ monthView: JTAppleMonthView, drawingFor segmentRect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex: Int)  -> (UIImage, CGRect)? {
+        return calendarDelegate?.calendar(self, monthView: monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndex: monthIndex)
     }
 }

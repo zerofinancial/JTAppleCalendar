@@ -25,7 +25,8 @@ public protocol JTAppleMonthViewDelegate: class {
     func monthView(_ monthView: JTAppleMonthView,
                   drawingFor segmentRect: CGRect,
                   with date: Date,
-                  dateOwner: DateOwner)  -> (UIImage, CGRect)?
+                  dateOwner: DateOwner,
+                  monthIndex: Int)  -> (UIImage, CGRect)?
 }
 
 public protocol JTAppleMonthCellDelegate: class {
@@ -33,21 +34,18 @@ public protocol JTAppleMonthCellDelegate: class {
                    drawingFor segmentRect: CGRect,
                    with date: Date,
                    dateOwner: DateOwner,
-                   monthIndexPath: IndexPath)  -> (UIImage, CGRect)?
+                   monthIndex: Int)  -> (UIImage, CGRect)?
 }
 
 open class JTAppleMonthCell: UICollectionViewCell {
     @IBOutlet var monthView: JTAppleMonthView?
-    internal var indexPath: IndexPath!
     weak var delegate: JTAppleMonthCellDelegate?
     
     func setupWith(configurationParameters: ConfigurationParameters,
                    month: Month,
                    date: Date,
-                   indexPath: IndexPath,
                    delegate: JTAppleMonthCellDelegate) {
         guard let monthView = monthView else { assert(false); return }
-        self.indexPath = indexPath
         self.delegate = delegate
         monthView.setupWith(configurationParameters: configurationParameters,
                             month: month,
@@ -57,8 +55,12 @@ open class JTAppleMonthCell: UICollectionViewCell {
 }
 
 extension JTAppleMonthCell: JTAppleMonthViewDelegate {
-    public func monthView(_ monthView: JTAppleMonthView, drawingFor segmentRect: CGRect, with date: Date, dateOwner: DateOwner) -> (UIImage, CGRect)? {
-        return delegate?.monthView(monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndexPath: indexPath)
+    public func monthView(_ monthView: JTAppleMonthView,
+                          drawingFor segmentRect: CGRect,
+                          with date: Date,
+                          dateOwner: DateOwner,
+                          monthIndex: Int) -> (UIImage, CGRect)? {
+        return delegate?.monthView(monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndex: monthIndex)
     }
 }
 
@@ -118,7 +120,11 @@ open class JTAppleMonthView: UIView {
                                                         endOfMonthCache: configurationParameters.endDate) else { continue }
 
                 
-                if let data = delegate?.monthView(self, drawingFor: rect, with: dateWithOwner.date, dateOwner: dateWithOwner.owner) {
+                if let data = delegate?.monthView(self,
+                                                  drawingFor: rect,
+                                                  with: dateWithOwner.date,
+                                                  dateOwner: dateWithOwner.owner,
+                                                  monthIndex: month.index) {
                     data.0.draw(in: data.1)
                 }
 

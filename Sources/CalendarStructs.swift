@@ -141,7 +141,9 @@ struct CalendarData {
 
 /// Defines a month structure.
 public struct Month {
-
+    /// Index of the month
+    let index: Int
+    
     /// Start index day for the month.
     /// The start is total number of days of previous months
     let startDayIndex: Int
@@ -325,6 +327,7 @@ class JTAppleDateConfigGenerator {
                         section += 1
                     }
                     monthArray.append(Month(
+                        index: monthIndex,
                         startDayIndex: startIndexForMonth,
                         startCellIndex: startCellIndexForMonth,
                         sections: sectionsForTheMonth,

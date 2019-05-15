@@ -9,7 +9,6 @@ import UIKit
 
 class TestYearViewViewController: UIViewController {
     @IBOutlet var calendarView: JTAppleCalendarYearView!
-    var dataSource: [Any] = []
     
     
     
@@ -27,8 +26,8 @@ class TestYearViewViewController: UIViewController {
 
 
 extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCalendarYearViewDataSource {
-    func calendar(_ calendar: JTAppleCalendarYearView, cellForItemAt date: Date, indexPath: IndexPath) -> JTAppleMonthCell {
-        if let _ = dataSource[indexPath.item] as? Month {
+    func calendar(_ calendar: JTAppleCalendarYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell {
+        if item is Month {
             let cell = calendar.dequeueReusableJTAppleMonthCell(withReuseIdentifier: "kkk", for: indexPath) as! MyCell
             f.dateFormat = "MMM"
             cell.monthLabel.text = f.string(from: date)
@@ -46,7 +45,7 @@ extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCa
         df.dateFormat = "yyyy MM dd"
         
         let sDate = df.date(from: "2019 01 01")!
-        let eDate = df.date(from: "2025 12 31")!
+        let eDate = df.date(from: "2050 05 31")!
         
         let configParams = ConfigurationParameters(startDate: sDate,
                                                    endDate: eDate,
@@ -58,22 +57,23 @@ extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCa
                                                    hasStrictBoundaries: true)
         
 
-        var dataSource = calendar.dataSourcefrom(configurationParameters: configParams)
+        let dataSource = calendar.dataSourcefrom(configurationParameters: configParams)
         
         var g: [Any] = []
-        
+
         for index in (0..<dataSource.count) {
             if index % 12 == 0 { g.append("Year") }
             g.append(dataSource[index])
         }
+
+        return (configParams, g)
+//        return (configParams, dataSource)
         
-        self.dataSource.append(contentsOf: g)
-        return (configParams, self.dataSource)
     }
     
   
     
-    func calendar(_ calendar: JTAppleCalendarYearView, monthView: JTAppleMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndexPath indexPath: IndexPath) -> (UIImage, CGRect)? {
+    func calendar(_ calendar: JTAppleCalendarYearView, monthView: JTAppleMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex index: Int) -> (UIImage, CGRect)? {
         var retval:  (UIImage, CGRect) = (UIImage(), .zero)
         f.dateFormat = "d"
         
@@ -101,13 +101,13 @@ extension TestYearViewViewController: JTAppleCalendarYearViewDelegate, JTAppleCa
         return retval
     }
     
-    func calendar(_ calendar: JTAppleCalendarYearView, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if let _ = dataSource[indexPath.item] as? Month {
-            let width = (calendar.frame.width - 40) / 3
+    func calendar(_ calendar: JTAppleCalendarYearView, sizeFor item: Any) -> CGSize {
+        if item is Month {
+            let width = (calendar.frame.width - 41 ) / 3
             let height = width
             return CGSize(width: width, height: height)
         } else {
-            let width = calendar.frame.width
+            let width = calendar.frame.width - 41
             let height:CGFloat  = 20
             return CGSize(width: width, height: height)
         }
