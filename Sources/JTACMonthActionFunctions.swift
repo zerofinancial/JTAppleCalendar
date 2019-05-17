@@ -1,5 +1,5 @@
 //
-//  InternalActionFunctions.swift
+//  JTACMonthActionFunctions.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-extension JTAppleCalendarView {
+extension JTACMonthView {
     /// Lays out subviews.
     override open func layoutSubviews() {
         super.layoutSubviews()
@@ -41,8 +41,8 @@ extension JTAppleCalendarView {
         assert(false)
     }
     
-    func setupNewLayout(from oldLayout: JTAppleCalendarLayoutProtocol) {
-        let newLayout = JTAppleCalendarLayout(withDelegate: self)
+    func setupNewLayout(from oldLayout: JTACMonthLayoutProtocol) {
+        let newLayout = JTACMonthLayout(withDelegate: self)
         newLayout.scrollDirection = oldLayout.scrollDirection
         newLayout.sectionInset = oldLayout.sectionInset
         newLayout.minimumInteritemSpacing = oldLayout.minimumInteritemSpacing
@@ -55,11 +55,8 @@ extension JTAppleCalendarView {
         sectionInset = newLayout.sectionInset
         minimumLineSpacing = newLayout.minimumLineSpacing
         minimumInteritemSpacing = newLayout.minimumInteritemSpacing
-        
-        
-        if #available(iOS 9.0, *) {
-            transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
-        }
+
+        transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
         
         super.dataSource = self
         super.delegate = self
@@ -168,13 +165,13 @@ extension JTAppleCalendarView {
     
     func batchReloadIndexPaths(_ indexPaths: [IndexPath]) {
         let visiblePaths = indexPathsForVisibleItems
-        var visibleCellsToReload: [JTAppleCell: IndexPath] = [:]
+        var visibleCellsToReload: [JTACDayCell: IndexPath] = [:]
         
         for path in indexPaths {
             if calendarViewLayout.cachedValue(for: path.item, section: path.section) == nil { continue }
             pathsToReload.insert(path)
             if visiblePaths.contains(path) {
-                visibleCellsToReload[cellForItem(at: path) as! JTAppleCell] = path
+                visibleCellsToReload[cellForItem(at: path) as! JTACDayCell] = path
             }
         }
         

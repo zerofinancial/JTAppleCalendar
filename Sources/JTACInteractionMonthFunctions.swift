@@ -1,5 +1,5 @@
 //
-//  UserInteractionFunctions.swift
+//  JTACInteractionMonthFunctions.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -23,7 +23,7 @@
 //
 
 
-extension JTAppleCalendarView {
+extension JTACMonthView {
     
     /// Returns the cellStatus of a date that is visible on the screen.
     /// If the row and column for the date cannot be found,
@@ -56,7 +56,7 @@ extension JTAppleCalendarView {
         // Jt101 change this function to also return
         // information like the dateInfoFromPath function
         if paths.isEmpty { return nil }
-        let cell = cellForItem(at: paths[0]) as? JTAppleCell
+        let cell = cellForItem(at: paths[0]) as? JTACDayCell
         let stateOfCell = cellStateFromIndexPath(paths[0], cell: cell)
         return stateOfCell
     }
@@ -104,7 +104,7 @@ extension JTAppleCalendarView {
     ///     - CellState: The state of the found cell
     public func cellStatus(at point: CGPoint) -> CellState? {
         if let indexPath = indexPathForItem(at: point) {
-            let cell = cellForItem(at: indexPath) as? JTAppleCell
+            let cell = cellForItem(at: indexPath) as? JTACDayCell
             return cellStateFromIndexPath(indexPath, cell: cell)
         }
         return nil
@@ -169,12 +169,12 @@ extension JTAppleCalendarView {
     }
     
     /// Dequeues re-usable calendar cells
-    public func dequeueReusableJTAppleSupplementaryView(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCollectionReusableView {
+    public func dequeueReusableJTAppleSupplementaryView(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTACMonthReusableView {
         guard let headerView = dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader,
                                                                 withReuseIdentifier: identifier,
-                                                                for: indexPath) as? JTAppleCollectionReusableView else {
+                                                                for: indexPath) as? JTACMonthReusableView else {
                                                                     developerError(string: "Error initializing Header View with identifier: '\(identifier)'")
-                                                                    return JTAppleCollectionReusableView()
+                                                                    return JTACMonthReusableView()
         }
         return headerView
     }
@@ -188,10 +188,10 @@ extension JTAppleCalendarView {
         calendarViewLayout.register(className, forDecorationViewOfKind: decorationViewID)
     }
     /// Dequeues a reuable calendar cell
-    public func dequeueReusableJTAppleCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleCell {
-        guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleCell else {
+    public func dequeueReusableJTAppleCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTACDayCell {
+        guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTACDayCell else {
             developerError(string: "Error initializing Cell View with identifier: '\(identifier)'")
-            return JTAppleCell()
+            return JTACDayCell()
         }
         return cell
     }

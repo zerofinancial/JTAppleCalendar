@@ -1,5 +1,5 @@
 //
-//  InternalQueryFunctions.swift
+//  JTACMonthQueryFunctions.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-extension JTAppleCalendarView {
+extension JTACMonthView {
     func validForwardAndBackwordSelectedIndexes(forIndexPath indexPath: IndexPath, restrictToSection: Bool = true) -> (forwardIndex: IndexPath?, backIndex: IndexPath?, set: Set<IndexPath>) {
         var retval: (forwardIndex: IndexPath?, backIndex: IndexPath?, set: Set<IndexPath>) = (forwardIndex: nil, backIndex: nil, set: [])
         if let validForwardIndex = calendarViewLayout.indexPath(direction: .next, of: indexPath.section, item: indexPath.item),
@@ -277,7 +277,7 @@ extension JTAppleCalendarView {
     
     func cellStateFromIndexPath(_ indexPath: IndexPath,
                                 withDateInfo info: (date: Date, owner: DateOwner)? = nil,
-                                cell: JTAppleCell? = nil,
+                                cell: JTACDayCell? = nil,
                                 isSelected: Bool? = nil,
                                 selectionType: SelectionType? = nil) -> CellState {
         let validDateInfo: (date: Date, owner: DateOwner)

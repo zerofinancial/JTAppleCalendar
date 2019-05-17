@@ -1,5 +1,5 @@
 //
-//  JTAppleCalendarLayout.swift
+//  JTACMonthLayout.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -23,7 +23,7 @@
 //
 
 /// Methods in this class are meant to be overridden and will be called by its collection view to gather layout information.
-class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtocol {
+class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
     
     var allowsDateCellStretching = true
     var firstContentOffsetWasSet = false
@@ -54,7 +54,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     var thereAreHeaders: Bool { return !headerSizes.isEmpty }
     var thereAreDecorationViews = false
     
-    weak var delegate: JTAppleCalendarDelegateProtocol!
+    weak var delegate: JTACMonthDelegateProtocol!
     
     var currentHeader: (section: Int, size: CGSize)? // Tracks the current header size
     var currentCell: (section: Int, width: CGFloat, height: CGFloat)? // Tracks the current cell size
@@ -112,7 +112,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
         thereAreDecorationViews = true
     }
 
-    init(withDelegate delegate: JTAppleCalendarDelegateProtocol) {
+    init(withDelegate delegate: JTACMonthDelegateProtocol) {
         super.init()
         self.delegate = delegate
     }
@@ -638,7 +638,7 @@ class JTAppleCalendarLayout: UICollectionViewLayout, JTAppleCalendarLayoutProtoc
     /// Returns an object initialized from data in a given unarchiver.
     /// self, initialized using the data in decoder.
     required public init?(coder aDecoder: NSCoder) {
-        delegate = (aDecoder.value(forKey: "delegate") as! JTAppleCalendarDelegateProtocol)
+        delegate = (aDecoder.value(forKey: "delegate") as! JTACMonthDelegateProtocol)
         cellCache = aDecoder.value(forKey: "delegate") as! [Int : [(Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]]
         headerCache = aDecoder.value(forKey: "delegate") as! [Int : (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)]
         headerSizes = aDecoder.value(forKey: "delegate") as! [AnyHashable:CGFloat]
