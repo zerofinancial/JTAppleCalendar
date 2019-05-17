@@ -383,7 +383,7 @@ extension ViewController: JTACMonthViewDelegate, JTACMonthViewDataSource {
     }
     
     func configureVisibleCell(myCustomCell: CellView, cellState: CellState, date: Date, indexPath: IndexPath) {
-        myCustomCell.dayLabel.text = "\(indexPath.section):\(indexPath.item)"
+        myCustomCell.dayLabel.text = cellState.text
         if testCalendar.isDateInToday(date) {
             myCustomCell.backgroundColor = .red
         } else {
