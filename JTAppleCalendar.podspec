@@ -14,7 +14,7 @@ A highly configurable Apple calendar control. Contains features like boundary da
 
   s.swift_version    = '4.2'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '10.0'
   s.tvos.deployment_target = '9.0'
 
   s.source_files = 'Sources/*.swift'

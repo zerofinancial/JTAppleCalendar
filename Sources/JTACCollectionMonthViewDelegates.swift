@@ -35,9 +35,7 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
         let headerView = delegate.calendar(self, headerViewForDateRange: validDate.range, at: indexPath)
-        if #available(iOS 9.0, *) {
-            headerView.transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
-        }
+        headerView.transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
         return headerView
     }
     
@@ -65,10 +63,7 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
         let configuredCell = delegate.calendar(self, cellForItemAt: cellState.date, cellState: cellState, indexPath: indexPath)
         
         pathsToReload.remove(indexPath)
-        
-        if #available(iOS 9.0, *) {
-            configuredCell.transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
-        }
+        configuredCell.transform.a = semanticContentAttribute == .forceRightToLeft ? -1 : 1
         return configuredCell
     }
     
