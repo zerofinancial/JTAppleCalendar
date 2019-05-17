@@ -351,17 +351,8 @@
 		6B60DED21D5BDAF4009174A2 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				6B60DED61D5BDD4D009174A2 /* JTACMonthLayout.swift */,
-				6B60DED71D5BDD4D009174A2 /* JTACMonthView.swift */,
-				6B60DED91D5BDD4D009174A2 /* JTACDayCell.swift */,
+				6BFF99DA228DC37500CB46EB /* MonthView */,
 				6BAB2C411E9B49D500FF125F /* JTACVariables.swift */,
-				6B60DEDC1D5BDD4D009174A2 /* JTACInteractionMonthFunctions.swift */,
-				6B75F5601F83A7B600AFC07F /* JTACMonthActionFunctions.swift */,
-				6B60DED81D5BDD4D009174A2 /* JTACMonthReusableView.swift */,
-				6B75F55D1F83A60200AFC07F /* JTACMonthQueryFunctions.swift */,
-				6BFF99C9228DC1F400CB46EB /* JTACMonthDelegateProtocol.swift */,
-				6BFF99C8228DC1F400CB46EB /* JTACMonthViewProtocols.swift */,
-				6BFF99C7228DC1F400CB46EB /* JTACMonthLayoutProtocol.swift */,
 				6BFF99CA228DC1FA00CB46EB /* JTACCollectionMonthViewDelegates.swift */,
 				6BFF99CB228DC1FA00CB46EB /* JTACScrollViewDelegates.swift */,
 				6B23201922875107009AC273 /* JTACYearView.swift */,
@@ -524,6 +515,23 @@
 				6BFB05221E7F9AA400ACE696 /* SectionDecorationView.xib */,
 			);
 			name = ExampleDecorationViews;
+			sourceTree = "<group>";
+		};
+		6BFF99DA228DC37500CB46EB /* MonthView */ = {
+			isa = PBXGroup;
+			children = (
+				6B60DED61D5BDD4D009174A2 /* JTACMonthLayout.swift */,
+				6B60DED71D5BDD4D009174A2 /* JTACMonthView.swift */,
+				6B60DED91D5BDD4D009174A2 /* JTACDayCell.swift */,
+				6B60DEDC1D5BDD4D009174A2 /* JTACInteractionMonthFunctions.swift */,
+				6B75F5601F83A7B600AFC07F /* JTACMonthActionFunctions.swift */,
+				6B60DED81D5BDD4D009174A2 /* JTACMonthReusableView.swift */,
+				6B75F55D1F83A60200AFC07F /* JTACMonthQueryFunctions.swift */,
+				6BFF99C9228DC1F400CB46EB /* JTACMonthDelegateProtocol.swift */,
+				6BFF99C8228DC1F400CB46EB /* JTACMonthViewProtocols.swift */,
+				6BFF99C7228DC1F400CB46EB /* JTACMonthLayoutProtocol.swift */,
+			);
+			name = MonthView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1177,7 +1185,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Sources/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1231,7 +1239,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Sources/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "OST.JTAppleCalendar-iOS";
@@ -1299,7 +1307,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1351,7 +1359,7 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1491,7 +1499,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Example/JTAppleCalendar iOS Example/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1538,7 +1546,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Example/JTAppleCalendar iOS Example/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "OST.JTAppleCalendar-iOS-Example";
@@ -1685,7 +1693,7 @@
 				SDKROOT = appletvos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -1729,7 +1737,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

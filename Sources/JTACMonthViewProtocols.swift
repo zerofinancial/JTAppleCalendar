@@ -27,6 +27,8 @@
 /// the JTAppleCalendarMonthViewDataSource object. data source provides the
 /// the calendar-view object with the information it needs to construct and
 /// then modify it self
+@available(*, unavailable, renamed: "JTACMonthViewDataSource")
+public protocol JTAppleCalendarViewDataSource{}
 public protocol JTACMonthViewDataSource: class {
     /// Asks the data source to return the start and end boundary dates
     /// as well as the calendar to use. You should properly configure
@@ -41,7 +43,9 @@ public protocol JTACMonthViewDataSource: class {
 /// The delegate of a JTAppleCalendarMonthView object must adopt the
 /// JTAppleCalendarMonthViewDelegate protocol Optional methods of the protocol
 /// allow the delegate to manage selections, and configure the cells
-public protocol JTAppleCalendarMonthViewDelegate: class {
+@available(*, unavailable, renamed: "JTACMonthViewDelegate")
+public protocol JTAppleCalendarMonthViewDelegate: class {}
+public protocol JTACMonthViewDelegate: class {
     /// Asks the delegate if selecting the date-cell with a specified date is
     /// allowed
     /// - Parameters:
@@ -139,7 +143,7 @@ public protocol JTAppleCalendarMonthViewDelegate: class {
 }
 
 /// Default delegate functions
-public extension JTAppleCalendarMonthViewDelegate {
+public extension JTACMonthViewDelegate {
     func calendar(_ calendar: JTACMonthView, shouldSelectDate date: Date, cell: JTACDayCell?, cellState: CellState) -> Bool { return true }
     func calendar(_ calendar: JTACMonthView, shouldDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState) -> Bool { return true }
     func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState) {}

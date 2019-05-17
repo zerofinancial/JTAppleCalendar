@@ -70,7 +70,7 @@ class TestRangeSelectionViewController: UIViewController {
     }
 }
 
-extension TestRangeSelectionViewController: JTAppleCalendarMonthViewDelegate, JTACMonthViewDataSource {
+extension TestRangeSelectionViewController: JTACMonthViewDelegate, JTACMonthViewDataSource {
     
     func calendar(_ calendar: JTACMonthView, willDisplay cell: JTACDayCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
         handleConfiguration(cell: cell, cellState: cellState)

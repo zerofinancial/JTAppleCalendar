@@ -81,7 +81,7 @@ extension CalendarViewTestingController: JTACMonthViewDataSource {
     }
 }
 
-extension CalendarViewTestingController: JTAppleCalendarMonthViewDelegate {
+extension CalendarViewTestingController: JTACMonthViewDelegate {
     public func calendar(_ calendar: JTACMonthView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTACDayCell {
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "Cell", for: indexPath) as! TestCellView
         return cell

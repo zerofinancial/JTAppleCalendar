@@ -31,6 +31,8 @@ let errorDelta: CGFloat = 0.0000001
 
 /// An instance of JTAppleCalendarMonthView (or simply, a calendar view) is a
 /// means for displaying and interacting with a gridstyle layout of date-cells
+@available(*, unavailable, renamed: "JTACMonthView")
+open class JTAppleCalendarView: UICollectionView {}
 open class JTACMonthView: UICollectionView {
     
     /// Configures the size of your date cells
@@ -62,7 +64,7 @@ open class JTACMonthView: UICollectionView {
     }
     
     /// The object that acts as the delegate of the calendar view.
-    weak open var calendarDelegate: JTAppleCalendarMonthViewDelegate? {
+    weak open var calendarDelegate: JTACMonthViewDelegate? {
         didSet { lastMonthSize = sizesForMonthSection() }
     }
     

@@ -359,7 +359,7 @@ class ViewController: UIViewController {
 }
 
 // MARK : JTAppleCalendarDelegate
-extension ViewController: JTAppleCalendarMonthViewDelegate, JTACMonthViewDataSource {
+extension ViewController: JTACMonthViewDelegate, JTACMonthViewDataSource {
 
     func configureCalendar(_ calendar: JTACMonthView) -> ConfigurationParameters {
         

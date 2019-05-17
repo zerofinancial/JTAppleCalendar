@@ -144,7 +144,7 @@ class TestViewController: UIViewController {
 }
 
 
-extension TestViewController: JTACMonthViewDataSource, JTAppleCalendarMonthViewDelegate {
+extension TestViewController: JTACMonthViewDataSource, JTACMonthViewDelegate {
     func calendar(_ calendar: JTACMonthView, willDisplay cell: JTACDayCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
         configureCell(view: cell, cellState: cellState)
     }

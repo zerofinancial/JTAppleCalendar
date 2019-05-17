@@ -2,7 +2,7 @@
 //  TestYearViewViewController.swift
 //  JTAppleCalendar
 //
-//  Created by Jeron Thomas on 2019-05-11.
+//  Created by JayT on 2019-05-11.
 //
 
 import UIKit

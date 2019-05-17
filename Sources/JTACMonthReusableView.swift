@@ -23,6 +23,8 @@
 //
 
 /// The header view class of the calendar
+@available(*, unavailable, renamed: "JTACMonthReusableView")
+open class JTAppleCollectionReusableView: UICollectionReusableView {}
 open class JTACMonthReusableView: UICollectionReusableView {
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     public override init(frame: CGRect) {

@@ -100,7 +100,7 @@ extension TestPersianCalendar: JTACMonthViewDataSource {
     }
 }
 
-extension TestPersianCalendar: JTAppleCalendarMonthViewDelegate {
+extension TestPersianCalendar: JTACMonthViewDelegate {
     func calendar(_ calendar: JTACMonthView, willDisplay cell: JTACDayCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
         // The code here is the same as cellForItem function
         let cell = cell as! CellView
