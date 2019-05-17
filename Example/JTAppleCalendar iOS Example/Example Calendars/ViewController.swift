@@ -198,7 +198,7 @@ class ViewController: UIViewController {
                               forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                               withReuseIdentifier: "PinkSectionHeaderView")
         
-//        calendarView.isRangeSelectionUsed = true
+//        calendarView.allowsMultipleSelection = true
 //        calendarView.allowsMultipleSelection = true
         
         self.calendarView.visibleDates {[unowned self] (visibleDates: DateSegmentInfo) in

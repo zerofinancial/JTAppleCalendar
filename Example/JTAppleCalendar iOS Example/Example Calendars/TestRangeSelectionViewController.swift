@@ -21,7 +21,7 @@ class TestRangeSelectionViewController: UIViewController {
             self.setupMonthLabel(date: visibleDates.monthDates.first!.date)
         }
         
-        calendarView.isRangeSelectionUsed = true
+        calendarView.allowsMultipleSelection = true
         calendarView.allowsMultipleSelection = true
         
     }
