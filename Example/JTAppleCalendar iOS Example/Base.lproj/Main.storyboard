@@ -885,21 +885,12 @@
                                     <outlet property="ibCalendarDelegate" destination="ZZU-Fx-N6U" id="EAg-5Z-e3D"/>
                                 </connections>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LF9-Aq-UMS">
-                                <rect key="frame" x="10" y="472" width="75" height="30"/>
-                                <state key="normal" title="reloadData"/>
-                                <connections>
-                                    <action selector="tappedMe:" destination="ZZU-Fx-N6U" eventType="touchUpInside" id="frj-bI-jQz"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Bh9-Ea-ItT" firstAttribute="leading" secondItem="pke-tV-doL" secondAttribute="leading" id="Jcr-c1-TdX"/>
                             <constraint firstAttribute="trailing" secondItem="Bh9-Ea-ItT" secondAttribute="trailing" id="Lmm-gS-Rmd"/>
                             <constraint firstItem="Bh9-Ea-ItT" firstAttribute="top" secondItem="E2D-gB-4ry" secondAttribute="bottom" id="XNa-ln-pMt"/>
-                            <constraint firstItem="LF9-Aq-UMS" firstAttribute="leading" secondItem="pke-tV-doL" secondAttribute="leading" constant="10" id="iF7-Hu-u6C"/>
-                            <constraint firstItem="LF9-Aq-UMS" firstAttribute="top" secondItem="Bh9-Ea-ItT" secondAttribute="bottom" constant="8" id="me3-TT-3Lv"/>
                         </constraints>
                     </view>
                     <connections>
