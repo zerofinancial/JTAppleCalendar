@@ -360,7 +360,6 @@ class ViewController: UIViewController {
 
 // MARK : JTAppleCalendarDelegate
 extension ViewController: JTACMonthViewDelegate, JTACMonthViewDataSource {
-
     func configureCalendar(_ calendar: JTACMonthView) -> ConfigurationParameters {
         
         formatter.dateFormat = "yyyy MM dd"

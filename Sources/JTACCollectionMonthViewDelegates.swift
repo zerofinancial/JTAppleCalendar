@@ -51,6 +51,28 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
         calendarDelegate!.calendar(self, willDisplay: cell as! JTACDayCell, forItemAt: cellState.date, cellState: cellState, indexPath: indexPath)
     }
     
+    /// Tells the delegate that the item at the specified index path was highlighted.
+    public func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        guard
+            let delegate = calendarDelegate,
+            let infoOfDate = dateOwnerInfoFromPath(indexPath) else {
+                return
+        }
+        let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDate, selectionType: .userInitiated)
+        delegate.calendar(self, didHighlightDate: cellState.date, cellState: cellState)
+    }
+    
+    /// Tells the delegate that the item at the specified index path was unhighlighted.
+    public func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        guard
+            let delegate = calendarDelegate,
+            let infoOfDate = dateOwnerInfoFromPath(indexPath) else {
+                return
+        }
+        let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDate, selectionType: .userInitiated)
+        delegate.calendar(self, didUnhighlightDate: cellState.date, cellState: cellState)
+    }
+    
     /// Asks your data source object for the cell that corresponds
     /// to the specified item in the collection view.
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

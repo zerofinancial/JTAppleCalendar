@@ -74,6 +74,7 @@ public protocol JTACMonthViewDelegate: class {
     ///             This may be nil if the selected cell is off the screen
     ///     - cellState: The month the date-cell belongs to.
     func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState)
+    
     /// Tells the delegate that a date-cell
     /// with a specified date was de-selected
     /// - Parameters:
@@ -83,6 +84,20 @@ public protocol JTACMonthViewDelegate: class {
     ///             This may be nil if the selected cell is off the screen
     ///     - cellState: The month the date-cell belongs to.
     func calendar(_ calendar: JTACMonthView, didDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState)
+    
+    /// Tells the delegate that the item at the specified index path was highlighted.
+    /// - Parameters:
+    ///     - calendar: The JTAppleCalendar view giving this information.
+    ///     - date: The date attached to the date-cell.
+    ///     - cellState: The month the date-cell belongs to.
+    func calendar(_ calendar: JTACMonthView, didHighlightDate date: Date, cellState: CellState)
+    
+    /// Tells the delegate that the item at the specified index path was un-highlighted.
+    /// - Parameters:
+    ///     - calendar: The JTAppleCalendar view giving this information.
+    ///     - date: The date attached to the date-cell.
+    ///     - cellState: The month the date-cell belongs to.
+    func calendar(_ calendar: JTACMonthView, didUnhighlightDate date: Date, cellState: CellState)
 
     /// Tells the delegate that the JTAppleCalendar view
     /// scrolled to a segment beginning and ending with a particular date
@@ -148,6 +163,8 @@ public extension JTACMonthViewDelegate {
     func calendar(_ calendar: JTACMonthView, shouldDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState) -> Bool { return true }
     func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState) {}
     func calendar(_ calendar: JTACMonthView, didDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState) {}
+    func calendar(_ calendar: JTACMonthView, didHighlightDate date: Date, cellState: CellState) {}
+    func calendar(_ calendar: JTACMonthView, didUnhighlightDate date: Date, cellState: CellState) {}
     func calendar(_ calendar: JTACMonthView, willScrollToDateSegmentWith visibleDates: DateSegmentInfo) {}
     func calendar(_ calendar: JTACMonthView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {}
     func calendar(_ calendar: JTACMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTACMonthReusableView {
