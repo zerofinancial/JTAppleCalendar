@@ -37,7 +37,7 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
     var cellCache: [Int: [(item: Int, section: Int, xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)]] = [:]
     var headerCache: [Int: (item: Int, section: Int, xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)] = [:]
     var decorationCache: [IndexPath:UICollectionViewLayoutAttributes] = [:]
-    var sectionSize: [CGFloat] = []
+    var endOfSectionOffsets: [CGFloat] = []
     var lastWrittenCellAttribute: (Int, Int, CGFloat, CGFloat, CGFloat, CGFloat)!
     var xStride: CGFloat = 0
     var minimumInteritemSpacing: CGFloat = 0
@@ -235,11 +235,11 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
                             xCellOffset = sectionInset.left
                             contentWidth += (attribute.width * 7) + endSeparator
                             xStride = contentWidth
-                            sectionSize.append(contentWidth)
+                            endOfSectionOffsets.append(contentWidth)
                         } else {
                             if totalDayCounter >= delegate.totalDays {
                                 contentWidth += (attribute.width * 7) + endSeparator
-                                sectionSize.append(contentWidth)
+                                endOfSectionOffsets.append(contentWidth)
                             }
                             if totalDayCounter % maxNumberOfDaysInWeek == 0 {
                                 xCellOffset = sectionInset.left
@@ -252,8 +252,8 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
                 // Save the content size for each section
                 if strictBoundaryRulesShouldApply {
                     contentWidth += endSeparator
-                    sectionSize.append(contentWidth)
-                    xStride = sectionSize[virtualSection]
+                    endOfSectionOffsets.append(contentWidth)
+                    xStride = endOfSectionOffsets[virtualSection]
                 }
                 virtualSection += 1
             }
@@ -302,7 +302,7 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
                             if dayCounter == numberOfDaysInCurrentSection {
                                 yCellOffset   += sectionInset.top
                                 contentHeight += sectionInset.top
-                                sectionSize.append(contentHeight - sectionInset.top)
+                                endOfSectionOffsets.append(contentHeight - sectionInset.top)
                             }
                         }
                     } else {
@@ -311,13 +311,13 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
                             yCellOffset += attribute.height + sectionInset.top
                             xCellOffset = sectionInset.left
                             contentHeight = yCellOffset
-                            sectionSize.append(contentHeight - sectionInset.top)
+                            endOfSectionOffsets.append(contentHeight - sectionInset.top)
                             
                         } else {
                             if totalDayCounter >= delegate.totalDays {
                                 yCellOffset += attribute.height + sectionInset.top
                                 contentHeight = yCellOffset
-                                sectionSize.append(contentHeight - sectionInset.top)
+                                endOfSectionOffsets.append(contentHeight - sectionInset.top)
                             }
                             
                             if totalDayCounter % maxNumberOfDaysInWeek == 0 {
@@ -425,6 +425,29 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
         }
         return nil
     }
+    
+    func sizeOfSection(_ section: Int) -> CGFloat {
+        guard let cellOfSection = cellCache[section]?.first else { return 0 }
+        var offSet: CGFloat
+        if scrollDirection == .horizontal {
+            offSet = cellOfSection.width * 7
+        } else {
+            offSet = cellOfSection.height * CGFloat(numberOfDaysInSection(section))
+            if
+                thereAreHeaders,
+                let headerHeight = headerCache[section]?.height {
+                    offSet += headerHeight
+            }
+        }
+        
+        
+        
+        
+        let startOfSection = endOfSectionOffsets[section]
+        let endOfSection = endOfSectionOffsets[section + 1]
+        return endOfSection - startOfSection
+    }
+    
     func cellAttributeFor(_ item: Int, section: Int) -> UICollectionViewLayoutAttributes? {
         guard let cachedValue = cachedValue(for: item, section: section) else { return nil }
         let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
@@ -499,12 +522,15 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
     }
     
     func numberOfDaysInSection(_ index: Int) -> Int {
-        if let days = daysInSection[index] {
-            return days
-        }
+        if let days = daysInSection[index] { return days }
         let days = monthInfo[index].numberOfDaysInMonthGrid
         daysInSection[index] = days
         return days
+    }
+    
+    func numberOfRowsInSection(_ index: Int) -> Int {
+        let numberOfDays = CGFloat(numberOfDaysInSection(index))
+        return Int(ceil(numberOfDays / CGFloat(numberOfRows)))
     }
     
     func cachedHeaderHeightForSection(_ section: Int) -> CGFloat {
@@ -584,7 +610,7 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
     
     func startIndexFrom(rectOrigin offset: CGPoint) -> Int {
         let key =  scrollDirection == .horizontal ? offset.x : offset.y
-        return startIndexBinarySearch(sectionSize, offset: key)
+        return startIndexBinarySearch(endOfSectionOffsets, offset: key)
     }
     
     func sizeOfContentForSection(_ section: Int) -> CGFloat {
@@ -602,7 +628,7 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
     
     func sectionFromOffset(_ theOffSet: CGFloat) -> Int {
         var val: Int = 0
-        for (index, sectionSizeValue) in sectionSize.enumerated() {
+        for (index, sectionSizeValue) in endOfSectionOffsets.enumerated() {
             if abs(theOffSet - sectionSizeValue) < errorDelta {
                 continue
             }
@@ -684,7 +710,7 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
     func clearCache() {
         headerCache.removeAll()
         cellCache.removeAll()
-        sectionSize.removeAll()
+        endOfSectionOffsets.removeAll()
         decorationCache.removeAll()
         currentHeader = nil
         currentCell = nil

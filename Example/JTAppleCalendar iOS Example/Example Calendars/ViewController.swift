@@ -353,7 +353,7 @@ class ViewController: UIViewController {
     }
     
     func setupScrollMode() {
-        currentScrollModeIndex = 1
+        currentScrollModeIndex = 6
         calendarView.scrollingMode = allScrollModes[currentScrollModeIndex]
     }
 }
@@ -423,13 +423,18 @@ extension ViewController: JTACMonthViewDelegate, JTACMonthViewDataSource {
     }
     
     func calendar(_ calendar: JTACMonthView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
-        self.setupViewsOfCalendar(from: visibleDates)
+//        print("After: \(calendar.contentOffset.y)")
+
+    }
+    
+    func calendar(_ calendar: JTACMonthView, willScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
+        setupViewsOfCalendar(from: visibleDates)
     }
     
     func calendar(_ calendar: JTACMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTACMonthReusableView {
         let date = range.start
         let month = testCalendar.component(.month, from: date)
-        
+        formatter.dateFormat = "MMM"
         let header: JTACMonthReusableView
         if month % 2 > 0 {
             header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "WhiteSectionHeaderView", for: indexPath)
