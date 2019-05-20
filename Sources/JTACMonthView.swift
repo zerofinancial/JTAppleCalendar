@@ -155,7 +155,10 @@ open class JTACMonthView: UICollectionView {
         return retval
     }
     
-    open var sectionInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    open var sectionInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) {
+        didSet { validateSectionInset() }
+    }
+    
     open var minimumInteritemSpacing: CGFloat = 0
     open var minimumLineSpacing: CGFloat = 0
     
@@ -192,9 +195,15 @@ open class JTACMonthView: UICollectionView {
             #endif
         }
     }
+    
+    func validateSectionInset() {
+        if sectionInset.top < 0 { sectionInset.top = 0 }
+        if sectionInset.bottom < 0 { sectionInset.top = 0 }
+        if sectionInset.left < 0 { sectionInset.top = 0 }
+        if sectionInset.right < 0 { sectionInset.top = 0 }
+    }
 }
 
-@available(iOS 9.0, *)
 extension JTACMonthView {
     /// A semantic description of the view’s contents, used to determine whether the view should be flipped when switching between left-to-right and right-to-left layouts.
     open override var semanticContentAttribute: UISemanticContentAttribute {
