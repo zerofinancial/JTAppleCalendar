@@ -35,13 +35,11 @@ open class JTACMonthCell: UICollectionViewCell {
     
     func setupWith(configurationParameters: ConfigurationParameters,
                    month: Month,
-                   date: Date,
                    delegate: JTACCellMonthViewDelegate) {
         guard let monthView = monthView else { assert(false); return }
         self.delegate = delegate
         monthView.setupWith(configurationParameters: configurationParameters,
                             month: month,
-                            date: date,
                             delegate: self)
     }
 }
@@ -60,50 +58,40 @@ extension JTACMonthCell: JTACCellMonthViewDelegate {
 
 
 open class JTACCellMonthView: UIView {
-    var daysInSection: [Int: Int] = [:] // temporary caching
     var sectionInset = UIEdgeInsets.zero
     var month: Month!
-    var monthDate: Date!
     var configurationParameters: ConfigurationParameters!
-    
-    var yCellOffset:CGFloat = 0
-    var xCellOffset:CGFloat = 0
-    var xStride:CGFloat = 0
-
     weak var delegate: JTACCellMonthViewDelegate?
     var scrollDirection: UICollectionView.ScrollDirection = .horizontal
     
-    func setupWith(configurationParameters: ConfigurationParameters, month: Month, date: Date, delegate: JTACCellMonthViewDelegate? = nil) {
+    func setupWith(configurationParameters: ConfigurationParameters, month: Month, delegate: JTACCellMonthViewDelegate? = nil) {
         self.configurationParameters = configurationParameters
         self.delegate = delegate
         self.month = month
-        self.monthDate = date
-        
-        yCellOffset = 0
-        xCellOffset = 0
-        xStride = 0
         
         setNeedsDisplay()  // force reloading of the drawRect code to update the view.
     }
     
-    func determineToApplyAttribs(month: Month) -> (xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)? {
+    func determineToApplyAttribs(month: Month, xCellOffset: CGFloat, yCellOffset: CGFloat) -> (xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)? {
             
             let numberOfRowsForSection = month.maxNumberOfRowsForFull(developerSetRows: 6)
             let width = (frame.width - ((sectionInset.left / 7) + (sectionInset.right / 7))) / 7
             let height = (frame.height - sectionInset.top - sectionInset.bottom) / CGFloat(numberOfRowsForSection)
             
             let y = scrollDirection == .horizontal ? yCellOffset + sectionInset.top : yCellOffset
-            return (xCellOffset + xStride, y, width, height)
+            return (xCellOffset, y, width, height)
     }
     
     override open func draw(_ rect: CGRect) {
         super.draw(rect)
 
-
+        var xCellOffset: CGFloat = 0
+        var yCellOffset: CGFloat = 0
+        
         for numberOfDaysInCurrentSection in month.sections {
             
             for dayCounter in 1...numberOfDaysInCurrentSection {
-                guard let attribute = determineToApplyAttribs(month: month) else { continue }
+                guard let attribute = determineToApplyAttribs(month: month, xCellOffset: xCellOffset, yCellOffset: yCellOffset) else { continue }
             
                 let rect = CGRect(x: attribute.xOffset, y: attribute.yOffset, width: attribute.width, height: attribute.height)
 

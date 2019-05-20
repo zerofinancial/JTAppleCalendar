@@ -43,12 +43,9 @@ extension JTACYearView: UICollectionViewDelegate, UICollectionViewDataSource, UI
                 return UICollectionViewCell()
             }
             
-            
-            
             let cell = delegate.calendar(self, cellFor: self.monthData[indexPath.item], at: date, indexPath: indexPath)
             cell.setupWith(configurationParameters: configurationParameters,
                            month: monthData,
-                           date: date,
                            delegate: self)
             return cell
         } else {
