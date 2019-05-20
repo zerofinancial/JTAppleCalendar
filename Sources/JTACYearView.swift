@@ -65,9 +65,7 @@ open class JTACYearView: UICollectionView {
     
 }
 
-
-
-extension JTACYearView: JTAppleMonthCellDelegate {
+extension JTACYearView: JTAppleMonthViewDelegate {
     public func monthView(_ monthView: JTAppleMonthView, drawingFor segmentRect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex: Int)  -> (UIImage, CGRect)? {
         return calendarDelegate?.calendar(self, monthView: monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndex: monthIndex)
     }

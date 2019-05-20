@@ -29,22 +29,14 @@ public protocol JTAppleMonthViewDelegate: class {
                   monthIndex: Int)  -> (UIImage, CGRect)?
 }
 
-public protocol JTAppleMonthCellDelegate: class {
-    func monthView(_ monthView: JTAppleMonthView,
-                   drawingFor segmentRect: CGRect,
-                   with date: Date,
-                   dateOwner: DateOwner,
-                   monthIndex: Int)  -> (UIImage, CGRect)?
-}
-
 open class JTAppleMonthCell: UICollectionViewCell {
     @IBOutlet var monthView: JTAppleMonthView?
-    weak var delegate: JTAppleMonthCellDelegate?
+    weak var delegate: JTAppleMonthViewDelegate?
     
     func setupWith(configurationParameters: ConfigurationParameters,
                    month: Month,
                    date: Date,
-                   delegate: JTAppleMonthCellDelegate) {
+                   delegate: JTAppleMonthViewDelegate) {
         guard let monthView = monthView else { assert(false); return }
         self.delegate = delegate
         monthView.setupWith(configurationParameters: configurationParameters,
