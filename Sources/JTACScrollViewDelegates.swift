@@ -77,7 +77,6 @@ extension JTACMonthView: UIScrollViewDelegate {
                                                     previousScrollDirectionValue: lastMovedScrollDirection,
                                                     forward: { () -> CGFloat in return ceil(theCurrentContentOffset / interval) * interval },
                                                     backward: { () -> CGFloat in return floor(theCurrentContentOffset / interval) * interval})
-            print("Before: \(offset)")
             setTargetContentOffset(offset)
             
         case let .stopAtEach(customInterval: interval): 
