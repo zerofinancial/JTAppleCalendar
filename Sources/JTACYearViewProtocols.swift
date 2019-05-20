@@ -23,9 +23,9 @@
 //
 
 public protocol JTACYearViewDelegate: class {
-    func calendar(_ calendar: JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell
+    func calendar(_ calendar: JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTACMonthCell
     func calendar(_ calendar: JTACYearView,
-                  monthView: JTAppleMonthView,
+                  monthView: JTACCellMonthView,
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,
@@ -35,7 +35,7 @@ public protocol JTACYearViewDelegate: class {
 
 extension JTACYearViewDelegate {
     func calendar(_ calendar: JTACYearView,
-                  monthView: JTAppleMonthView,
+                  monthView: JTACCellMonthView,
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,

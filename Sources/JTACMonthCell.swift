@@ -1,5 +1,5 @@
 //
-//  JTAppleDayCell.swift
+//  JTACMonthCell.swift
 //
 //  Copyright (c) 2016-2017 JTAppleCalendar (https://github.com/patchthecode/JTAppleCalendar)
 //
@@ -21,22 +21,22 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
-public protocol JTAppleMonthViewDelegate: class {
-    func monthView(_ monthView: JTAppleMonthView,
+public protocol JTACCellMonthViewDelegate: class {
+    func monthView(_ monthView: JTACCellMonthView,
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,
                   monthIndex: Int)  -> (UIImage, CGRect)?
 }
 
-open class JTAppleMonthCell: UICollectionViewCell {
-    @IBOutlet var monthView: JTAppleMonthView?
-    weak var delegate: JTAppleMonthViewDelegate?
+open class JTACMonthCell: UICollectionViewCell {
+    @IBOutlet var monthView: JTACCellMonthView?
+    weak var delegate: JTACCellMonthViewDelegate?
     
     func setupWith(configurationParameters: ConfigurationParameters,
                    month: Month,
                    date: Date,
-                   delegate: JTAppleMonthViewDelegate) {
+                   delegate: JTACCellMonthViewDelegate) {
         guard let monthView = monthView else { assert(false); return }
         self.delegate = delegate
         monthView.setupWith(configurationParameters: configurationParameters,
@@ -46,8 +46,8 @@ open class JTAppleMonthCell: UICollectionViewCell {
     }
 }
 
-extension JTAppleMonthCell: JTAppleMonthViewDelegate {
-    public func monthView(_ monthView: JTAppleMonthView,
+extension JTACMonthCell: JTACCellMonthViewDelegate {
+    public func monthView(_ monthView: JTACCellMonthView,
                           drawingFor segmentRect: CGRect,
                           with date: Date,
                           dateOwner: DateOwner,
@@ -59,7 +59,7 @@ extension JTAppleMonthCell: JTAppleMonthViewDelegate {
 
 
 
-open class JTAppleMonthView: UIView {
+open class JTACCellMonthView: UIView {
     var daysInSection: [Int: Int] = [:] // temporary caching
     var sectionInset = UIEdgeInsets.zero
     var month: Month!
@@ -70,10 +70,10 @@ open class JTAppleMonthView: UIView {
     var xCellOffset:CGFloat = 0
     var xStride:CGFloat = 0
 
-    weak var delegate: JTAppleMonthViewDelegate?
+    weak var delegate: JTACCellMonthViewDelegate?
     var scrollDirection: UICollectionView.ScrollDirection = .horizontal
     
-    func setupWith(configurationParameters: ConfigurationParameters, month: Month, date: Date, delegate: JTAppleMonthViewDelegate? = nil) {
+    func setupWith(configurationParameters: ConfigurationParameters, month: Month, date: Date, delegate: JTACCellMonthViewDelegate? = nil) {
         self.configurationParameters = configurationParameters
         self.delegate = delegate
         self.month = month
@@ -83,7 +83,7 @@ open class JTAppleMonthView: UIView {
         xCellOffset = 0
         xStride = 0
         
-        setNeedsDisplay()
+        setNeedsDisplay()  // force reloading of the drawRect code to update the view.
     }
     
     func determineToApplyAttribs(month: Month) -> (xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)? {

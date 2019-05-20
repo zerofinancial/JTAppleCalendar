@@ -10,8 +10,8 @@
 		6B198EA91F41F06100442008 /* TestPersianCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B198EA81F41F06100442008 /* TestPersianCalendar.swift */; };
 		6B198EAA1F41F06100442008 /* TestPersianCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B198EA81F41F06100442008 /* TestPersianCalendar.swift */; };
 		6B19FCD4211ACAF8009C8C9B /* TestRangeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B19FCD2211ACABE009C8C9B /* TestRangeSelectionViewController.swift */; };
-		6B23201322868972009AC273 /* JTAppleMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B23201222868972009AC273 /* JTAppleMonthView.swift */; };
-		6B23201422868972009AC273 /* JTAppleMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B23201222868972009AC273 /* JTAppleMonthView.swift */; };
+		6B23201322868972009AC273 /* JTACMonthCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B23201222868972009AC273 /* JTACMonthCell.swift */; };
+		6B23201422868972009AC273 /* JTACMonthCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B23201222868972009AC273 /* JTACMonthCell.swift */; };
 		6B23201622869EED009AC273 /* TestYearViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B23201522869EED009AC273 /* TestYearViewViewController.swift */; };
 		6B23201722869EED009AC273 /* TestYearViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B23201522869EED009AC273 /* TestYearViewViewController.swift */; };
 		6B23201A2289C04A009AC273 /* JTACYearView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B23201922875107009AC273 /* JTACYearView.swift */; };
@@ -177,7 +177,7 @@
 /* Begin PBXFileReference section */
 		6B198EA81F41F06100442008 /* TestPersianCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPersianCalendar.swift; sourceTree = "<group>"; };
 		6B19FCD2211ACABE009C8C9B /* TestRangeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRangeSelectionViewController.swift; sourceTree = "<group>"; };
-		6B23201222868972009AC273 /* JTAppleMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTAppleMonthView.swift; sourceTree = "<group>"; };
+		6B23201222868972009AC273 /* JTACMonthCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTACMonthCell.swift; sourceTree = "<group>"; };
 		6B23201522869EED009AC273 /* TestYearViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestYearViewViewController.swift; sourceTree = "<group>"; };
 		6B23201922875107009AC273 /* JTACYearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTACYearView.swift; sourceTree = "<group>"; };
 		6B23201E228ADE2F009AC273 /* JTACInteractionYearFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JTACInteractionYearFunctions.swift; sourceTree = "<group>"; };
@@ -356,7 +356,7 @@
 				6BFF99CA228DC1FA00CB46EB /* JTACCollectionMonthViewDelegates.swift */,
 				6BFF99CB228DC1FA00CB46EB /* JTACScrollViewDelegates.swift */,
 				6B23201922875107009AC273 /* JTACYearView.swift */,
-				6B23201222868972009AC273 /* JTAppleMonthView.swift */,
+				6B23201222868972009AC273 /* JTACMonthCell.swift */,
 				6B23201E228ADE2F009AC273 /* JTACInteractionYearFunctions.swift */,
 				6BFF999E228C9CA600CB46EB /* JTACYearViewProtocols.swift */,
 				6BFF99A2228C9DBE00CB46EB /* JTACCollectionYearViewDelegates.swift */,
@@ -892,7 +892,7 @@
 				6B23201A2289C04A009AC273 /* JTACYearView.swift in Sources */,
 				6B23201F228ADE2F009AC273 /* JTACInteractionYearFunctions.swift in Sources */,
 				6BFF99CE228DC20400CB46EB /* JTACMonthLayoutProtocol.swift in Sources */,
-				6B23201322868972009AC273 /* JTAppleMonthView.swift in Sources */,
+				6B23201322868972009AC273 /* JTACMonthCell.swift in Sources */,
 				6BFF99CF228DC20400CB46EB /* JTACCollectionMonthViewDelegates.swift in Sources */,
 				6B60DEE51D5BDD4D009174A2 /* JTACInteractionMonthFunctions.swift in Sources */,
 				6BFF99D0228DC20400CB46EB /* JTACScrollViewDelegates.swift in Sources */,
@@ -921,7 +921,7 @@
 				6B23201B2289C04B009AC273 /* JTACYearView.swift in Sources */,
 				6B232020228ADE2F009AC273 /* JTACInteractionYearFunctions.swift in Sources */,
 				6BFF99D3228DC20500CB46EB /* JTACMonthLayoutProtocol.swift in Sources */,
-				6B23201422868972009AC273 /* JTAppleMonthView.swift in Sources */,
+				6B23201422868972009AC273 /* JTACMonthCell.swift in Sources */,
 				6BFF99D4228DC20500CB46EB /* JTACCollectionMonthViewDelegates.swift in Sources */,
 				6B60DEEE1D5BDD58009174A2 /* JTACInteractionMonthFunctions.swift in Sources */,
 				6BFF99D5228DC20500CB46EB /* JTACScrollViewDelegates.swift in Sources */,

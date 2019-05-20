@@ -26,10 +26,10 @@
 extension JTACYearView {
    
     /// Dequeues a reuable calendar cell
-    public func dequeueReusableJTAppleMonthCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTAppleMonthCell {
-        guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTAppleMonthCell else {
+    public func dequeueReusableJTAppleMonthCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> JTACMonthCell {
+        guard let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? JTACMonthCell else {
             assert(false, "Error initializing Cell View with identifier: '\(identifier)'")
-            return JTAppleMonthCell()
+            return JTACMonthCell()
         }
         return cell
     }

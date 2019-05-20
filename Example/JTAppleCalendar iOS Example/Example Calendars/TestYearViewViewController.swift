@@ -18,7 +18,7 @@ class TestYearViewViewController: UIViewController {
 
 
 extension TestYearViewViewController: JTACYearViewDelegate, JTACYearViewDataSource {
-    func calendar(_ calendar: JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTAppleMonthCell {
+    func calendar(_ calendar: JTACYearView, cellFor item: Any, at date: Date, indexPath: IndexPath) -> JTACMonthCell {
         if item is Month {
             let cell = calendar.dequeueReusableJTAppleMonthCell(withReuseIdentifier: "kkk", for: indexPath) as! MyCell
             f.dateFormat = "MMM"
@@ -66,7 +66,7 @@ extension TestYearViewViewController: JTACYearViewDelegate, JTACYearViewDataSour
     
   
     
-    func calendar(_ calendar: JTACYearView, monthView: JTAppleMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex index: Int) -> (UIImage, CGRect)? {
+    func calendar(_ calendar: JTACYearView, monthView: JTACCellMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex index: Int) -> (UIImage, CGRect)? {
         f.dateFormat = "d"
         let dateString = f.string(from: date)
         let retval = (UIImage.text(dateString, rect: rect), rect)
@@ -87,11 +87,11 @@ extension TestYearViewViewController: JTACYearViewDelegate, JTACYearViewDataSour
 }
 
 
-class MyCell: JTAppleMonthCell {
+class MyCell: JTACMonthCell {
     @IBOutlet var monthLabel: UILabel!
 }
 
-class YearHeaderCell: JTAppleMonthCell {
+class YearHeaderCell: JTACMonthCell {
     @IBOutlet var yearLabel: UILabel!
 }
 
