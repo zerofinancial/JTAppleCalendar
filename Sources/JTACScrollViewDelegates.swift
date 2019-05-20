@@ -94,72 +94,32 @@ extension JTACMonthView: UIScrollViewDelegate {
                                                      fixed: { return theCurrentSection})
 
             guard section >= 0, section < calendarLayout.endOfSectionOffsets.count else {setTargetContentOffset(0); return}
-
-            
-            let x = calendarLayout.endOfSectionOffsets[theCurrentSection]
-            let pp = theCurrentSection - 1 < 0 ? 0 : theCurrentSection - 1
-            let y = calendarLayout.endOfSectionOffsets[pp]
-            let midPoint = (x+y)/2
+            let endOfCurrentSectionOffset = calendarLayout.endOfSectionOffsets[theCurrentSection]
+            let endOfPreviousSectionOffset = calendarLayout.endOfSectionOffsets[theCurrentSection - 1 < 0 ? 0 : theCurrentSection - 1]
+            let midPoint = (endOfCurrentSectionOffset + endOfPreviousSectionOffset) / 2
             let maxSnap = calendarLayout.endOfSectionOffsets[section]
             
-            let xp: CGFloat = 20
-            let userPercentage = CGFloat((100 - xp) / 100.0)
+            let userPercentage: CGFloat = 20
+            let modifiedPercentage = CGFloat((100 - userPercentage) / 100.0)
             
-            let snapForward = midPoint - ((maxSnap - midPoint) * userPercentage)
-            
-            
+            let snapForward = midPoint - ((maxSnap - midPoint) * modifiedPercentage)
             
             scrollDecision(currentScrollDirectionValue: translation,
                            previousScrollDirectionValue: lastMovedScrollDirection,
                            forward: {
-                            
-                            
-                            print("midPoint = \(midPoint)")
-                            print("CurrentContentOffset = \(theCurrentContentOffset)")
-                            print("CurrentSection = \(theCurrentSection)")
-                            print("snapForward = \(snapForward)")
-//                            print("snapBack = \(snapBack)")
-                            print("x = \(x)")
-                            print("y = \(y)\n\n\n")
-            
-                            if theCurrentContentOffset >= snapForward {
-                                setTargetContentOffset(x)
-                            } else {
-                                setTargetContentOffset(y)
-                            }
-            },
+                                if theCurrentContentOffset >= snapForward {
+                                    setTargetContentOffset(endOfCurrentSectionOffset)
+                                } else {
+                                    setTargetContentOffset(endOfPreviousSectionOffset)
+                                }
+                           },
                            backward: {
-                            if theCurrentContentOffset <= snapForward {
-                                setTargetContentOffset(y)
-                            } else {
-                                setTargetContentOffset(x)
-                            }
-            })
-//            if isForward {
-//
-//                print("isScrollingFowrard = \(isForward)")
-//                print("midPoint = \(midPoint)")
-//                print("CurrentContentOffset = \(theCurrentContentOffset)")
-//                print("CurrentSection = \(theCurrentSection)")
-//                print("snapForward = \(snapForward)")
-//                print("snapBack = \(snapBack)")
-//                print("x = \(x)")
-//                print("y = \(y)\n\n\n")
-//
-//                if theCurrentContentOffset >= snapForward {
-//                    setTargetContentOffset(x)
-//                } else {
-//                    setTargetContentOffset(y)
-//                }
-//            } else {
-//                if theCurrentContentOffset <= snapForward {
-//                    setTargetContentOffset(y)
-//                } else {
-//                    setTargetContentOffset(x)
-//                }
-//            }
-            
-            
+                                if theCurrentContentOffset <= snapForward {
+                                    setTargetContentOffset(endOfPreviousSectionOffset)
+                                } else {
+                                    setTargetContentOffset(endOfCurrentSectionOffset)
+                                }
+                           })
         case let .nonStopToCell(withResistance: resistance), let .nonStopToSection(withResistance: resistance):
             
             let (recalculatedOffset, elementProperties) = rectAfterApplying(resistance: resistance,
@@ -183,8 +143,8 @@ extension JTACMonthView: UIScrollViewDelegate {
             case .nonStopToSection:
                 let stopSection = scrollDecision(currentScrollDirectionValue: translation,
                                                              previousScrollDirectionValue: lastMovedScrollDirection,
-                                                             forward: { () -> Int in return validElementProperties.section },
-                                                             backward: {() -> Int in return validElementProperties.section - 1})
+                                                             forward: { validElementProperties.section },
+                                                             backward: {validElementProperties.section - 1})
  
                 let calculatedOffSet = (stopSection < 0 || stopSection > calendarLayout.endOfSectionOffsets.count - 1) ? 0 : calendarLayout.endOfSectionOffsets[stopSection]
                 setTargetContentOffset(calculatedOffSet)
@@ -195,13 +155,13 @@ extension JTACMonthView: UIScrollViewDelegate {
             let diffResist = diffResistance(targetOffset: theTargetContentOffset, currentOffset: theCurrentContentOffset, resistance: resistance)
             let recalculatedOffsetAfterResistance = scrollDecision(currentScrollDirectionValue: translation,
                                                                    previousScrollDirectionValue: lastMovedScrollDirection,
-                                                                   forward: { () -> CGFloat in return theTargetContentOffset - diffResist },
-                                                                   backward: { () -> CGFloat in return theTargetContentOffset + diffResist })
+                                                                   forward: { theTargetContentOffset - diffResist },
+                                                                   backward: { theTargetContentOffset + diffResist })
 
             let offset = scrollDecision(currentScrollDirectionValue: translation,
                                         previousScrollDirectionValue: lastMovedScrollDirection,
-                                        forward: { () -> CGFloat in return ceil(recalculatedOffsetAfterResistance / interval) * interval },
-                                        backward: { () -> CGFloat in floor(recalculatedOffsetAfterResistance / interval) * interval })
+                                        forward: { ceil(recalculatedOffsetAfterResistance / interval) * interval },
+                                        backward: { floor(recalculatedOffsetAfterResistance / interval) * interval })
             
             setTargetContentOffset(offset)
         case .none: break
