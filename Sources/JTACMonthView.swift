@@ -155,12 +155,28 @@ open class JTACMonthView: UICollectionView {
         return retval
     }
     
-    open var sectionInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) {
-        didSet { validateSectionInset() }
+    var _sectionInset: UIEdgeInsets = .zero
+    open var sectionInset: UIEdgeInsets {
+        set {
+            _sectionInset.top =  newValue.top < 0 ? 0 : newValue.top
+            _sectionInset.bottom =  newValue.bottom < 0 ? 0 : newValue.bottom
+            _sectionInset.left =  newValue.left < 0 ? 0 : newValue.left
+            _sectionInset.right =  newValue.right < 0 ? 0 : newValue.right
+        }
+        get { return _sectionInset }
     }
     
-    open var minimumInteritemSpacing: CGFloat = 0
-    open var minimumLineSpacing: CGFloat = 0
+    var _minimumInteritemSpacing: CGFloat = 0
+    open var minimumInteritemSpacing: CGFloat {
+        set { _minimumInteritemSpacing = newValue < 0 ? 0 : newValue }
+        get { return _minimumInteritemSpacing }
+    }
+
+    var _minimumLineSpacing: CGFloat = 0
+    open var minimumLineSpacing: CGFloat {
+        set { _minimumLineSpacing = newValue < 0 ? 0 : newValue }
+        get { return _minimumLineSpacing }
+    }
     
     lazy var theData: CalendarData = {
         return self.setupMonthInfoDataForStartAndEndDate()
@@ -194,13 +210,6 @@ open class JTACMonthView: UICollectionView {
                 }
             #endif
         }
-    }
-    
-    func validateSectionInset() {
-        if sectionInset.top < 0 { sectionInset.top = 0 }
-        if sectionInset.bottom < 0 { sectionInset.top = 0 }
-        if sectionInset.left < 0 { sectionInset.top = 0 }
-        if sectionInset.right < 0 { sectionInset.top = 0 }
     }
 }
 

@@ -106,14 +106,14 @@ extension JTACMonthView: UIScrollViewDelegate {
             scrollDecision(currentScrollDirectionValue: translation,
                            previousScrollDirectionValue: lastMovedScrollDirection,
                            forward: {
-                                if theCurrentContentOffset >= snapForward {
+                                if theCurrentContentOffset >= snapForward || directionVelocity > 0 {
                                     setTargetContentOffset(endOfCurrentSectionOffset)
                                 } else {
                                     setTargetContentOffset(endOfPreviousSectionOffset)
                                 }
                            },
                            backward: {
-                                if theCurrentContentOffset <= snapForward {
+                                if theCurrentContentOffset <= snapForward || directionVelocity < 0 {
                                     setTargetContentOffset(endOfPreviousSectionOffset)
                                 } else {
                                     setTargetContentOffset(endOfCurrentSectionOffset)
