@@ -112,6 +112,9 @@ extension JTACMonthView {
     
     /// Deselect all selected dates
     /// - Parameter: this funciton triggers a delegate call by default. Set this to false if you do not want this
+    /// - Parameter keepDeselectionIfMultiSelectionAllowed:
+    ///    if (in range selection) there are 4 dates. -> selected, unselected, selected, selected. (S | U | S | S)
+    ///    Deselecting those 4 dates again would give U | S | U | U. With KeepDeselection, this becomes U | U | U | U
     public func deselectAllDates(triggerSelectionDelegate: Bool = true) {
         deselect(dates: selectedDates, triggerSelectionDelegate: triggerSelectionDelegate)
     }
@@ -119,9 +122,16 @@ extension JTACMonthView {
     /// Deselect dates
     /// - Parameter: Dates - The dates to deselect
     /// - Parameter: triggerSelectionDelegate - this funciton triggers a delegate call by default. Set this to false if you do not want this
-    public func deselect(dates: [Date], triggerSelectionDelegate: Bool = true) {
+    /// - Parameter keepDeselectionIfMultiSelectionAllowed:
+    ///    if (in range selection) there are 4 dates. -> selected, unselected, selected, selected. (S | U | S | S)
+    ///    Deselecting those 4 dates again would give U | S | U | U. With KeepDeselection, this becomes U | U | U | U
+    public func deselect(dates: [Date], triggerSelectionDelegate: Bool = true, keepDeselectionIfMultiSelectionAllowed: Bool = false) {
         if allowsMultipleSelection {
-            selectDates(dates, triggerSelectionDelegate: triggerSelectionDelegate)
+            var filteredDates: [Date] = dates
+            if keepDeselectionIfMultiSelectionAllowed {
+                filteredDates = dates.filter { self.selectedDatesSet.contains(calendar.startOfDay(for: $0)) }
+            }
+            selectDates(filteredDates, triggerSelectionDelegate: triggerSelectionDelegate, keepSelectionIfMultiSelectionAllowed: false)
         } else {
             let paths = pathsFromDates(dates)
             guard !paths.isEmpty else { return }
@@ -282,11 +292,16 @@ extension JTACMonthView {
     }
     
     /// Deselect all selected dates within a range
-    public func deselectDates(from start: Date, to end: Date? = nil, triggerSelectionDelegate: Bool = true) {
+    /// - Parameter: start - Start of date range to deselect
+    /// - Parameter: end of date range to deselect
+    /// - Parameter keepDeselectionIfMultiSelectionAllowed:
+    ///    if (in range selection) there are 4 dates. -> selected, unselected, selected, selected. (S | U | S | S)
+    ///    Deselecting those 4 dates again would give U | S | U | U. With KeepDeselection, this becomes U | U | U | U
+    public func deselectDates(from start: Date, to end: Date? = nil, triggerSelectionDelegate: Bool = true, keepDeselectionIfMultiSelectionAllowed: Bool = false) {
         if selectedDates.isEmpty { return }
         let end = end ?? selectedDates.last!
         let dates = selectedDates.filter { $0 >= start && $0 <= end }
-        deselect(dates: dates, triggerSelectionDelegate: triggerSelectionDelegate)
+        deselect(dates: dates, triggerSelectionDelegate: triggerSelectionDelegate, keepDeselectionIfMultiSelectionAllowed: keepDeselectionIfMultiSelectionAllowed)
         
     }
     
