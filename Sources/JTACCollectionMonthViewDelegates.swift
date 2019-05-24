@@ -60,7 +60,7 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         let cell = collectionView.cellForItem(at: indexPath) as? JTACDayCell
         let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDate, selectionType: .userInitiated)
-        delegate.calendar(self, didHighlightDate: cellState.date, cell: cell, cellState: cellState)
+        delegate.calendar(self, didHighlightDate: cellState.date, cell: cell, cellState: cellState, indexPath: indexPath)
     }
     
     /// Tells the delegate that the item at the specified index path was unhighlighted.
@@ -72,7 +72,7 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         let cell = collectionView.cellForItem(at: indexPath) as? JTACDayCell
         let cellState = cellStateFromIndexPath(indexPath, withDateInfo: infoOfDate, selectionType: .userInitiated)
-        delegate.calendar(self, didUnhighlightDate: cellState.date, cell: cell, cellState: cellState)
+        delegate.calendar(self, didUnhighlightDate: cellState.date, cell: cell, cellState: cellState, indexPath: indexPath)
     }
     
     /// Asks your data source object for the cell that corresponds
@@ -191,9 +191,9 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
         
         if shouldTriggerSelectionDelegate {
             if action == .didSelect {
-                delegate.calendar(self, didSelectDate: infoOfDate.date, cell: cell, cellState: cellState)
+                delegate.calendar(self, didSelectDate: infoOfDate.date, cell: cell, cellState: cellState, indexPath: indexPath)
             } else {
-                delegate.calendar(self, didDeselectDate: infoOfDate.date, cell: cell, cellState: cellState)
+                delegate.calendar(self, didDeselectDate: infoOfDate.date, cell: cell, cellState: cellState, indexPath: indexPath)
             }
         }
         
@@ -212,9 +212,9 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
                                                    selectionType: selectionType)
             switch action {
             case .shouldSelect:
-                return delegate.calendar(self, shouldSelectDate: infoOfDate.date, cell: cell, cellState: cellState)
+                return delegate.calendar(self, shouldSelectDate: infoOfDate.date, cell: cell, cellState: cellState, indexPath: indexPath)
             case .shouldDeselect:
-                return delegate.calendar(self, shouldDeselectDate: infoOfDate.date, cell: cell, cellState: cellState)
+                return delegate.calendar(self, shouldDeselectDate: infoOfDate.date, cell: cell, cellState: cellState, indexPath: indexPath)
             }
         }
         return false
