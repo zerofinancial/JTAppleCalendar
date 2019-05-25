@@ -189,6 +189,8 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
             localPathsToReload.formUnion(counterPathsToReload)
         }
         
+        setMinMaxDate()
+        
         if shouldTriggerSelectionDelegate {
             if action == .didSelect {
                 delegate.calendar(self, didSelectDate: infoOfDate.date, cell: cell, cellState: cellState, indexPath: indexPath)
@@ -200,6 +202,21 @@ extension JTACMonthView: UICollectionViewDelegate, UICollectionViewDataSource {
         if !localPathsToReload.isEmpty {
             batchReloadIndexPaths(Array(localPathsToReload))
         }
+    }
+    
+    func setMinMaxDate() {
+        let selectedCellData = self.selectedCellData
+        let sortedKeys = selectedCellData.keys.sorted()
+        guard
+            let firstIndex = sortedKeys.first,
+            let lastIndex = sortedKeys.last else {
+                selectedCells.first = nil
+                selectedCells.last = nil
+                return
+        }
+        let date = selectedCellData[firstIndex]!.date
+        selectedCells.first = (date, firstIndex)
+        selectedCells.last = (date, lastIndex)
     }
     
     func handleShouldSelectionValueChange(_ collectionView: UICollectionView, action: ShouldSelectionAction, indexPath: IndexPath, selectionType: SelectionType) -> Bool {

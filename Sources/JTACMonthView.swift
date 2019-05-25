@@ -43,6 +43,9 @@ open class JTACMonthView: UICollectionView {
         }
     }
     
+    /// Stores the first and last selected date cel
+    open var selectedCells: (first: (date: Date, indexPath: IndexPath)?, last:  (date: Date, indexPath: IndexPath)?)
+    
     /// The scroll direction of the sections in JTAppleCalendar.
     open var scrollDirection: UICollectionView.ScrollDirection = .horizontal
     
