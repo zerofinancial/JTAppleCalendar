@@ -144,7 +144,7 @@ extension JTACMonthView {
     public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator, anchorDate: Date?) {
         DispatchQueue.main.async { [weak self] in
             guard let _self = self else { return }
-            _self.reloadData(withanchor: anchorDate)
+            _self.reloadData(withAnchor: anchorDate)
         }
     }
     
@@ -213,7 +213,7 @@ extension JTACMonthView {
     /// - Parameter animation: Scroll is animated if this is set to true
     /// - Parameter completionHandler: This closure will run after
     ///                                the reload is complete
-    public func reloadData(withanchor date: Date? = nil, completionHandler: (() -> Void)? = nil) {
+    public func reloadData(withAnchor date: Date? = nil, completionHandler: (() -> Void)? = nil) {
         if isReloadDataInProgress { return }
         if isScrollInProgress {
             scrollDelayedExecutionClosure.append {[unowned self] in
