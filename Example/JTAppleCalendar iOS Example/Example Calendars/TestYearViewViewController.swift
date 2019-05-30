@@ -8,6 +8,9 @@
 import UIKit
 
 class TestYearViewViewController: UIViewController {
+    
+    
+    
     @IBOutlet var calendarView: JTACYearView!
     let f = DateFormatter()
     
@@ -64,13 +67,20 @@ extension TestYearViewViewController: JTACYearViewDelegate, JTACYearViewDataSour
         return (configParams, modifiedDataSource)
     }
     
-  
     
-    func calendar(_ calendar: JTACYearView, monthView: JTACCellMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex index: Int) -> (UIImage, CGRect)? {
+    
+    func calendar(_ calendar: JTACYearView, monthView: JTACCellMonthView, drawingFor rect: CGRect, with date: Date, dateOwner: DateOwner, monthIndex index: Int) {
         f.dateFormat = "d"
         let dateString = f.string(from: date)
-        let retval = (UIImage.text(dateString, rect: rect), rect)
-        return retval
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        let font = UIFont(name: "HelveticaNeue", size: 8)!
+        
+        paragraphStyle.alignment = .center
+        dateString.draw(in: rect, withAttributes: [
+            NSAttributedString.Key.font : font,
+            NSAttributedString.Key.paragraphStyle: paragraphStyle
+        ])
     }
     
     func calendar(_ calendar: JTACYearView, sizeFor item: Any) -> CGSize {
@@ -93,29 +103,4 @@ class MyCell: JTACMonthCell {
 
 class YearHeaderCell: JTACMonthCell {
     @IBOutlet var yearLabel: UILabel!
-}
-
-extension UIImage {
-    class func text(_ text: String, rect: CGRect) -> UIImage  {
-        let renderer = UIGraphicsImageRenderer(bounds: rect)
-        let img = renderer.image { ctx in
-            // Draw a box around the cells.
-            ctx.cgContext.addRect(rect)
-            ctx.cgContext.drawPath(using: .stroke)
-            
-            // Draw text on the cell
-            let fontSize: CGFloat
-            if rect.width >= 17.0 { fontSize = 11.0 }
-            else if rect.width >= 16.0 { fontSize = 10.0 }
-            else { fontSize = 8.0 }
-            let font = UIFont(name: "HelveticaNeue", size: fontSize)!
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = .center
-            text.draw(in: rect, withAttributes: [
-                NSAttributedString.Key.font : font,
-                NSAttributedString.Key.paragraphStyle: paragraphStyle
-            ])
-        }
-        return img
-    }
 }

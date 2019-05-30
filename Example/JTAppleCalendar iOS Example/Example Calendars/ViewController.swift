@@ -254,12 +254,12 @@ class ViewController: UIViewController {
         )
         
         let date = calendarView.visibleDates().monthDates.first!.date
-        calendarView.reloadData(withanchor: date)
+        calendarView.reloadData(withAnchor: date)
     }
 
     @IBAction func reloadCalendar(_ sender: UIButton) {
         let date = Date()
-        calendarView.reloadData(withanchor: date)
+        calendarView.reloadData(withAnchor: date)
     }
 
     @IBAction func next(_ sender: UIButton) {

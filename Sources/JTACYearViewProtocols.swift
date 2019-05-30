@@ -29,7 +29,7 @@ public protocol JTACYearViewDelegate: class {
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,
-                  monthIndex index: Int) -> (UIImage, CGRect)?
+                  monthIndex index: Int)
     func calendar(_ calendar: JTACYearView, sizeFor item: Any) -> CGSize
 }
 
@@ -39,9 +39,7 @@ extension JTACYearViewDelegate {
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,
-                  monthIndex index: Int) -> (UIImage, CGRect)? {
-        return (UIImage(), .zero)
-    }
+                  monthIndex index: Int){}
     func calendar(_ calendar: JTACYearView, sizeFor item: Any) -> CGSize { return .zero }
 }
 

@@ -26,7 +26,7 @@ public protocol JTACCellMonthViewDelegate: class {
                   drawingFor segmentRect: CGRect,
                   with date: Date,
                   dateOwner: DateOwner,
-                  monthIndex: Int)  -> (UIImage, CGRect)?
+                  monthIndex: Int)
 }
 
 open class JTACMonthCell: UICollectionViewCell {
@@ -49,8 +49,8 @@ extension JTACMonthCell: JTACCellMonthViewDelegate {
                           drawingFor segmentRect: CGRect,
                           with date: Date,
                           dateOwner: DateOwner,
-                          monthIndex: Int) -> (UIImage, CGRect)? {
-        return delegate?.monthView(monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndex: monthIndex)
+                          monthIndex: Int) {
+        delegate?.monthView(monthView, drawingFor: segmentRect, with: date, dateOwner: dateOwner, monthIndex: monthIndex)
     }
 }
 
@@ -71,104 +71,70 @@ open class JTACCellMonthView: UIView {
         
         setNeedsDisplay()  // force reloading of the drawRect code to update the view.
     }
-    
-    func determineToApplyAttribs(month: Month, xCellOffset: CGFloat, yCellOffset: CGFloat) -> (xOffset: CGFloat, yOffset: CGFloat, width: CGFloat, height: CGFloat)? {
-            
-            let numberOfRowsForSection = month.maxNumberOfRowsForFull(developerSetRows: 6)
-            let width = (frame.width - ((sectionInset.left / 7) + (sectionInset.right / 7))) / 7
-            let height = (frame.height - sectionInset.top - sectionInset.bottom) / CGFloat(numberOfRowsForSection)
-            
-            let y = scrollDirection == .horizontal ? yCellOffset + sectionInset.top : yCellOffset
-            return (xCellOffset, y, width, height)
-    }
-    
+
     override open func draw(_ rect: CGRect) {
         super.draw(rect)
 
         var xCellOffset: CGFloat = 0
         var yCellOffset: CGFloat = 0
         
-        for numberOfDaysInCurrentSection in month.sections {
+        let numberOfDaysInCurrentSection = month.sections.first!
+        for dayCounter in 1...numberOfDaysInCurrentSection {
             
-            for dayCounter in 1...numberOfDaysInCurrentSection {
-                guard let attribute = determineToApplyAttribs(month: month, xCellOffset: xCellOffset, yCellOffset: yCellOffset) else { continue }
+            let width = (frame.width - ((sectionInset.left / 7) + (sectionInset.right / 7))) / 7
+            let height = (frame.height - sectionInset.top - sectionInset.bottom) / 6
+            let y = scrollDirection == .horizontal ? yCellOffset + sectionInset.top : yCellOffset
             
-                let rect = CGRect(x: attribute.xOffset, y: attribute.yOffset, width: attribute.width, height: attribute.height)
+            let rect = CGRect(x: xCellOffset, y: y, width: width, height: height)
+            guard let dateWithOwner = dateFromIndex(dayCounter - 1, month: month,
+                                                    startOfMonthCache: configurationParameters.startDate,
+                                                    endOfMonthCache: configurationParameters.endDate) else { continue }
 
-                guard let dateWithOwner = dateFromIndex(dayCounter - 1, month: month,
-                                                        startOfMonthCache: configurationParameters.startDate,
-                                                        endOfMonthCache: configurationParameters.endDate) else { continue }
+            
+            delegate?.monthView(self,
+                                drawingFor: rect,
+                                with: dateWithOwner.date,
+                                dateOwner: dateWithOwner.owner,
+                                monthIndex: month.index)
 
-                
-                if let data = delegate?.monthView(self,
-                                                  drawingFor: rect,
-                                                  with: dateWithOwner.date,
-                                                  dateOwner: dateWithOwner.owner,
-                                                  monthIndex: month.index) {
-                    data.0.draw(in: data.1)
-                }
-
-                xCellOffset += attribute.width
-                
-                if dayCounter == numberOfDaysInCurrentSection || dayCounter % maxNumberOfDaysInWeek == 0 {
-                    // We are at the last item in the section
-                    // && if we have headers
-                    xCellOffset = sectionInset.left
-                    yCellOffset += attribute.height
-                }
+            xCellOffset += width
+            
+            if dayCounter == numberOfDaysInCurrentSection || dayCounter % maxNumberOfDaysInWeek == 0 {
+                // We are at the last item in the section
+                // && if we have headers
+                xCellOffset = sectionInset.left
+                yCellOffset += height
             }
         }
     }
     
-    func fontSizeFor(radius: CGFloat) -> CGFloat {
-        if radius >= 17.0 {
-            return 11.0
-        } else if radius >= 16.0 {
-            return 10.0
-        } else {
-            return 8.0
-        }
-    }
-    
     private func dateFromIndex(_ index: Int, month: Month, startOfMonthCache: Date, endOfMonthCache: Date) -> (date: Date, owner: DateOwner)? { // Returns nil if date is out of scope
-        let calendar = Calendar(identifier: .gregorian)
         // Calculate the offset
         let offSet = month.inDates
         
         let dayIndex = month.startDayIndex + index - offSet
-        var dateOwner: DateOwner = .thisMonth
-        let date: Date? = calendar.date(byAdding: .day, value: dayIndex, to: startOfMonthCache)
+        var dateOwner: DateOwner
         
-        
+        guard let validDate = configurationParameters.calendar.date(byAdding: .day, value: dayIndex, to: startOfMonthCache) else { return nil }
         
         if index >= offSet && index < month.numberOfDaysInMonth + offSet {
-            // This is a month date
+            dateOwner = .thisMonth
         } else if index < offSet {
             // This is a preDate
             
-            if date! < startOfMonthCache {
+            if validDate < startOfMonthCache {
                 dateOwner = .previousMonthOutsideBoundary
             } else {
                 dateOwner = .previousMonthWithinBoundary
             }
         } else {
             // This is a postDate
-            
-            
-            if date! > endOfMonthCache {
+            if validDate > endOfMonthCache {
                 dateOwner = .followingMonthOutsideBoundary
             } else {
                 dateOwner = .followingMonthWithinBoundary
             }
         }
-        guard let validDate = date else { return nil }
         return (validDate, dateOwner)
-    }
-}
-
-
-extension CGRect {
-    var midPoint: CGPoint {
-        return CGPoint(x: midX, y: midY)
     }
 }
