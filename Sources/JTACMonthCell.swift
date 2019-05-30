@@ -83,9 +83,8 @@ open class JTACCellMonthView: UIView {
             
             let width = (frame.width - ((sectionInset.left / 7) + (sectionInset.right / 7))) / 7
             let height = (frame.height - sectionInset.top - sectionInset.bottom) / 6
-            let y = scrollDirection == .horizontal ? yCellOffset + sectionInset.top : yCellOffset
             
-            let rect = CGRect(x: xCellOffset, y: y, width: width, height: height)
+            let rect = CGRect(x: xCellOffset, y: yCellOffset, width: width, height: height)
             guard let dateWithOwner = dateFromIndex(dayCounter - 1, month: month,
                                                     startOfMonthCache: configurationParameters.startDate,
                                                     endOfMonthCache: configurationParameters.endDate) else { continue }
