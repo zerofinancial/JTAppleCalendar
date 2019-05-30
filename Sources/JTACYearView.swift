@@ -47,7 +47,7 @@ open class JTACYearView: UICollectionView {
         set { calendarDataSource = newValue as? JTACYearViewDataSource }
     }
     
-    func dataSourcefrom(configurationParameters: ConfigurationParameters) -> [Any] {
+    open func dataSourcefrom(configurationParameters: ConfigurationParameters) -> [Any] {
         return JTAppleDateConfigGenerator.shared.setupMonthInfoDataForStartAndEndDate(configurationParameters).months
     }
     
