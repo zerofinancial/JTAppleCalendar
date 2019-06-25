@@ -63,7 +63,7 @@ extension JTACMonthView {
     
     var monthInfo: [Month] {
         get { return theData.months }
-        set { theData.months = monthInfo }
+        set { theData.months = newValue }
     }
     
     var numberOfMonths: Int {
