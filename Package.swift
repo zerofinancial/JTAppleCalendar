@@ -4,7 +4,6 @@
 import PackageDescription
 
 let package = Package(
-    
     name: "JTAppleCalendar",
     platforms: [
         .iOS(.v10),
@@ -17,8 +16,7 @@ let package = Package(
     targets: [
         .target(
             name: "JTAppleCalendar",
-            dependencies: [],
-            exclude: ["SampleJTAppleCalendar"])
+            dependencies: []),
         .testTarget(
             name: "JTAppleCalendarTests",
             dependencies: ["JTAppleCalendar"]),
