@@ -76,7 +76,7 @@ extension JTACMonthView {
     var totalDays: Int {
         return theData.totalDays
     }
-    
+             
     var calendarViewLayout: JTACMonthLayout {
         guard let layout = collectionViewLayout as? JTACMonthLayout else {
             developerError(string: "Calendar layout is not of type JTAppleCalendarMonthLayout.")
@@ -90,10 +90,25 @@ extension JTACMonthView {
     }
     
     var calendarLayoutIsLoaded: Bool { return calendarViewLayout.isCalendarLayoutLoaded }
-    var startDateCache: Date         { return _cachedConfiguration.startDate }
-    var endDateCache: Date           { return _cachedConfiguration.endDate }
-    var calendar: Calendar           { return _cachedConfiguration.calendar }
-
-    
-
+    var startDateCache: Date {
+        guard let date = _cachedConfiguration?.startDate else {
+            assert(false, "Attemped to access startDate when Datasource/delegate is not set yet. Returning todays's date")
+            return Date()
+        }
+        return date
+    }
+    var endDateCache: Date           {
+        guard let date = _cachedConfiguration?.endDate else {
+            assert(false, "Attemped to access endDate when Datasource/delegate is not set yet. Returning todays's date")
+            return Date()
+        }
+        return date
+    }
+    var calendar: Calendar {
+        guard let calendar = _cachedConfiguration?.calendar else {
+            assert(false, "Attemped to access calendar when Datasource/delegate is not set yet. Returning default value")
+            return Calendar.current
+        }
+        return calendar
+    }
 }

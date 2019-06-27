@@ -419,7 +419,7 @@ extension ViewController: JTACMonthViewDelegate, JTACMonthViewDataSource {
         handleCellConfiguration(cell: cell, cellState: cellState)
     }
 
-    func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState) {
+    func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
         handleCellConfiguration(cell: cell, cellState: cellState)
     }
     
