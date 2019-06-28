@@ -415,7 +415,7 @@ extension ViewController: JTACMonthViewDelegate, JTACMonthViewDataSource {
         return myCustomCell
     }
 
-    func calendar(_ calendar: JTACMonthView, didDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState) {
+    func calendar(_ calendar: JTACMonthView, didDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
         handleCellConfiguration(cell: cell, cellState: cellState)
     }
 
