@@ -48,7 +48,7 @@ public protocol JTACMonthViewDataSource: class {
 /// allow the delegate to manage selections, and configure the cells
 @available(*, unavailable, renamed: "JTACMonthViewDelegate")
 public protocol JTAppleCalendarViewDelegate: class {}
-public protocol JTACMonthViewDelegate: class {
+public protocol JTACMonthViewDelegate {
     /// Asks the delegate if selecting the date-cell with a specified date is
     /// allowed
     /// - Parameters:

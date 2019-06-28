@@ -30,7 +30,7 @@ extension JTACMonthView {
     /// Workaround for Xcode bug that prevents you from connecting the delegate in the storyboard.
     /// Remove this extra property once Xcode gets fixed.
     @IBOutlet public var ibCalendarDelegate: AnyObject? {
-        get { return calendarDelegate }
+        get { return calendarDelegate as AnyObject? }
         set { calendarDelegate = newValue as? JTACMonthViewDelegate }
     }
     

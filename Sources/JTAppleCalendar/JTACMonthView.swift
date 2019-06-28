@@ -70,7 +70,7 @@ open class JTACMonthView: UICollectionView {
     }
     
     /// The object that acts as the delegate of the calendar view.
-    weak open var calendarDelegate: JTACMonthViewDelegate? {
+    open var calendarDelegate: JTACMonthViewDelegate? {
         didSet { lastMonthSize = sizesForMonthSection() }
     }
     
