@@ -75,7 +75,7 @@ open class JTACMonthView: UICollectionView {
     }
     
     /// The object that acts as the data source of the calendar view.
-    weak open var calendarDataSource: JTACMonthViewDataSource? {
+    open var calendarDataSource: JTACMonthViewDataSource? {
         didSet { setupMonthInfoAndMap() } // Refetch the data source for a data source change
     }
     

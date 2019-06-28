@@ -32,7 +32,7 @@ import UIKit
 /// then modify it self
 @available(*, unavailable, renamed: "JTACMonthViewDataSource")
 public protocol JTAppleCalendarViewDataSource{}
-public protocol JTACMonthViewDataSource: class {
+public protocol JTACMonthViewDataSource {
     /// Asks the data source to return the start and end boundary dates
     /// as well as the calendar to use. You should properly configure
     /// your calendar at this point.
