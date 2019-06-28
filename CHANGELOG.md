@@ -1,7 +1,8 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 `JTAppleCalendar` adheres to [Semantic Versioning](http://semver.org/).
-
+#### 8.x Releases
+- `8.0.0` Releases - [8.0.0](#800)
 #### 7.x Releases
 - `7.1.0` Releases - [7.1.0](#710)|[7.1.1](#711)|[7.1.2](#712)|[7.1.3](#713)|[7.1.4](#714)|[7.1.5](#715)|[7.1.6](#716)|[7.1.7](#717)
 - `7.0.0` Releases - [7.0.0](#700)|[7.0.1](#701)|[7.0.2](#702)|[7.0.3](#703)|[7.0.4](#704)|[7.0.5](#705)|[7.0.6](#706)
@@ -30,11 +31,25 @@ All notable changes to this project will be documented in this file.
 - `1.0.x` Releases - [1.0.0](#100)
 
 ---
+## [8.0.0](https://github.com/patchthecode/JTAppleCalendar/releases/tag/8.0.0)
+https://github.com/patchthecode/JTAppleCalendar/commit/
+- ScrollToDate should now respect section insets
+- [Some dates could not be selected](https://github.com/patchthecode/JTAppleCalendar/commit/eea5725b2fb84e998b2998cf3ba724194b1eb705)
+- updated to Swift 5
+- [Updated range selection logic. Every section is reated as a group](https://github.com/patchthecode/JTAppleCalendar/commit/a28f3b273d8f4d043d8ae1227e351723ed6ea7c7)
+- [StrictBoundary = false together with section inset causes misaligned sections](https://github.com/patchthecode/JTAppleCalendar/commit/23347b26ccda3e65a4f387859263a386b7ef227f)
+- [Single cell deletion fix](https://github.com/patchthecode/JTAppleCalendar/commit/62501f95b5b5a693ab4caa967736d1ee120d0b5d)
+- [Fix crash for japanese calendar](https://github.com/patchthecode/JTAppleCalendar/commit/c06f0eec472e4ef39ac97e031ae55ec1231df1c1)
+- [Animations on the calendar now looks smooth](https://github.com/patchthecode/JTAppleCalendar/commit/a131d7fd2d447a81854194e4d0198519f7ea526e)
+- Can now work with app extensions
+- dropped support for both iOS 8 & 9
+- Added year view support
+- Other enhancements
+
 ## [7.1.7](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.1.7)
 - fixed broken cell size change 
 - fixed rotation code
 - fixed scrolling issue
-
 
 ## [7.1.6](https://github.com/patchthecode/JTAppleCalendar/releases/tag/7.1.6)
 - Updated to swift 4.2
