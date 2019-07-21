@@ -27,7 +27,7 @@
 		6B4E46A422C2151E00D0F78E /* PinkSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B4E469E22C2151E00D0F78E /* PinkSectionHeaderView.swift */; };
 		6B4E46A522C2151E00D0F78E /* WhiteSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6B4E469F22C2151E00D0F78E /* WhiteSectionHeaderView.xib */; };
 		6B4E46E622C2174C00D0F78E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B4E46E522C2174C00D0F78E /* Main.storyboard */; };
-		6B4E475F22C222DC00D0F78E /* JTAppleCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4E475E22C222DC00D0F78E /* JTAppleCalendar */; };
+		6BBDD4DF22E3E7FF001BE4E0 /* JTAppleCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 6BBDD4DE22E3E7FF001BE4E0 /* JTAppleCalendar */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B4E475F22C222DC00D0F78E /* JTAppleCalendar in Frameworks */,
+				6BBDD4DF22E3E7FF001BE4E0 /* JTAppleCalendar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,7 +194,7 @@
 			);
 			name = SampleJTAppleCalendar;
 			packageProductDependencies = (
-				6B4E475E22C222DC00D0F78E /* JTAppleCalendar */,
+				6BBDD4DE22E3E7FF001BE4E0 /* JTAppleCalendar */,
 			);
 			productName = SampleJTAppleCalendar;
 			productReference = 6B4E465022C202DD00D0F78E /* SampleJTAppleCalendar.app */;
@@ -225,7 +225,7 @@
 			);
 			mainGroup = 6B4E464722C202DD00D0F78E;
 			packageReferences = (
-				6B4E475D22C222DC00D0F78E /* XCRemoteSwiftPackageReference "JTAppleCalendar" */,
+				6BBDD4DD22E3E7FF001BE4E0 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */,
 			);
 			productRefGroup = 6B4E465122C202DD00D0F78E /* Products */;
 			projectDirPath = "";
@@ -462,20 +462,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		6B4E475D22C222DC00D0F78E /* XCRemoteSwiftPackageReference "JTAppleCalendar" */ = {
+		6BBDD4DD22E3E7FF001BE4E0 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/patchthecode/JTAppleCalendar.git";
+			repositoryURL = "https://github.com/patchthecode/JTAppleCalendar";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6B4E475E22C222DC00D0F78E /* JTAppleCalendar */ = {
+		6BBDD4DE22E3E7FF001BE4E0 /* JTAppleCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6B4E475D22C222DC00D0F78E /* XCRemoteSwiftPackageReference "JTAppleCalendar" */;
+			package = 6BBDD4DD22E3E7FF001BE4E0 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */;
 			productName = JTAppleCalendar;
 		};
 /* End XCSwiftPackageProductDependency section */
